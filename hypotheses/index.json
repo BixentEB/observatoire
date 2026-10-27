@@ -1,0 +1,16 @@
+{
+  "_aide": "Liste des hypothèses. Une entrée par fiche ; le texte est dans le fichier .md indiqué. statut : piste, reflexion, developpement, abandonnee ou exemple. objets : identifiants des objets liés (voir js/data/bodies.js). modele (facultatif) : réglages du viewer, à copier depuis l'atelier. brouillon: true pour masquer une fiche.",
+  "hypotheses": [
+    {
+      "id": "exemple-fiche",
+      "titre": "Exemple de fiche (à remplacer)",
+      "resume": "Cette fiche montre la structure d'une hypothèse : l'idée en une phrase, ce qui pourrait l'appuyer, ce qui la contredirait et comment la tester. Elle sera remplacée par les vraies hypothèses.",
+      "statut": "exemple",
+      "exemple": true,
+      "date": "2026-10-27",
+      "objets": ["saturne"],
+      "fichier": "exemple-fiche.md",
+      "modele": { "base": "saturne", "carte": true, "inclinaison": 26.7 }
+    }
+  ]
+}

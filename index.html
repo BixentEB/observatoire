@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Observatoire · Codex Mental</title>
+<meta name="description" content="Une immersion astronomique : le système solaire et le voisinage stellaire à leurs vraies positions, objets cliquables, données réelles, et un espace d'hypothèses.">
+<meta name="theme-color" content="#03040a">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="css/obs.css">
+</head>
+<body>
+
+<div id="stage" class="stage">
+  <div id="labels-systeme" class="labels"></div>
+  <div id="labels-voisinage" class="labels" hidden></div>
+  <div id="boot" class="boot" role="status"><span class="boot-orbit"></span><span>Préparation du ciel…</span></div>
+</div>
+
+<header class="top">
+  <a class="brand" href="#/"><span class="brand-mark" aria-hidden="true"></span><span><b>Observatoire</b><small>Codex Mental</small></span></a>
+  <button id="menu-btn" class="menu-btn" type="button" aria-controls="menu" aria-expanded="false" aria-label="Menu"><span></span></button>
+  <nav id="menu" class="menu" aria-label="Menu principal">
+    <a href="#/" data-route="explorer">Explorer</a>
+    <a href="#/index" data-route="index">Index des objets</a>
+    <a href="#/hypotheses" data-route="hypotheses" class="m-hypo">Hypothèses</a>
+    <a href="#/methode" data-route="methode">Méthode</a>
+    <a href="#/credits" data-route="credits">Crédits</a>
+    <a href="https://codexmental.com" class="m-out">Codex Mental <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<nav id="crumbs" class="crumbs" aria-label="Où suis-je"></nav>
+
+<aside id="console" class="console" aria-live="polite" hidden></aside>
+
+<div class="hud">
+  <button id="scale-badge" class="badge" type="button" title="Changer l'échelle des distances"></button>
+  <span id="size-badge" class="badge badge-quiet">Tailles agrandies</span>
+</div>
+
+<div id="timebar" class="timebar" role="group" aria-label="Contrôle du temps">
+  <button id="t-rev" class="tb" type="button" aria-label="Inverser le sens du temps" title="Inverser le sens du temps">⇄</button>
+  <button id="t-slow" class="tb" type="button" aria-label="Ralentir" title="Ralentir">−</button>
+  <button id="t-play" class="tb tb-main" type="button" aria-label="Pause"></button>
+  <button id="t-fast" class="tb" type="button" aria-label="Accélérer" title="Accélérer">+</button>
+  <div class="t-read"><span id="t-date" class="t-date"></span><span id="t-speed" class="t-speed"></span></div>
+  <button id="t-now" class="tb tb-text" type="button" title="Revenir à aujourd'hui">Aujourd'hui</button>
+  <button id="settings-btn" class="tb" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages">⚙</button>
+</div>
+
+<section id="settings" class="settings" hidden aria-label="Réglages">
+  <h2>Réglages</h2>
+  <label class="row"><span>Distances</span>
+    <select id="s-scale"><option value="adaptee">Échelle adaptée</option><option value="reelle">Distances réelles</option></select></label>
+  <label class="row"><span>Orbites</span><input id="s-orbits" type="checkbox" checked></label>
+  <label class="row"><span>Noms affichés</span>
+    <select id="s-labels"><option value="all">Tous</option><option value="planetes">Planètes et lunes</option><option value="none">Aucun</option></select></label>
+  <label class="row"><span>Qualité</span>
+    <select id="s-quality"><option value="auto">Automatique</option><option value="high">Élevée</option><option value="std">Standard</option><option value="eco">Économe</option></select></label>
+  <p id="s-quality-note" class="note"></p>
+  <p class="note">Glissez pour tourner, molette ou pincement pour zoomer, clic droit ou deux doigts pour déplacer. Double-clic : revenir à la vue d'ensemble.</p>
+</section>
+
+<div id="edge" class="edge" hidden>Continuez à dézoomer pour sortir du système solaire</div>
+<div id="level-title" class="level-title" aria-hidden="true"></div>
+
+<section id="page" class="page" hidden>
+  <div class="page-scroll"><div id="page-inner" class="page-inner"></div></div>
+  <a class="page-close" href="#/" aria-label="Fermer et revenir à l'exploration">✕</a>
+</section>
+
+<noscript><p class="noscript">L'Observatoire a besoin de JavaScript et de WebGL pour afficher le ciel.</p></noscript>
+
+<script src="js/vendor/three/three.min.js"></script>
+<script src="js/vendor/three/controls/OrbitControls.js"></script>
+<script src="js/vendor/three/shaders/CopyShader.js"></script>
+<script src="js/vendor/three/shaders/LuminosityHighPassShader.js"></script>
+<script src="js/vendor/three/postprocessing/EffectComposer.js"></script>
+<script src="js/vendor/three/postprocessing/RenderPass.js"></script>
+<script src="js/vendor/three/postprocessing/ShaderPass.js"></script>
+<script src="js/vendor/three/postprocessing/MaskPass.js"></script>
+<script src="js/vendor/three/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/core/perf.js"></script>
+<script src="js/astro/astro.js"></script>
+<script src="js/data/bodies.js"></script>
+<script src="js/data/stars.js"></script>
+<script src="js/engine/shaders.js"></script>
+<script src="js/engine/core.js"></script>
+<script src="js/engine/system.js"></script>
+<script src="js/engine/neighborhood.js"></script>
+<script src="js/ui/md.js"></script>
+<script src="js/ui/console.js"></script>
+<script src="js/ui/pages.js"></script>
+<script src="js/ui/hypotheses.js"></script>
+<script src="js/ui/app.js"></script>
+</body>
+</html>
