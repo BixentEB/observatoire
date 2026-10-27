@@ -38,7 +38,8 @@
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();
-    closeMenu();
+    closeMenu(); if (typeof closeInfo === 'function') closeInfo();
+    document.querySelector('.m-info').classList.toggle('current', r.name === 'methode' || r.name === 'credits');
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
       var on = a.getAttribute('data-route') === r.name || (r.name === 'voisinage' && a.getAttribute('data-route') === 'explorer');
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
@@ -82,6 +83,12 @@
     if (!page.hidden) { location.hash = '#/'; return; }
     var L = OBS.engine.level; if (L && L.selected && L.selected()) { var cur = L.selected(), d = OBS.byId[cur]; L.select(L === OBS.system && d && d.moon ? d.parent : null); }
   });
+
+  /* menu d'informations (méthode, crédits) */
+  var infoBtn = $('info-btn'), infoMenu = $('info-menu');
+  function closeInfo() { infoMenu.classList.remove('open'); infoBtn.setAttribute('aria-expanded', 'false'); }
+  infoBtn.addEventListener('click', function (e) { e.stopPropagation(); var o = !infoMenu.classList.contains('open'); infoMenu.classList.toggle('open', o); infoBtn.setAttribute('aria-expanded', String(o)); });
+  document.addEventListener('pointerdown', function (e) { if (!infoMenu.contains(e.target) && !infoBtn.contains(e.target)) closeInfo(); });
 
   /* menu (petits écrans) */
   var menuBtn = $('menu-btn'), menu = $('menu');
@@ -132,8 +139,11 @@
   function renderTime() {
     var t = OBS.time, d = OBS.astro.dateFromJd(t.jd);
     var fast = Math.abs(t.rate) >= 1;
-    tDate.textContent = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) + (fast ? '' : ' · ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
-    tSpeed.textContent = (t.paused ? 'En pause' : (t.dir < 0 ? '◂ ' : '') + t.SPEEDS[t.speed].label);
+    tDate.textContent = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) + (fast ? '' : ' · ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: t.speed === 0 ? '2-digit' : undefined }));
+    var live = t.isLive;
+    tSpeed.textContent = t.paused ? 'En pause' : live ? 'Temps réel' : (t.dir < 0 ? '◂ ' : '') + t.SPEEDS[t.speed].label + (t.speed === 0 ? ' (date décalée)' : '');
+    $('t-now').classList.toggle('is-live', live);
+    $('t-now').querySelector('.live-txt').textContent = live ? 'En direct' : 'Revenir en direct';
     tPlay.textContent = t.paused ? '▶' : '❚❚';
     tPlay.setAttribute('aria-label', t.paused ? 'Lecture' : 'Pause');
     $('t-rev').classList.toggle('on', t.dir < 0);
@@ -142,7 +152,7 @@
   $('t-slow').addEventListener('click', function () { OBS.time.setSpeed(OBS.time.speed - 1); });
   $('t-fast').addEventListener('click', function () { OBS.time.setSpeed(OBS.time.speed + 1); });
   $('t-rev').addEventListener('click', function () { OBS.time.reverse(); });
-  $('t-now').addEventListener('click', function () { OBS.time.now(); OBS.time.setSpeed(3); OBS.time.dir = 1; if (OBS.time.paused) OBS.time.toggle(); });
+  $('t-now').addEventListener('click', function () { OBS.time.live(); });
   OBS.on('time', renderTime);
   setInterval(renderTime, 250); renderTime();
 

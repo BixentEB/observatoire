@@ -26,12 +26,13 @@
     { id: 'mois', label: '1 mois par seconde', short: '1 mois/s', rate: 30.4375 },
     { id: 'an', label: '1 an par seconde', short: '1 an/s', rate: 365.25 }
   ];
-  var reduced = false; try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var time = OBS.time = {
-    SPEEDS: SPEEDS, jd: OBS.astro.jdFromDate(new Date()), speed: 3, dir: 1, paused: reduced,
+    SPEEDS: SPEEDS, jd: OBS.astro.jdFromDate(new Date()), speed: 0, dir: 1, paused: false,   // première visite : en direct, en temps réel
     jdSpin: 0,                                  // date utilisée pour la rotation des astres (voir Méthode)
     get rate() { return SPEEDS[this.speed].rate * this.dir; },
     now: function () { this.jd = OBS.astro.jdFromDate(new Date()); this.jdSpin = this.jd; OBS.emit('time', this); },
+    live: function () { this.speed = 0; this.dir = 1; this.paused = false; this.now(); },
+    get isLive() { return this.speed === 0 && this.dir === 1 && !this.paused && Math.abs(this.jd - OBS.astro.jdFromDate(new Date())) < 2 / 1440; },
     set: function (jd) { this.jd = jd; this.jdSpin = jd; OBS.emit('time', this); },
     setSpeed: function (i) { this.speed = Math.max(0, Math.min(SPEEDS.length - 1, i)); OBS.emit('time', this); },
     toggle: function () { this.paused = !this.paused; OBS.emit('time', this); },
@@ -147,7 +148,10 @@
     var dt = Math.min(.1, last ? (now - last) / 1000 : .016); last = now; lastDraw = now;
     if (watch) watch(now);
 
-    if (!time.paused) {
+    var wall = OBS.astro.jdFromDate(new Date());
+    if (!time.paused && time.speed === 0 && time.dir === 1 && Math.abs(time.jd - wall) < 5 / 1440) {
+      time.jd = wall; time.jdSpin = wall;          // en direct : calé sur l'horloge, même si des images ont sauté
+    } else if (!time.paused) {
       time.jd += time.rate * dt;
       if (Math.abs(time.rate) <= SPIN_MAX) time.jdSpin = time.jd;
       else time.jdSpin += Math.sign(time.rate) * SPIN_MAX * dt;

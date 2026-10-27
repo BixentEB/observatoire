@@ -6,6 +6,9 @@
 <title>Observatoire · Codex Mental</title>
 <meta name="description" content="Une immersion astronomique : le système solaire et le voisinage stellaire à leurs vraies positions, objets cliquables, données réelles, et un espace d'hypothèses.">
 <meta name="theme-color" content="#03040a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="css/obs.css">
 </head>
@@ -24,9 +27,15 @@
     <a href="#/" data-route="explorer">Explorer</a>
     <a href="#/index" data-route="index">Index des objets</a>
     <a href="#/hypotheses" data-route="hypotheses" class="m-hypo">Hypothèses</a>
-    <a href="#/methode" data-route="methode">Méthode</a>
-    <a href="#/credits" data-route="credits">Crédits</a>
     <a href="https://codexmental.com" class="m-out">Codex Mental <span aria-hidden="true">↗</span></a>
+    <div class="m-info">
+      <button id="info-btn" class="info-btn" type="button" aria-controls="info-menu" aria-expanded="false" aria-label="Informations : méthode et crédits" title="Informations"><span aria-hidden="true">i</span></button>
+      <div id="info-menu" class="info-menu">
+        <span class="info-title">Informations</span>
+        <a href="#/methode" data-route="methode">Méthode</a>
+        <a href="#/credits" data-route="credits">Crédits</a>
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -45,7 +54,7 @@
   <button id="t-play" class="tb tb-main" type="button" aria-label="Pause"></button>
   <button id="t-fast" class="tb" type="button" aria-label="Accélérer" title="Accélérer">+</button>
   <div class="t-read"><span id="t-date" class="t-date"></span><span id="t-speed" class="t-speed"></span></div>
-  <button id="t-now" class="tb tb-text" type="button" title="Revenir à aujourd'hui">Aujourd'hui</button>
+  <button id="t-now" class="tb tb-text tb-live" type="button" title="Revenir à la date et à l'heure actuelles, en temps réel"><span class="live-dot" aria-hidden="true"></span><span class="live-txt">En direct</span></button>
   <button id="settings-btn" class="tb" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages">⚙</button>
 </div>
 
@@ -85,6 +94,7 @@
 <script src="js/astro/astro.js"></script>
 <script src="js/data/bodies.js"></script>
 <script src="js/data/stars.js"></script>
+<script src="js/data/lore.js"></script>
 <script src="js/engine/shaders.js"></script>
 <script src="js/engine/core.js"></script>
 <script src="js/engine/system.js"></script>

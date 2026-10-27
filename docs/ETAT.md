@@ -17,6 +17,14 @@
 - Mobile : console en panneau du bas (réductible), vue recentrée au-dessus, menu repliable.
 - Qualité : niveau estimé une fois à l'arrivée ; changement manuel dans les réglages (rechargement) ; seule adaptation automatique : baisse discrète de la définition si l'appareil peine durablement.
 
+### Retouches après les premières remarques
+- Arrivée en direct, en temps réel ; bouton « En direct » dans la barre du temps, l'accéléré reste disponible avec + et −.
+- Favicon en orbite, repris du logo.
+- Méthode et Crédits regroupés dans un menu d'informations (icône i).
+- Page Méthode plus rigoureuse : positions calculées et non ciel apparent, données scientifiques avec leurs approximations.
+- Mentions réel / adapté / simulé en tête de chaque console.
+- Encart « Origine du nom » et bloc « Projets et pistes » (en cours, prévu, à l'étude, concept spéculatif) : `js/data/lore.js`.
+
 ### Pistes suivantes
 - Niveau **Voie lactée** (reconstitution fondée sur les représentations officielles, étiquetée comme telle), puis Groupe local.
 - Cartes réelles pour les lunes galiléennes, Titan, Pluton et Charon (USGS / NASA), Vénus (nuages et radar).
