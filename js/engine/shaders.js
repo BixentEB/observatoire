@@ -166,7 +166,7 @@
   'void main(){ vObj=normalize(position); vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.0); vV=-mv.xyz; gl_Position=projectionMatrix*mv; }'
   ].join('\n');
   var SUN_FRAG = [
-  'uniform float uTime; varying vec3 vObj; varying vec3 vN; varying vec3 vV;',
+  'uniform float uTime; uniform vec3 uTint; uniform float uSpots; varying vec3 vObj; varying vec3 vN; varying vec3 vV;',
   COMMON,
   'vec3 ramp(float h){ vec3 a=vec3(0.42,0.12,0.02); vec3 b=vec3(0.92,0.46,0.12); vec3 c=vec3(1.0,0.78,0.42); vec3 d=vec3(1.0,0.96,0.82);',
   '  if(h<0.4) return mix(a,b,h/0.4); if(h<0.7) return mix(b,c,(h-0.4)/0.3); return mix(c,d,clamp((h-0.7)/0.3,0.0,1.0)); }',
@@ -174,10 +174,12 @@
   '  float g1=fbm(p*5.0+vec3(0.0,0.0,t*0.05),fw*5.0);',
   '  float g2=snoise(p*22.0+vec3(t*0.2,0.0,0.0))*(1.0-smoothstep(0.2,0.8,fw*22.0));',
   '  float g3=snoise(p*60.0+vec3(0.0,t*0.3,0.0))*(1.0-smoothstep(0.2,0.8,fw*60.0));',
-  '  float spot=smoothstep(0.46,0.62,fbm(p*2.4+vec3(4.0),fw*2.4))*0.8;',
+  '  float spot=smoothstep(0.46,0.62,fbm(p*2.4+vec3(4.0),fw*2.4))*0.8*uSpots;',
   '  float heat=0.7+0.1*g1+0.12*g2+0.07*g3-0.3*spot;',
   '  float mu=clamp(dot(normalize(vN),normalize(vV)),0.0,1.0); float limb=0.3+0.7*pow(mu,0.55); heat*=limb;',
   '  vec3 col=ramp(clamp(heat,0.0,1.0)); col*=1.2+1.0*pow(clamp(heat,0.0,1.0),3.0); col=mix(col,col*vec3(1.0,0.78,0.6),(1.0-mu)*0.6);',
+  /* teinte selon le type d'étoile (blanc = Soleil) : on garde la luminance, on change la couleur */
+  '  float lum=dot(col,vec3(0.3,0.55,0.15)); vec3 tinted=lum*uTint*1.6; col=mix(col,tinted,clamp(length(uTint-vec3(1.0,0.82,0.6))*2.2,0.0,0.9));',
   '  gl_FragColor=vec4(col,1.0); }'
   ].join('\n');
 

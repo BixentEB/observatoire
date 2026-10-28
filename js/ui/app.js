@@ -24,7 +24,8 @@
   if (ok) {
     OBS.system.build(OBS.engine.renderer, $('labels-systeme'));
     OBS.neighborhood.build(OBS.engine.renderer, $('labels-voisinage'));
-    OBS.engine.add(OBS.system); OBS.engine.add(OBS.neighborhood);
+    OBS.starsystem.build(OBS.engine.renderer, $('labels-etoile'));
+    OBS.engine.add(OBS.system); OBS.engine.add(OBS.neighborhood); OBS.engine.add(OBS.starsystem);
     OBS.on('ready', function () { setTimeout(function () { boot.classList.add('done'); }, 150); setTimeout(function () { boot.hidden = true; }, 1100); });
   }
 
@@ -49,7 +50,12 @@
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
     closePage();
     if (!ok) return;
-    if (r.name === 'voisinage') OBS.engine.go('voisinage', { focus: r.param && OBS.neighborhood.get(r.param) ? r.param : undefined });
+    if (r.name === 'etoile' && r.param && OBS.neighborhood.get(r.param)) {
+      var cur = OBS.starsystem.star();
+      if (OBS.engine.level === OBS.starsystem && cur && cur.id === r.param) return;
+      OBS.engine.go('etoile', { star: r.param, instant: !OBS.engine.level });
+    }
+    else if (r.name === 'voisinage') OBS.engine.go('voisinage', { focus: r.param && OBS.neighborhood.get(r.param) ? r.param : undefined });
     else {
       var id = r.name === 'explorer' && r.param && OBS.byId[r.param] ? r.param : null;
       if (OBS.engine.level !== OBS.system) OBS.engine.go('systeme', { focus: id, instant: !OBS.engine.level });
@@ -59,6 +65,7 @@
   function setHash(h) { if (location.hash === h || (h === '#/' && !location.hash)) return; silent = true; history.replaceState(null, '', h); silent = false; }
   OBS.on('select', function (e) {
     if (PAGES[parse().name]) return;
+    if (e.level === 'etoile') { setHash('#/etoile/' + e.id); return; }
     if (e.level === 'systeme') setHash(e.id ? '#/explorer/' + e.id : '#/');
     else setHash(e.id ? '#/voisinage/' + e.id : '#/');   // le voisinage n'est pas une adresse d'arrivée : un rechargement ramène au système solaire
   });
@@ -100,8 +107,12 @@
     // niveaux au-dessus du niveau actuel (on peut y remonter d'un clic)
     items.push({ label: 'Voie lactée', soon: true });
     if (L === OBS.system) items.push({ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { from: 'systeme' }); } });
+    if (L === OBS.neighborhood && L.selected()) { var sid = L.selected(); items = items.concat(L.crumbs()); items.push({ label: '↓ Visiter ce système', down: true, act: function () { OBS.engine.go('etoile', { star: sid }); } }); items.push({ label: '↓ Système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } }); render(items); return; }
     items = items.concat(L.crumbs());
     if (L === OBS.neighborhood) items.push({ label: '↓ Entrer dans le système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
+    render(items);
+  }
+  function render(items) {
     crumbs.innerHTML = '';
     items.forEach(function (c, i) {
       if (i && !c.down) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
@@ -118,10 +129,11 @@
   /* titre du niveau, au changement */
   var title = $('level-title'), titleT = 0, firstLevel = true;
   OBS.on('level', function (L) {
-    $('timebar').hidden = L.id !== 'systeme'; $('scale-badge').hidden = L.id !== 'systeme';
+    $('timebar').hidden = L.id === 'voisinage'; $('scale-badge').hidden = L.id !== 'systeme';
     $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : 'Tailles agrandies';
     toggleSettings(false);
     if (firstLevel) { firstLevel = false; return; }
+    if (L.id === 'etoile') { var st = OBS.starsystem.star(); title.innerHTML = '<b>' + OBS.esc(st ? st.name : '') + '</b><span>' + (st && st.sys ? st.sys.length + (st.sys.length > 1 ? ' planètes confirmées' : ' planète confirmée') : 'Aucune planète confirmée') + ' · à ' + (st ? st.ly.toLocaleString('fr-FR') : '') + ' années-lumière</span>'; title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2400); return; }
     var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
     title.innerHTML = '<b>' + L.label + '</b><span>' + sub + '</span>';
     title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2200);

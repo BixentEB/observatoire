@@ -21,6 +21,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `#/` | Système solaire, vue d'ensemble |
 | `#/explorer/<objet>` | Un objet (ex. `#/explorer/saturne`, `#/explorer/titan`) |
 | `#/voisinage`, `#/voisinage/<étoile>` | Voisinage stellaire (ex. `#/voisinage/proxima`) |
+| `#/etoile/<étoile>` | Système d'une étoile voisine : étoile, compagne, planètes confirmées |
 | `#/atlas[/systeme\|voisinage[/carte\|liste]]` | Atlas : carte à plat ou liste, selon l'endroit où l'on est |
 | `#/hypotheses`, `#/hypotheses/<fiche>` | Hypothèses |
 | `#/simulateur` | Simulateur (modeler un corps céleste ; scénarios « et si… » à venir) |
@@ -39,6 +40,8 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/core.js` | Rendu partagé, niveaux, fondus, temps simulé, décalage de la vue quand la console est ouverte |
 | `js/engine/system.js` | Niveau « Système solaire » (échelle, objets, orbites, ceintures, étiquettes, caméra) |
 | `js/engine/neighborhood.js` | Niveau « Voisinage stellaire » |
+| `js/engine/starsystem.js` | Niveau « Système d'une étoile voisine » |
+| `js/ui/search.js` | Recherche ( / ou Ctrl+K ) |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
 | `js/ui/pages.js` | Méthode (avec les crédits) |
 | `js/ui/atlas.js` | Atlas : carte à plat du système solaire (tailles lisibles ou réelles), règle des distances du voisinage, listes |

@@ -104,10 +104,11 @@
     return '<section class="c-sec"><h3>Données</h3><table class="c-facts">' + def.facts.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + esc(f[1]) + '</td></tr>'; }).join('') + '</table></section>';
   }
 
-  function render(level, id) {
+  function render(level, id, part) {
     current = id ? { level: level, id: id } : null;
     clearInterval(liveTimer);
     if (!id) { el.hidden = true; el.innerHTML = ''; if (OBS.engine.setShift) OBS.engine.setShift(0, 0); return; }
+    if (level === 'etoile') return renderStar(id, part);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -121,6 +122,7 @@
       h.push('<p class="c-text">' + esc(def.text || '') + '</p>');
       h.push(lr.nom);
       if (def.planets) h.push('<section class="c-sec"><h3>Planètes</h3><p class="c-text">' + esc(def.planets) + '</p></section>');
+      h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-visit="' + def.id + '">Visiter le système de ' + esc(def.name) + ' →</button></div></section>');
       h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Position réelle dans l\'espace (ascension droite, déclinaison, distance). La taille du repère est symbolique et dépend de la luminosité de l\'étoile.</p></section>');
     } else {
       if (!def.region) h.push('<section class="c-sec"><h3>Le ' + esc(dateLabel()) + '</h3><div data-live>' + liveSystem(id) + '</div></section>');
@@ -151,6 +153,7 @@
     });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-go]'), function (b) { b.addEventListener('click', function () { OBS.system.select(b.getAttribute('data-go')); }); });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-visit]'), function (b) { b.addEventListener('click', function () { OBS.engine.go('etoile', { star: b.getAttribute('data-visit') }); }); });
     // hypothèses liées (chargées à la demande)
     if (OBS.hypo) OBS.hypo.forObject(id).then(function (list) {
       if (!current || current.id !== id || !list.length) return;
@@ -166,6 +169,57 @@
     }, 500);
   }
 
+  /* système d'une étoile voisine : l'étoile, sa compagne ou une de ses planètes */
+  function renderStar(id, part) {
+    var SS = OBS.starsystem, st = SS.star(), h = [];
+    current = { level: 'etoile', id: id + (part ? ':' + part : '') }; clearInterval(liveTimer);
+    var head = function (kind, name, color) {
+      return '<div class="c-head"><p class="c-kind">' + esc(kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + color + ';color:' + color + '"></span>' + esc(name) + '</h2>' +
+        '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">';
+    };
+    var starCol = '#' + ('000000' + (OBS.STAR_COLORS[st.cls] || 0xffffff).toString(16)).slice(-6);
+    if (!part) {
+      h.push(head(st.cls === 'BD' ? 'Naine brune · ' + st.spec : 'Étoile · ' + st.spec, st.name, starCol));
+      h.push('<div class="c-flags">' + flag('real', 'Étoile', 'mesurée', 'type, rayon et masse issus des observations (valeurs approchées)') +
+        (st.sys ? flag('real', 'Orbites', 'calculées', 'périodes mesurées ; distances déduites par la troisième loi de Kepler') : '') +
+        (st.sys ? flag('sim', 'Planètes', 'aspect inconnu', 'aucune image de ces planètes n\'existe : leur rendu est simulé') : '') +
+        flag('adapt', 'Échelle', 'adaptée', 'distances compressées comme dans le système solaire, tailles agrandies') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<section class="c-sec"><h3>Aujourd\'hui</h3>' + liveStar(st) + '</section>');
+      h.push('<p class="c-text">' + esc(st.text || '') + '</p>');
+      h.push(lore(st.id).nom);
+      var facts2 = [];
+      if (st.r) facts2.push(['Rayon', '≈ ' + nf(st.r, st.r < .1 ? 3 : 2) + ' rayon solaire' + (st.r >= 2 ? 's' : '')]);
+      if (st.m) facts2.push(['Masse', '≈ ' + nf(st.m, st.m < .1 ? 3 : 2) + ' masse solaire' + (st.m >= 2 ? 's' : '')]);
+      if (st.comp) facts2.push(['Compagne', st.comp.n + ', à ≈ ' + nf(st.comp.aAU, 1) + ' UA, révolution en ' + nf(st.comp.Py, 1) + ' ans']);
+      if (facts2.length) h.push('<section class="c-sec"><h3>Données</h3><table class="c-facts">' + facts2.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + esc(f[1]) + '</td></tr>'; }).join('') + '</table></section>');
+      if (st.sys) h.push('<section class="c-sec"><h3>Planètes confirmées</h3><div class="c-chips">' + st.sys.map(function (p, i) { return '<button class="chip" type="button" data-part="p' + i + '">' + esc(p.n) + '</button>'; }).join('') + '</div></section>');
+      else h.push('<section class="c-sec"><h3>Planètes</h3><p class="c-text">' + esc(st.planets || 'Aucune planète confirmée à ce jour.') + '</p></section>');
+      if (st.planets && st.sys) h.push('<p class="c-note">' + esc(st.planets) + '</p>');
+    } else if (part === 'comp') {
+      var c = st.comp, cc = '#' + ('000000' + (OBS.STAR_COLORS[c.cls] || 0xffffff).toString(16)).slice(-6);
+      h.push(head('Étoile compagne · système de ' + st.name, c.n, cc));
+      h.push('<div class="c-flags">' + flag('real', 'Orbite', 'mesurée', 'demi-grand axe et période issus des observations') + flag('sim', 'Position', 'indicative', 'orbite représentée circulaire, emplacement non calculé') + flag('adapt', 'Échelle', 'adaptée', 'distances compressées, tailles agrandies') + '</div>');
+      h.push('<table class="c-facts" style="margin-top:12px"><tr><th>Distance moyenne</th><td>≈ ' + nf(c.aAU, 1) + ' UA</td></tr><tr><th>Révolution</th><td>' + nf(c.Py, 1) + ' ans</td></tr><tr><th>Rayon</th><td>≈ ' + nf(c.r, c.r < .1 ? 4 : 2) + ' rayon solaire</td></tr></table>');
+      if (/naine blanche/.test(c.n)) h.push('<p class="c-text">Une naine blanche : le cœur d\'une étoile qui a épuisé son combustible, aussi massif que le Soleil mais pas plus grand que la Terre.</p>');
+    } else {
+      var idx = +part.slice(1), p = st.sys[idx];
+      var aAU = SS.keplerAU(st.m || .3, p.P);
+      h.push(head('Exoplanète · système de ' + st.name, p.n, p.giant ? '#c8b894' : '#8c857c'));
+      h.push('<div class="c-flags">' + flag('real', 'Période', 'mesurée', 'déduite des observations de l\'étoile') + flag('real', 'Distance', 'calculée', 'troisième loi de Kepler, à partir de la période et de la masse de l\'étoile') +
+        flag('sim', 'Position', 'indicative', 'emplacement sur l\'orbite non calculé') + flag('sim', 'Aspect', 'inconnu', 'aucune image de cette planète n\'existe') + flag('adapt', 'Taille', 'estimée', 'seule une masse minimale est connue') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<div class="c-live" style="margin-top:14px"><div><span>Période</span><b>' + (p.P > 400 ? nf(p.P / 365.25, 1) + ' ans' : nf(p.P, 2) + ' jours') + '</b><small>une année sur cette planète</small></div>' +
+        '<div><span>Distance à l\'étoile</span><b>≈ ' + nf(aAU, aAU < .1 ? 3 : 2) + ' UA</b><small>≈ ' + nf(aAU * OBS.astro.AU_KM / 1e6, 1) + ' millions de km</small></div>' +
+        (p.me ? '<div class="wide"><span>Masse minimale</span><b>' + (p.me > 100 ? nf(p.me / 317.8, 2) + ' Jupiter' : nf(p.me, 2) + ' Terre' + (p.me >= 2 ? 's' : '')) + '</b><small>la vraie masse dépend de l\'inclinaison de l\'orbite, inconnue</small></div>' : '') + '</div>');
+      h.push('<p class="c-text">' + (aAU < .1 ? 'Elle tourne bien plus près de son étoile que Mercure du Soleil (0,39 UA). Autour d\'une étoile aussi peu lumineuse, cette distance peut pourtant correspondre à des températures modérées.' : 'Une planète géante sur une orbite large, détectée par le mouvement qu\'elle imprime à son étoile.') + '</p>');
+      h.push('<section class="c-sec"><div class="c-chips"><button class="chip" type="button" data-part="">← ' + esc(st.name) + '</button></div></section>');
+    }
+    h.push('</div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { if (part) SS.select(null); else OBS.engine.go('voisinage', { focus: st.id, from: 'etoile' }); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-part]'), function (b) { b.addEventListener('click', function () { SS.select(b.getAttribute('data-part') || null); }); });
+  }
+
   /* garder l'objet centré dans la partie de la scène que la console ne couvre pas */
   function reshift() {
     if (el.hidden) { OBS.engine.setShift(0, 0); return; }
@@ -178,7 +232,7 @@
 
   OBS.on('select', function (e) {
     if (OBS.engine.level && OBS.engine.level.id !== e.level) return;
-    render(e.level, e.id);
+    render(e.level, e.id, e.part);
   });
   OBS.on('level', function () { render(null, null); });
   OBS.console = { render: render };

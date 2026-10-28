@@ -85,6 +85,12 @@
     var push = 0, pushT = 0;
     cv.addEventListener('wheel', function (e) {
       if (OBS.engine.level !== L || flight) return;
+      // zoom avant sur l'étoile choisie : on entre dans son système
+      if (e.deltaY < 0 && selected && camera.position.distanceTo(byId[selected].pos) <= controls.minDistance * 1.6 + 2) {
+        var now0 = performance.now(); if (now0 - pushT > 900) push = 0; pushT = now0;
+        if (++push >= 3) { push = 0; OBS.engine.go('etoile', { star: selected }); }
+        return;
+      }
       if (e.deltaY < 0 && controls.target.length() < 1 && camera.position.length() <= controls.minDistance * 1.6 + 2) {
         var now = performance.now(); if (now - pushT > 900) push = 0; pushT = now;
         if (++push >= 3) { push = 0; OBS.engine.go('systeme', { from: 'voisinage' }); }

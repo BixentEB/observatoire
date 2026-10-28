@@ -134,7 +134,7 @@
     L.sky = buildSky(renderer); scene.add(L.sky);
 
     // Soleil
-    sunMat = new T.ShaderMaterial({ uniforms: { uTime: { value: 0 } }, vertexShader: G.SUN_VERT, fragmentShader: G.SUN_FRAG, extensions: { derivatives: true } });
+    sunMat = new T.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uTint: { value: new T.Vector3(1, .82, .6) }, uSpots: { value: 1 } }, vertexShader: G.SUN_VERT, fragmentShader: G.SUN_FRAG, extensions: { derivatives: true } });
     sunMesh = new T.Mesh(new T.SphereGeometry(SUN_R, cfg.seg[0], cfg.seg[1]), sunMat);
     scene.add(sunMesh);
     sunGlowA = sprite(glowA, SUN_R * 5.2); sunGlowB = sprite(glowB, SUN_R * 15);

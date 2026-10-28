@@ -17,11 +17,15 @@
 <div id="stage" class="stage">
   <div id="labels-systeme" class="labels"></div>
   <div id="labels-voisinage" class="labels" hidden></div>
+  <div id="labels-etoile" class="labels" hidden></div>
   <div id="boot" class="boot" role="status"><span class="boot-orbit"></span><span>Préparation du ciel…</span></div>
 </div>
 
 <header class="top">
   <a class="brand" href="#/"><span class="brand-mark" aria-hidden="true"></span><span><b>Observatoire</b><small>Codex Mental</small></span></a>
+  <button id="search-btn" class="search-btn" type="button" aria-controls="search" aria-expanded="false" aria-label="Rechercher un objet (/)" title="Rechercher un objet ( / )">
+    <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
   <button id="menu-btn" class="menu-btn" type="button" aria-controls="menu" aria-expanded="false" aria-label="Menu"><span></span></button>
   <nav id="menu" class="menu" aria-label="Menu principal">
     <a href="#/" data-route="explorer">Explorer</a>
@@ -31,6 +35,11 @@
     <a href="https://codexmental.com" class="m-out">Codex Mental <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
+
+<div id="search" class="search" hidden role="dialog" aria-label="Recherche">
+  <input id="search-input" type="search" placeholder="Rechercher un astre, une étoile, une exoplanète…" autocomplete="off" spellcheck="false" aria-controls="search-results">
+  <ul id="search-results" class="search-results" role="listbox"></ul>
+</div>
 
 <nav id="crumbs" class="crumbs" aria-label="Où suis-je"></nav>
 
@@ -92,11 +101,13 @@
 <script src="js/engine/core.js"></script>
 <script src="js/engine/system.js"></script>
 <script src="js/engine/neighborhood.js"></script>
+<script src="js/engine/starsystem.js"></script>
 <script src="js/ui/md.js"></script>
 <script src="js/ui/console.js"></script>
 <script src="js/ui/pages.js"></script>
 <script src="js/ui/atlas.js"></script>
 <script src="js/ui/hypotheses.js"></script>
+<script src="js/ui/search.js"></script>
 <script src="js/ui/app.js"></script>
 </body>
 </html>

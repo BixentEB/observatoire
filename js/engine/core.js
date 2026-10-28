@@ -107,7 +107,10 @@
   engine.go = function (id, opts) {
     opts = opts || {};
     var next = engine.levels[id]; if (!next || switching) return;
-    if (engine.level === next) { if (opts.focus !== undefined && next.focus) next.focus(opts.focus); return; }
+    if (engine.level === next) {
+      if (opts.star && next.show) { next.show(opts.star); next.enter(opts); return; }   // une autre étoile, dans le même niveau
+      if (opts.focus !== undefined && next.focus) next.focus(opts.focus); return;
+    }
     if (!engine.level || opts.instant) { activate(next, opts); return; }
     var prev = engine.level;
     switching = { next: next, opts: opts, t: 0 };

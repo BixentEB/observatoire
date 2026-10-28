@@ -24,17 +24,19 @@
   OBS.pages.atlas = function (root, scope, view) {
     if (!scope) scope = OBS.engine.level && OBS.engine.level.id === 'voisinage' ? 'voisinage' : 'systeme';   // l'atlas suit l'endroit où l'on est
     if (!SCOPES.some(function (s) { return s.id === scope; })) scope = 'systeme';
-    view = view === 'liste' ? 'liste' : 'carte';
+    view = view === 'liste' || view === 'unites' ? view : 'carte';
     var h = [];
     h.push('<p class="p-kicker">Atlas</p><h1>' + esc(SCOPES.filter(function (s) { return s.id === scope; })[0].label) + '</h1>');
     h.push('<div class="tabs" role="tablist" aria-label="Portée">' + SCOPES.map(function (s) {
       return '<a role="tab" class="tab' + (s.soon ? ' soon' : '') + '" href="#/atlas/' + s.id + '/' + view + '" aria-selected="' + (s.id === scope) + '">' + esc(s.label) + (s.soon ? ' <small>bientôt</small>' : '') + '</a>';
     }).join('') + '<span class="tabs-sep"></span>' +
       '<a class="tab tab-view" href="#/atlas/' + scope + '/carte" aria-selected="' + (view === 'carte') + '">Carte</a>' +
-      '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a></div>');
+      '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a>' +
+      '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a></div>');
     h.push('<div id="atlas-body"></div>');
     root.innerHTML = h.join('');
     var body = root.querySelector('#atlas-body');
+    if (view === 'unites') return unites(body);
     if (scope === 'galaxie') return galaxie(body);
     if (view === 'liste') return scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     return scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
@@ -62,10 +64,33 @@
   function listeVoisinage(root) {
     var stars = OBS.STARS.slice().sort(function (a, b) { return a.ly - b.ly; });
     root.innerHTML = '<p>Les étoiles et naines brunes à moins de 12 années-lumière, de la plus proche à la plus lointaine.</p><div class="grid-list">' +
-      stars.map(function (s) { return card('#/voisinage/' + s.id, hex(OBS.STAR_COLORS[s.cls] || 0xffffff), s.name, s.spec + ' · ' + nf(s.ly, 2) + ' al'); }).join('') + '</div>';
+      stars.map(function (s) { return card('#/etoile/' + s.id, hex(OBS.STAR_COLORS[s.cls] || 0xffffff), s.name, s.spec + ' · ' + nf(s.ly, 2) + ' al'); }).join('') + '</div>';
   }
   function galaxie(root) {
     root.innerHTML = '<div class="atlas-soon"><p class="lead">La Voie lactée vue de l\'extérieur est en préparation.</p><p>Personne n\'a jamais photographié notre galaxie de l\'extérieur : ce sera une reconstitution fondée sur les représentations scientifiques officielles, présentée comme telle, avec la position du Soleil sur le bras d\'Orion et, peut-être, des systèmes d\'exoplanètes connus à visiter.</p></div>';
+  }
+
+  /* ---------------- unités : les repères de l'astronomie ---------------- */
+  function unites(root) {
+    var U = [
+      { u: 'km', n: 'Kilomètre', v: 'Notre unité de tous les jours', ex: 'La Terre fait 12 742 km de diamètre ; la Lune est à 384 400 km.', use: 'Tailles des astres, distances autour d\'une planète.' },
+      { u: 's-l', n: 'Seconde-lumière', v: '299 792 km', ex: 'La lumière de la Lune met environ 1,3 seconde pour nous parvenir.', use: 'Distances dans le système Terre-Lune.' },
+      { u: 'UA', n: 'Unité astronomique', v: '149 597 870,7 km, la distance moyenne Terre-Soleil', ex: 'La lumière du Soleil met 8 min 19 s pour la parcourir. Jupiter est à 5,2 UA, Neptune à 30 UA.', use: 'Distances dans le système solaire.' },
+      { u: 'al', n: 'Année-lumière', v: '≈ 9 461 milliards de km, soit ≈ 63 241 UA', ex: 'La distance parcourue par la lumière en un an. Proxima du Centaure est à 4,24 al.', use: 'Distances entre les étoiles.' },
+      { u: 'pc', n: 'Parsec', v: '≈ 3,26 al, soit ≈ 206 265 UA', ex: 'La distance d\'où l\'on verrait l\'orbite terrestre sous un angle d\'une seconde d\'arc. C\'est l\'unité des astronomes professionnels.', use: 'Distances entre les étoiles et les galaxies.' },
+      { u: 'M⊕', n: 'Masse terrestre', v: '5,97 × 10²⁴ kg', ex: 'Jupiter pèse 318 masses terrestres, le Soleil 333 000.', use: 'Masses des planètes et des exoplanètes rocheuses.' },
+      { u: 'MJ', n: 'Masse jovienne', v: '≈ 318 masses terrestres', ex: 'Les naines brunes font de 13 à environ 80 masses joviennes.', use: 'Masses des planètes géantes et des naines brunes.' },
+      { u: 'R☉ · M☉', n: 'Rayon et masse solaires', v: '696 340 km ; 1,989 × 10³⁰ kg', ex: 'Proxima du Centaure fait 0,15 rayon solaire, Sirius A 1,7.', use: 'Tailles et masses des étoiles.' },
+      { u: 'K', n: 'Kelvin', v: '0 K = −273,15 °C, le zéro absolu', ex: 'La surface du Soleil est à 5 772 K (≈ 5 500 °C).', use: 'Températures des étoiles et du froid spatial.' }
+    ];
+    root.innerHTML = '<p class="lead" style="margin-top:0">Les distances de l\'univers sont si grandes qu\'on change d\'unité à chaque étape. Chacune sert à une échelle.</p>' +
+      '<div class="units">' + U.map(function (x) {
+        return '<div class="unit"><span class="unit-sym">' + esc(x.u) + '</span><h3>' + esc(x.n) + '</h3><p class="unit-v">' + esc(x.v) + '</p><p>' + esc(x.ex) + '</p><p class="unit-use">' + esc(x.use) + '</p></div>';
+      }).join('') + '</div>' +
+      '<h2>Une échelle pour se représenter</h2><div class="scale-row">' +
+      [['Terre → Lune', '1,3 seconde-lumière'], ['Terre → Soleil', '8 minutes-lumière'], ['Soleil → Neptune', '4 heures-lumière'], ['Soleil → Proxima', '4,24 années-lumière'], ['Traversée de la Voie lactée', '≈ 100 000 années-lumière']]
+        .map(function (r, i) { return '<div class="sr" style="--i:' + i + '"><b>' + r[1] + '</b><span>' + r[0] + '</span></div>'; }).join('') + '</div>' +
+      '<p class="note">Chaque étape est des milliers de fois plus grande que la précédente : c\'est pour cela que l\'Observatoire change de niveau et d\'échelle quand on zoome.</p>';
   }
 
   /* ---------------- carte à plat du système solaire ---------------- */
@@ -208,7 +233,7 @@
       lastX[lane] = sx;
       var ly = AX + lane * 42 - (lane > 0 ? -8 : 8);
       out.push('<line x1="' + sx + '" y1="' + AX + '" x2="' + sx + '" y2="' + ly + '" class="at-stem"/>');
-      out.push('<a href="#/voisinage/' + s.id + '" class="ab"><title>' + esc(s.name + ' — ' + nf(s.ly, 2) + ' al') + '</title><circle cx="' + sx + '" cy="' + AX + '" r="' + r.toFixed(1) + '" fill="' + col + '" class="at-star"/>' +
+      out.push('<a href="#/etoile/' + s.id + '" class="ab"><title>' + esc(s.name + ' — ' + nf(s.ly, 2) + ' al') + '</title><circle cx="' + sx + '" cy="' + AX + '" r="' + r.toFixed(1) + '" fill="' + col + '" class="at-star"/>' +
         '<text x="' + sx + '" y="' + (ly + (lane > 0 ? 12 : -4)) + '" class="at-m" text-anchor="middle">' + esc(s.name) + '</text></a>');
     });
     var svg = '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Distances des étoiles voisines">' +
@@ -218,6 +243,6 @@
       '<span class="flag f-adapt" title="Adapté — toutes les étoiles sont ramenées sur une seule ligne : leur direction dans le ciel n\'est pas représentée"><i>Directions</i>non représentées</span>' +
       '<span class="flag f-adapt" title="Adapté — la taille des points dépend de la luminosité"><i>Tailles</i>symboliques</span></div>' +
       '<div class="atlas-scroll" tabindex="0">' + svg + '</div>' +
-      '<p class="note">À cette échelle, tout le système solaire jusqu\'à Neptune tiendrait dans moins d\'un dixième de pixel autour du Soleil. Cliquez sur une étoile pour la rejoindre en 3D.</p>';
+      '<p class="note">À cette échelle, tout le système solaire jusqu\'à Neptune tiendrait dans moins d\'un dixième de pixel autour du Soleil. Cliquez sur une étoile pour visiter son système.</p>';
   }
 })();

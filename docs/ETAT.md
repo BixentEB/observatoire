@@ -32,9 +32,15 @@
 - Atlas contextuel (système solaire ou voisinage), vues Carte et Liste. Carte à plat du système solaire façon planche astronomique, planètes texturées en rotation, lunes en dessous, tailles lisibles ou réelles. Règle des distances réelles pour le voisinage.
 - « Atelier de modelage » renommé Simulateur, avec sa propre page.
 
+### Troisième série
+- Recherche (bouton loupe, ou touche / et Ctrl+K) : objets, étoiles, exoplanètes, hypothèses et pages, sans tenir compte des accents ; quelques noms anglais reconnus.
+- Atlas : onglet Unités (km, seconde-lumière, UA, année-lumière, parsec, masses, kelvin, échelle de la lumière).
+- Visite des étoiles voisines (`#/etoile/<id>`, `js/engine/starsystem.js`) : l'étoile teintée selon son type et à sa taille (compressée), sa compagne pour les systèmes doubles, ses planètes confirmées (périodes mesurées, distances par la loi de Kepler, aspect simulé). On y entre depuis l'Atlas, la console du voisinage ou en zoomant sur l'étoile ; on en sort en dézoomant.
+
 ### Pistes suivantes
 - Carte des lunaisons (la Lune au centre, phases à venir, curseur de dates).
-- Ciel vu de la Terre : dôme à 360° avec étoiles et constellations, depuis le lieu et l'heure du visiteur.
+- Ciel vu de la Terre : dôme à 360° avec étoiles et constellations ; lieu par géolocalisation (avec accord) ou choix d'une ville, ville par défaut si refus.
+- Comparateur d'astres, parcours guidés, galaxie.
 - Niveau **Voie lactée** (reconstitution fondée sur les représentations officielles, étiquetée comme telle), puis Groupe local.
 - Cartes réelles pour les lunes galiléennes, Titan, Pluton et Charon (USGS / NASA), Vénus (nuages et radar).
 - Positions réelles des lunes (éphémérides) au lieu des positions indicatives.
