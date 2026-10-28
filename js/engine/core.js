@@ -27,7 +27,7 @@
     { id: 'an', label: '1 an par seconde', short: '1 an/s', rate: 365.25 }
   ];
   var time = OBS.time = {
-    SPEEDS: SPEEDS, jd: OBS.astro.jdFromDate(new Date()), speed: 0, dir: 1, paused: false,   // première visite : en direct, en temps réel
+    SPEEDS: SPEEDS, jd: OBS.astro.jdFromDate(new Date()), speed: 2, dir: 1, paused: false,   // arrivée : légèrement accéléré (1 h/s), « Temps réel » pour passer en direct
     jdSpin: 0,                                  // date utilisée pour la rotation des astres (voir Méthode)
     get rate() { return SPEEDS[this.speed].rate * this.dir; },
     now: function () { this.jd = OBS.astro.jdFromDate(new Date()); this.jdSpin = this.jd; OBS.emit('time', this); },

@@ -4,7 +4,7 @@
      #/                      exploration (système solaire)
      #/explorer/<objet>      un objet du système solaire
      #/voisinage[/<étoile>]  le voisinage stellaire
-     #/index  #/hypotheses[/<fiche>|/atelier]  #/methode  #/credits
+     #/atlas[/<portée>[/carte|liste]]  #/hypotheses[/<fiche>]  #/simulateur  #/methode  #/credits
    ====================================================================== */
 (function () {
   'use strict';
@@ -29,22 +29,24 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { index: 1, hypotheses: 1, methode: 1, credits: 1 };
+  var PAGES = { atlas: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
-    return { name: h[0] || 'explorer', param: h[1] || null };
+    var name = h[0] || 'explorer';
+    if (name === 'index') name = 'atlas';
+    return { name: name, param: h[1] || null, sub: h[2] || null };
   }
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();
-    closeMenu(); if (typeof closeInfo === 'function') closeInfo();
-    document.querySelector('.m-info').classList.toggle('current', r.name === 'methode' || r.name === 'credits');
+    closeMenu();
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
-      var on = a.getAttribute('data-route') === r.name || (r.name === 'voisinage' && a.getAttribute('data-route') === 'explorer');
+      var rt = a.getAttribute('data-route');
+      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || (r.name === 'credits' && rt === 'methode') || (r.name === 'simulateur' && rt === 'hypotheses');
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
-    if (PAGES[r.name]) { openPage(r.name, r.param); return; }
+    if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
     closePage();
     if (!ok) return;
     if (r.name === 'voisinage') OBS.engine.go('voisinage', { focus: r.param && OBS.neighborhood.get(r.param) ? r.param : undefined });
@@ -58,15 +60,15 @@
   OBS.on('select', function (e) {
     if (PAGES[parse().name]) return;
     if (e.level === 'systeme') setHash(e.id ? '#/explorer/' + e.id : '#/');
-    else setHash(e.id ? '#/voisinage/' + e.id : '#/voisinage');
+    else setHash(e.id ? '#/voisinage/' + e.id : '#/');   // le voisinage n'est pas une adresse d'arrivée : un rechargement ramène au système solaire
   });
 
   var page = $('page'), pageInner = $('page-inner');
-  function openPage(name, param) {
+  function openPage(name, param, sub) {
     OBS.emit('page', name);
     page.hidden = false; document.body.classList.add('page-open');
     pageInner.innerHTML = ''; page.querySelector('.page-scroll').scrollTop = 0;
-    OBS.pages[name](pageInner, param);
+    OBS.pages[name](pageInner, param, sub);
     pageInner.style.animation = 'none'; void pageInner.offsetWidth; pageInner.style.animation = '';
     var h1 = pageInner.querySelector('h1'); document.title = (h1 ? h1.textContent + ' · ' : '') + 'Observatoire · Codex Mental';
   }
@@ -83,12 +85,6 @@
     if (!page.hidden) { location.hash = '#/'; return; }
     var L = OBS.engine.level; if (L && L.selected && L.selected()) { var cur = L.selected(), d = OBS.byId[cur]; L.select(L === OBS.system && d && d.moon ? d.parent : null); }
   });
-
-  /* menu d'informations (méthode, crédits) */
-  var infoBtn = $('info-btn'), infoMenu = $('info-menu');
-  function closeInfo() { infoMenu.classList.remove('open'); infoBtn.setAttribute('aria-expanded', 'false'); }
-  infoBtn.addEventListener('click', function (e) { e.stopPropagation(); var o = !infoMenu.classList.contains('open'); infoMenu.classList.toggle('open', o); infoBtn.setAttribute('aria-expanded', String(o)); });
-  document.addEventListener('pointerdown', function (e) { if (!infoMenu.contains(e.target) && !infoBtn.contains(e.target)) closeInfo(); });
 
   /* menu (petits écrans) */
   var menuBtn = $('menu-btn'), menu = $('menu');
@@ -143,7 +139,7 @@
     var live = t.isLive;
     tSpeed.textContent = t.paused ? 'En pause' : live ? 'Temps réel' : (t.dir < 0 ? '◂ ' : '') + t.SPEEDS[t.speed].label + (t.speed === 0 ? ' (date décalée)' : '');
     $('t-now').classList.toggle('is-live', live);
-    $('t-now').querySelector('.live-txt').textContent = live ? 'En direct' : 'Revenir en direct';
+    $('t-now').querySelector('.live-txt').textContent = live ? 'En direct' : 'Temps réel';
     tPlay.textContent = t.paused ? '▶' : '❚❚';
     tPlay.setAttribute('aria-label', t.paused ? 'Lecture' : 'Pause');
     $('t-rev').classList.toggle('on', t.dir < 0);

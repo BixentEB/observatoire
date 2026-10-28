@@ -232,6 +232,43 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .legend p, .legend li { font-size: 14px; margin: 0; }
 .credits-list li { margin-bottom: 8px; }
 
+/* atlas */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 18px; }
+.tab { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); text-decoration: none; font-size: 13.5px; background: var(--panel-deep); }
+.tab:hover { color: var(--fg); border-color: var(--line2); }
+.tab[aria-selected="true"] { color: var(--accent); border-color: rgba(244, 199, 122, .45); background: rgba(244, 199, 122, .07); }
+.tab.soon { border-style: dashed; color: var(--faint); }
+.tab small { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+.tabs-sep { flex: 1; min-width: 10px; }
+.tab-view { font: 12px var(--mono); }
+.atlas-flags { margin: 0 0 12px; }
+.atlas-toggle { margin-left: auto; display: inline-flex; border: 1px solid var(--line2); border-radius: 999px; overflow: hidden; }
+.atlas-toggle button { border: 0; background: transparent; color: var(--muted); font: 11.5px var(--mono); padding: 6px 10px; cursor: pointer; }
+.atlas-toggle button[aria-pressed="true"] { background: rgba(244, 199, 122, .12); color: var(--accent); }
+.atlas-scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid var(--line); border-radius: var(--r); background: radial-gradient(ellipse at 0% 50%, rgba(255, 170, 60, .10), transparent 45%), rgba(2, 3, 10, .7); }
+.page-inner:has(.atlas-scroll) { max-width: 1240px; }
+.atlas-map { display: block; }
+.atlas-map .ab { cursor: pointer; }
+.atlas-map .ab:hover text { fill: var(--accent); }
+.atlas-map .ab:hover circle { filter: brightness(1.25); }
+.at-axis { stroke: rgba(194, 206, 239, .12); stroke-width: 1; stroke-dasharray: 2 5; }
+.at-axis.strong { stroke: rgba(194, 206, 239, .45); stroke-dasharray: none; }
+.at-stem { stroke: rgba(194, 206, 239, .2); stroke-width: 1; }
+.at-tick { stroke: rgba(194, 206, 239, .45); }
+.at-n { fill: var(--fg); font: 600 13px var(--body); }
+.at-sun { fill: var(--accent); }
+.at-reg { fill: var(--muted); font-style: italic; font-weight: 500; font-size: 12px; }
+.at-m { fill: var(--soft); font: 11px var(--body); }
+.at-d { fill: var(--muted); font: 10.5px var(--mono); }
+.at-gap { fill: var(--faint); font: 16px var(--mono); }
+.at-belt { fill: rgba(194, 206, 239, .03); stroke: rgba(194, 206, 239, .14); stroke-dasharray: 3 4; }
+.at-dust { fill: rgba(210, 200, 180, .45); }
+.at-ring { fill: none; stroke: rgba(222, 202, 160, .5); }
+.at-ring.faint { stroke: rgba(160, 190, 200, .35); }
+.at-tiny { fill: none; stroke: rgba(194, 206, 239, .35); stroke-dasharray: 2 2; }
+.at-star { filter: drop-shadow(0 0 4px currentColor); }
+.atlas-soon { padding: 20px; border: 1px dashed var(--line2); border-radius: var(--r); }
+
 /* hypothèses */
 .h-intro { padding: 16px 18px; border-radius: var(--r); border: 1px dashed var(--hypo-line); background: var(--hypo-bg); color: var(--soft); }
 .h-intro b { color: var(--hypo); }

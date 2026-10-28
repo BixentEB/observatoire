@@ -25,7 +25,16 @@
 - Mentions réel / adapté / simulé en tête de chaque console.
 - Encart « Origine du nom » et bloc « Projets et pistes » (en cours, prévu, à l'étude, concept spéculatif) : `js/data/lore.js`.
 
+### Deuxième série
+- Arrivée sur le système solaire en léger accéléré (1 h/s) ; « Temps réel » passe en direct.
+- Sortir du système en dézoomant demande un geste volontaire (pause puis insistance) : l'élan d'un pavé tactile ne suffit plus.
+- Menu : Explorer, Atlas, Hypothèses, Méthode ; les crédits sont une section de la page Méthode.
+- Atlas contextuel (système solaire ou voisinage), vues Carte et Liste. Carte à plat du système solaire façon planche astronomique, planètes texturées en rotation, lunes en dessous, tailles lisibles ou réelles. Règle des distances réelles pour le voisinage.
+- « Atelier de modelage » renommé Simulateur, avec sa propre page.
+
 ### Pistes suivantes
+- Carte des lunaisons (la Lune au centre, phases à venir, curseur de dates).
+- Ciel vu de la Terre : dôme à 360° avec étoiles et constellations, depuis le lieu et l'heure du visiteur.
 - Niveau **Voie lactée** (reconstitution fondée sur les représentations officielles, étiquetée comme telle), puis Groupe local.
 - Cartes réelles pour les lunes galiléennes, Titan, Pluton et Charon (USGS / NASA), Vénus (nuages et radar).
 - Positions réelles des lunes (éphémérides) au lieu des positions indicatives.

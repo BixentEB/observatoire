@@ -21,9 +21,10 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `#/` | Système solaire, vue d'ensemble |
 | `#/explorer/<objet>` | Un objet (ex. `#/explorer/saturne`, `#/explorer/titan`) |
 | `#/voisinage`, `#/voisinage/<étoile>` | Voisinage stellaire (ex. `#/voisinage/proxima`) |
-| `#/index` | Index des objets |
-| `#/hypotheses`, `#/hypotheses/<fiche>`, `#/hypotheses/atelier` | Hypothèses et atelier de modelage |
-| `#/methode`, `#/credits` | Méthode, sources et licences |
+| `#/atlas[/systeme\|voisinage[/carte\|liste]]` | Atlas : carte à plat ou liste, selon l'endroit où l'on est |
+| `#/hypotheses`, `#/hypotheses/<fiche>` | Hypothèses |
+| `#/simulateur` | Simulateur (modeler un corps céleste ; scénarios « et si… » à venir) |
+| `#/methode` (`#/credits` y mène) | Méthode, sources, crédits et licences |
 
 ## Structure
 | Fichier | Rôle |
@@ -39,8 +40,10 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/system.js` | Niveau « Système solaire » (échelle, objets, orbites, ceintures, étiquettes, caméra) |
 | `js/engine/neighborhood.js` | Niveau « Voisinage stellaire » |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
-| `js/ui/pages.js` | Index, Méthode, Crédits |
-| `js/ui/hypotheses.js` | Hypothèses (liste, fiche) et viewer de modelage |
+| `js/ui/pages.js` | Méthode (avec les crédits) |
+| `js/ui/atlas.js` | Atlas : carte à plat du système solaire (tailles lisibles ou réelles), règle des distances du voisinage, listes |
+| `js/data/lore.js` | Origine des noms, projets et pistes |
+| `js/ui/hypotheses.js` | Hypothèses (liste, fiche) et Simulateur |
 | `js/ui/app.js` | Démarrage, navigation par adresse, fil d'Ariane, temps, réglages |
 | `hypotheses/` | `index.json` (liste) et un `.md` par fiche |
 | `textures/` | Cartes de surface (voir `textures/README.md` pour les sources et licences) |
@@ -54,7 +57,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
    ```
    - `statut` : `piste`, `reflexion`, `developpement`, `abandonnee` ;
    - `objets` : identifiants des objets liés (facultatif) — la fiche apparaît alors dans leur console ;
-   - `modele` : réglages du viewer (facultatif), à copier depuis l'atelier avec « Copier les réglages » ;
+   - `modele` : réglages du viewer (facultatif), à copier depuis le Simulateur avec « Copier les réglages » ;
    - `brouillon: true` masque une fiche.
 3. Supprimer l'entrée d'exemple `exemple-fiche` quand les vraies fiches arrivent.
 

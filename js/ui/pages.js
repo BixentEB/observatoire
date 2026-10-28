@@ -13,28 +13,6 @@
 
   var pages = OBS.pages = {};
 
-  pages.index = function (root) {
-    var B = OBS.BODIES, h = [];
-    h.push('<p class="p-kicker">Index des objets</p><h1>Tout ce que l\'on peut rejoindre</h1>');
-    h.push('<p class="lead">Chaque objet ouvre sa console dans la scène : données réelles, position à la date affichée et ce qui est adapté pour l\'affichage.</p>');
-    function group(title, list, href) {
-      if (!list.length) return;
-      h.push('<h2>' + title + '</h2><div class="grid-list">' + list.map(function (b) { return card(href(b), colorOf(b), b.name, b.kind); }).join('') + '</div>');
-    }
-    var sys = function (b) { return '#/explorer/' + b.id; };
-    group('Étoile', B.filter(function (b) { return b.id === 'soleil'; }), sys);
-    group('Planètes', B.filter(function (b) { return b.parent === 'soleil' && !b.dwarf && !b.comet && !b.moon; }), sys);
-    group('Planètes naines', B.filter(function (b) { return b.dwarf; }), sys);
-    var parents = []; B.forEach(function (b) { if (b.moon && parents.indexOf(b.parent) < 0) parents.push(b.parent); });
-    parents.forEach(function (p) { group('Lunes · ' + OBS.byId[p].name, B.filter(function (b) { return b.moon && b.parent === p; }), sys); });
-    group('Comète', B.filter(function (b) { return b.comet; }), sys);
-    group('Régions', OBS.REGIONS, sys);
-    h.push('<h2>Voisinage stellaire</h2><p>Les étoiles à moins de 12 années-lumière, à leurs vraies positions.</p><div class="grid-list">' +
-      OBS.STARS.map(function (s) { return card('#/voisinage/' + s.id, hex(OBS.STAR_COLORS[s.cls] || 0xffffff), s.name, s.spec + ' · ' + s.ly.toLocaleString('fr-FR') + ' al'); }).join('') + '</div>');
-    h.push('<h2>Voie lactée</h2><p>Le niveau suivant, la galaxie vue de l\'extérieur, est en préparation. Comme personne n\'a jamais photographié notre galaxie de l\'extérieur, ce sera une reconstitution fondée sur les représentations scientifiques officielles, et elle sera présentée comme telle.</p>');
-    root.innerHTML = h.join('');
-  };
-
   pages.methode = function (root) {
     root.innerHTML = [
       '<p class="p-kicker">Méthode</p><h1>Le visuel peut être adapté, les données jamais</h1>',
@@ -66,30 +44,31 @@
       '<li>Orientation des astres : rapport du groupe de travail de l\'IAU sur les coordonnées cartographiques (WGCCRE).</li>',
       '<li>Données physiques : NASA Planetary Fact Sheets.</li>',
       '<li>Étoiles voisines : catalogues RECONS et SIMBAD, parallaxes Gaia et Hipparcos.</li>',
-      '</ul>'
-    ].join('');
-  };
-
-  pages.credits = function (root) {
-    root.innerHTML = [
-      '<p class="p-kicker">Crédits</p><h1>Sources et licences</h1>',
-      '<h2>Cartes de surface</h2><ul class="credits-list">',
+      '</ul>',
+      '<h2 id="credits">Crédits et licences</h2>',
+      '<h3>Cartes de surface</h3><ul class="credits-list">',
       '<li><b>Solar System Scope</b> — cartes de Mercure, de la Terre, de Mars, de Jupiter, de Saturne et de ses anneaux, d\'Uranus et de Neptune. Licence <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>, d\'après les données des missions de la NASA. <a href="https://www.solarsystemscope.com/textures/" rel="noopener" target="_blank">solarsystemscope.com/textures</a></li>',
       '<li><b>NASA Scientific Visualization Studio</b> — carte de la Lune (CGI Moon Kit, données de Lunar Reconnaissance Orbiter). Domaine public.</li>',
       '<li><b>NASA Earth Observatory</b> — lumières nocturnes de la Terre (Black Marble, Suomi NPP VIIRS). Domaine public.</li>',
       '</ul>',
-      '<h2>Données et calculs</h2><ul class="credits-list">',
+      '<h3>Données et calculs</h3><ul class="credits-list">',
       '<li>NASA / JPL : éléments orbitaux des planètes (Standish) et Small-Body Database.</li>',
       '<li>IAU WGCCRE : orientation et rotation des astres.</li>',
       '<li>NASA Planetary Fact Sheets : données physiques.</li>',
       '<li>RECONS, SIMBAD, Gaia, Hipparcos : étoiles du voisinage.</li>',
       '</ul>',
-      '<h2>Logiciel</h2><ul class="credits-list">',
+      '<h3>Logiciel</h3><ul class="credits-list">',
       '<li><b>three.js</b> r128 — licence MIT.</li>',
       '<li>Moteur graphique issu du thème <b>Héliosphère</b> de Codex Mental (shaders des planètes, du Soleil, des anneaux et du ciel).</li>',
       '<li>Polices <b>Syne</b>, <b>DM Sans</b> et <b>IBM Plex Mono</b> — licence SIL Open Font, hébergées sur le site.</li>',
       '</ul>',
       '<p>L\'Observatoire est un projet de <a href="https://codexmental.com">Codex Mental</a>.</p>'
     ].join('');
+  };
+
+  /* les crédits sont une section de la page Méthode */
+  pages.credits = function (root) {
+    pages.methode(root);
+    var c = root.querySelector('#credits'); if (c) setTimeout(function () { c.scrollIntoView({ block: 'start' }); }, 60);
   };
 })();

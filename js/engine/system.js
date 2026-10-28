@@ -381,16 +381,19 @@
       var id = pick(e.clientX, e.clientY); if (id) L.select(id);
     });
     cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
-    // zoom arrière au maximum de la vue d'ensemble : on sort du système vers le voisinage stellaire
-    var push = 0, pushT = 0;
+    // zoom arrière au maximum de la vue d'ensemble : on sort du système vers le voisinage stellaire.
+    // Il faut un geste volontaire : arriver en butée ne suffit pas (l'élan d'un pavé tactile ne fait que montrer l'indice),
+    // il faut relancer la molette après une courte pause, puis insister.
+    var atMaxSince = 0, lastWheel = 0, armed = false, push = 0;
     cv.addEventListener('wheel', function (e) {
       if (OBS.engine.level !== L || selected || flight) return;
+      var now = performance.now(), gap = now - lastWheel; lastWheel = now;
       var d = camera.position.distanceTo(controls.target);
-      if (e.deltaY > 0 && d >= controls.maxDistance * .97) {
-        var now = performance.now(); if (now - pushT > 900) push = 0; pushT = now;
-        if (++push >= 4) { push = 0; OBS.engine.go('voisinage', { from: 'systeme' }); }
-        OBS.emit('edge', push / 4);
-      }
+      if (e.deltaY <= 0 || d < controls.maxDistance * .97) { atMaxSince = 0; armed = false; push = 0; return; }
+      if (!atMaxSince) { atMaxSince = now; OBS.emit('edge', 0); return; }
+      if (!armed) { if (gap > 300 && now - atMaxSince > 500) { armed = true; push = 0; } else { OBS.emit('edge', 0); return; } }
+      if (++push >= 5) { push = 0; armed = false; atMaxSince = 0; OBS.engine.go('voisinage', { from: 'systeme' }); }
+      else OBS.emit('edge', push / 5);
     }, { passive: true });
   }
 

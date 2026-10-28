@@ -25,17 +25,10 @@
   <button id="menu-btn" class="menu-btn" type="button" aria-controls="menu" aria-expanded="false" aria-label="Menu"><span></span></button>
   <nav id="menu" class="menu" aria-label="Menu principal">
     <a href="#/" data-route="explorer">Explorer</a>
-    <a href="#/index" data-route="index">Index des objets</a>
+    <a href="#/atlas" data-route="atlas">Atlas</a>
     <a href="#/hypotheses" data-route="hypotheses" class="m-hypo">Hypothèses</a>
+    <a href="#/methode" data-route="methode">Méthode</a>
     <a href="https://codexmental.com" class="m-out">Codex Mental <span aria-hidden="true">↗</span></a>
-    <div class="m-info">
-      <button id="info-btn" class="info-btn" type="button" aria-controls="info-menu" aria-expanded="false" aria-label="Informations : méthode et crédits" title="Informations"><span aria-hidden="true">i</span></button>
-      <div id="info-menu" class="info-menu">
-        <span class="info-title">Informations</span>
-        <a href="#/methode" data-route="methode">Méthode</a>
-        <a href="#/credits" data-route="credits">Crédits</a>
-      </div>
-    </div>
   </nav>
 </header>
 
@@ -54,7 +47,7 @@
   <button id="t-play" class="tb tb-main" type="button" aria-label="Pause"></button>
   <button id="t-fast" class="tb" type="button" aria-label="Accélérer" title="Accélérer">+</button>
   <div class="t-read"><span id="t-date" class="t-date"></span><span id="t-speed" class="t-speed"></span></div>
-  <button id="t-now" class="tb tb-text tb-live" type="button" title="Revenir à la date et à l'heure actuelles, en temps réel"><span class="live-dot" aria-hidden="true"></span><span class="live-txt">En direct</span></button>
+  <button id="t-now" class="tb tb-text tb-live" type="button" title="Passer en direct : date et heure actuelles, en temps réel"><span class="live-dot" aria-hidden="true"></span><span class="live-txt">En direct</span></button>
   <button id="settings-btn" class="tb" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages">⚙</button>
 </div>
 
@@ -71,7 +64,7 @@
   <p class="note">Glissez pour tourner, molette ou pincement pour zoomer, clic droit ou deux doigts pour déplacer. Double-clic : revenir à la vue d'ensemble.</p>
 </section>
 
-<div id="edge" class="edge" hidden>Continuez à dézoomer pour sortir du système solaire</div>
+<div id="edge" class="edge" hidden>Faites une courte pause, puis dézoomez encore pour sortir du système solaire</div>
 <div id="level-title" class="level-title" aria-hidden="true"></div>
 
 <section id="page" class="page" hidden>
@@ -102,6 +95,7 @@
 <script src="js/ui/md.js"></script>
 <script src="js/ui/console.js"></script>
 <script src="js/ui/pages.js"></script>
+<script src="js/ui/atlas.js"></script>
 <script src="js/ui/hypotheses.js"></script>
 <script src="js/ui/app.js"></script>
 </body>

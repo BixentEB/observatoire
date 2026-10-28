@@ -3,7 +3,7 @@
    Des pistes de réflexion personnelles, pas assez développées pour être des théories.
    Elles ont leur propre couleur (--hypo) et ne sont jamais mêlées aux données.
    Fichiers : hypotheses/index.json (liste) et hypotheses/<id>.md (texte de chaque fiche).
-   Le « viewer » permet de modeler un corps céleste pour mettre une hypothèse en perspective.
+   Le simulateur permet de modeler un corps céleste pour mettre une hypothèse en perspective.
    ====================================================================== */
 (function () {
   'use strict';
@@ -39,13 +39,13 @@
 
   OBS.pages.hypotheses = function (root, param) {
     disposeViewer();
-    if (param === 'atelier') return atelier(root);
+    if (param === 'atelier' || param === 'simulateur') { location.replace('#/simulateur'); return; }
     if (param) return fiche(root, param);
     root.innerHTML = '<p class="p-kicker" style="color:var(--hypo)">Hypothèses</p><h1>Pistes de réflexion</h1>' +
       '<div class="h-intro"><b>Hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
       '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>' +
-      '<h2>Atelier de modelage</h2><p>Un bloc pour modeler un corps céleste et mettre une idée en perspective : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère.</p>' +
-      '<p><a class="btn btn-hypo" href="#/hypotheses/atelier">Ouvrir l\'atelier</a></p>';
+      '<h2>Simulateur</h2><p>Pour modeler un corps céleste et mettre une idée en perspective : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère. Les scénarios « et si… » y viendront aussi.</p>' +
+      '<p><a class="btn btn-hypo" href="#/simulateur">Ouvrir le simulateur</a></p>';
     list().then(function (l) {
       var box = document.getElementById('h-list'); if (!box) return;
       if (l === null) { box.innerHTML = '<p class="note">Les fiches n\'ont pas pu être chargées. Elles s\'affichent quand le site est servi par un serveur web (en ligne, ou en local avec <code>python3 -m http.server</code>).</p>'; return; }
@@ -75,11 +75,16 @@
     });
   }
 
-  function atelier(root) {
-    root.innerHTML = '<p><a href="#/hypotheses" class="chip">← Hypothèses</a></p><p class="h-badge">Atelier de modelage</p><h1>Modeler un corps céleste</h1>' +
-      '<p class="lead">Partez d\'un objet réel ou d\'une page blanche. Les réglages peuvent être copiés pour accompagner une fiche d\'hypothèse.</p><div id="h-viewer"></div>';
-    activeViewer = new Viewer(document.getElementById('h-viewer'), { base: 'saturne' }, { tag: 'Atelier · objet modelé' });
-  }
+  /* ---------- simulateur (page à part, #/simulateur) ---------- */
+  OBS.pages.simulateur = function (root) {
+    disposeViewer();
+    root.innerHTML = '<p class="p-kicker" style="color:var(--hypo)">Simulateur</p><h1>Modeler un corps céleste</h1>' +
+      '<p class="lead">Partez d\'un objet réel ou d\'une page blanche. Les réglages peuvent être copiés pour accompagner une fiche d\'hypothèse.</p>' +
+      '<div id="h-viewer"></div>' +
+      '<h2>Bientôt : les scénarios « et si… »</h2><p>Et si la Terre avait deux lunes ? Si Jupiter était plus massive ? Si Mars avait gardé une atmosphère épaisse ? Des expériences avec des résultats calculés quand un modèle simple le permet, et clairement marquées comme simulées.</p>' +
+      '<p><a href="#/hypotheses" class="chip">Voir les hypothèses</a></p>';
+    activeViewer = new Viewer(document.getElementById('h-viewer'), { base: 'saturne' }, { tag: 'Simulateur · objet modelé' });
+  };
 
   /* ---------- viewer de modelage ---------- */
   function hex(c) { return '#' + ('000000' + (c >>> 0).toString(16)).slice(-6); }
