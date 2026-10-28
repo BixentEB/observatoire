@@ -339,7 +339,14 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .demo-cap { position: fixed; z-index: 40; left: 14px; bottom: 14px; pointer-events: none; text-shadow: 0 1px 8px #000; }
 .demo-cap b { display: block; font: 700 18px var(--display); letter-spacing: .02em; }
 .demo-cap span { display: block; font: 11px var(--mono); color: var(--accent); letter-spacing: .06em; margin-top: 2px; }
-@media (max-width: 520px) { .demo-cap b { font-size: 15px; } .demo-open { padding: 7px 11px; font-size: 12.5px; } }
+/* petite fenêtre (téléphone) : la légende passe en haut, le bouton reste seul en bas */
+@media (max-width: 560px), (max-height: 360px) {
+  .demo-cap { top: 10px; bottom: auto; left: 12px; right: 12px; }
+  .demo-cap b { font-size: 14px; }
+  .demo-cap span { font-size: 10px; }
+  .demo-open { right: 10px; bottom: 10px; padding: 7px 11px; font-size: 12px; }
+  .demo .lbl .nm { font-size: 10px; padding: 2px 5px; }
+}
 .noscript { position: fixed; inset: 0; display: grid; place-content: center; text-align: center; padding: 20px; color: var(--soft); }
 
 /* ---------- petits écrans ---------- */
