@@ -14,7 +14,9 @@
     document.body.appendChild(a);
     var cap = document.createElement('div'); cap.className = 'demo-cap'; cap.setAttribute('aria-live', 'polite'); document.body.appendChild(cap);
 
-    OBS.time.setSpeed(3);                        // 1 jour par seconde
+    // cadence propre à la démo : 12 h par seconde (1 j/s défilait trop vite dans la petite fenêtre, 1 h/s paraît figé)
+    var SP = OBS.time.SPEEDS; SP.push({ id: 'demo', label: '12 heures par seconde', short: '12 h/s', rate: .5 });
+    OBS.time.setSpeed(SP.length - 1);
     OBS.system.setLabels('planetes');
     OBS.engine.go('systeme', { instant: true });
     OBS.engine.start();
