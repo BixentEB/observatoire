@@ -331,6 +331,15 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .viewer-actions .btn { padding: 6px 10px; font-size: 12.5px; }
 .copied { font: 11px var(--mono); color: #8fe0b0; }
 
+.demo .top, .demo .crumbs, .demo .console, .demo .hud, .demo .timebar, .demo .settings, .demo .edge, .demo .level-title, .demo .search { display: none !important; }
+.demo .lbl .nm { font-size: 11px; }
+.demo-open { position: fixed; z-index: 40; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 999px;
+  background: var(--accent); color: #1a1206; text-decoration: none; font: 600 13.5px var(--body); box-shadow: 0 6px 24px rgba(0, 0, 0, .5); }
+.demo-open:hover { background: #ffd690; }
+.demo-cap { position: fixed; z-index: 40; left: 14px; bottom: 14px; pointer-events: none; text-shadow: 0 1px 8px #000; }
+.demo-cap b { display: block; font: 700 18px var(--display); letter-spacing: .02em; }
+.demo-cap span { display: block; font: 11px var(--mono); color: var(--accent); letter-spacing: .06em; margin-top: 2px; }
+@media (max-width: 520px) { .demo-cap b { font-size: 15px; } .demo-open { padding: 7px 11px; font-size: 12.5px; } }
 .noscript { position: fixed; inset: 0; display: grid; place-content: center; text-align: center; padding: 20px; color: var(--soft); }
 
 /* ---------- petits écrans ---------- */

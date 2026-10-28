@@ -44,11 +44,14 @@
   var params = new URLSearchParams(location.search);
   var pref = params.get('qualite') || get(KEY) || 'auto';
   if (!LEVELS[pref]) pref = 'auto';
+  var demo = params.has('demo');                             // démo intégrée dans Codex Mental : toujours légère
+  if (demo) pref = 'auto';
   var detected = detect(), tier = pref === 'auto' ? detected : pref;
+  if (demo && tier === 'high') tier = 'std';
   var prScale = 1;
 
   OBS.perf = {
-    info: info, detected: detected, pref: pref, tier: tier, cfg: LEVELS[tier], LEVELS: LEVELS,
+    info: info, detected: detected, pref: pref, tier: tier, demo: demo, cfg: LEVELS[tier], LEVELS: LEVELS,
     pixelRatio: function () {
       var max = LEVELS[tier].pr; if (info.mobile) max = Math.min(max, 1.5);
       return Math.max(.6, Math.min(window.devicePixelRatio || 1, max) * prScale);

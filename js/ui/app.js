@@ -197,6 +197,7 @@
   });
 
   /* ---------- c'est parti ---------- */
+  if (ok && OBS.perf.demo && OBS.demo) { OBS.demo(); return; }
   if (ok) {
     route();
     if (!OBS.engine.level) OBS.engine.go('systeme', { instant: true });

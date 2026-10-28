@@ -12,6 +12,8 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 
 `?qualite=high|std|eco` force une qualité d'affichage (le choix fait dans les réglages est retenu).
 
+`?demo` lance le mode démo, utilisé dans la fenêtre Observatoire de Codex Mental : interface masquée, léger accéléré, visite automatique de quelques planètes, bouton « Ouvrir l'Observatoire ».
+
 ## Règle d'or
 **Le visuel peut être adapté, les données jamais.** Ce qui est adapté (échelle, tailles, vitesse, luminosité) ou simulé (surfaces sans carte, nuages, position des lunes autres que la Lune) est toujours signalé : badges dans la scène, bloc « Ce qui est représenté » dans chaque console, page Méthode.
 

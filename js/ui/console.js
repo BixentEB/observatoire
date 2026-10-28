@@ -222,7 +222,7 @@
 
   /* garder l'objet centré dans la partie de la scène que la console ne couvre pas */
   function reshift() {
-    if (el.hidden) { OBS.engine.setShift(0, 0); return; }
+    if (el.hidden || document.documentElement.classList.contains('demo')) { OBS.engine.setShift(0, 0); return; }
     var r = el.getBoundingClientRect(), small = window.innerWidth <= 720;
     if (small) OBS.engine.setShift(0, el.classList.contains('min') ? 0 : Math.round(r.height / 2));
     else OBS.engine.setShift(Math.round((window.innerWidth - r.left + 16) / 2), 0);
