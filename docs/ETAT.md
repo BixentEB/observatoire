@@ -45,8 +45,17 @@
 - Console de la Lune : lieux remarquables, géologie, composition et ressources (glace, oxygène, hélium 3…), la Lune et la Terre.
 - Limite assumée : 2,7 km par pixel ; de très près l'image devient floue plutôt que d'inventer des détails. Aller plus loin demande des tuiles à plus haute résolution (LROC 100 m/px), à télécharger depuis la NASA.
 
+### Surfaces réelles pour tous les grands astres
+- Mars : mosaïque Viking 4k et relief MOLA réel, 25 lieux (volcans de Tharsis, Valles Marineris, Hellas, sites d'atterrissage de Viking à Zhurong), géologie, ressources.
+- Mercure : mosaïque MESSENGER 4k, 8 lieux (Caloris, Rembrandt, Hokusai, impact de MESSENGER…).
+- Vraies cartes pour Io, Europe, Ganymède, Callisto, Titan (sol vu en infrarouge), Encelade, Mimas, Téthys, Dioné, Rhéa, Japet, Triton, Pluton, Charon, Cérès, Phobos, Déimos (fin des rendus simulés pour ces astres) ; lieux et géologie pour les plus importants.
+- Terre : uniquement des points clés (extrêmes, grands impacts, bases de lancement, observatoires).
+- Vénus et planètes géantes : blocs « Sous les nuages » ou « Structure ».
+- Plus de faux relief tiré des couleurs : sans altimétrie, la surface est lisse (signalé).
+- Bouton « Avancer jusqu'au lever du Soleil » sur un lieu plongé dans la nuit ; la caméra tourne avec la surface au-dessus d'un lieu.
+
 ### Pistes suivantes
-- Même traitement pour Mars (MOLA, Viking/HRSC), Mercure (MESSENGER), les lunes galiléennes et Titan (USGS).
+- Relief réel pour Mercure, Pluton, Charon, Cérès, Téthys et Dioné (altimétries USGS), et lunes d'Uranus (Voyager, couverture partielle).
 - Carte des lunaisons (la Lune au centre, phases à venir, curseur de dates).
 - Ciel vu de la Terre : dôme à 360° avec étoiles et constellations ; lieu par géolocalisation (avec accord) ou choix d'une ville, ville par défaut si refus.
 - Comparateur d'astres, parcours guidés, galaxie.

@@ -185,12 +185,12 @@
     spin.add(mesh);
     var P = { id: d.id, def: d, r: r, holder: holder, spin: spin, mesh: mesh, mat: mat, pos: new T.Vector3(), helio: { x: 0, y: 0, z: 0 }, pole: new T.Vector3(0, 1, 0), moonsOf: [] };
     var surf = OBS.SURFACE && OBS.SURFACE[d.id];
-    if (surf) {                                         // surface détaillée : maillage plus fin, lieux remarquables
+    if (surf && (surf.sites || surf.hd)) {                                         // surface détaillée : maillage plus fin, lieux remarquables
       if (!hdGeo) hdGeo = new T.SphereGeometry(1, cfg.seg[0] * 2, cfg.seg[1] * 2);
       mesh.geometry = hdGeo; P.surf = surf;
       P.sites = (surf.sites || []).map(function (sd) { return { def: sd, obj: latLonObj(sd.lat, sd.lon, new T.Vector3()), world: new T.Vector3(), nrm: new T.Vector3() }; });
     }
-    if (d.tex) loadTex(d.tex, function (tx) { mat.uniforms.uMap.value = tx; mat.uniforms.uHasMap.value = 1; mat.uniforms.uRelief.value = d.id === 'terre' ? 0 : r * .012; });
+    if (d.tex) loadTex(d.tex, function (tx) { mat.uniforms.uMap.value = tx; mat.uniforms.uHasMap.value = 1; mat.uniforms.uRelief.value = 0; });   // pas de faux relief tiré des couleurs
     if (d.night) loadTex(d.night, function (tx) { mat.uniforms.uNight.value = tx; mat.uniforms.uHasNight.value = 1; });
     var look = d.look || {};
     if (look.shell) {
@@ -349,7 +349,7 @@
 
   /* ---------- sélection et vols de caméra ---------- */
   var selected = null, hover = null, flight = null, interacting = false, lastSel = new T.Vector3(), release = 0;
-  var siteSel = null, siteFlight = null, lastSite = new T.Vector3();
+  var siteSel = null, siteFlight = null, lastSite = new T.Vector3(), qPrev = new T.Quaternion(), qNow = new T.Quaternion(), qInv = new T.Quaternion();
   var showOrbits = true, labelMode = 'all';
   function selDist(P) {
     var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? 60 : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
@@ -394,12 +394,26 @@
     OBS.emit('crumbs');
   };
   L.siteSelected = function () { return siteSel ? siteSel.S.def.id : null; };
+  /* prochain lever du Soleil sur un lieu (Soleil à plus de 10° : les reliefs sont bien dessinés) */
+  L.nextSunrise = function (bodyId, siteId) {
+    var P = byId[bodyId]; if (!P || !P.sites) return null;
+    var S = P.sites.filter(function (x) { return x.def.id === siteId; })[0]; if (!S) return null;
+    var d = P.def, per = d.rot ? 360 / Math.abs(d.rot.Wd) : d.orbit ? d.orbit.P : d.spinH ? d.spinH / 24 : 1;
+    var step = Math.max(per / 200, 1 / 288), jd0 = OBS.time.jd, found = null;
+    for (var i = 1; i <= 1600 && !found; i++) {
+      var jd = jd0 + i * step;
+      place(jd, jd); P.holder.updateMatrixWorld(true); siteWorld(P, S);
+      if (S.nrm.dot(tmp.copy(P.pos).negate().normalize()) > Math.sin(10 * D2R)) found = jd;
+    }
+    place(jd0, OBS.time.jdSpin); lastJd = null;
+    return found;
+  };
   L.siteInfo = function (bodyId, siteId) {
     var P = byId[bodyId]; if (!P || !P.sites) return null;
     var S = P.sites.filter(function (x) { return x.def.id === siteId; })[0]; if (!S) return null;
     P.mesh.updateMatrixWorld(); siteWorld(P, S);
     var sd = tmp.copy(P.pos).negate().normalize(), out = { sun: Math.asin(Math.max(-1, Math.min(1, S.nrm.dot(sd)))) / D2R };
-    var par = P.def.parent && byId[P.def.parent];
+    var par = P.def.moon && P.def.parent && byId[P.def.parent];   // planète mère, vue depuis une lune synchrone
     if (par && par.pos) { var pd = tmp2.copy(par.pos).sub(P.pos).normalize(); out.parent = Math.asin(Math.max(-1, Math.min(1, S.nrm.dot(pd)))) / D2R; out.parentName = par.def.name; }
     out.alt = altitudeAt(P, S.def.lat, S.def.lon);
     return out;
@@ -424,9 +438,13 @@
         fromDir.lerp(endDir, es).normalize();
         controls.target.lerpVectors(siteFlight.fromTgt, S.world, es);
         camera.position.copy(controls.target).addScaledVector(fromDir, Math.exp(Math.log(dFromS) * (1 - es) + Math.log(dToS) * es));
-        if (ks >= 1) { siteFlight = null; controls.enabled = true; lastSite.copy(S.world); lastSel.copy(SP.pos); }
+        if (ks >= 1) { siteFlight = null; controls.enabled = true; lastSite.copy(S.world); lastSel.copy(SP.pos); SP.spin.getWorldQuaternion(qPrev); }
       } else {
-        tmp.copy(S.world).sub(lastSite); camera.position.add(tmp); controls.target.copy(S.world); lastSite.copy(S.world); lastSel.copy(SP.pos);
+        // la caméra tourne avec la surface : elle reste au-dessus du lieu même quand l'astre tourne (ou que le temps saute)
+        SP.spin.getWorldQuaternion(qNow);
+        tmp.copy(camera.position).sub(lastSite).applyQuaternion(qInv.copy(qPrev).invert()).applyQuaternion(qNow);
+        controls.target.copy(S.world); camera.position.copy(S.world).add(tmp);
+        qPrev.copy(qNow); lastSite.copy(S.world); lastSel.copy(SP.pos);
         if (!interacting && camera.position.distanceTo(SP.pos) > SP.r * 4) {    // on s'éloigne : retour à l'astre entier
           siteSel = null; controls.minDistance = SP.r * 1.06; flight = null;
           OBS.emit('select', { level: 'systeme', id: SP.id, soft: true }); OBS.emit('crumbs');
@@ -701,12 +719,13 @@
         var facing = S.nrm.dot(camDir);
         var px = d.d ? d.d / P.def.rKm * P.rPx : 0;                 // taille apparente du lieu à l'écran
         var show = facing > .1 || (isSel && facing > -.05);
-        if (d.type === 'cratere' && px < 7 && !isSel) show = false;   // trop petit pour être lu à cette distance
+        if ((d.type === 'cratere' || d.type === 'montagne') && px < 7 && d.d > 0 && !isSel) show = false;   // trop petit pour être lu à cette distance
         if (d.type === 'site' && P.rPx < 170 && !isSel) show = false;
         v3.copy(S.world).project(camera);
         var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H;
         if (x < -40 || x > W + 40 || y < TOPZONE || y > H - 20) show = false;
-        var pri = isSel ? 2000 : (d.type === 'mer' || d.type === 'bassin' ? 300 : d.type === 'site' ? 260 : d.type === 'extreme' ? 200 : 150) + Math.min(px, 200) + facing * 50;
+        var big = d.type === 'mer' || d.type === 'bassin' || d.type === 'region' || d.type === 'lac' || d.type === 'calotte';
+        var pri = isSel ? 2000 : (big ? 300 : d.type === 'site' || d.type === 'base' ? 260 : d.type === 'montagne' || d.type === 'volcan' || d.type === 'canyon' ? 240 : d.type === 'extreme' ? 200 : 150) + Math.min(px, 200) + facing * 50;
         list.push({ S: S, el: el, x: x, y: y, show: show, pri: pri, isSel: isSel, facing: facing });
       });
       list.sort(function (a, b) { return b.pri - a.pri; });

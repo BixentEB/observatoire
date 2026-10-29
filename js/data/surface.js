@@ -14,6 +14,8 @@
   OBS.SURFACE = {
     lune: {
       hd: { map: 'lune-4k.jpg', relief: 'lune-relief-4k.jpg', reliefEco: 'lune-relief-2k.jpg', altitude: 'lune-altitude' },
+      src: { relief: 'altimétrie LOLA', aspect: 'mosaïque LROC' }, refKm: 1737.4, siteLabel: 'Site d\'alunissage',
+      lien: 'La Lune et la Terre',
       res: 'Couleur : environ 2,7 km par pixel (mosaïque LROC). Relief : environ 1,9 km par pixel (altimètre laser LOLA).',
       sites: [
         /* mers et bassins */
@@ -72,5 +74,4 @@
       terre: "La Lune règle les marées, stabilise l'inclinaison de l'axe de la Terre (et donc ses saisons) et s'éloigne de nous d'environ 3,8 cm par an, une distance mesurée grâce aux réflecteurs laser laissés par Apollo et Lunokhod."
     }
   };
-  OBS.SITE_TYPES = { mer: 'Mer', bassin: 'Bassin d\'impact', cratere: 'Cratère', site: 'Site d\'alunissage', extreme: 'Point remarquable' };
 })();

@@ -11,9 +11,26 @@
   var current = null, liveTimer = 0;
 
   var CREDITS = {
-    'mercure.jpg': 'Solar System Scope (CC BY 4.0), d\'après les images de MESSENGER (NASA/JHUAPL)',
+    'mercure.jpg': 'NASA/JHUAPL/Carnegie Institution, mosaïque MESSENGER MDIS (USGS), couleurs ramenées vers le naturel, domaine public',
+    'io.jpg': 'NASA/JPL/USGS, mosaïque Galileo et Voyager, domaine public',
+    'europe.jpg': 'NASA/JPL/USGS, mosaïque Galileo et Voyager (noir et blanc, teintée), domaine public',
+    'ganymede.jpg': 'NASA/JPL/USGS, mosaïque Galileo et Voyager, domaine public',
+    'callisto.jpg': 'NASA/JPL/USGS, mosaïque Galileo et Voyager (noir et blanc, teintée), domaine public',
+    'titan.jpg': 'NASA/JPL-Caltech/Univ. of Arizona, mosaïque Cassini en infrarouge (PIA22770), domaine public',
+    'encelade.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18435), couleurs atténuées',
+    'mimas.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18437), couleurs atténuées',
+    'rhea.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18438), couleurs atténuées',
+    'dione.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18434), couleurs atténuées',
+    'tethys.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18439), couleurs atténuées',
+    'japet.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18436), couleurs atténuées',
+    'triton.jpg': 'NASA/JPL-Caltech/LPI (Paul Schenk), mosaïque Voyager 2 (PIA18668) ; zones grises non photographiées',
+    'pluton.jpg': 'NASA/JHUAPL/SwRI, carte New Horizons ; zones grises non photographiées',
+    'charon.jpg': 'NASA/JHUAPL/SwRI/LPI, mosaïque New Horizons (USGS) ; zones grises non photographiées',
+    'ceres.jpg': 'NASA/JPL-Caltech/UCLA/MPS/DLR/IDA, mosaïque Dawn (USGS), domaine public',
+    'phobos.jpg': 'P. Stooke, Small Bodies Maps (NASA PDS), domaine public',
+    'deimos.jpg': 'P. Stooke, Small Bodies Maps (NASA PDS), domaine public',
     'terre.jpg': 'Solar System Scope (CC BY 4.0), d\'après NASA Blue Marble',
-    'mars.jpg': 'Solar System Scope (CC BY 4.0), d\'après les données NASA',
+    'mars.jpg': 'NASA/USGS, mosaïque Viking MDIM 2.1 (dominante bleue des régions sombres atténuée), domaine public ; relief MOLA (NASA/GSFC)',
     'jupiter.jpg': 'Solar System Scope (CC BY 4.0), d\'après les images de Cassini et Hubble',
     'saturne.jpg': 'Solar System Scope (CC BY 4.0), d\'après les images de Cassini',
     'uranus.jpg': 'Solar System Scope (CC BY 4.0), d\'après les images de Voyager 2',
@@ -82,7 +99,8 @@
         : OBS.astro.isSmall(id) ? flag('real', 'Position', 'calculée', 'éléments orbitaux du JPL, orbite képlérienne simple (approchée)')
         : flag('real', 'Position', 'calculée', 'modèle du JPL pour la date affichée');
       f.push(pos);
-      if (OBS.SURFACE && OBS.SURFACE[id] && OBS.SURFACE[id].hd && OBS.SURFACE[id].hd.relief) f.push(flag('real', 'Relief', 'altimétrie réelle', 'relief tiré de l\'altimètre laser LOLA, chargé quand on s\'approche'));
+      var SFf = OBS.SURFACE && OBS.SURFACE[id];
+      if (SFf && SFf.hd && SFf.hd.relief) f.push(flag('real', 'Relief', 'altimétrie réelle', 'relief tiré de l\'' + ((SFf.src && SFf.src.relief) || 'altimétrie') + ', chargé quand on s\'approche'));
       f.push(def.tex ? flag('real', 'Aspect', 'carte réelle', 'carte de surface issue des missions' + (def.look && def.look.clouds ? ' ; nuages simulés' : ''))
         : flag('sim', 'Aspect', id === 'soleil' ? 'animé' : 'simulé', 'rendu procédural aux couleurs connues de l\'objet'));
       f.push(flag('adapt', 'Taille', 'agrandie', 'à l\'échelle des distances, l\'objet serait invisible'));
@@ -134,15 +152,16 @@
       var SF = OBS.SURFACE && OBS.SURFACE[id];
       if (SF) {
         if (SF.sites && SF.sites.length) {
-          var groups = [['mer', 'Mers et bassins', ['mer', 'bassin']], ['cratere', 'Cratères', ['cratere']], ['site', 'Sites d\'alunissage', ['site']], ['extreme', 'Extrêmes', ['extreme']]];
+          var groups = [['mer', 'Plaines, mers et régions', ['mer', 'bassin', 'region', 'lac']], ['montagne', 'Reliefs', ['montagne', 'volcan', 'canyon', 'calotte']], ['cratere', 'Cratères', ['cratere']],
+            ['site', (SF.siteLabel || 'Site d\'atterrissage').replace(/^Site/, 'Sites'), ['site']], ['base', 'Bases et observatoires', ['base', 'observatoire']], ['extreme', 'Extrêmes', ['extreme']]];
           h.push('<section class="c-sec c-sites"><h3>Lieux remarquables</h3>' + groups.map(function (g) {
             var l = SF.sites.filter(function (x) { return g[2].indexOf(x.type) >= 0; }); if (!l.length) return '';
             return '<h4>' + g[1] + '</h4><div class="c-chips">' + l.map(function (x) { return '<button class="chip t-' + x.type + '" type="button" data-site="' + x.id + '">' + esc(x.name) + '</button>'; }).join('') + '</div>';
           }).join('') + '</section>');
         }
-        if (SF.geologie) h.push('<section class="c-sec"><h3>Géologie</h3><div class="c-geo">' + SF.geologie.map(function (g) { return '<div><b>' + esc(g[0]) + '</b>' + esc(g[1]) + '</div>'; }).join('') + '</div></section>');
+        if (SF.geologie) h.push('<section class="c-sec"><h3>' + esc(SF.geoTitle || 'Géologie') + '</h3><div class="c-geo">' + SF.geologie.map(function (g) { return '<div><b>' + esc(g[0]) + '</b>' + esc(g[1]) + '</div>'; }).join('') + '</div></section>');
         if (SF.ressources) h.push('<section class="c-sec"><h3>Composition et ressources</h3><div class="c-geo">' + SF.ressources.map(function (g) { return '<div><b>' + esc(g[0]) + '</b>' + esc(g[1]) + '</div>'; }).join('') + '</div></section>');
-        if (SF.terre) h.push('<section class="c-sec"><h3>La Lune et la Terre</h3><p class="c-text">' + esc(SF.terre) + '</p></section>');
+        if (SF.terre) h.push('<section class="c-sec"><h3>' + esc(SF.lien || 'Et la Terre') + '</h3><p class="c-text">' + esc(SF.terre) + '</p></section>');
       }
       var moons = OBS.childrenOf(id);
       if (moons.length) h.push('<section class="c-sec"><h3>Lunes principales</h3><div class="c-chips">' + moons.map(function (m) { return '<button class="chip" type="button" data-go="' + m.id + '">' + esc(m.name) + '</button>'; }).join('') + '</div></section>');
@@ -194,11 +213,16 @@
     current = { level: 'systeme', id: bodyId + ':' + siteId }; clearInterval(liveTimer);
     function deg(v, pos, neg) { return nf(Math.abs(v), 2) + '° ' + (v >= 0 ? pos : neg); }
     var h = [];
-    h.push('<div class="c-head"><p class="c-kind">' + esc((OBS.SITE_TYPES[S.type] || 'Lieu') + ' · ' + B.name) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + ';color:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + '"></span>' + esc(S.name) + '</h2>' +
+    var typeLabel = S.type === 'site' ? (SF.siteLabel || 'Site d\'atterrissage') : (OBS.SITE_TYPES[S.type] || 'Lieu');
+    if (bodyId === 'lune' && S.type === 'mer') typeLabel = 'Mer';
+    var src = SF.src || {};
+    h.push('<div class="c-head"><p class="c-kind">' + esc(typeLabel + ' · ' + B.name) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + ';color:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + '"></span>' + esc(S.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Revenir à ' + esc(B.name) + '">✕</button></div><div class="c-body">');
-    h.push('<div class="c-flags">' + flag('real', 'Position', 'coordonnées IAU', 'latitude et longitude officielles du lieu') + flag('real', 'Relief', 'altimétrie LOLA', 'pentes calculées à partir des altitudes mesurées') +
-      flag('real', 'Aspect', 'mosaïque LROC', 'images de la caméra de Lunar Reconnaissance Orbiter') + flag('adapt', 'Éclairage', 'sans ombres portées', 'le relief est éclairé par le vrai Soleil, mais les ombres des reliefs sur leurs voisins ne sont pas calculées') + '<a class="flag-help" href="#/methode">?</a></div>');
-    h.push('<section class="c-sec"><h3>En ce moment</h3><div data-live></div></section>');
+    h.push('<div class="c-flags">' + flag('real', 'Position', 'coordonnées IAU', 'latitude et longitude officielles du lieu') +
+      (src.relief ? flag('real', 'Relief', src.relief, 'pentes calculées à partir des altitudes mesurées') : flag('adapt', 'Relief', 'non représenté', 'pas de données d\'altitude intégrées pour cet astre : la surface est éclairée comme une sphère lisse')) +
+      (src.aspect ? flag('real', 'Aspect', src.aspect, 'images réelles prises par les sondes') : '') +
+      (src.relief ? flag('adapt', 'Éclairage', 'sans ombres portées', 'le relief est éclairé par le vrai Soleil, mais les ombres des reliefs sur leurs voisins ne sont pas calculées') : '') + '<a class="flag-help" href="#/methode">?</a></div>');
+    h.push('<section class="c-sec"><h3>En ce moment</h3><div data-live></div><p class="c-cap" data-skip></p></section>');
     var rows = [['Coordonnées', deg(S.lat, 'N', 'S') + ' · ' + deg(S.lon, 'E', 'O')]];
     if (S.d) rows.push(['Diamètre', '≈ ' + nf(S.d) + ' km']);
     if (S.date) rows.push(['Date', S.date]);
@@ -212,16 +236,25 @@
       var box = el.querySelector('[data-live]'); if (!box) return;
       var inf = OBS.system.siteInfo(bodyId, siteId); if (!inf) return;
       var sun = inf.sun > 0.5 ? ['Jour', 'Soleil à ' + nf(inf.sun, 0) + '° au-dessus de l\'horizon'] : inf.sun > -0.5 ? ['Lever ou coucher', 'Soleil sur l\'horizon : les reliefs projettent leurs plus longues ombres'] : ['Nuit', 'Soleil à ' + nf(-inf.sun, 0) + '° sous l\'horizon'];
-      var cells = '<div><span>Soleil</span><b>' + sun[0] + '</b><small>' + sun[1] + '</small></div>';
+      var cells = '<div><span>Soleil</span><b>' + sun[0] + '</b><small>' + sun[1] + '</small>' + (inf.sun < 3 ? '<button class="chip chip-go" type="button" data-sunrise style="margin-top:8px">Avancer jusqu\'au lever du Soleil</button>' : '') + '</div>';
       if (inf.parent !== undefined) {
         var pe = inf.parent, pn = inf.parentName;
-        var ptxt = pe > 8 ? ['Toujours visible', 'à ' + nf(pe, 0) + '° au-dessus de l\'horizon, presque immobile'] : pe > -8 ? ['Au ras de l\'horizon', 'elle apparaît et disparaît au gré des librations'] : ['Jamais visible', 'ce lieu est sur la face cachée'];
+        var ptxt = pe > 8 ? ['Toujours visible', 'à ' + nf(pe, 0) + '° au-dessus de l\'horizon, presque immobile dans le ciel'] : pe > -8 ? ['Au ras de l\'horizon', 'visible ou non au gré des librations'] : ['Jamais visible', 'ce lieu est sur l\'hémisphère qui lui tourne le dos'];
         cells += '<div><span>' + esc(pn) + '</span><b>' + ptxt[0] + '</b><small>' + ptxt[1] + '</small></div>';
       }
-      box.innerHTML = '<div class="c-live">' + cells + '</div>';
+      var had = box.querySelector('[data-sunrise]'), want = inf.sun < 3;
+      if (!box.firstChild || !!had !== want || !want) box.innerHTML = '<div class="c-live">' + cells + '</div>';
+      var sb = box.querySelector('[data-sunrise]');
+      if (sb && !sb._b) { sb._b = 1; sb.addEventListener('click', function () {
+        var jd = OBS.system.nextSunrise(bodyId, siteId);
+        if (!jd) { sb.textContent = 'Pas de lever du Soleil proche (nuit polaire ?)'; return; }
+        var dt = jd - OBS.time.jd, txt = dt < 1 ? Math.round(dt * 24) + ' h' : nf(dt, 1) + ' jours';
+        OBS.time.set(jd);
+        var note = el.querySelector('[data-skip]'); if (note) note.textContent = 'Temps avancé de ' + txt + ' : le Soleil se lève sur ce lieu.';
+      }); }
       if (inf.alt !== null && inf.alt !== undefined) {
         var tb = el.querySelector('[data-facts]');
-        if (tb && !tb.querySelector('[data-alt]')) { var tr = document.createElement('tr'); tr.setAttribute('data-alt', ''); tr.innerHTML = '<th>Altitude</th><td>≈ ' + (inf.alt >= 0 ? '+' : '−') + nf(Math.abs(inf.alt), 1) + ' km<br><small style="color:var(--muted)">par rapport à la sphère de 1 737,4 km (carte LOLA réduite)</small></td>'; tb.appendChild(tr); }
+        if (tb && !tb.querySelector('[data-alt]')) { var tr = document.createElement('tr'); tr.setAttribute('data-alt', ''); tr.innerHTML = '<th>Altitude</th><td>≈ ' + (inf.alt >= 0 ? '+' : '−') + nf(Math.abs(inf.alt), 1) + ' km<br><small style="color:var(--muted)">par rapport à la sphère de ' + nf(SF.refKm || B.rKm, 1) + ' km (carte d\'altitude réduite)</small></td>'; tb.appendChild(tr); }
       }
     }
     live(); liveTimer = setInterval(live, 500);
