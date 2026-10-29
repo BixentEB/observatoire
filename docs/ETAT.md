@@ -37,7 +37,16 @@
 - Atlas : onglet Unités (km, seconde-lumière, UA, année-lumière, parsec, masses, kelvin, échelle de la lumière).
 - Visite des étoiles voisines (`#/etoile/<id>`, `js/engine/starsystem.js`) : l'étoile teintée selon son type et à sa taille (compressée), sa compagne pour les systèmes doubles, ses planètes confirmées (périodes mesurées, distances par la loi de Kepler, aspect simulé). On y entre depuis l'Atlas, la console du voisinage ou en zoomant sur l'étoile ; on en sort en dézoomant.
 
+### Surfaces détaillées : la Lune en premier
+- Cartes réelles chargées à l'approche : couleur LROC 4k (2k sur les petits appareils) et relief LOLA converti en carte de pentes, sans exagération, éclairé par le vrai Soleil.
+- On peut descendre jusqu'à ~100 km d'altitude ; le plan de coupure proche s'adapte, la caméra ne passe jamais sous la surface.
+- 33 lieux aux coordonnées de l'IAU : mers et bassins, cratères, sites d'alunissage (Luna 9 à Chang'e 6), points le plus haut et le plus bas. Cliquables, dans la recherche, adresse `#/explorer/lune/<lieu>`.
+- Fiche d'un lieu : Soleil au-dessus ou sous l'horizon en ce moment, Terre visible ou non (face cachée), altitude lue sur la carte LOLA.
+- Console de la Lune : lieux remarquables, géologie, composition et ressources (glace, oxygène, hélium 3…), la Lune et la Terre.
+- Limite assumée : 2,7 km par pixel ; de très près l'image devient floue plutôt que d'inventer des détails. Aller plus loin demande des tuiles à plus haute résolution (LROC 100 m/px), à télécharger depuis la NASA.
+
 ### Pistes suivantes
+- Même traitement pour Mars (MOLA, Viking/HRSC), Mercure (MESSENGER), les lunes galiléennes et Titan (USGS).
 - Carte des lunaisons (la Lune au centre, phases à venir, curseur de dates).
 - Ciel vu de la Terre : dôme à 360° avec étoiles et constellations ; lieu par géolocalisation (avec accord) ou choix d'une ville, ville par défaut si refus.
 - Comparateur d'astres, parcours guidés, galaxie.

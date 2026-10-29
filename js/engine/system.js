@@ -114,7 +114,8 @@
       uC0: { value: C(c[0]) }, uC1: { value: C(c[1]) }, uC2: { value: C(c[2]) }, uC3: { value: C(c[3]) }, uC4: { value: C(c[4] === undefined ? c[3] : c[4]) },
       uAtmo: { value: C(look.atmo || 0) }, uSun: { value: sunPos },
       uRingN: { value: new T.Vector3(0, 1, 0) }, uCenter: { value: new T.Vector3() }, uRing: { value: new T.Vector2(0, 0) }, uRadius: { value: rScene },
-      uHasMap: { value: 0 }, uMap: { value: null }, uHasNight: { value: 0 }, uNight: { value: null }, uHasRingTex: { value: 0 }, uRingTex: { value: null }
+      uHasMap: { value: 0 }, uMap: { value: null }, uHasNight: { value: 0 }, uNight: { value: null }, uHasRingTex: { value: 0 }, uRingTex: { value: null },
+      uHasNormal: { value: 0 }, uNormal: { value: null }, uNormalK: { value: 1 }, uGain: { value: look.gain || 1.35 }
     };
     return new T.ShaderMaterial({ uniforms: u, vertexShader: G.PLANET_VERT, fragmentShader: G.PLANET_FRAG, extensions: { derivatives: true } });
   }
@@ -124,6 +125,13 @@
   var bodies = [], byId = {}, hitMeshes = [], sphereGeo, shellGeo, sunMesh, sunMat, sunGlowA, sunGlowB, belts = [], regionAnchors = [];
   var orbitGroup = new T.Group(); scene.add(orbitGroup);
   var builtJd = 0;
+
+  /* latitude, longitude est (degrés) → point de la sphère unité, dans le repère de la carte (longitude 0 = +X, est = −Z) */
+  function latLonObj(lat, lon, out) {
+    var phi = Math.PI + lon * D2R, c = Math.cos(lat * D2R);
+    return out.set(-Math.cos(phi) * c, Math.sin(lat * D2R), Math.sin(phi) * c);
+  }
+  var hdGeo = null;
 
   function phaseOf(id) { var h = 0; for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 9973; return h / 9973 * TAU; }
 
@@ -153,6 +161,7 @@
       regionAnchors.push(a); byId[rg.id] = a; bodies.push(a);
     });
     bodies.forEach(makeLabel);
+    bodies.forEach(function (P) { if (P.sites) P.sites.forEach(function (S) { makeSiteLabel(P, S); }); });
     rebuildOrbits(OBS.time.jd);
 
     controls = L.controls = new T.OrbitControls(camera, OBS.engine.canvas);
@@ -175,6 +184,12 @@
     if (d.stretch) mesh.scale.set(r * d.stretch[0], r * d.stretch[2], r * d.stretch[1]);
     spin.add(mesh);
     var P = { id: d.id, def: d, r: r, holder: holder, spin: spin, mesh: mesh, mat: mat, pos: new T.Vector3(), helio: { x: 0, y: 0, z: 0 }, pole: new T.Vector3(0, 1, 0), moonsOf: [] };
+    var surf = OBS.SURFACE && OBS.SURFACE[d.id];
+    if (surf) {                                         // surface détaillée : maillage plus fin, lieux remarquables
+      if (!hdGeo) hdGeo = new T.SphereGeometry(1, cfg.seg[0] * 2, cfg.seg[1] * 2);
+      mesh.geometry = hdGeo; P.surf = surf;
+      P.sites = (surf.sites || []).map(function (sd) { return { def: sd, obj: latLonObj(sd.lat, sd.lon, new T.Vector3()), world: new T.Vector3(), nrm: new T.Vector3() }; });
+    }
     if (d.tex) loadTex(d.tex, function (tx) { mat.uniforms.uMap.value = tx; mat.uniforms.uHasMap.value = 1; mat.uniforms.uRelief.value = d.id === 'terre' ? 0 : r * .012; });
     if (d.night) loadTex(d.night, function (tx) { mat.uniforms.uNight.value = tx; mat.uniforms.uHasNight.value = 1; });
     var look = d.look || {};
@@ -299,8 +314,42 @@
     labelsEl.appendChild(el); P.el = el;
   }
 
+  /* ---------- surfaces détaillées : cartes chargées à l'approche ---------- */
+  function loadHD(P) {
+    if (P.hdState) return; P.hdState = 'loading';
+    var H2 = P.surf.hd || {}, eco = OBS.perf.tier === 'eco';
+    if (!eco && H2.map) loadTex(H2.map, function (tx) { P.mat.uniforms.uMap.value = tx; P.mat.uniforms.uHasMap.value = 1; });
+    var rel = eco ? (H2.reliefEco || H2.relief) : H2.relief;
+    if (rel) loadTex(rel, function (tx) { P.mat.uniforms.uNormal.value = tx; P.mat.uniforms.uHasNormal.value = 1; P.hdState = 'ok'; OBS.emit('hd', P.id); });
+    if (H2.altitude) fetch('textures/' + H2.altitude + '.json').then(function (r) { return r.json(); }).then(function (m) {
+      return fetch('textures/' + H2.altitude + '.bin').then(function (r) { return r.arrayBuffer(); }).then(function (b) { P.alt = { w: m.w, h: m.h, data: new Int16Array(b) }; });
+    }).catch(function () {});
+  }
+  function siteWorld(P, S) {
+    S.world.copy(S.obj).applyMatrix4(P.mesh.matrixWorld);
+    S.nrm.copy(S.world).sub(P.pos).normalize();
+    return S.world;
+  }
+  function altitudeAt(P, lat, lon) {                    // altitude (km) lue sur la carte réduite de l'altimétrie
+    var A2 = P.alt; if (!A2) return null;
+    var x = ((lon + 180) / 360 * A2.w - .5 + A2.w) % A2.w, y = Math.max(0, Math.min(A2.h - 1.001, (90 - lat) / 180 * A2.h - .5));
+    var x0 = Math.floor(x), y0 = Math.floor(y), fx = x - x0, fy = y - y0, x1 = (x0 + 1) % A2.w;
+    function v(xx, yy) { return A2.data[yy * A2.w + xx]; }
+    return ((v(x0, y0) * (1 - fx) + v(x1, y0) * fx) * (1 - fy) + (v(x0, y0 + 1) * (1 - fx) + v(x1, y0 + 1) * fx) * fy) / 1000;
+  }
+
+  function makeSiteLabel(P, S) {
+    var d = S.def, el = document.createElement('button'); el.type = 'button';
+    el.className = 'lbl is-site t-' + d.type + ' hid';
+    el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(d.name) + '</span>';
+    el.setAttribute('aria-label', d.name + ' — ' + (OBS.SITE_TYPES[d.type] || ''));
+    el.addEventListener('click', function (e) { e.stopPropagation(); L.site(P.id, d.id); });
+    labelsEl.appendChild(el); S.el = el;
+  }
+
   /* ---------- sélection et vols de caméra ---------- */
   var selected = null, hover = null, flight = null, interacting = false, lastSel = new T.Vector3(), release = 0;
+  var siteSel = null, siteFlight = null, lastSite = new T.Vector3();
   var showOrbits = true, labelMode = 'all';
   function selDist(P) {
     var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? 60 : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
@@ -321,20 +370,70 @@
     opts = opts || {};
     if (id && !byId[id]) return;
     selected = id || null;
-    release = 0;
+    release = 0; siteSel = null; siteFlight = null;
     startFlight(selected);
     if (opts.instant && flight) flight.t = flight.dur;
     var P = selected ? byId[selected] : null;
-    controls.minDistance = P ? Math.max(P.r * 1.35, .05) : 8;
+    controls.minDistance = P ? Math.max(P.r * (P.surf ? 1.06 : 1.35), .05) : 8;
     OBS.emit('select', { level: 'systeme', id: selected });
     OBS.emit('crumbs');
   };
   L.focus = function (id) { L.select(id); };
+
+  /* un lieu de la surface : la caméra descend au-dessus, puis le suit pendant que l'astre tourne */
+  L.site = function (bodyId, siteId, opts) {
+    var P = byId[bodyId]; if (!P || !P.sites) return;
+    var S = P.sites.filter(function (x) { return x.def.id === siteId; })[0]; if (!S) return;
+    if (selected !== bodyId) { selected = bodyId; release = 0; lastSel.copy(P.pos); }
+    flight = null; loadHD(P);
+    siteSel = { P: P, S: S };
+    P.mesh.updateMatrixWorld(); siteWorld(P, S);
+    siteFlight = { t: 0, dur: opts && opts.instant ? .01 : 2.2, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone() };
+    controls.enabled = false; controls.minDistance = P.r * .05;
+    OBS.emit('select', { level: 'systeme', id: bodyId, site: siteId });
+    OBS.emit('crumbs');
+  };
+  L.siteSelected = function () { return siteSel ? siteSel.S.def.id : null; };
+  L.siteInfo = function (bodyId, siteId) {
+    var P = byId[bodyId]; if (!P || !P.sites) return null;
+    var S = P.sites.filter(function (x) { return x.def.id === siteId; })[0]; if (!S) return null;
+    P.mesh.updateMatrixWorld(); siteWorld(P, S);
+    var sd = tmp.copy(P.pos).negate().normalize(), out = { sun: Math.asin(Math.max(-1, Math.min(1, S.nrm.dot(sd)))) / D2R };
+    var par = P.def.parent && byId[P.def.parent];
+    if (par && par.pos) { var pd = tmp2.copy(par.pos).sub(P.pos).normalize(); out.parent = Math.asin(Math.max(-1, Math.min(1, S.nrm.dot(pd)))) / D2R; out.parentName = par.def.name; }
+    out.alt = altitudeAt(P, S.def.lat, S.def.lon);
+    return out;
+  };
   L.selected = function () { return selected; };
   L.get = function (id) { return byId[id]; };
 
   function stepCamera(dt) {
     var P = selected ? byId[selected] : null;
+    if (siteFlight || siteSel) {
+      var SP = siteSel.P, S = siteSel.S;
+      SP.holder.updateMatrixWorld(true); siteWorld(SP, S);
+      if (siteFlight) {
+        siteFlight.t += dt;
+        var ks = Math.min(1, siteFlight.t / siteFlight.dur), es = ease(ks);
+        // altitude d'arrivée : le lieu bien visible sans trop agrandir les données (un pixel de la carte ≈ 3 à 4 pixels d'écran) ;
+        // on peut ensuite descendre plus bas, l'image devient alors floue plutôt que d'inventer des détails
+        var big = S.def.d ? Math.max(.3, Math.min(1.2, 7 * S.def.d / SP.def.rKm)) : .3;
+        var dToS = SP.r * big * Math.max(1, .95 / camera.aspect), dFromS = Math.max(siteFlight.fromOff.length(), .001);
+        var fromDir = tmp2.copy(siteFlight.fromOff).normalize();
+        var endDir = tmp.copy(S.nrm).addScaledVector(fromDir, .3).normalize();
+        fromDir.lerp(endDir, es).normalize();
+        controls.target.lerpVectors(siteFlight.fromTgt, S.world, es);
+        camera.position.copy(controls.target).addScaledVector(fromDir, Math.exp(Math.log(dFromS) * (1 - es) + Math.log(dToS) * es));
+        if (ks >= 1) { siteFlight = null; controls.enabled = true; lastSite.copy(S.world); lastSel.copy(SP.pos); }
+      } else {
+        tmp.copy(S.world).sub(lastSite); camera.position.add(tmp); controls.target.copy(S.world); lastSite.copy(S.world); lastSel.copy(SP.pos);
+        if (!interacting && camera.position.distanceTo(SP.pos) > SP.r * 4) {    // on s'éloigne : retour à l'astre entier
+          siteSel = null; controls.minDistance = SP.r * 1.06; flight = null;
+          OBS.emit('select', { level: 'systeme', id: SP.id, soft: true }); OBS.emit('crumbs');
+        }
+      }
+      return;
+    }
     if (flight) {
       flight.t += dt;
       var k = Math.min(1, flight.t / flight.dur), e = ease(k);
@@ -354,8 +453,8 @@
   }
   function up() {
     var P = byId[selected], parent = P && P.def && P.def.moon ? P.def.parent : null;
-    selected = parent; release = parent ? 0 : 1.6;
-    controls.minDistance = parent ? byId[parent].r * 1.35 : 8;
+    selected = parent; release = parent ? 0 : 1.6; siteSel = null; siteFlight = null;
+    controls.minDistance = parent ? byId[parent].r * (byId[parent].surf ? 1.06 : 1.35) : 8;
     if (parent) lastSel.copy(byId[parent].pos);
     OBS.emit('select', { level: 'systeme', id: selected, soft: true });
     OBS.emit('crumbs');
@@ -378,7 +477,7 @@
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     cv.addEventListener('pointerup', function (e) {
       if (OBS.engine.level !== L || e.button !== 0 || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
-      var id = pick(e.clientX, e.clientY); if (id) L.select(id);
+      var id = pick(e.clientX, e.clientY); if (id && id !== selected) L.select(id);   // clic sur l'astre déjà choisi : on reste où l'on est (lieu compris)
     });
     cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
     // zoom arrière au maximum de la vue d'ensemble : on sort du système vers le voisinage stellaire.
@@ -479,7 +578,8 @@
     var c = [{ label: 'Système solaire', act: function () { L.select(null); } }];
     var P = selected ? byId[selected] : null;
     if (P && P.def && P.def.moon) { var par = P.def.parent; c.push({ label: byId[par].def.name, act: function () { L.select(par); } }); }
-    if (P) c.push({ label: P.def.name, current: true });
+    if (P && siteSel) { var bid = P.id; c.push({ label: P.def.name, act: function () { L.select(bid); } }); c.push({ label: siteSel.S.def.name, current: true }); }
+    else if (P) c.push({ label: P.def.name, current: true });
     else c[0].current = true;
     return c;
   };
@@ -523,7 +623,18 @@
       release -= dt; controls.target.multiplyScalar(Math.max(0, 1 - dt * 2.2));
     }
     controls.update();
+    // ne jamais passer sous la surface d'un astre détaillé
+    var focusB = siteSel ? siteSel.P : (selected ? byId[selected] : null);
+    if (focusB && focusB.surf) {
+      var dc = camera.position.distanceTo(focusB.pos);
+      if (dc < focusB.r * 1.015) camera.position.sub(focusB.pos).setLength(focusB.r * 1.015).add(focusB.pos);
+    }
+    // plan de coupure proche adapté à l'altitude de la caméra (sinon la surface serait tranchée de près)
+    var near = .02;
+    if (focusB && focusB.r) near = Math.max(.0004, Math.min(.02, (camera.position.distanceTo(focusB.pos) - focusB.r) * .3));
+    if (Math.abs(camera.near - near) > near * .05) { camera.near = near; camera.updateProjectionMatrix(); }
     L.sky.position.copy(camera.position);
+    bodies.forEach(function (P) { if (P.surf && !P.hdState && P.rPx > 110) loadHD(P); });
 
     // anneaux et ombres
     bodies.forEach(function (P) {
@@ -573,6 +684,48 @@
 
     layoutLabels(focusSys);
   };
+
+  /* ---------- étiquettes des lieux de la surface ---------- */
+  var camDir = new T.Vector3();
+  function layoutSites() {
+    bodies.forEach(function (P) {
+      if (!P.sites) return;
+      var active = (selected === P.id || (siteSel && siteSel.P === P)) && P.rPx > 90 && labelMode !== 'none';
+      if (active) P.holder.updateMatrixWorld(true);
+      var list = [];
+      P.sites.forEach(function (S) {
+        var el = S.el, d = S.def, isSel = siteSel && siteSel.S === S;
+        if (!active) { if (!el.classList.contains('hid')) { el.classList.add('hid'); el.style.opacity = ''; } return; }
+        siteWorld(P, S);
+        camDir.copy(camera.position).sub(S.world).normalize();
+        var facing = S.nrm.dot(camDir);
+        var px = d.d ? d.d / P.def.rKm * P.rPx : 0;                 // taille apparente du lieu à l'écran
+        var show = facing > .1 || (isSel && facing > -.05);
+        if (d.type === 'cratere' && px < 7 && !isSel) show = false;   // trop petit pour être lu à cette distance
+        if (d.type === 'site' && P.rPx < 170 && !isSel) show = false;
+        v3.copy(S.world).project(camera);
+        var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H;
+        if (x < -40 || x > W + 40 || y < TOPZONE || y > H - 20) show = false;
+        var pri = isSel ? 2000 : (d.type === 'mer' || d.type === 'bassin' ? 300 : d.type === 'site' ? 260 : d.type === 'extreme' ? 200 : 150) + Math.min(px, 200) + facing * 50;
+        list.push({ S: S, el: el, x: x, y: y, show: show, pri: pri, isSel: isSel, facing: facing });
+      });
+      list.sort(function (a, b) { return b.pri - a.pri; });
+      list.forEach(function (it) {
+        var el = it.el;
+        if (!it.show) { if (!el.classList.contains('hid')) { el.classList.add('hid'); el.style.opacity = ''; } return; }
+        if (!el._w) { el._w = el.offsetWidth || 80; el._h = el.offsetHeight || 20; }
+        var box = { l: it.x + 8, t: it.y - el._h / 2, r: it.x + 8 + el._w, b: it.y + el._h / 2 };
+        var clash = occupied.some(function (o) { return box.l < o.r + 3 && box.r + 3 > o.l && box.t < o.b + 1 && box.b + 1 > o.t; });
+        if (clash && !it.isSel) { el.classList.add('hid'); el.style.opacity = ''; return; }
+        occupied.push(box);
+        el.classList.remove('hid');
+        el.style.transform = 'translate(' + it.x.toFixed(1) + 'px,' + it.y.toFixed(1) + 'px)';
+        el.style.setProperty('--off', '9px');
+        el.style.opacity = Math.min(1, .35 + it.facing * 1.6).toFixed(2);
+        el.classList.toggle('active', it.isSel);
+      });
+    });
+  }
 
   /* ---------- placement des étiquettes, sans chevauchement ---------- */
   var occupied = [], TOPZONE = 96;   // sous la barre du haut et le fil d'Ariane
@@ -627,5 +780,6 @@
       el.classList.toggle('hov', P.id === hover);
       el.classList.toggle('dim', !!selected && P.id !== selected && !(P.def.moon && P.def.parent === selected));
     });
+    layoutSites();
   }
 })();

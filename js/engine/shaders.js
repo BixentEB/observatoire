@@ -44,17 +44,21 @@
   ].join('\n');
 
   var PLANET_VERT = [
-  'varying vec3 vObj; varying vec3 vWPos; varying vec3 vWN; varying vec2 vUv;',
+  'varying vec3 vObj; varying vec3 vWPos; varying vec3 vWN; varying vec2 vUv; varying vec3 vWE; varying vec3 vWNo;',
   'void main(){ vObj=normalize(position); vUv=uv; vec4 wp=modelMatrix*vec4(position,1.0); vWPos=wp.xyz;',
-  '  vWN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*wp; }'
+  '  vWN=normalize(mat3(modelMatrix)*normal);',
+  /* repère local de la carte : est (longitude croissante) et nord, pour les cartes de relief */
+  '  vec3 e=vec3(vObj.z,0.0,-vObj.x); float le=length(e); e=le>1e-5?e/le:vec3(0.0,0.0,-1.0);',
+  '  vWE=mat3(modelMatrix)*e; vWNo=mat3(modelMatrix)*cross(vObj,e);',
+  '  gl_Position=projectionMatrix*viewMatrix*wp; }'
   ].join('\n');
 
   /* uType : 0 rocheux à cratères, 1 désertique, 3 géante à bandes, 4 uni (attente d'une carte) */
   var PLANET_FRAG = [
   'uniform float uType,uScale,uSeed,uTime,uRelief,uClouds,uBands,uWarp,uStorm,uIce,uAtmoK,uGloss,uStormLat,uStormLon,uRadius,uHasMap,uHasNight,uHasRingTex;',
   'uniform vec3 uC0,uC1,uC2,uC3,uC4,uAtmo,uRingN,uCenter,uSun;',
-  'uniform vec2 uRing; uniform sampler2D uMap,uNight,uRingTex;',
-  'varying vec3 vObj; varying vec3 vWPos; varying vec3 vWN; varying vec2 vUv;',
+  'uniform vec2 uRing; uniform sampler2D uMap,uNight,uRingTex,uNormal; uniform float uHasNormal,uNormalK,uGain;',
+  'varying vec3 vObj; varying vec3 vWPos; varying vec3 vWN; varying vec2 vUv; varying vec3 vWE; varying vec3 vWNo;',
   COMMON,
   'float craters(vec3 p,float freq,float fw){',
   '  vec3 q=p*freq; vec3 ip=floor(q); vec3 fq=q-ip; float vis=1.0-smoothstep(0.25,0.8,fw*freq); float h=0.0;',
@@ -111,7 +115,11 @@
   '    cloudA=smoothstep(t0,t0+0.55,cn)*0.7; alb=mix(alb,vec3(1.0),cloudA); oceanMask*=(1.0-cloudA); h*=(1.0-cloudA);',
   '  }',
   '  vec3 N=Ng;',
-  '  if(uRelief>0.0){ vec3 Nb=bumpN(vWPos,Ng,h*uRelief); N=normalize(mix(Ng,Nb,smoothstep(0.05,0.35,dot(Ng,V)))); }',
+  '  if(uHasNormal>0.5){',
+  /* relief réel : carte de normales issue de l'altimétrie (est, nord, haut) */
+  '    vec3 tn=texture2D(uNormal,vUv).xyz*2.0-1.0; tn.xy*=uNormalK;',
+  '    N=normalize(normalize(vWE)*tn.x+normalize(vWNo)*tn.y+Ng*max(tn.z,0.05));',
+  '  } else if(uRelief>0.0){ vec3 Nb=bumpN(vWPos,Ng,h*uRelief); N=normalize(mix(Ng,Nb,smoothstep(0.05,0.35,dot(Ng,V)))); }',
   '  float ndl=dot(N,L); float soft=mix(max(ndl,0.0),smoothstep(-0.12,0.9,ndl),uAtmoK*0.6);',
   '  float shadow=1.0;',
   '  if(uRing.y>0.0){ float dn=dot(L,uRingN); if(abs(dn)>0.002){ float tt=dot(uCenter-vWPos,uRingN)/dn;',
@@ -120,7 +128,7 @@
   '        float dens=uHasRingTex>0.5?texture2D(uRingTex,vec2(rt,0.5)).a:ringDensity(rt)*0.3; shadow*=1.0-0.85*dens; } } } }',
   '  float lit=soft*shadow;',
   '  float nightFill=(1.0-smoothstep(-0.12,0.28,ndlG))*0.12; float facing=0.55+0.45*max(dot(Ng,V),0.0);',
-  '  vec3 col=alb*(lit*1.35+0.03+nightFill*facing);',
+  '  vec3 col=alb*(lit*uGain+0.03+nightFill*facing);',
   '  vec3 Hh=normalize(L+V); float spec=pow(max(dot(N,Hh),0.0),220.0)*oceanMask*max(ndlG,0.0)*shadow; col+=vec3(1.0,0.95,0.85)*spec*0.45;',
   '  if(uHasNight>0.5){ float night=1.0-smoothstep(-0.18,0.06,ndlG); vec3 nl=texture2D(uNight,vUv).rgb; emis=nl*nl*vec3(1.0,0.82,0.55)*night*(1.0-cloudA*0.85)*2.2; }',
   '  col+=emis;',

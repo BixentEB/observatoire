@@ -17,6 +17,11 @@
   function build() {
     index = [];
     OBS.BODIES.forEach(function (b) { index.push({ name: b.name, sub: b.kind, href: '#/explorer/' + b.id, key: norm(b.name + ' ' + (ALIAS[b.id] || '') + ' ' + b.kind), w: b.moon ? 1 : 3 }); });
+    Object.keys(OBS.SURFACE || {}).forEach(function (bid) {
+      (OBS.SURFACE[bid].sites || []).forEach(function (x) {
+        index.push({ name: x.name, sub: (OBS.SITE_TYPES[x.type] || 'Lieu') + ' · ' + OBS.byId[bid].name + (x.date ? ' · ' + x.date : ''), href: '#/explorer/' + bid + '/' + x.id, key: norm(x.name + ' ' + (OBS.SITE_TYPES[x.type] || '') + ' ' + OBS.byId[bid].name), w: 1 });
+      });
+    });
     OBS.REGIONS.forEach(function (r) { index.push({ name: r.name, sub: r.kind, href: '#/explorer/' + r.id, key: norm(r.name + ' ' + (ALIAS[r.id] || '') + ' ' + r.kind), w: 2 }); });
     OBS.STARS.forEach(function (s) {
       index.push({ name: s.name, sub: (s.cls === 'BD' ? 'Naine brune' : 'Étoile') + ' · ' + s.ly.toLocaleString('fr-FR') + ' al · ' + (s.cons || ''), href: '#/etoile/' + s.id, key: norm(s.name + ' ' + (ALIAS[s.id] || '') + ' ' + s.spec + ' ' + (s.cons || '') + ' etoile star'), w: 2 });

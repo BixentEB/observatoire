@@ -55,6 +55,22 @@ button { font: inherit; color: inherit; }
 .lbl.is-region .nm { font-style: italic; background: none; }
 .lbl.is-comet .nm { color: #9fd0ff; }
 .lbl.is-sun .nm { color: var(--accent); }
+/* lieux de la surface (cratères, mers, sites d'alunissage) */
+.lbl.is-site .dot { opacity: 1; width: 6px; height: 6px; left: -3px; top: -3px; border-color: rgba(233, 236, 248, .8); background: rgba(3, 5, 14, .5); }
+.lbl.is-site .nm { font-size: 11px; padding: 2px 6px; color: var(--soft); background: rgba(3, 5, 14, .55); }
+.lbl.is-site.t-mer .nm, .lbl.is-site.t-bassin .nm { font-style: italic; color: #c9d2ea; background: none; font-size: 12px; letter-spacing: .02em; }
+.lbl.is-site.t-mer .dot, .lbl.is-site.t-bassin .dot { opacity: 0; }
+.lbl.is-site.t-site .dot { border-color: var(--accent); background: var(--accent); }
+.lbl.is-site.t-site .nm { color: var(--accent); }
+.lbl.is-site.t-extreme .dot { border-color: #8fe0b0; }
+.lbl.is-site.active .nm { color: var(--fg); border-color: rgba(244, 199, 122, .5); background: rgba(8, 12, 26, .85); }
+.lbl.is-site.active .dot { width: 12px; height: 12px; left: -6px; top: -6px; border: 2px solid var(--accent); background: transparent; box-shadow: 0 0 10px var(--accent); }
+/* console : lieux et géologie */
+.c-sites h4 { margin: 10px 0 6px; font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.c-sites .chip.t-site { color: var(--accent); }
+.c-geo { display: grid; gap: 8px; }
+.c-geo div { font-size: 13px; color: var(--soft); }
+.c-geo b { display: block; color: var(--fg); font-weight: 600; font-size: 13px; margin-bottom: 1px; }
 .ring-tag { position: absolute; left: 0; top: 0; font: 10px var(--mono); color: var(--faint); transform: translate(6px, -14px); white-space: nowrap; }
 
 /* ---------- barre du haut ---------- */
@@ -373,6 +389,8 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
   .badge-quiet { display: none; }
   .timebar { left: var(--gut); right: var(--gut); transform: none; bottom: calc(10px + env(safe-area-inset-bottom)); justify-content: space-between; }
   .t-read { min-width: 0; flex: 1; }
+  .t-date { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t-speed { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tb-live .live-txt { display: none; }
   .settings { bottom: calc(70px + env(safe-area-inset-bottom)); }
   .viewer { grid-template-columns: 1fr; }

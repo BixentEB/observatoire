@@ -153,7 +153,7 @@
   { id: 'lune', name: 'Lune', kind: 'Satellite naturel de la Terre', parent: 'terre', rKm: 1737.4, moon: true, tex: 'lune.jpg',
     orbit: { real: 'moon', aKm: 384400, P: 27.3217 },
     rot: { ra: 269.9949, raT: 0.0031, dec: 66.5392, decT: 0.0130, W0: 38.3213, Wd: 13.17635815 },
-    look: { type: 0, scale: 2, seed: 5, relief: .05, ice: 0, c: [0x7d7d80, 0xb0b0b4, 0x4a4a50, 0xdddddd] },
+    look: { type: 0, scale: 2, seed: 5, relief: .05, ice: 0, gain: .95, c: [0x7d7d80, 0xb0b0b4, 0x4a4a50, 0xdddddd] },
     text: "Le seul satellite naturel de la Terre, probablement né d'une collision géante il y a environ 4,5 milliards d'années. Elle nous montre toujours la même face.",
     facts: [['Diamètre', '3 475 km'], ['Masse', '0,0123 Terre'], ['Distance moyenne', '384 400 km'], ['Révolution', '27,3 jours'],
       ['Rotation', 'synchrone (27,3 jours)'], ['Température', 'de −170 °C à 120 °C'], ['Gravité', '1,62 m/s²']],

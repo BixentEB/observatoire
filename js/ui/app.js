@@ -58,15 +58,20 @@
     else if (r.name === 'voisinage') OBS.engine.go('voisinage', { focus: r.param && OBS.neighborhood.get(r.param) ? r.param : undefined });
     else {
       var id = r.name === 'explorer' && r.param && OBS.byId[r.param] ? r.param : null;
-      if (OBS.engine.level !== OBS.system) OBS.engine.go('systeme', { focus: id, instant: !OBS.engine.level });
-      else if (id !== OBS.system.selected()) OBS.system.select(id);
+      var site = id && r.sub && OBS.SURFACE && OBS.SURFACE[id] ? r.sub : null;
+      if (OBS.engine.level !== OBS.system) {
+        OBS.engine.go('systeme', { focus: id, instant: !OBS.engine.level });
+        if (site) setTimeout(function () { OBS.system.site(id, site); }, OBS.engine.level ? 2600 : 900);
+      }
+      else if (site) { if (site !== OBS.system.siteSelected() || id !== OBS.system.selected()) OBS.system.site(id, site); }
+      else if (id !== OBS.system.selected() || OBS.system.siteSelected()) OBS.system.select(id);
     }
   }
   function setHash(h) { if (location.hash === h || (h === '#/' && !location.hash)) return; silent = true; history.replaceState(null, '', h); silent = false; }
   OBS.on('select', function (e) {
     if (PAGES[parse().name]) return;
     if (e.level === 'etoile') { setHash('#/etoile/' + e.id); return; }
-    if (e.level === 'systeme') setHash(e.id ? '#/explorer/' + e.id : '#/');
+    if (e.level === 'systeme') setHash(e.id ? '#/explorer/' + e.id + (e.site ? '/' + e.site : '') : '#/');
     else setHash(e.id ? '#/voisinage/' + e.id : '#/');   // le voisinage n'est pas une adresse d'arrivée : un rechargement ramène au système solaire
   });
 
@@ -90,7 +95,9 @@
     if (e.key !== 'Escape') return;
     if (!$('settings').hidden) { toggleSettings(false); return; }
     if (!page.hidden) { location.hash = '#/'; return; }
-    var L = OBS.engine.level; if (L && L.selected && L.selected()) { var cur = L.selected(), d = OBS.byId[cur]; L.select(L === OBS.system && d && d.moon ? d.parent : null); }
+    var L = OBS.engine.level;
+    if (L === OBS.system && L.siteSelected()) { L.select(L.selected()); return; }      // d'un lieu, on remonte à l'astre
+    if (L && L.selected && L.selected()) { var cur = L.selected(), d = OBS.byId[cur]; L.select(L === OBS.system && d && d.moon ? d.parent : null); }
   });
 
   /* menu (petits écrans) */
