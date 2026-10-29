@@ -1,0 +1,95 @@
+/* ======================================================================
+   OBSERVATOIRE — engins spatiaux
+   Sondes, télescopes, stations et vaisseaux envoyés depuis la Terre.
+   Les positions viennent de JPL Horizons (data/missions.json, mis à jour chaque jour) :
+   un engin n'est affiché que pour les dates couvertes par ces données, jamais ailleurs.
+   Les rovers et atterrisseurs sont, eux, des lieux de la surface (voir surface.js).
+   ====================================================================== */
+(function () {
+  'use strict';
+  var OBS = window.OBS = window.OBS || {};
+
+  // fin : la mission a pris fin, l'engin continue sa route en silence (position extrapolée par le JPL)
+  OBS.CRAFT = [
+    { id: 'voyager1', name: 'Voyager 1', kind: 'Sonde interplanétaire · NASA', group: 'loin',
+      text: "L'objet le plus lointain jamais lancé. Après Jupiter (1979) et Saturne (1980), elle a quitté la bulle du Soleil le 25 août 2012 : la première à atteindre l'espace interstellaire. Elle fonctionne encore, avec de moins en moins d'instruments allumés pour ménager son énergie.",
+      facts: [['Lancement', '5 septembre 1977'], ['Survols', 'Jupiter, Saturne et Titan'], ['Espace interstellaire', 'depuis le 25 août 2012'], ['À bord', 'le Disque d\'or, message gravé pour d\'éventuels destinataires']] },
+    { id: 'voyager2', name: 'Voyager 2', kind: 'Sonde interplanétaire · NASA', group: 'loin',
+      text: "La seule sonde à avoir visité Uranus (1986) et Neptune (1989), après Jupiter et Saturne. Elle est entrée dans l'espace interstellaire le 5 novembre 2018 et transmet toujours, plus de 45 ans après son départ.",
+      facts: [['Lancement', '20 août 1977'], ['Survols', 'Jupiter, Saturne, Uranus, Neptune'], ['Espace interstellaire', 'depuis le 5 novembre 2018']] },
+    { id: 'pioneer10', name: 'Pioneer 10', kind: 'Sonde interplanétaire · NASA', group: 'loin', fin: true,
+      text: "La première sonde à traverser la ceinture d'astéroïdes et à survoler Jupiter (décembre 1973). Son dernier signal a été reçu le 23 janvier 2003 ; elle file depuis, muette, vers la constellation du Taureau. Elle porte une plaque gravée qui indique d'où elle vient.",
+      facts: [['Lancement', '3 mars 1972'], ['Survol', 'Jupiter, décembre 1973'], ['Dernier signal', '23 janvier 2003']] },
+    { id: 'pioneer11', name: 'Pioneer 11', kind: 'Sonde interplanétaire · NASA', group: 'loin', fin: true,
+      text: "Après Jupiter (1974), elle a été la première à survoler Saturne, en septembre 1979, ouvrant la route aux Voyager. Le contact a été perdu en septembre 1995.",
+      facts: [['Lancement', '6 avril 1973'], ['Survols', 'Jupiter (1974), Saturne (1979)'], ['Dernier contact', 'septembre 1995']] },
+    { id: 'newhorizons', name: 'New Horizons', kind: 'Sonde interplanétaire · NASA', group: 'loin',
+      text: "La sonde qui a révélé Pluton et Charon le 14 juillet 2015, puis survolé Arrokoth, un petit corps glacé de la ceinture de Kuiper, le 1er janvier 2019 : l'objet le plus lointain jamais visité. Elle poursuit sa route dans la ceinture de Kuiper.",
+      facts: [['Lancement', '19 janvier 2006'], ['Pluton', '14 juillet 2015'], ['Arrokoth', '1er janvier 2019']] },
+    { id: 'parker', name: 'Parker Solar Probe', kind: 'Sonde solaire · NASA', group: 'soleil',
+      text: "La sonde qui « touche » le Soleil : elle plonge dans sa couronne à chaque passage au plus près. Le 24 décembre 2024, elle est passée à 6,1 millions de km de sa surface, à environ 690 000 km/h : l'objet le plus rapide jamais construit.",
+      facts: [['Lancement', '12 août 2018'], ['Record', '6,1 millions de km du Soleil (24 décembre 2024)'], ['Vitesse maximale', '≈ 190 km/s']] },
+    { id: 'solarorbiter', name: 'Solar Orbiter', kind: 'Sonde solaire · ESA et NASA', group: 'soleil',
+      text: "Elle observe le Soleil de près en s'écartant peu à peu du plan des planètes : en 2025, elle a pris les premières images des pôles du Soleil.",
+      facts: [['Lancement', '10 février 2020'], ['Premières vues des pôles', '2025']] },
+    { id: 'bepicolombo', name: 'BepiColombo', kind: 'Mission vers Mercure · ESA et JAXA', group: 'planetes',
+      text: "Deux orbiteurs, l'un européen (MPO), l'autre japonais (Mio), voyagent ensemble vers Mercure. Après six survols de la planète, le module de propulsion s'est séparé le 3 septembre 2026. La mise en orbite commence le 21 novembre 2026 ; les observations scientifiques doivent débuter en 2027.",
+      facts: [['Lancement', '20 octobre 2018'], ['Survols de Mercure', '6, de 2021 à 2025'], ['Mise en orbite', 'à partir du 21 novembre 2026']] },
+    { id: 'juice', name: 'JUICE', kind: 'Mission vers Jupiter · ESA', group: 'planetes',
+      text: "Elle ira étudier Jupiter et trois de ses lunes glacées, Ganymède, Callisto et Europe, qui pourraient cacher des océans sous leur surface. Elle prend de l'élan par des survols de la Terre, de la Lune et de Vénus, avant d'arriver en juillet 2031 et de se placer, en 2034, en orbite autour de Ganymède.",
+      facts: [['Lancement', '14 avril 2023'], ['Arrivée à Jupiter', 'juillet 2031'], ['Puis', 'orbite autour de Ganymède (2034)']] },
+    { id: 'clipper', name: 'Europa Clipper', kind: 'Mission vers Jupiter · NASA', group: 'planetes',
+      text: "La plus grande sonde planétaire de la NASA. Après un survol de Mars (mars 2025) et un de la Terre (décembre 2026), elle arrivera à Jupiter en avril 2030 pour survoler Europe une cinquantaine de fois et étudier l'océan caché sous sa glace.",
+      facts: [['Lancement', '14 octobre 2024'], ['Arrivée à Jupiter', 'avril 2030'], ['Survols d\'Europe', '≈ 50']] },
+    { id: 'psyche', name: 'Psyche', kind: 'Mission vers un astéroïde · NASA', group: 'petits',
+      text: "En route vers (16) Psyché, un astéroïde peut-être fait en grande partie de métal, reste possible du cœur d'une planète en formation. Propulsion électrique, survol de Mars en 2026, arrivée prévue en 2029.",
+      facts: [['Lancement', '13 octobre 2023'], ['Arrivée prévue', '2029']] },
+    { id: 'lucy', name: 'Lucy', kind: 'Mission vers des astéroïdes · NASA', group: 'petits',
+      text: "La première visite des Troyens de Jupiter, des astéroïdes qui partagent l'orbite de la planète, en avant et en arrière d'elle : des fossiles de la formation des planètes. En chemin, elle a survolé Dinkinesh (2023), qui s'est révélé avoir une petite lune, puis Donaldjohanson (2025).",
+      facts: [['Lancement', '16 octobre 2021'], ['Premier Troyen', 'Eurybates, août 2027'], ['Dernier survol prévu', 'Patrocle et Ménœtios, 2033']] },
+    { id: 'hera', name: 'Hera', kind: 'Défense planétaire · ESA', group: 'petits',
+      text: "Elle va étudier de près Dimorphos, la petite lune de l'astéroïde Didymos que la sonde DART a percutée en 2022 pour dévier sa trajectoire : le premier test de défense planétaire. Arrivée prévue en novembre 2026.",
+      facts: [['Lancement', '7 octobre 2024'], ['Survol de Mars', 'mars 2025'], ['Arrivée à Didymos', 'novembre 2026']] },
+    { id: 'hayabusa2', name: 'Hayabusa2', kind: 'Mission vers des astéroïdes · JAXA', group: 'petits',
+      text: "Elle a rapporté sur Terre, le 6 décembre 2020, des échantillons de l'astéroïde Ryugu. Prolongée, elle file vers le petit astéroïde 1998 KY26, à atteindre en 2031.",
+      facts: [['Lancement', '3 décembre 2014'], ['Échantillons de Ryugu', 'rapportés le 6 décembre 2020'], ['Prochaine cible', '1998 KY26 (2031)']] },
+    { id: 'osirisapex', name: 'OSIRIS-APEX', kind: 'Mission vers un astéroïde · NASA', group: 'petits',
+      text: "Sous le nom d'OSIRIS-REx, elle a rapporté le 24 septembre 2023 des échantillons de l'astéroïde Bennu. Rebaptisée, elle rejoindra Apophis en 2029, juste après le passage de cet astéroïde très près de la Terre, le 13 avril 2029.",
+      facts: [['Lancement', '8 septembre 2016'], ['Échantillons de Bennu', 'rapportés le 24 septembre 2023'], ['Prochaine cible', 'Apophis (2029)']] },
+    { id: 'juno', name: 'Juno', kind: 'Orbiteur de Jupiter · NASA', group: 'planetes', host: 'jupiter',
+      text: "En orbite polaire autour de Jupiter depuis juillet 2016, elle a sondé l'intérieur de la planète, ses cyclones polaires et plusieurs de ses lunes. Sa mission prolongée courait jusqu'au 30 septembre 2025 ; la NASA n'a pas confirmé la suite. Au-delà, la position affichée est la trajectoire prévue par le JPL.",
+      facts: [['Lancement', '5 août 2011'], ['En orbite de Jupiter', 'depuis le 5 juillet 2016 (le 4 à l\'heure de la Floride)'], ['Mission prolongée', 'jusqu\'au 30 septembre 2025']] },
+    { id: 'jwst', name: 'James Webb', kind: 'Télescope spatial · NASA, ESA et ASC', group: 'terre', host: 'terre',
+      text: "Le plus grand télescope spatial, qui observe dans l'infrarouge les premières galaxies, la naissance des étoiles et l'atmosphère d'exoplanètes. Il tourne autour du point de Lagrange L2, à 1,5 million de km de la Terre, à l'opposé du Soleil.",
+      facts: [['Lancement', '25 décembre 2021'], ['Position', 'autour du point L2, à ≈ 1,5 million de km'], ['Miroir', '6,5 m']] },
+    { id: 'iss', name: 'Station spatiale internationale', short: 'ISS', kind: 'Station spatiale habitée', group: 'terre', host: 'terre',
+      text: "Occupée en permanence depuis le 2 novembre 2000, elle fait le tour de la Terre en 92 minutes environ, à quelque 400 km d'altitude. Elle réunit les agences des États-Unis, de la Russie, de l'Europe, du Japon et du Canada ; sa fin est prévue vers 2030.",
+      facts: [['Altitude', '≈ 400 km'], ['Un tour de la Terre', '≈ 92 minutes'], ['Occupée depuis', '2 novembre 2000']] },
+    { id: 'tiangong', name: 'Tiangong', kind: 'Station spatiale habitée · Chine', group: 'terre', host: 'terre',
+      text: "La station spatiale chinoise, « Palais céleste » : son module central, Tianhe, a été lancé le 29 avril 2021 et la station achevée fin 2022. Elle accueille des équipages de trois taïkonautes.",
+      facts: [['Altitude', '≈ 390 km'], ['Module central', 'Tianhe, 29 avril 2021']] },
+    { id: 'lro', name: 'Lunar Reconnaissance Orbiter', short: 'LRO', kind: 'Orbiteur lunaire · NASA', group: 'lune', host: 'lune',
+      text: "Il cartographie la Lune depuis 2009 : sa caméra LROC et son altimètre LOLA ont fourni la carte et le relief de la Lune affichés ici.",
+      facts: [['Lancement', '18 juin 2009'], ['Orbite', 'polaire, à environ 50 à 200 km']] },
+    { id: 'danuri', name: 'Danuri', kind: 'Orbiteur lunaire · Corée du Sud', group: 'lune', host: 'lune',
+      text: "La première mission lunaire de la Corée du Sud, en orbite depuis décembre 2022. Elle emporte notamment ShadowCam, une caméra de la NASA qui photographie l'intérieur des cratères polaires plongés dans une ombre permanente.",
+      facts: [['Lancement', '4 août 2022'], ['En orbite lunaire', 'depuis décembre 2022']] },
+    { id: 'mro', name: 'Mars Reconnaissance Orbiter', short: 'MRO', kind: 'Orbiteur martien · NASA', group: 'mars', host: 'mars',
+      text: "En orbite autour de Mars depuis 2006. Sa caméra HiRISE distingue des objets de moins d'un mètre ; il sert aussi de relais radio pour les rovers.",
+      facts: [['Lancement', '12 août 2005'], ['En orbite martienne', 'depuis mars 2006']] },
+    { id: 'marsexpress', name: 'Mars Express', kind: 'Orbiteur martien · ESA', group: 'mars', host: 'mars',
+      text: "La première mission planétaire de l'ESA, autour de Mars depuis décembre 2003. Son radar a détecté de la glace sous les calottes polaires et des indices d'eau liquide salée sous le pôle Sud.",
+      facts: [['Lancement', '2 juin 2003'], ['En orbite martienne', 'depuis décembre 2003']] },
+    { id: 'hope', name: 'Hope', kind: 'Orbiteur martien · Émirats arabes unis', group: 'mars', host: 'mars',
+      text: "« Al-Amal », la première mission interplanétaire d'un pays arabe, en orbite depuis le 9 février 2021. Elle étudie l'atmosphère et le climat de Mars sur toute une année martienne.",
+      facts: [['Lancement', '19 juillet 2020'], ['En orbite martienne', 'depuis le 9 février 2021']] },
+    { id: 'artemis1', name: 'Artemis I', kind: 'Vaisseau Orion, sans équipage · NASA', group: 'lune', fin: true, vol: true,
+      text: "Le premier vol de la fusée SLS et du vaisseau Orion, sans équipage, du 16 novembre au 11 décembre 2022. Orion s'est placé sur une orbite lointaine autour de la Lune avant de revenir amerrir dans le Pacifique.",
+      facts: [['Lancement', '16 novembre 2022'], ['Amerrissage', '11 décembre 2022'], ['Équipage', 'aucun (des mannequins instrumentés)']] },
+    { id: 'artemis2', name: 'Artemis II', kind: 'Vaisseau Orion « Integrity » · NASA et ASC', group: 'lune', fin: true, vol: true,
+      text: "Le premier vol habité vers la Lune depuis Apollo 17 en 1972. Lancés le 1er avril 2026, Reid Wiseman, Victor Glover, Christina Koch et le Canadien Jeremy Hansen ont fait le tour de la Lune le 6 avril, en passant au-dessus de sa face cachée, avant d'amerrir au large de San Diego le 10 avril. À 406 771 km de la Terre, ils sont allés plus loin qu'aucun humain avant eux.",
+      facts: [['Lancement', '1er avril 2026'], ['Tour de la Lune', '6 avril 2026'], ['Amerrissage', '10 avril 2026, Pacifique'], ['Équipage', 'Reid Wiseman, Victor Glover, Christina Koch, Jeremy Hansen'], ['Distance maximale', '406 771 km de la Terre']] }
+  ];
+  OBS.CRAFT_GROUPS = { loin: 'Aux confins du système solaire', soleil: 'Autour du Soleil', planetes: 'Vers les planètes', petits: 'Vers les astéroïdes', terre: 'Autour de la Terre', lune: 'Vers la Lune', mars: 'Autour de Mars' };
+  OBS.CRAFT.forEach(function (c) { c.craft = true; OBS.byId[c.id] = c; });
+})();

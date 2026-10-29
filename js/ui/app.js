@@ -193,6 +193,9 @@
     OBS.on('scale', renderScale);
     sOrbits.checked = get('obs.orbits') !== '0'; OBS.system.setOrbits(sOrbits.checked);
     sOrbits.addEventListener('change', function () { OBS.system.setOrbits(sOrbits.checked); set('obs.orbits', sOrbits.checked ? '1' : '0'); });
+    var sCraft = $('s-craft');
+    sCraft.checked = get('obs.craft') !== '0'; OBS.system.setCraft(sCraft.checked);
+    sCraft.addEventListener('change', function () { OBS.system.setCraft(sCraft.checked); set('obs.craft', sCraft.checked ? '1' : '0'); });
     sLabels.value = get('obs.labels') || 'all'; OBS.system.setLabels(sLabels.value);
     sLabels.addEventListener('change', function () { OBS.system.setLabels(sLabels.value); set('obs.labels', sLabels.value); });
   }

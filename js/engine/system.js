@@ -169,6 +169,7 @@
     bodies.forEach(makeLabel);
     bodies.forEach(function (P) { if (P.sites) P.sites.forEach(function (S) { makeSiteLabel(P, S); }); });
     rebuildOrbits(OBS.time.jd);
+    buildCraft();
 
     controls = L.controls = new T.OrbitControls(camera, OBS.engine.canvas);
     controls.enableDamping = true; controls.dampingFactor = .08;
@@ -313,7 +314,7 @@
     var d = P.def, el = document.createElement('button');
     el.type = 'button';
     el.className = 'lbl' + (d.moon ? ' is-moon' : '') + (d.dwarf ? ' is-dwarf' : '') + (P.region ? ' is-region' : '') + (d.comet ? ' is-comet' : '') + (P.id === 'soleil' ? ' is-sun' : '');
-    el.innerHTML = '<span class="dot"></span><span class="nm">' + d.name + '</span>';
+    el.innerHTML = '<span class="dot"></span><span class="nm">' + (d.short || d.name) + '</span>';
     el.setAttribute('aria-label', d.name + ' — ' + (d.kind || ''));
     el.addEventListener('click', function (e) { e.stopPropagation(); clickBody(P.id); });
     el.addEventListener('pointerenter', function () { hover = P.id; });
@@ -366,6 +367,10 @@
     return Math.max(m * 1.25 / half, P.r * 6);
   }
   function selDist(P) {
+    if (P.craft) {                                         // engin : on le montre avec l'astre qu'il entoure, sinon avec un peu de sa trajectoire
+      var hP = P.host && byId[P.host];
+      return (hP ? Math.max(P.pos.distanceTo(hP.pos) * 3.2 + hP.r * 2, 1.2) : 14) * Math.max(1, .95 / camera.aspect);
+    }
     if (sysView && P.moonsOf && P.moonsOf.length) return sysDist(P) * Math.max(1, .95 / camera.aspect);
     var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? 60 : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
     return d * Math.max(1, .95 / camera.aspect);           // écran étroit (téléphone) : on recule un peu pour voir l'objet entier
@@ -389,7 +394,9 @@
     sysView = !!(Pn && Pn.moonsOf && Pn.moonsOf.length && !opts.close);
     selected = id || null;
     release = 0; siteSel = null; siteFlight = null;
-    startFlight(selected);
+    pendingFly = null;
+    if (Pn && Pn.craft && !Pn.on) { pendingFly = id; flight = null; controls.enabled = true; }   // pas (encore) de position : on attend sans bouger
+    else startFlight(selected);
     if (opts.instant && flight) flight.t = flight.dur;
     var P = selected ? byId[selected] : null;
     controls.minDistance = P ? Math.max(P.r * (P.surf ? 1.06 : 1.35), .05) : 8;
@@ -484,7 +491,7 @@
       controls.target.lerpVectors(flight.fromTgt, tgt, e);
       camera.position.copy(controls.target).addScaledVector(dir, Math.exp(Math.log(dFrom) * (1 - e) + Math.log(dTo) * e));
       if (k >= 1) { flight = null; controls.enabled = true; if (P) lastSel.copy(P.pos); }
-    } else if (P) {
+    } else if (P && !(P.craft && (!P.on || pendingFly))) {
       tmp.copy(P.pos).sub(lastSel); camera.position.add(tmp); controls.target.add(tmp); lastSel.copy(P.pos);
       // zoom arrière loin de l'objet : on le quitte en douceur (on remonte d'un niveau)
       var dist = camera.position.distanceTo(P.pos), out = P.region ? 400 : Math.max(P.r * 90, P.def.moon ? 30 : 70);
@@ -566,7 +573,7 @@
     bodies.forEach(function (P) {
       var d = P.def; if (!d || P.id === 'soleil') return;
       if (P.region) { var au = d.au, lon = d.lonDeg * D2R; toScene({ x: au * Math.cos(lon), y: au * Math.sin(lon), z: 0 }, P.pos); return; }
-      if (d.moon) return;
+      if (d.moon || P.craft) return;
       A.helio(P.id, jd, P.helio); toScene(P.helio, P.pos); P.holder.position.copy(P.pos);
     });
     bodies.forEach(function (P) {
@@ -591,6 +598,225 @@
     // orientation (après positions : les lunes synchrones regardent leur planète)
     bodies.forEach(function (P) { if (P.spin && !P.def.moon) orient(P, jdSpin); });
     bodies.forEach(function (P) { if (P.spin && P.def.moon) orient(P, jdSpin); });
+    placeCraft(jd);
+  }
+
+
+  /* ======================================================================
+     Engins spatiaux (sondes, stations, vaisseaux) — positions JPL Horizons
+     Deux sortes de données (voir tools/missions.py) :
+       v : positions à pas régulier (UA autour du Soleil, km autour d'un astre), interpolées ;
+       e : éléments orbitaux osculateurs, propagés (orbite de Kepler) depuis l'époque la plus proche.
+     Un engin n'est affiché que si les données couvrent la date : sinon, rien.
+     Près d'un astre, il est placé par rapport à lui avec la même compression que les lunes
+     (distance réelle jusqu'à 2,5 rayons, puis logarithmique) : l'ISS rase la Terre, Webb est au-delà de la Lune.
+     ====================================================================== */
+  var pendingFly = null;
+  var crafts = [], craftData = null, showCraft = true, craftLoading = false;
+  // rayon (km) dans lequel un engin est placé par rapport à un astre plutôt qu'au Soleil (au-delà de 2× : transition)
+  var ZONE = { mercure: 4e5, venus: 1.5e6, terre: 3e6, lune: 6.6e4, mars: 1.5e6, jupiter: 5e7, saturne: 5e7, uranus: 3e7, neptune: 5e7 };
+  var HOSTS = ['mercure', 'venus', 'terre', 'mars', 'jupiter', 'saturne', 'uranus', 'neptune'];
+  var markTex = (function () {
+    var c = document.createElement('canvas'); c.width = c.height = 64; var g = c.getContext('2d');
+    g.translate(32, 32); g.rotate(Math.PI / 4);
+    g.shadowColor = 'rgba(120,235,215,0.9)'; g.shadowBlur = 10;
+    g.strokeStyle = 'rgba(150,245,225,1)'; g.lineWidth = 5; g.strokeRect(-12, -12, 24, 24);
+    g.fillStyle = 'rgba(150,245,225,0.35)'; g.fillRect(-12, -12, 24, 24);
+    return new T.CanvasTexture(c);
+  })();
+  function buildCraft() {
+    (OBS.CRAFT || []).forEach(function (d) {
+      var holder = new T.Group(); scene.add(holder); holder.visible = false;
+      var mk = new T.Sprite(new T.SpriteMaterial({ map: markTex, sizeAttenuation: false, transparent: true, depthWrite: false }));
+      mk.scale.set(.016, .016, 1); mk.renderOrder = 3; holder.add(mk);
+      var P = { id: d.id, def: d, craft: true, r: .012, holder: holder, mark: mk, pos: new T.Vector3(), helio: { x: 0, y: 0, z: 0 }, on: false, host: null, rel: new T.Vector3() };
+      var hit = new T.Mesh(sphereGeo, new T.MeshBasicMaterial({ visible: false })); hit.userData.id = d.id; holder.add(hit); P.hit = hit; hitMeshes.push(hit);
+      bodies.push(P); byId[d.id] = P; crafts.push(P); makeLabel(P);
+      P.el.classList.add('is-craft');
+    });
+    loadCraft();
+  }
+  function loadCraft() {
+    if (craftData || craftLoading || !showCraft) return; craftLoading = true;
+    fetch('data/missions.json').then(function (r) { return r.json(); }).then(function (j) {
+      craftData = j; crafts.forEach(function (P) { P.data = j.craft[P.id] || null; });
+      lastJd = null; OBS.emit('craft', j);
+    }).catch(function () { craftLoading = false; });
+  }
+  L.setCraft = function (on) { showCraft = on; if (on) loadCraft(); lastJd = null; if (!on && selected && byId[selected].craft) L.select(null); };
+  L.craftShown = function () { return showCraft; };
+  L.craftData = function () { return craftData; };
+
+  /* position dans le repère d'un segment à la date jd, ou null si la date n'est pas couverte */
+  function segState(S, jd, out) {
+    if (jd < S.from || jd > S.to) return null;
+    if (S.k === 'v') {
+      var f = (jd - S.jd0) / S.dt, i = Math.floor(f), n = S.n, p = S.p;
+      if (i < 0 || i > n - 1 || (i === n - 1 && f > i + 1e-6)) return null;
+      if (i === n - 1) { out.x = p[i * 3]; out.y = p[i * 3 + 1]; out.z = p[i * 3 + 2]; return out; }
+      var t = f - i, i0 = Math.max(0, i - 1), i3 = Math.min(n - 1, i + 2);
+      var t2 = t * t, t3 = t2 * t;                                // Catmull-Rom : passe par les points du JPL
+      var a = -.5 * t3 + t2 - .5 * t, b = 1.5 * t3 - 2.5 * t2 + 1, c = -1.5 * t3 + 2 * t2 + .5 * t, d = .5 * t3 - .5 * t2;
+      if (i0 === i) { a = 0; b = 1 - t; c = t; d = 0; }          // aux extrémités : linéaire
+      if (i3 === i + 1) { a = 0; b = 1 - t; c = t; d = 0; }
+      out.x = a * p[i0 * 3] + b * p[i * 3] + c * p[(i + 1) * 3] + d * p[i3 * 3];
+      out.y = a * p[i0 * 3 + 1] + b * p[i * 3 + 1] + c * p[(i + 1) * 3 + 1] + d * p[i3 * 3 + 1];
+      out.z = a * p[i0 * 3 + 2] + b * p[i * 3 + 2] + c * p[(i + 1) * 3 + 2] + d * p[i3 * 3 + 2];
+      return out;
+    }
+    var E = S.e, lo = 0, hi = E.length - 1;                       // époque la plus proche (recherche dichotomique)
+    if (!E.length) return null;
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (E[mid][0] <= jd) lo = mid; else hi = mid; }
+    var e = Math.abs(E[hi][0] - jd) < Math.abs(E[lo][0] - jd) ? E[hi] : E[lo];
+    var step = E.length > 1 ? E[1][0] - E[0][0] : 1;
+    if (Math.abs(e[0] - jd) > step * .75) return null;
+    return keplerState(e, jd, out);
+  }
+  function keplerState(e, jd, out) {                              // [jd, e, q (km), i, Ω, ω, Tp, n (°/j)] → position (km)
+    var ec = e[1], q = e[2], M = (e[7] * (jd - e[6])) * D2R, x, y;
+    if (ec < 1) {
+      var a = q / (1 - ec); M = M % TAU; if (M > Math.PI) M -= TAU; if (M < -Math.PI) M += TAU;
+      var E2 = ec < .8 ? M : Math.PI * (M < 0 ? -1 : 1);
+      for (var k = 0; k < 30; k++) { var dE = (E2 - ec * Math.sin(E2) - M) / (1 - ec * Math.cos(E2)); E2 -= dE; if (Math.abs(dE) < 1e-12) break; }
+      x = a * (Math.cos(E2) - ec); y = a * Math.sqrt(1 - ec * ec) * Math.sin(E2);
+    } else {
+      var ah = q / (ec - 1), H2 = Math.asinh(M / ec);
+      for (var k2 = 0; k2 < 40; k2++) { var dH = (ec * Math.sinh(H2) - H2 - M) / (ec * Math.cosh(H2) - 1); H2 -= dH; if (Math.abs(dH) < 1e-12) break; }
+      x = ah * (ec - Math.cosh(H2)); y = ah * Math.sqrt(ec * ec - 1) * Math.sinh(H2);
+    }
+    var O = e[4] * D2R, w = e[5] * D2R, i = e[3] * D2R, cO = Math.cos(O), sO = Math.sin(O), cw = Math.cos(w), sw = Math.sin(w), ci = Math.cos(i), si = Math.sin(i);
+    out.x = (cO * cw - sO * sw * ci) * x + (-cO * sw - sO * cw * ci) * y;
+    out.y = (sO * cw + cO * sw * ci) * x + (-sO * sw + cO * cw * ci) * y;
+    out.z = (sw * si) * x + (cw * si) * y;
+    return out;
+  }
+  /* position à l'écran autour d'un astre : direction réelle, distance compressée comme pour les lunes */
+  function hostDisplay(H, v, out) {
+    var dk = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    if (dk < 1e-6) return out.copy(H.pos);
+    dirToScene(v, out); return out.multiplyScalar(scale.moonDist(H.r, Math.max(dk, H.def.rKm * 1.0005), H.def.rKm)).add(H.pos);
+  }
+  function smooth01(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+  var cs = { x: 0, y: 0, z: 0 }, cs2 = { x: 0, y: 0, z: 0 }, relv = { x: 0, y: 0, z: 0 }, dH = new T.Vector3(), dP = new T.Vector3(), dM = new T.Vector3();
+  function placeCraft(jd) {
+    crafts.forEach(function (P) {
+      var on = false, data = P.data;
+      P.host = null;
+      if (showCraft && data) {
+        var sun = null, planet = null, moonS = null;
+        data.segs.forEach(function (S) {
+          var o = S.c === 'soleil' ? cs : S.c === 'lune' ? cs2 : relv;
+          if (!segState(S, jd, o)) return;
+          if (S.c === 'soleil') sun = o; else if (S.c === 'lune') moonS = o; else planet = { c: S.c, v: o };
+        });
+        var AUK = A.AU_KM;
+        if (planet || sun || moonS) {
+          on = true;
+          var Hp = null, hv = null, w = 1, h = P.helio;
+          if (planet) {                                            // repère d'une planète (ou de la Terre)
+            Hp = byId[planet.c]; hv = planet.v;
+            h.x = Hp.helio.x + hv.x / AUK; h.y = Hp.helio.y + hv.y / AUK; h.z = Hp.helio.z + hv.z / AUK;
+            if (sun && ZONE[planet.c]) w = smooth01(2 - Math.sqrt(hv.x * hv.x + hv.y * hv.y + hv.z * hv.z) / ZONE[planet.c]);   // encore loin de la planète : repère du Soleil
+          } else if (sun) {                                        // autour du Soleil : près d'une planète, on bascule dans son repère
+            h.x = sun.x; h.y = sun.y; h.z = sun.z;
+            var best = null, bd = Infinity;
+            HOSTS.forEach(function (id) {
+              var Q = byId[id]; if (!Q) return;
+              var dx = (sun.x - Q.helio.x) * AUK, dy = (sun.y - Q.helio.y) * AUK, dz = (sun.z - Q.helio.z) * AUK, dd = Math.sqrt(dx * dx + dy * dy + dz * dz);
+              if (dd < 2 * ZONE[id] && dd / ZONE[id] < bd) { bd = dd / ZONE[id]; best = Q; relv.x = dx; relv.y = dy; relv.z = dz; }
+            });
+            if (best) { Hp = best; hv = relv; w = smooth01(2 - bd); }
+          } else {                                                 // repère de la Lune seulement (orbiteurs lunaires)
+            var Lu = byId.lune; h.x = Lu.helio.x + moonS.x / AUK; h.y = Lu.helio.y + moonS.y / AUK; h.z = Lu.helio.z + moonS.z / AUK;
+          }
+          if (sun) toScene(sun, dH); else dH.set(0, 0, 0);
+          if (Hp) { hostDisplay(Hp, hv, dP); P.pos.copy(sun ? dH.lerp(dP, w) : dP); P.host = w > .5 ? Hp.id : null; }
+          else P.pos.copy(dH);
+          if (moonS) {                                             // près de la Lune : placé par rapport à elle
+            var Lm = byId.lune, dm = Math.sqrt(moonS.x * moonS.x + moonS.y * moonS.y + moonS.z * moonS.z), wm = (planet || sun) ? smooth01(2 - dm / ZONE.lune) : 1;
+            if (wm > 0) { hostDisplay(Lm, moonS, dM); P.pos.lerp(dM, wm); if (wm > .5) P.host = 'lune'; }
+          }
+          if (P.def.host && !P.host) P.host = P.def.host;
+        }
+      }
+      P.on = on; P.holder.position.copy(P.pos);
+      if (!on && P.path) P.path.visible = false;
+    });
+    if (pendingFly && byId[pendingFly].on && selected === pendingFly) { startFlight(pendingFly); pendingFly = null; }
+  }
+  function craftLive(P) {
+    var out = { craft: true, on: P.on };
+    var d = P.data;
+    if (d) { var c0 = Infinity, c1 = -Infinity; d.segs.forEach(function (S) { c0 = Math.min(c0, S.from); c1 = Math.max(c1, S.to); }); out.from = c0; out.to = c1; }
+    if (!P.on) return out;
+    var h = P.helio, E = byId.terre.helio;
+    out.sun = Math.sqrt(h.x * h.x + h.y * h.y + h.z * h.z);
+    var dx = h.x - E.x, dy = h.y - E.y, dz = h.z - E.z; out.earth = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    // distance à l'astre le plus proche, quand l'engin est dans son repère (km, valeur du JPL)
+    var jd = OBS.time.jd, best = null;
+    d.segs.forEach(function (S) {
+      if (S.c === 'soleil') return; var o = segState(S, jd, {}); if (!o) return;
+      var dk = Math.sqrt(o.x * o.x + o.y * o.y + o.z * o.z);
+      if (!best || (S.c === 'lune' && dk < ZONE.lune * 2)) best = { c: S.c, km: dk };
+    });
+    if (best) { out.hostKm = best.km; out.hostName = byId[best.c].def.name; out.hostR = byId[best.c].def.rKm; }
+    // vitesse : différence de position sur une minute (héliocentrique, ou par rapport à l'astre)
+    var sp = speedOf(P, jd); if (sp) { out.speed = sp.v; out.speedRef = sp.ref; }
+    return out;
+  }
+  function speedOf(P, jd) {
+    var dt = 60 / 86400, a = {}, b = {}, pick2 = null;
+    P.data.segs.forEach(function (S) { if (!pick2 && S.c !== 'soleil' && segState(S, jd, a) && segState(S, jd + dt, b)) pick2 = S; });
+    if (!pick2) P.data.segs.forEach(function (S) { if (!pick2 && segState(S, jd, a) && segState(S, jd + dt, b)) pick2 = S; });
+    if (!pick2) return null;
+    var k = pick2.c === 'soleil' ? A.AU_KM : 1, dx = (b.x - a.x) * k, dy = (b.y - a.y) * k, dz = (b.z - a.z) * k;
+    return { v: Math.sqrt(dx * dx + dy * dy + dz * dz) / 60, ref: pick2.c === 'soleil' ? 'par rapport au Soleil' : 'par rapport à ' + (pick2.c === 'terre' || pick2.c === 'lune' ? 'la ' : '') + byId[pick2.c].def.name };
+  }
+  /* trajectoire de l'engin choisi : chemin du JPL autour du Soleil, ou orbite autour de son astre */
+  var pathMat = new T.LineBasicMaterial({ color: 0x8ff0dc, transparent: true, opacity: .4, depthWrite: false });
+  function updateCraftPaths() {
+    crafts.forEach(function (P) {
+      var want = P.on && (P.id === selected || P.id === hover);
+      if (!want) { if (P.path) P.path.visible = false; return; }
+      var jd = OBS.time.jd, S = null;
+      P.data.segs.forEach(function (s) { if (jd >= s.from && jd <= s.to && (!S || (S.c === 'soleil' && s.c !== 'soleil' && s.c !== 'lune'))) S = s; });
+      if (!S) return;
+      // autour d'un astre, on ne trace qu'une fenêtre autour de la date (sinon des mois d'orbites s'empilent)
+      var win = S.k === 'v' && S.c !== 'soleil' ? Math.max(10, 60 * S.dt) : 0;
+      var key = S.k === 'e' ? S.c + Math.round((jd - S.e[0][0]) / ((S.e[1] || S.e[0])[0] - S.e[0][0] || 1)) : S.c + S.from + scale.mode + (win ? ':' + Math.floor(jd / (win / 4)) : '');
+      if (P.pathKey !== key) {
+        if (P.path) { scene.remove(P.path); P.path.geometry.dispose(); }
+        var pts = [], o = {};
+        if (S.k === 'v') {
+          var stepN = Math.max(1, Math.floor(S.n / 3000));
+          var SL = S.c === 'terre' && P.data.segs.filter(function (x) { return x.c === 'lune' && x.k === 'v'; })[0], om = {}, ml = new T.Vector3(), Lm = byId.lune;
+          var i0 = 0, i1 = S.n;
+          if (win) { i0 = Math.max(0, Math.floor((jd - win - S.jd0) / S.dt)); i1 = Math.min(S.n, Math.ceil((jd + win - S.jd0) / S.dt) + 1); stepN = Math.max(1, Math.floor((i1 - i0) / 3000)); }
+          for (var i = i0; i < i1; i += stepN) {
+            o.x = S.p[i * 3]; o.y = S.p[i * 3 + 1]; o.z = S.p[i * 3 + 2];
+            if (S.c === 'soleil') { pts.push(toScene(o, new T.Vector3())); continue; }
+            var q = hostDisplay(byId[S.c], o, new T.Vector3()).sub(byId[S.c].pos), tj = S.jd0 + i * S.dt;
+            if (SL && segState(SL, tj, om)) {                       // près de la Lune : même placement que le repère, Lune à sa position de l'instant
+              var dmk = Math.sqrt(om.x * om.x + om.y * om.y + om.z * om.z), wq = smooth01(2 - dmk / ZONE.lune);
+              if (wq > 0) {
+                A.moonGeo(tj, ecl); dirToScene(ecl, ml).multiplyScalar(scale.moonDist(byId.terre.r, Lm.def.orbit.aKm, byId.terre.def.rKm));
+                ml.add(hostDisplay(Lm, om, tmp2).sub(Lm.pos)); q.lerp(ml, wq);
+              }
+            }
+            pts.push(q);
+          }
+        } else {                                                   // orbite osculatrice du moment
+          var e = null; segState(S, jd, o);
+          S.e.forEach(function (x) { if (!e || Math.abs(x[0] - jd) < Math.abs(e[0] - jd)) e = x; });
+          var per = e[1] < 1 ? 360 / e[7] : 2;
+          for (var j = 0; j <= 180; j++) { keplerState(e, e[6] + (e[1] < 1 ? per * j / 180 : (j - 90) / 90 * per), o); pts.push(hostDisplay(byId[S.c], o, new T.Vector3()).sub(byId[S.c].pos)); }
+        }
+        P.path = new T.Line(new T.BufferGeometry().setFromPoints(pts), pathMat); P.path.frustumCulled = false;
+        P.path.userData.rel = S.c !== 'soleil' ? S.c : null; scene.add(P.path); P.pathKey = key;
+      }
+      P.path.visible = true;
+      if (P.path.userData.rel) P.path.position.copy(byId[P.path.userData.rel].pos); else P.path.position.set(0, 0, 0);
+    });
   }
 
   /* ---------- API d'affichage ---------- */
@@ -608,6 +834,7 @@
   /* Informations calculées en direct pour la console */
   L.live = function (id) {
     var P = byId[id]; if (!P || !P.def || P.region) return null;
+    if (P.craft) return craftLive(P);
     var out = {};
     var h = P.helio, rs = Math.sqrt(h.x * h.x + h.y * h.y + h.z * h.z);
     var E = byId.terre.helio, dx = h.x - E.x, dy = h.y - E.y, dz = h.z - E.z, re = Math.sqrt(dx * dx + dy * dy + dz * dz);
@@ -622,6 +849,7 @@
   L.crumbs = function () {
     var c = [{ label: 'Système solaire', act: function () { L.select(null); } }];
     var P = selected ? byId[selected] : null;
+    if (P && P.craft && P.host) { var hh = P.host, hp = byId[hh].def; if (hp.moon) c.push({ label: byId[hp.parent].def.name, act: function () { L.select(hp.parent); } }); c.push({ label: hp.name, act: function () { L.select(hh); } }); }
     if (P && P.def && P.def.moon) { var par = P.def.parent; c.push({ label: byId[par].def.name, act: function () { L.select(par); } }); }
     if (P && siteSel) { var bid = P.id; c.push({ label: P.def.name, act: function () { L.select(bid); } }); c.push({ label: siteSel.S.def.name, current: true }); }
     else if (P) c.push({ label: P.def.name, current: true });
@@ -715,6 +943,11 @@
       if (P.hit && P.id !== 'soleil') {
         P.hit.scale.setScalar(P.r * Math.max(1.3, 14 / Math.max(P.rPx, .5)));
         P.hit.visible = !P.def.moon || P.def.parent === focusSys || (byId[P.def.parent].rPx > 18);
+        if (P.craft) {                                     // un engin autour d'un astre lointain : caché tant que l'astre n'est qu'un point
+          var hb = P.host && byId[P.host], hostSys = hb && (hb.def.moon ? hb.def.parent : hb.id);
+          P.shown = P.on && (P.id === selected || !hb || hb.rPx > 6 || hostSys === focusSys);
+          P.holder.visible = P.shown; P.hit.visible = P.shown;
+        }
       }
       if (P.line) {
         var tgt;
@@ -726,6 +959,7 @@
       }
     });
     belts.forEach(function (B) { B.pts.visible = labelMode !== 'none' || true; });
+    updateCraftPaths();
 
     layoutLabels(focusSys);
   };
@@ -787,6 +1021,7 @@
       if (d.moon) show = show && (d.parent === focusSys || byId[d.parent].rPx > 26);
       if (P.region) show = show && labelMode === 'all' && !selected;
       if ((d.dwarf || d.comet) && labelMode === 'planetes') show = selected === P.id;
+      if (P.craft) show = P.shown && labelMode !== 'none' && (selected === P.id || hover === P.id || (labelMode === 'all' && (P.host ? byId[P.host].rPx > 30 || P.host === focusSys || (byId[P.host].def.moon && byId[P.host].def.parent === focusSys && byId[P.host].rPx > 8) : !selected)));
       camSpace.copy(P.pos).applyMatrix4(camera.matrixWorldInverse);
       if (camSpace.z > 0) show = false;
       v3.copy(P.pos).project(camera);
@@ -794,7 +1029,7 @@
       if (x < -60 || x > W + 60 || y < -40 || y > H + 40) show = false;
       if (show && P.id !== 'soleil' && camera.position.distanceTo(P.pos) > camera.position.length() && Math.hypot(sx - x, sy - y) < sunPx) show = false;   // caché derrière le Soleil
       if (show) { P._sx = x; P._sy = y; P._cd = -camSpace.z; }
-      var pri = (P.id === selected ? 1000 : P.id === hover ? 500 : 0) + (P.id === 'soleil' ? 120 : P.id === 'terre' ? 115 : d.moon ? 20 : d.dwarf || d.comet ? 40 : P.region ? 10 : 100) + Math.min(60, P.rPx || 0);
+      var pri = (P.id === selected ? 1000 : P.id === hover ? 500 : 0) + (P.id === 'soleil' ? 120 : P.id === 'terre' ? 115 : d.moon ? 20 : P.craft ? 15 : d.dwarf || d.comet ? 40 : P.region ? 10 : 100) + Math.min(60, P.rPx || 0);
       items.push({ P: P, el: el, x: x, y: y, show: show, pri: pri });
     });
     // caché derrière un astre plus proche qui occupe de la place à l'écran (une lune derrière sa planète…)

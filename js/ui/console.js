@@ -129,6 +129,7 @@
     clearInterval(liveTimer);
     if (!id) { el.hidden = true; el.innerHTML = ''; if (OBS.engine.setShift) OBS.engine.setShift(0, 0); return; }
     if (level === 'etoile') return renderStar(id, part);
+    if (level === 'systeme' && OBS.byId[id] && OBS.byId[id].craft) return renderCraft(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -203,6 +204,68 @@
       box.innerHTML = liveSystem(id);
       var h3 = box.parentNode.querySelector('h3'); if (h3) h3.textContent = 'Le ' + dateLabel();
     }, 500);
+  }
+
+  /* un engin spatial : sonde, station, vaisseau */
+  function fmtDate(jd, withTime) {
+    var o = { day: 'numeric', month: 'long', year: 'numeric' }; if (withTime) { o.hour = '2-digit'; o.minute = '2-digit'; o.timeZone = 'UTC'; }
+    return OBS.astro.dateFromJd(jd).toLocaleDateString('fr-FR', o) + (withTime ? ' UTC' : '');
+  }
+  function deNom(n) { return n === 'Terre' || n === 'Lune' ? 'la ' + n : n; }
+  function liveCraft(def) {
+    var lv = OBS.system.live(def.id) || {}, AU = OBS.astro.AU_KM, h = [];
+    function cell(label, big, small, wide) { h.push('<div' + (wide ? ' class="wide"' : '') + '><span>' + label + '</span><b>' + big + '</b>' + (small ? '<small>' + small + '</small>' : '') + '</div>'); }
+    if (!OBS.system.craftData()) return '<p class="c-note">Chargement des trajectoires…</p>';
+    if (!lv.on) {
+      var msg = lv.from === undefined ? 'Aucune donnée de position pour cet engin.' :
+        'Pas de position pour cette date : les données du JPL couvrent du ' + fmtDate(lv.from) + ' au ' + fmtDate(lv.to) + '. L\'engin n\'est donc pas affiché.';
+      var target = lv.from === undefined ? null : (OBS.time.jd < lv.from ? lv.from + .02 : lv.to - .02);
+      var now = OBS.astro.jdFromDate(new Date());
+      if (target && now && now > lv.from && now < lv.to) target = now;
+      return '<p class="c-note">' + esc(msg) + '</p>' + (target ? '<div class="c-chips" style="margin-top:8px"><button class="chip chip-go" type="button" data-jump="' + target + '">' + (def.vol ? 'Revivre le vol depuis le départ' : 'Aller au ' + esc(fmtDate(target))) + '</button></div>' : '');
+    }
+    if (lv.hostKm !== undefined) {
+      var alt = lv.hostKm - lv.hostR;
+      if (alt < 30000) cell('Altitude au-dessus de ' + deNom(lv.hostName), nf(alt) + ' km', 'distance au centre : ' + nf(lv.hostKm) + ' km');
+      else cell('Distance à ' + deNom(lv.hostName), lv.hostKm > 3e6 ? nf(lv.hostKm / 1e6, 2) + ' millions de km' : nf(lv.hostKm) + ' km', lv.hostName === 'Terre' ? 'lumière : ' + lightTime(lv.hostKm) : 'de centre à centre');
+    }
+    if (lv.sun !== undefined && !(lv.hostName === 'Terre' || lv.hostName === 'Lune')) cell('Distance au Soleil', nf(lv.sun, lv.sun < 10 ? 3 : 2) + ' UA', nf(lv.sun * AU / 1e6, 1) + ' millions de km');
+    if (lv.earth !== undefined && lv.hostName !== 'Terre') cell('Signal depuis la Terre', lightTime(lv.earth * AU), lv.earth < .05 ? nf(lv.earth * AU) + ' km, aller simple' : nf(lv.earth, lv.earth < 10 ? 3 : 2) + ' UA, aller simple');
+    if (lv.speed !== undefined) cell('Vitesse', nf(lv.speed, lv.speed < 10 ? 2 : 1) + ' km/s', nf(lv.speed * 3600) + ' km/h ' + lv.speedRef);
+    return '<div class="c-live">' + h.join('') + '</div>';
+  }
+  function renderCraft(id) {
+    var def = OBS.byId[id], h = [];
+    current = { level: 'systeme', id: id }; clearInterval(liveTimer);
+    var col = '#8ff0dc';
+    h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind) + '</p><h2 class="c-name"><span class="c-swatch c-craft" style="background:' + col + ';color:' + col + '"></span>' + esc(def.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    var now = OBS.astro.jdFromDate(new Date());
+    var pos = def.fin && !def.vol ? flag('real', 'Position', 'extrapolée par le JPL', 'la sonde ne transmet plus : sa trajectoire est prolongée par le calcul')
+      : flag('real', 'Position', 'JPL Horizons', 'trajectoire reconstituée ou prévue par les équipes de navigation, mise à jour chaque jour') ;
+    h.push('<div class="c-flags">' + pos + '<span data-when></span>' + flag('adapt', 'Aspect', 'symbolique', 'un repère, pas une image de l\'engin') +
+      flag('adapt', 'Échelle', 'adaptée', 'près d\'un astre, la distance est compressée comme celle des lunes ; la direction reste réelle') + '<a class="flag-help" href="#/methode">?</a></div>');
+    h.push('<section class="c-sec"><h3>Le ' + esc(dateLabel()) + '</h3><div data-live>' + liveCraft(def) + '</div></section>');
+    h.push('<p class="c-text">' + esc(def.text || '') + '</p>');
+    h.push(facts(def));
+    var host = def.host && OBS.byId[def.host];
+    if (host) h.push('<section class="c-sec"><div class="c-chips"><button class="chip" type="button" data-go="' + host.id + '">← ' + esc(host.name) + '</button></div></section>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Position : JPL Horizons (NASA/JPL-Caltech), ' + (def.fin && !def.vol ? 'trajectoire extrapolée après la fin des contacts' : 'reconstituée pour le passé, prévue pour l\'avenir et recalculée chaque jour') + '. Près d\'un astre, l\'engin est placé dans sa vraie direction, mais à une distance compressée comme celle des lunes. Hors des dates couvertes par les données, il n\'est pas affiché.</p></section>');
+    h.push('</div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.system.select(def.host || null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-go]'), function (b) { b.addEventListener('click', function () { OBS.system.select(b.getAttribute('data-go')); }); });
+    function live() {
+      var box = el.querySelector('[data-live]'); if (!box) return;
+      var html = liveCraft(def); if (box._h !== html) { box.innerHTML = html; box._h = html; }
+      var jb = box.querySelector('[data-jump]');
+      if (jb && !jb._b) { jb._b = 1; jb.addEventListener('click', function () { OBS.time.set(+jb.getAttribute('data-jump')); }); }
+      var h3 = box.parentNode.querySelector('h3'); if (h3) h3.textContent = 'Le ' + dateLabel();
+      var w = el.querySelector('[data-when]'), n2 = OBS.astro.jdFromDate(new Date());
+      if (w) w.innerHTML = n2 && OBS.time.jd > n2 + 1 && !def.fin ? flag('adapt', 'Date', 'à venir', 'trajectoire prévue : elle peut encore changer avec les manœuvres') : '';
+    }
+    live(); liveTimer = setInterval(live, 500);
   }
 
   /* système d'une étoile voisine : l'étoile, sa compagne ou une de ses planètes */

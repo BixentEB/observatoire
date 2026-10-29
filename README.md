@@ -38,6 +38,8 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/astro/astro.js` | Calculs : positions à la date (JPL), Lune, orientation des astres (IAU), conversions |
 | `js/data/bodies.js` | Données réelles du système solaire (planètes, planètes naines, lunes, Halley, régions) |
 | `js/data/stars.js` | Étoiles à moins de 12 années-lumière (positions réelles) |
+| `js/data/craft.js` | Engins spatiaux : fiches (les positions sont dans `data/missions.json`) |
+| `tools/missions.py` | Récupère les trajectoires JPL Horizons → `data/missions.json` (sans dépendance ; lancé chaque jour par `.github/workflows/missions.yml`) |
 | `js/engine/shaders.js` | Shaders repris du moteur d'Héliosphère, avec cartes de surface réelles |
 | `js/engine/core.js` | Rendu partagé, niveaux, fondus, temps simulé, décalage de la vue quand la console est ouverte |
 | `js/engine/system.js` | Niveau « Système solaire » (échelle, objets, orbites, ceintures, étiquettes, caméra) |

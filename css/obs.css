@@ -53,6 +53,8 @@ button { font: inherit; color: inherit; }
 .lbl.dim .nm { opacity: .5; }
 .lbl.is-moon .nm, .lbl.is-dwarf .nm, .lbl.is-region .nm { font-size: 11px; color: var(--muted); }
 .lbl.is-region .nm { font-style: italic; background: none; }
+.lbl.is-craft .nm { font: 500 10.5px/1 var(--mono, monospace); letter-spacing: .04em; color: #8ff0dc; opacity: .85; }
+.lbl.is-craft.active .nm { color: #8ff0dc; border-color: rgba(143, 240, 220, .45); opacity: 1; }
 .lbl.is-comet .nm { color: #9fd0ff; }
 .lbl.is-sun .nm { color: var(--accent); }
 /* lieux de la surface (cratères, mers, sites d'alunissage) */

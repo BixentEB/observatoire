@@ -1,0 +1,34 @@
+# Met à jour chaque jour les trajectoires des engins spatiaux (JPL Horizons) : data/missions.json
+name: Trajectoires des engins spatiaux
+
+on:
+  schedule:
+    - cron: '17 4 * * *'      # chaque jour vers 4 h 17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: missions
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Récupérer les trajectoires
+        run: python3 tools/missions.py
+      - name: Publier si quelque chose a changé
+        run: |
+          if git diff --quiet -- data/missions.json; then echo "Rien de neuf."; exit 0; fi
+          git config user.name "observatoire-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/missions.json
+          git commit -m "Trajectoires des engins : mise à jour JPL Horizons du $(date -u +%F)"
+          git push

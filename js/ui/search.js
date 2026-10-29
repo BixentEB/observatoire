@@ -11,6 +11,7 @@
     europe: 'europa', ganymede: 'ganymede', encelade: 'enceladus', japet: 'iapetus', rhea: 'rhea', dione: 'dione', tethys: 'tethys', oberon: 'oberon',
     ceres: 'ceres', eris: 'eris', haumea: 'haumea', makemake: 'makemake', halley: '1p comete comet', ceinture: 'asteroides asteroid belt',
     kuiper: 'kuiper belt', proxima: 'proxima centauri', alphacen: 'rigil kentaurus alpha centauri', sirius: 'sirius canicule', '61cyg': '61 cygni', tauceti: 'tau ceti', epseri: 'epsilon eridani' };
+  var CRAFT_ALIAS = { jwst: 'jwst webb telescope', iss: 'iss station', tiangong: 'css station chinoise', artemis1: 'orion', artemis2: 'orion integrity wiseman glover koch hansen', osirisapex: 'osiris rex bennu apophis', clipper: 'europe europa', juice: 'ganymede', hope: 'al amal emirats', marsexpress: 'mex', lro: 'lunar reconnaissance', parker: 'psp' };
   function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
 
   var index = null;
@@ -22,6 +23,7 @@
         index.push({ name: x.name, sub: (OBS.SITE_TYPES[x.type] || 'Lieu') + ' · ' + OBS.byId[bid].name + (x.date ? ' · ' + x.date : ''), href: '#/explorer/' + bid + '/' + x.id, key: norm(x.name + ' ' + (OBS.SITE_TYPES[x.type] || '') + ' ' + OBS.byId[bid].name), w: 1 });
       });
     });
+    (OBS.CRAFT || []).forEach(function (c) { index.push({ name: c.name, sub: c.kind, href: '#/explorer/' + c.id, key: norm(c.name + ' ' + (c.short || '') + ' ' + c.kind + ' ' + (CRAFT_ALIAS[c.id] || '') + ' sonde engin mission'), w: 2 }); });
     OBS.REGIONS.forEach(function (r) { index.push({ name: r.name, sub: r.kind, href: '#/explorer/' + r.id, key: norm(r.name + ' ' + (ALIAS[r.id] || '') + ' ' + r.kind), w: 2 }); });
     OBS.STARS.forEach(function (s) {
       index.push({ name: s.name, sub: (s.cls === 'BD' ? 'Naine brune' : 'Étoile') + ' · ' + s.ly.toLocaleString('fr-FR') + ' al · ' + (s.cons || ''), href: '#/etoile/' + s.id, key: norm(s.name + ' ' + (ALIAS[s.id] || '') + ' ' + s.spec + ' ' + (s.cons || '') + ' etoile star'), w: 2 });
@@ -51,7 +53,7 @@
   function close() { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
   function draw() {
     var q = input.value; results = find(q); cur = 0;
-    if (!q.trim()) { list.innerHTML = '<li class="s-hint">Un astre, une lune, une étoile, une exoplanète… par exemple <b>Titan</b>, <b>Proxima</b> ou <b>Halley</b>.</li>'; return; }
+    if (!q.trim()) { list.innerHTML = '<li class="s-hint">Un astre, une lune, une étoile, une sonde… par exemple <b>Titan</b>, <b>Proxima</b> ou <b>Voyager</b>.</li>'; return; }
     if (!results.length) { list.innerHTML = '<li class="s-hint">Aucun objet ne correspond. L\'Observatoire ne montre que des objets réels : il n\'y a peut-être pas encore de fiche pour celui-ci.</li>'; return; }
     list.innerHTML = results.map(function (r, i) {
       return '<li role="option" aria-selected="' + (i === cur) + '"><a href="' + r.href + '" class="' + (r.hypo ? 's-hypo' : r.page ? 's-page' : '') + '"><b>' + esc(r.name) + '</b><small>' + esc(r.sub || '') + '</small></a></li>';

@@ -11,6 +11,11 @@
   - Échelle adaptée (distances en r^0,55) ou distances réelles ; tailles toujours agrandies (rayon en r^0,4) ; tout est signalé.
   - Lunes : taille proportionnelle à leur planète (exposant 0,8), distance réelle en rayons de la planète jusqu'à 2,5 puis logarithmique (Mimas hors des anneaux, la Lune à ~7 rayons terrestres). Orbite de la Lune tracée dans son vrai plan.
   - Clic sur une planète à lunes : d'abord la vue de son système entier, second clic (ou clic sur une lune) pour s'approcher. Échap recule d'un cran.
+- **Engins spatiaux** (26) : Voyager 1 et 2, Pioneer 10 et 11, New Horizons, Parker, Solar Orbiter, BepiColombo, JUICE, Europa Clipper, Psyche, Lucy, Hera, Hayabusa2, OSIRIS-APEX, Juno, Webb, ISS, Tiangong, LRO, Danuri, MRO, Mars Express, Hope, Artemis I et II.
+  - Positions JPL Horizons précalculées par `tools/missions.py` dans `data/missions.json`, rafraîchies chaque jour par `.github/workflows/missions.yml` (Horizons refuse les appels directs depuis un navigateur).
+  - Vecteurs interpolés (Catmull-Rom) autour du Soleil ou d'un astre ; éléments osculateurs propagés (Kepler) pour les orbiteurs rapides (ISS, orbiteurs de Mars et de la Lune, Juno).
+  - Près d'un astre : direction réelle, distance compressée comme les lunes. Hors des dates couvertes : rien n'est affiché. Réglage « Engins spatiaux » pour les masquer.
+  - Trajectoire de l'engin choisi tracée ; vols terminés (Artemis I et II) rejouables depuis la console.
 - **Voisinage stellaire** : 21 étoiles et naines brunes à moins de 12 années-lumière, à leurs vraies positions 3D, avec repères de 5 et 10 al.
 - Passage d'un niveau à l'autre en zoomant (ou par le fil d'Ariane), avec un fondu court.
 - Consoles d'objets : valeurs en direct (distance au Soleil, à la Terre, temps-lumière), fiche de données, carte de surface, exploration, « ce qui est représenté », hypothèses liées.
