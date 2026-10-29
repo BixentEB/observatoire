@@ -16,8 +16,13 @@
   var scale = {
     mode: 'adaptee',
     dist: function (au) { return scale.mode === 'reelle' ? AU * au : AU * Math.pow(au, 0.55); },
-    radius: function (km) { return 0.042 * Math.pow(km, 0.4); },
-    moonDist: function (rp, aKm, rpKm) { return rp * (1.6 + 0.9 * Math.pow(aKm / rpKm, 0.45)); }
+    // tailles : compressées (r^0,4) et plus petites qu'avant, pour laisser de la place entre planètes voisines
+    radius: function (km) { return 0.026 * Math.pow(km, 0.4); },
+    // lunes : leur taille garde à peu près la proportion réelle par rapport à leur planète (exposant 0,8)
+    moonRadius: function (km, parentKm, parentR) { return Math.max(0.02, parentR * Math.pow(km / parentKm, 0.8)); },
+    // distance d'une lune : réelle (en rayons de la planète) jusqu'à 2,5 rayons, puis compressée (logarithme).
+    // Mimas reste hors des anneaux de Saturne, et la Lune reste près de la Terre même quand Mars passe au plus près.
+    moonDist: function (rp, aKm, rpKm) { var x = aKm / rpKm; return rp * (x <= 2.5 ? x : 2.5 + 1.4 * Math.log(x / 2.5)); }
   };
   var SUN_R = 7;
 
@@ -28,6 +33,7 @@
   var camera = L.camera = new T.PerspectiveCamera(40, 1, 0.02, 60000);
   var controls, labelsEl, W = 800, H = 600, PR = 1, tanHalf = Math.tan(20 * D2R);
   var cfg = OBS.perf.cfg;
+  var sysView = false;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), tmp3 = new T.Vector3(), ecl = {}, ecl2 = {};
   var sunPos = new T.Vector3();
 
@@ -175,7 +181,8 @@
   };
 
   function makeBody(d) {
-    var r = scale.radius(d.rKm);
+    var par0 = d.moon && byId[d.parent];
+    var r = par0 ? scale.moonRadius(d.rKm, par0.def.rKm, par0.r) : scale.radius(d.rKm);
     var holder = new T.Group(); scene.add(holder);
     var spin = new T.Group(); holder.add(spin);
     var mat = planetMaterial(d.look || {}, r);
@@ -308,7 +315,7 @@
     el.className = 'lbl' + (d.moon ? ' is-moon' : '') + (d.dwarf ? ' is-dwarf' : '') + (P.region ? ' is-region' : '') + (d.comet ? ' is-comet' : '') + (P.id === 'soleil' ? ' is-sun' : '');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + d.name + '</span>';
     el.setAttribute('aria-label', d.name + ' — ' + (d.kind || ''));
-    el.addEventListener('click', function (e) { e.stopPropagation(); L.select(P.id); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); clickBody(P.id); });
     el.addEventListener('pointerenter', function () { hover = P.id; });
     el.addEventListener('pointerleave', function () { if (hover === P.id) hover = null; });
     labelsEl.appendChild(el); P.el = el;
@@ -351,7 +358,15 @@
   var selected = null, hover = null, flight = null, interacting = false, lastSel = new T.Vector3(), release = 0;
   var siteSel = null, siteFlight = null, lastSite = new T.Vector3(), qPrev = new T.Quaternion(), qNow = new T.Quaternion(), qInv = new T.Quaternion();
   var showOrbits = true, labelMode = 'all';
+  /* vue « système » d'une planète à lunes : la planète et toutes ses lunes à l'écran */
+  function sysDist(P) {
+    var m = 0;
+    P.moonsOf.forEach(function (M) { m = Math.max(m, scale.moonDist(P.r, M.def.orbit.aKm, P.def.rKm) + M.r); });
+    var half = Math.tan(camera.fov * D2R / 2) * Math.min(1, camera.aspect);
+    return Math.max(m * 1.25 / half, P.r * 6);
+  }
   function selDist(P) {
+    if (sysView && P.moonsOf && P.moonsOf.length) return sysDist(P) * Math.max(1, .95 / camera.aspect);
     var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? 60 : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
     return d * Math.max(1, .95 / camera.aspect);           // écran étroit (téléphone) : on recule un peu pour voir l'objet entier
   }
@@ -369,6 +384,9 @@
   L.select = function (id, opts) {
     opts = opts || {};
     if (id && !byId[id]) return;
+    var Pn = id ? byId[id] : null;
+    // premier clic sur une planète à lunes : vue d'ensemble de son système ; second clic : la planète de près
+    sysView = !!(Pn && Pn.moonsOf && Pn.moonsOf.length && !opts.close);
     selected = id || null;
     release = 0; siteSel = null; siteFlight = null;
     startFlight(selected);
@@ -379,6 +397,10 @@
     OBS.emit('crumbs');
   };
   L.focus = function (id) { L.select(id); };
+  L.sysView = function () { return sysView; };
+  L.hasMoons = function (id) { var P = byId[id]; return !!(P && P.moonsOf && P.moonsOf.length); };
+  // clic sur un astre : nouvel astre → on y va ; astre déjà choisi en vue système → on s'approche
+  function clickBody(id) { if (!id) return; if (id !== selected) L.select(id); else if (sysView) L.select(id, { close: true }); }
 
   /* un lieu de la surface : la caméra descend au-dessus, puis le suit pendant que l'astre tourne */
   L.site = function (bodyId, siteId, opts) {
@@ -485,6 +507,8 @@
     ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(ndc, camera);
     var hits = ray.intersectObjects(hitMeshes.filter(function (m) { return m.visible; }), false);
+    // zones de clic élargies pour les petites lunes : un astre réellement touché (son vrai disque) passe avant elles
+    for (var i = 0; i < hits.length; i++) { var Q = byId[hits[i].object.userData.id]; if (Q && Q.r && ray.ray.distanceToPoint(Q.pos) <= Q.r * 1.02) return Q.id; }
     return hits.length ? hits[0].object.userData.id : null;
   }
   function bindPointer() {
@@ -495,7 +519,7 @@
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     cv.addEventListener('pointerup', function (e) {
       if (OBS.engine.level !== L || e.button !== 0 || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
-      var id = pick(e.clientX, e.clientY); if (id && id !== selected) L.select(id);   // clic sur l'astre déjà choisi : on reste où l'on est (lieu compris)
+      var id = pick(e.clientX, e.clientY); clickBody(id);   // clic sur l'astre déjà choisi : on reste où l'on est (lieu compris)
     });
     cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
     // zoom arrière au maximum de la vue d'ensemble : on sort du système vers le voisinage stellaire.
@@ -551,6 +575,9 @@
       if (d.orbit.real === 'moon') {
         A.moonGeo(jd, ecl); dirToScene(ecl, tmp); P.realKm = Math.sqrt(ecl.x * ecl.x + ecl.y * ecl.y + ecl.z * ecl.z);
         P.pos.copy(par.pos).addScaledVector(tmp, dist);
+        // plan réel de l'orbite (≈ 5° de l'écliptique) : normale tirée de deux positions à un quart de mois d'écart
+        A.moonGeo(jd + 6.8, ecl2); dirToScene(ecl2, tmp2);
+        P.ringN = (P.ringN || new T.Vector3()).crossVectors(tmp, tmp2).normalize();
         P.helio.x = par.helio.x + ecl.x / A.AU_KM; P.helio.y = par.helio.y + ecl.y / A.AU_KM; P.helio.z = par.helio.z + ecl.z / A.AU_KM;
       } else {
         var th = P.phase + TAU * (jd - A.J2000) / d.orbit.P * (d.orbit.retro ? -1 : 1);
@@ -695,7 +722,7 @@
         else tgt = (hover === P.id || selected === P.id) ? .55 : (showOrbits ? P.lineBase : 0);
         P.line.material.opacity += (tgt - P.line.material.opacity) * .12;
         P.line.visible = P.line.material.opacity > .004;
-        if (P.moonRing && P.line.visible) { var par = byId[P.def.parent]; P.line.position.copy(par.pos); P.line.quaternion.setFromUnitVectors(tmp.set(0, 1, 0), par.pole); }
+        if (P.moonRing && P.line.visible) { var par = byId[P.def.parent]; P.line.position.copy(par.pos); P.line.quaternion.setFromUnitVectors(tmp.set(0, 1, 0), P.ringN || par.pole); }
       }
     });
     belts.forEach(function (B) { B.pts.visible = labelMode !== 'none' || true; });

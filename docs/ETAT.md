@@ -8,7 +8,9 @@
   - Positions calculées (Standish/JPL pour les planètes, SBDB pour les petits corps, formule abrégée pour la Lune).
   - Orientation et rotation réelles (pôles et méridiens IAU) : la Terre montre le bon côté au Soleil à l'heure affichée.
   - Cartes de surface réelles : Mercure, Terre (+ lumières nocturnes), Lune, Mars, Jupiter, Saturne et anneaux, Uranus, Neptune.
-  - Échelle adaptée (distances en r^0,55) ou distances réelles ; tailles toujours agrandies ; tout est signalé.
+  - Échelle adaptée (distances en r^0,55) ou distances réelles ; tailles toujours agrandies (rayon en r^0,4) ; tout est signalé.
+  - Lunes : taille proportionnelle à leur planète (exposant 0,8), distance réelle en rayons de la planète jusqu'à 2,5 puis logarithmique (Mimas hors des anneaux, la Lune à ~7 rayons terrestres). Orbite de la Lune tracée dans son vrai plan.
+  - Clic sur une planète à lunes : d'abord la vue de son système entier, second clic (ou clic sur une lune) pour s'approcher. Échap recule d'un cran.
 - **Voisinage stellaire** : 21 étoiles et naines brunes à moins de 12 années-lumière, à leurs vraies positions 3D, avec repères de 5 et 10 al.
 - Passage d'un niveau à l'autre en zoomant (ou par le fil d'Ariane), avec un fondu court.
 - Consoles d'objets : valeurs en direct (distance au Soleil, à la Terre, temps-lumière), fiche de données, carte de surface, exploration, « ce qui est représenté », hypothèses liées.

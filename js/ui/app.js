@@ -97,6 +97,7 @@
     if (!page.hidden) { location.hash = '#/'; return; }
     var L = OBS.engine.level;
     if (L === OBS.system && L.siteSelected()) { L.select(L.selected()); return; }      // d'un lieu, on remonte à l'astre
+    if (L === OBS.system && L.selected() && !L.sysView() && L.hasMoons(L.selected())) { L.select(L.selected()); return; }   // de près, on recule d'abord à la vue du système
     if (L && L.selected && L.selected()) { var cur = L.selected(), d = OBS.byId[cur]; L.select(L === OBS.system && d && d.moon ? d.parent : null); }
   });
 

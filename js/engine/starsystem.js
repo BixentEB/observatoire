@@ -95,7 +95,7 @@
     var maxD = main.r * 6, inner = main.r * 1.6;
     (def.sys || []).forEach(function (p, i) {
       var aAU = keplerAU(def.m || .3, p.P), d = Math.max(dist(aAU), inner + 1.4 * i + 1.2);
-      var km = p.giant ? 70000 : 6371 * Math.pow(p.me || .3, .27), r = OBS.system.scale.radius(km);
+      var km = p.giant ? 70000 : 6371 * Math.pow(p.me || .3, .27), r = 0.042 * Math.pow(km, 0.4);   // échelle propre à ce niveau (étoile seule, pas de voisines à départager)
       var look = p.giant ? { type: 3, bands: 6, warp: .05, seed: 30 + i, c: [0x8a7a62, 0xc8b894, 0xe8dcc0, 0x7a6a52, 0xb8a080], atmoK: .4, atmo: 0xd8c8a0, shell: { k: 1.04, s: .45 } }
         : { type: 0, scale: 1.5, seed: 70 + i * 3, relief: .03, ice: 0, c: [0x5f5a55, 0x8c857c, 0x45403b, 0xb0a89c] };
       var mat = OBS.system.planetMaterial(look, r);
