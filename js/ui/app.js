@@ -196,6 +196,14 @@
     var sCraft = $('s-craft');
     sCraft.checked = get('obs.craft') !== '0'; OBS.system.setCraft(sCraft.checked);
     sCraft.addEventListener('change', function () { OBS.system.setCraft(sCraft.checked); set('obs.craft', sCraft.checked ? '1' : '0'); });
+    var sBack = $('s-back'), sKeys = $('s-keys'), keys = $('keys');
+    function keysView() { keys.hidden = !sKeys.checked; keys.querySelector('[data-k-back]').hidden = !sBack.checked; }
+    sBack.checked = get('obs.back') !== '0'; OBS.system.setBack(sBack.checked);
+    sBack.addEventListener('change', function () { OBS.system.setBack(sBack.checked); set('obs.back', sBack.checked ? '1' : '0'); keysView(); });
+    sKeys.checked = get('obs.keys') !== '0';
+    sKeys.addEventListener('change', function () { set('obs.keys', sKeys.checked ? '1' : '0'); keysView(); });
+    keys.querySelector('.keys-x').addEventListener('click', function () { sKeys.checked = false; set('obs.keys', '0'); keysView(); });
+    keysView();
     sLabels.value = get('obs.labels') || 'all'; OBS.system.setLabels(sLabels.value);
     sLabels.addEventListener('change', function () { OBS.system.setLabels(sLabels.value); set('obs.labels', sLabels.value); });
   }

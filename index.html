@@ -50,6 +50,16 @@
   <span id="size-badge" class="badge badge-quiet">Tailles agrandies</span>
 </div>
 
+<aside id="keys" class="keys" aria-label="Commandes" hidden>
+  <button class="keys-x" type="button" aria-label="Masquer l'aide des commandes" title="Masquer (réactivable dans les réglages)">✕</button>
+  <dl>
+    <dt>Clic gauche</dt><dd>choisir un astre · glisser : tourner</dd>
+    <dt>Clic droit</dt><dd><span data-k-back>vue précédente · </span>glisser : déplacer</dd>
+    <dt>Molette</dt><dd>zoomer · double-clic : vue d'ensemble</dd>
+    <dt>Échap</dt><dd>reculer d'un cran · <kbd>/</kbd> rechercher</dd>
+  </dl>
+</aside>
+
 <div id="timebar" class="timebar" role="group" aria-label="Contrôle du temps">
   <button id="t-rev" class="tb" type="button" aria-label="Inverser le sens du temps" title="Inverser le sens du temps">⇄</button>
   <button id="t-slow" class="tb" type="button" aria-label="Ralentir" title="Ralentir">−</button>
@@ -66,6 +76,8 @@
     <select id="s-scale"><option value="adaptee">Échelle adaptée</option><option value="reelle">Distances réelles</option></select></label>
   <label class="row"><span>Orbites</span><input id="s-orbits" type="checkbox" checked></label>
   <label class="row"><span>Engins spatiaux</span><input id="s-craft" type="checkbox" checked></label>
+  <label class="row"><span>Clic droit : vue précédente</span><input id="s-back" type="checkbox" checked></label>
+  <label class="row"><span>Aide des commandes</span><input id="s-keys" type="checkbox" checked></label>
   <label class="row"><span>Noms affichés</span>
     <select id="s-labels"><option value="all">Tous</option><option value="planetes">Planètes et lunes</option><option value="none">Aucun</option></select></label>
   <label class="row"><span>Qualité</span>

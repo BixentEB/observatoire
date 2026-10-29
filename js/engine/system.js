@@ -407,7 +407,35 @@
   L.sysView = function () { return sysView; };
   L.hasMoons = function (id) { var P = byId[id]; return !!(P && P.moonsOf && P.moonsOf.length); };
   // clic sur un astre : nouvel astre → on y va ; astre déjà choisi en vue système → on s'approche
-  function clickBody(id) { if (!id) return; if (id !== selected) L.select(id); else if (sysView) L.select(id, { close: true }); }
+  function clickBody(id) {
+    if (!id) return;
+    if (id !== selected) { remember(); L.select(id); }
+    else if (sysView) { remember(); L.select(id, { close: true }); }
+  }
+  /* clic droit (sans glisser) : retour à la vue d'avant le dernier clic sur un astre.
+     La vue est mémorisée par rapport à l'astre suivi, qui a pu bouger entre-temps. */
+  var viewHist = [], backOn = true;
+  function remember() {
+    if (!backOn || flight || siteFlight) return;
+    var ref = selected && byId[selected] ? byId[selected].pos : null;
+    viewHist.push({ sel: selected, sys: sysView, site: siteSel ? siteSel.S.def.id : null,
+      cam: camera.position.clone().sub(ref || tmp.set(0, 0, 0)), tgt: controls.target.clone().sub(ref || tmp.set(0, 0, 0)) });
+    if (viewHist.length > 30) viewHist.shift();
+  }
+  L.back = function () {
+    var h = viewHist.pop(); if (!h) return false;
+    var P = h.sel ? byId[h.sel] : null;
+    if (h.sel && !P) return false;
+    selected = h.sel; sysView = h.sys; release = 0; siteSel = null; siteFlight = null; pendingFly = null;
+    if (h.site && P) { L.site(h.sel, h.site); return true; }
+    flight = { t: 0, dur: 1.6, id: h.sel, back: h, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone(), fromPos: camera.position.clone() };
+    controls.enabled = false;
+    controls.minDistance = P ? Math.max(P.r * (P.surf ? 1.06 : 1.35), .05) : 8;
+    OBS.emit('select', { level: 'systeme', id: selected });
+    OBS.emit('crumbs');
+    return true;
+  };
+  L.setBack = function (on) { backOn = on; if (!on) viewHist.length = 0; };
 
   /* un lieu de la surface : la caméra descend au-dessus, puis le suit pendant que l'astre tourne */
   L.site = function (bodyId, siteId, opts) {
@@ -481,6 +509,14 @@
       }
       return;
     }
+    if (flight && flight.back) {                             // retour à une vue mémorisée
+      flight.t += dt;
+      var kb = Math.min(1, flight.t / flight.dur), eb = ease(kb), ref = flight.id ? byId[flight.id].pos : tmp3.set(0, 0, 0);
+      controls.target.lerpVectors(flight.fromTgt, tmp.copy(flight.back.tgt).add(ref), eb);
+      camera.position.lerpVectors(flight.fromPos, tmp2.copy(flight.back.cam).add(ref), eb);
+      if (kb >= 1) { flight = null; controls.enabled = true; if (P) lastSel.copy(P.pos); else release = 0; }
+      return;
+    }
     if (flight) {
       flight.t += dt;
       var k = Math.min(1, flight.t / flight.dur), e = ease(k);
@@ -522,10 +558,12 @@
     var cv = OBS.engine.canvas;
     cv.addEventListener('pointermove', function (e) { if (OBS.engine.level !== L) return; pointer.x = e.clientX; pointer.y = e.clientY; pointer.in = true; pointer.dirty = true; });
     cv.addEventListener('pointerleave', function () { pointer.in = false; if (OBS.engine.level === L) { hover = null; cv.classList.remove('over'); } });
-    cv.addEventListener('pointerdown', function (e) { down.x = e.clientX; down.y = e.clientY; });
+    cv.addEventListener('pointerdown', function (e) { down.x = e.clientX; down.y = e.clientY; down.b = e.button; });
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     cv.addEventListener('pointerup', function (e) {
-      if (OBS.engine.level !== L || e.button !== 0 || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
+      if (OBS.engine.level !== L || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
+      if (e.button === 2 && down.b === 2) { if (backOn) L.back(); return; }    // clic droit sans glisser : vue précédente
+      if (e.button !== 0) return;
       var id = pick(e.clientX, e.clientY); clickBody(id);   // clic sur l'astre déjà choisi : on reste où l'on est (lieu compris)
     });
     cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
