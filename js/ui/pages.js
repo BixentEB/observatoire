@@ -35,7 +35,7 @@
   };
 
   /* Méthode : un menu à onglets (Méthode, Crédits), d'autres pourront s'ajouter */
-  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences']];
+  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences'], ['projet', 'Le projet']];
   function infoTabs(cur) {
     return '<div class="tabs" role="tablist" aria-label="Informations">' + INFO_TABS.map(function (t) {
       return '<a role="tab" class="tab" href="#/' + t[0] + '" aria-selected="' + (t[0] === cur) + '">' + t[1] + '</a>';
@@ -89,6 +89,40 @@
       '<li>Données physiques : NASA Planetary Fact Sheets.</li>',
       '<li>Étoiles voisines : catalogues RECONS et SIMBAD, parallaxes Gaia et Hipparcos.</li>',
       '</ul>',
+    ].join('');
+  };
+
+  /* Le projet : qui le fait, comment, et comment écrire */
+  pages.projet = function (root) {
+    root.innerHTML = [
+      '<p class="p-kicker">Méthode</p><h1>Un humain, des IA, et beaucoup de ciel</h1>',
+      infoTabs('projet'),
+      '<p class="lead">L\'Observatoire est né d\'une envie simple : pouvoir se promener dans l\'espace tel qu\'il est vraiment, cliquer sur un astre et en apprendre un peu plus, sans jamais se faire raconter d\'histoires.</p>',
+      '<h2>Qui le fait</h2>',
+      '<p>Je m\'appelle Vincent, et je fais aussi <a href="https://codexmental.com">Codex Mental</a>, mon site d\'articles, de réflexions et d\'expériences. Je n\'ai aucune formation scientifique ni astronomique : juste de la curiosité, beaucoup de questions, et le goût des choses bien faites. C\'est justement pour ça que l\'Observatoire tient à sa règle d\'or : le visuel peut être adapté, les données jamais. Et quand une chose n\'est pas connue, on le dit.</p>',
+      '<p>Mes propres idées sur l\'espace ont leur coin à part, les <a href="#/hypotheses">Hypothèses</a> : des pistes personnelles, spéculatives, jamais mêlées aux données.</p>',
+      '<h2>Comment il est fait</h2>',
+      '<p>L\'Observatoire se construit à plusieurs, avec des intelligences artificielles, et je préfère le dire clairement.</p>',
+      '<ul class="credits-list">',
+      '<li><b>Moi</b> — l\'idée, la direction, les choix, les essais sur tous mes écrans, les remarques (« la Lune est trop grosse », « les planètes se rentrent dedans »…) et les hypothèses.</li>',
+      '<li><b>Claude</b> (Anthropic) — l\'écriture du code, la recherche et la vérification des données auprès des sources officielles (NASA, JPL, ESA, USGS, IAU…), les calculs de positions, et les textes des fiches.</li>',
+      '<li><b>ChatGPT</b> (OpenAI) — un second regard : relectures, idées et suggestions d\'amélioration, comme le mode qui distingue ce qui est mesuré de ce qui est reconstitué dans la Voie lactée.</li>',
+      '</ul>',
+      '<p>Chaque nouveauté est discutée, testée, puis validée avant d\'être publiée. Les IA peuvent pourtant se tromper, et moi aussi : si vous repérez une erreur, une date douteuse ou un astre mal placé, dites-le-moi, je corrigerai.</p>',
+      '<h2>Ce qu\'on a construit</h2>',
+      '<p>Commencé en octobre 2026, l\'Observatoire couvre déjà, du plus grand au plus petit :</p>',
+      '<ul>',
+      '<li>le <b>Groupe local</b>, avec Andromède, le Triangle et une douzaine de galaxies naines à leurs positions mesurées ;</li>',
+      '<li>la <b>Voie lactée</b>, reconstituée d\'après les mesures, avec des repères et quinze systèmes d\'exoplanètes à visiter ;</li>',
+      '<li>le <b>voisinage stellaire</b>, les étoiles à moins de 12 années-lumière et leurs planètes ;</li>',
+      '<li>le <b>système solaire</b> à la date du jour : planètes, lunes, planètes naines, comète de Halley, surfaces réelles et lieux remarquables, et les sondes et stations envoyées depuis la Terre, positionnées d\'après le JPL ;</li>',
+      '<li>l\'<a href="#/atlas">Atlas</a>, la recherche, les <a href="#/outils">outils</a> et la page Méthode, qui dit pour chaque chose ce qui est réel, adapté ou simulé.</li>',
+      '</ul>',
+      '<p>Et ce n\'est qu\'un début : carte des lunaisons, dôme des constellations vu depuis chez vous, comparateur, visites guidées… sont dans les cartons.</p>',
+      '<h2>Écrire</h2>',
+      '<p>Une question, une erreur repérée, une idée d\'astre à ajouter ?</p>',
+      '<div class="c-chips"><a class="btn btn-main" href="https://codexmental.com/#contact" rel="noopener" target="_blank">✉ Écrire à Vincent</a><a class="btn" href="https://codexmental.com" rel="noopener" target="_blank">Codex Mental</a><a class="btn" href="https://github.com/BixentEB/observatoire" rel="noopener" target="_blank">Le code sur GitHub</a></div>',
+      '<p class="note" style="margin-top:12px">Le formulaire de contact est celui de Codex Mental : aucune adresse n\'est affichée ici.</p>'
     ].join('');
   };
 

@@ -32,7 +32,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, outils: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1 };
+  var PAGES = { atlas: 1, outils: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, projet: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -41,7 +41,7 @@
     return { name: name, param: h[1] || null, sub: h[2] || null };
   }
   var prevHash = '', returnTo = null;   // venu d'une page (Atlas…) : un bouton du fil d'Ariane permet d'y retourner
-  var PAGE_NAMES = { atlas: 'l\'Atlas', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode' };
+  var PAGE_NAMES = { atlas: 'l\'Atlas', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', projet: 'Le projet' };
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();
@@ -52,7 +52,7 @@
     closeMenu();
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
       var rt = a.getAttribute('data-route');
-      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || (r.name === 'credits' && rt === 'methode') || (r.name === 'simulateur' && rt === 'outils');
+      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || ((r.name === 'credits' || r.name === 'projet') && rt === 'methode') || (r.name === 'simulateur' && rt === 'outils');
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
