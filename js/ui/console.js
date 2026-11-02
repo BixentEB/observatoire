@@ -93,7 +93,8 @@
       f.push(flag('adapt', 'Aspect', 'symbolique', 'la taille du repère dépend de la luminosité, aucune étoile n\'est à l\'échelle'));
     } else if (def.theorique) {
       f.push(flag('sim', 'Statut', 'hypothétique', 'objet supposé, jamais observé'));
-      f.push(flag('sim', 'Position', 'inconnue', 'seule une zone probable est calculée'));
+      f.push(flag('sim', 'Position', 'la plus probable', 'placée dans la région où les calculs la situent le plus souvent ; sa vraie position est inconnue'));
+      f.push(flag('sim', 'Aspect', 'imaginé', 'petite géante de glace, l\'hypothèse la plus courante ; jamais observée'));
       f.push(flag('real', 'Zone', 'publiée', 'orbites possibles d\'après Brown et Batygin (2021)'));
     } else if (def.region) {
       f.push(flag('real', 'Étendue', 'réelle', 'la ceinture occupe sa vraie zone'));

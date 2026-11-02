@@ -261,12 +261,13 @@
       facts: [['Étendue', 'de 30 à 50 UA environ'], ['Membres notables', 'Pluton, Hauméa, Makémaké, Arrokoth']],
       lookNote: 'Les corps affichés sont répartis selon la structure réelle de la ceinture, pas des objets catalogués un à un.' },
     /* Planète hypothétique : jamais observée. Repère placé dans la zone la plus probable (près de l'aphélie), pas sur un objet. */
-    { id: 'planete9', name: 'Planète 9', short: 'Planète 9', kind: 'Planète hypothétique · jamais observée', theorique: true, au: 450, lonDeg: 74, latDeg: -6, viewDist: 1100,
+    { id: 'planete9', name: 'Planète 9', short: 'Planète 9', kind: 'Planète hypothétique · jamais observée', theorique: true, au: 450, lonDeg: 74, latDeg: -6, viewDist: 1100, rKm: 23500, spinH: 19,
+      look: { type: 3, bands: 5, warp: .03, seed: 99, c: [0x3c4a6e, 0x56638c, 0x7a86ad, 0x2c3654, 0xb9c0dc], atmoK: .35, atmo: 0x8a7fd6, gain: 1.15 },
       text: "Une planète que l'on suppose très loin au-delà de Neptune, pour expliquer l'alignement inattendu des orbites de quelques corps lointains de la ceinture de Kuiper. Elle n'a jamais été observée et pourrait ne pas exister : d'autres explications sont étudiées. Ce qui est affiché est la zone où les calculs la placeraient le plus probablement, pas un objet.",
       facts: [['Statut', 'hypothèse, jamais observée'], ['Proposée par', 'K. Batygin et M. Brown (2016)'], ['Masse estimée', '≈ 6 Terres (de 5 à 8)'], ['Demi-grand axe', '≈ 380 UA (de 300 à 520)'],
-        ['Périhélie', '≈ 300 UA (de 240 à 385)'], ['Aphélie', '≈ 460 UA (de 350 à 660)'], ['Inclinaison', '≈ 16° (± 5°)'], ['Période', '≈ 7 400 ans (calculée)']],
+        ['Périhélie', '≈ 300 UA (de 240 à 385)'], ['Aphélie', '≈ 460 UA (de 350 à 660)'], ['Inclinaison', '≈ 16° (± 5°)'], ['Période', '≈ 7 400 ans (calculée)'], ['Taille', 'inconnue : 2 à 4 fois la Terre si c\'est une petite géante de glace (hypothèse courante)']],
       sources: [['K. Batygin et M. Brown, « Evidence for a distant giant planet in the Solar System » (2016)', 'https://arxiv.org/abs/1601.05438'], ['M. Brown et K. Batygin, « The Orbit of Planet Nine » (2021)', 'https://arxiv.org/abs/2108.09868']],
-      lookNote: 'Zone de probabilité : des points répartis le long des orbites possibles estimées par M. Brown et K. Batygin (2021), avec la dispersion de leurs incertitudes. La zone est plus dense là où la planète passerait le plus de temps, près de l\'aphélie. Aucune position n\'est connue.' }
+      lookNote: 'La planète dessinée est imaginée : placée dans la région la plus probable (près de l\'aphélie, ≈ 450 UA), avec l\'aspect d\'une petite géante de glace, l\'hypothèse la plus courante. Le cercle en tirets rappelle qu\'elle n\'a jamais été observée. Autour, la zone de probabilité : des points répartis le long des orbites possibles estimées par M. Brown et K. Batygin (2021), avec la dispersion de leurs incertitudes. La zone est plus dense là où la planète passerait le plus de temps, près de l\'aphélie. Aucune position n\'est connue.' }
   ];
 
   OBS.BODIES = B;

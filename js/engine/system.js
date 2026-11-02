@@ -165,6 +165,7 @@
     OBS.REGIONS.forEach(function (rg) {
       var a = { id: rg.id, def: rg, r: 2, pos: new T.Vector3(), region: true };
       regionAnchors.push(a); byId[rg.id] = a; bodies.push(a);
+      if (rg.theorique && rg.rKm) makeTheo(a);
     });
     bodies.forEach(makeLabel);
     bodies.forEach(function (P) { if (P.sites) P.sites.forEach(function (S) { makeSiteLabel(P, S); }); });
@@ -228,6 +229,25 @@
     bodies.push(P); byId[d.id] = P;
     if (d.moon && byId[d.parent]) byId[d.parent].moonsOf.push(P);
     if (d.orbit && !d.orbit.real) P.phase = phaseOf(d.id);
+  }
+
+  /* objet hypothétique (Planète 9) : une planète d'aspect imaginé, placée là où elle serait le plus probablement,
+     entourée d'un cercle en tirets (la même marque que son nom) pour qu'on ne la confonde jamais avec un astre observé */
+  var dashTex = (function () {
+    var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
+    g.strokeStyle = 'rgba(180,156,255,0.75)'; g.lineWidth = 2.5; g.setLineDash([9, 9]);
+    g.beginPath(); g.arc(128, 128, 116, 0, Math.PI * 2); g.stroke();
+    return new T.CanvasTexture(c);
+  })();
+  function makeTheo(P) {
+    var d = P.def, r = scale.radius(d.rKm);
+    var holder = new T.Group(); scene.add(holder);
+    var spin = new T.Group(); holder.add(spin);
+    var mat = planetMaterial(d.look || {}, r), mesh = new T.Mesh(sphereGeo, mat); mesh.scale.setScalar(r); spin.add(mesh);
+    var ring = new T.Sprite(new T.SpriteMaterial({ map: dashTex, transparent: true, depthWrite: false, opacity: .8 }));
+    ring.scale.setScalar(r * 3.4); holder.add(ring);
+    var hit = new T.Mesh(sphereGeo, new T.MeshBasicMaterial({ visible: false })); hit.userData.id = P.id; holder.add(hit); hitMeshes.push(hit);
+    P.r = r; P.holder = holder; P.spin = spin; P.mesh = mesh; P.mat = mat; P.hit = hit; P.pole = new T.Vector3(0, 1, 0); P.moonsOf = []; P.theoRing = ring;
   }
 
   /* queue de comète (uniquement près du Soleil, dirigée à l'opposé) */
@@ -393,7 +413,7 @@
       return (hP ? Math.max(P.pos.distanceTo(hP.pos) * 3.2 + hP.r * 2, 1.2) : 14) * Math.max(1, .95 / camera.aspect);
     }
     if (sysView && P.moonsOf && P.moonsOf.length) return sysDist(P) * Math.max(1, .95 / camera.aspect);
-    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? (P.def.viewDist ? P.def.viewDist * (scale.mode === 'reelle' ? 6 : 1) : 60) : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
+    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region && !P.mesh ? (P.def.viewDist ? P.def.viewDist * (scale.mode === 'reelle' ? 6 : 1) : 60) : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
     return d * Math.max(1, .95 / camera.aspect);           // écran étroit (téléphone) : on recule un peu pour voir l'objet entier
   }
   function homeDist() { return (scale.mode === 'reelle' ? 2600 : 520) / Math.max(.55, Math.min(1.4, camera.aspect)); }
@@ -551,7 +571,7 @@
     } else if (P && !(P.craft && (!P.on || pendingFly))) {
       tmp.copy(P.pos).sub(lastSel); camera.position.add(tmp); controls.target.add(tmp); lastSel.copy(P.pos);
       // zoom arrière loin de l'objet : on le quitte en douceur (on remonte d'un niveau)
-      var dist = camera.position.distanceTo(P.pos), out = P.region ? (P.def.viewDist ? selDist(P) * 4 : 400) : Math.max(P.r * 90, P.def.moon ? 30 : 70);
+      var dist = camera.position.distanceTo(P.pos), out = P.region && !P.mesh ? (P.def.viewDist ? selDist(P) * 4 : 400) : Math.max(P.r * 90, P.def.moon ? 30 : 70);
       if (!interacting && dist > out) up();
     }
   }
@@ -631,7 +651,7 @@
   function place(jd, jdSpin) {
     bodies.forEach(function (P) {
       var d = P.def; if (!d || P.id === 'soleil') return;
-      if (P.region) { var au = d.au, lon = d.lonDeg * D2R, la = (d.latDeg || 0) * D2R; toScene({ x: au * Math.cos(lon) * Math.cos(la), y: au * Math.sin(lon) * Math.cos(la), z: au * Math.sin(la) }, P.pos); return; }
+      if (P.region) { var au = d.au, lon = d.lonDeg * D2R, la = (d.latDeg || 0) * D2R; toScene({ x: au * Math.cos(lon) * Math.cos(la), y: au * Math.sin(lon) * Math.cos(la), z: au * Math.sin(la) }, P.pos); if (P.holder) P.holder.position.copy(P.pos); return; }
       if (d.moon || P.craft) return;
       A.helio(P.id, jd, P.helio); toScene(P.helio, P.pos); P.holder.position.copy(P.pos);
     });
@@ -1252,7 +1272,7 @@
       if (!layerOn(P)) show = false;
       camSpace.copy(P.pos).applyMatrix4(camera.matrixWorldInverse);
       if (camSpace.z > 0) show = false;
-      var vis = camSpace.z <= 0 && layerOn(P) && !P.region && (!P.craft || P.shown) && (!d.moon || P.hit.visible);
+      var vis = camSpace.z <= 0 && layerOn(P) && (!P.region || !!P.mesh) && (!P.craft || P.shown) && (!d.moon || P.hit.visible);
       v3.copy(P.pos).project(camera);
       var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H;
       if (x < -60 || x > W + 60 || y < -40 || y > H + 40) show = false;

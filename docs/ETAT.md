@@ -67,7 +67,7 @@
 - Légende-filtre en bas à droite : Planètes, naines et petits corps, lunes, ceintures, missions, objets hypothétiques ; un clic masque ou réaffiche le calque (mémorisé). Croix de fermeture, message qui renvoie aux Réglages, case « Légende » dans les Réglages. Effacée quand une console est ouverte.
 - Vues prédéfinies (Dessus, Profil, Libre) à côté des repères d'échelle.
 - Réglages « Plan de l'écliptique » (grille translucide, point vernal en doré) et « Inclinaison des orbites » (masquée, objet choisi, toutes) : traits jusqu'au plan, ombre de l'orbite, ligne des nœuds, valeur de i.
-- Planète 9 : zone de probabilité (Brown et Batygin 2021) en brume violette, nom qui alterne avec « ? », fiche sourcée ; calque « Objets hypothétiques ».
+- Planète 9 : planète d'aspect imaginé (petite géante de glace) placée dans la région la plus probable, entourée d'un cercle en tirets, et zone de probabilité (Brown et Batygin 2021) en brume violette ; nom qui alterne avec « ? », fiche sourcée ; calque et réglage « Objets hypothétiques ».
 - Arrokoth ajouté (éléments SBDB), nom affiché seulement de près ; Ulysses ajoutée à la liste des engins (données au prochain passage du robot JPL), avec un bouton vers son passage le plus haut au-dessus du plan.
 - Renvois entre fiches : les noms d'objets dans les textes et données des consoles sont soulignés en pointillé, bulle d'information et bouton « Aller voir ».
 - Mode photo (bouton appareil photo de la barre du temps, ou Outils) : choix des éléments affichés, capture PNG avec les noms et une signature, définition ×2 si l'appareil le permet.

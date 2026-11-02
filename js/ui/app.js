@@ -231,8 +231,14 @@
         var on = ly[b.getAttribute('data-layer')] !== false; b.setAttribute('aria-pressed', String(on));
         b.title = on ? 'Cliquer pour masquer' : 'Cliquer pour réafficher';
       });
-      sCraft.checked = ly.missions;
+      sCraft.checked = ly.missions; sTheo.checked = ly.theoriques;
     }
+    var sTheo = $('s-theo');
+    sTheo.addEventListener('change', function () {
+      OBS.system.setLayer('theoriques', sTheo.checked);
+      var ly = OBS.system.layers(), keep = {}; Object.keys(ly).forEach(function (x) { if (x !== 'missions' && !ly[x]) keep[x] = false; });
+      set('obs.layers', JSON.stringify(keep));
+    });
     legend.addEventListener('click', function (e) {
       var b = e.target.closest('[data-layer]'); if (!b) return;
       var k = b.getAttribute('data-layer'), on = b.getAttribute('aria-pressed') !== 'true';
