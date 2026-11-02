@@ -279,7 +279,7 @@
         rd.loss.textContent = L2; rd.redep.textContent = Rd; rd.gain.textContent = G2;
         rd.bil.textContent = !L2 && !G2 ? 'stable' : Math.abs(net) <= Math.max(2, (L2 + G2) * .2) ? 'équilibré' : net < 0 ? 'négatif' : 'positif';
         gauge('m', Mat / 1.3, Mat >= 1.01 ? 'en hausse' : Mat > .97 ? 'stable' : 'en baisse');
-        gauge('p', Math.min(1, Pr / 1.05), Pr > .7 ? 'élevée' + (now - lastVent < 2500 ? ' · dégazage' : '') : Pr > .35 ? 'modérée' : 'basse');
+        gauge('p', Math.min(1, Pr / 1.05), now - lastVent < 2500 ? 'dégazage' : Pr > .7 ? 'élevée' : Pr > .35 ? 'modérée' : 'basse');
         gauge('c', Coh, trendC > .004 ? 'se renforce' : trendC < -.004 ? 's\'use' : 'stable');
         hintEl.textContent = hint(now);
       }
