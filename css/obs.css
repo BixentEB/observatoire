@@ -311,7 +311,7 @@ input[type="range"] { accent-color: var(--accent); }
 .g-c b { background: linear-gradient(90deg, #4f8fd8, #8fd0ff); }
 .g-a b { background: linear-gradient(90deg, #8a7fd6, #ff9a5c); }
 .g-r b { background: linear-gradient(90deg, #8a6f5a, #e8dccb); }
-.ha-hint { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--soft); height: 8.6em; overflow: hidden; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, .03); border: 1px solid var(--line); }
+.ha-hint { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--soft); height: 10.5em; overflow: hidden; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, .03); border: 1px solid var(--line); }
 .ha-reset { font: 11px var(--mono); color: var(--hypo); background: none; border: 1px solid var(--hypo-line); border-radius: 999px; padding: 2px 9px; cursor: pointer; margin-left: 4px; }
 .ha-read .r-loss b { color: #ff9a5c; } .ha-read .r-redep b { color: #f2f6ff; } .ha-read .r-gain b { color: #ffd27a; }
 @media (max-width: 720px) { .hanim { grid-template-columns: 1fr; } .hanim .hanim-stage { height: 360px; } .hanim-ctrl { border-left: 0; border-top: 1px solid var(--hypo-line); } .hanim-stage { min-height: 320px; } }

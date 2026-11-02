@@ -286,11 +286,11 @@
     }
     function gauge(k, x, label) { gb[k].style.width = Math.round(Math.max(0, Math.min(1, x)) * 100) + '%'; gv[k].textContent = label; }
     function hint(now) {
-      var h = act < .3 ? 'Régime conservatif : peu d\'activité, la matière reste piégée. La stabilité seule ne prouve pas un fonctionnement C.A.R.'
-        : act < .65 ? 'Activité modérée : la circulation et les redépôts renforcent la structure, les pertes restent limitées.'
-        : 'Forte irradiation : les pertes et les contraintes thermiques augmentent. Se rapprocher de l\'étoile n\'est pas forcément bénéfique : la cohésion peut baisser.';
-      if (now - lastVent < 2500) h += ' Dégazage : une perte qui soulage la pression interne.';
-      if (Coh < .35) h += ' Cohésion faible : la structure se fragilise, même si la matière est encore là.';
+      var h = act < .3 ? 'Régime conservatif : peu d\'activité, la matière reste piégée. Être stable ne prouve pas un fonctionnement C.A.R.'
+        : act < .65 ? 'Activité modérée : les redépôts renforcent la structure, les pertes restent limitées.'
+        : 'Forte irradiation : pertes et contraintes thermiques augmentent ; s\'approcher de l\'étoile n\'est pas forcément bénéfique.';
+      if (now - lastVent < 2500) h += ' Dégazage : une perte qui soulage la pression.';
+      if (Coh < .35) h += ' Cohésion faible : la structure se fragilise.';
       return h;
     }
 
