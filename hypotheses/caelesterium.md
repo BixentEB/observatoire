@@ -163,6 +163,30 @@ Les comètes, les corps glacés et certains phénomènes de migration de matièr
 
 Ils ne constituent cependant pas des exemples confirmés de Caelesterium.
 
+## Points de comparaison connus
+
+*Des données établies, placées en parallèle de l'hypothèse : chacun de ces phénomènes existe, mais aucun ne fait d'un objet un caelestère.*
+
+### Le confinement, le vrai défi
+
+Un terrarium garde son eau grâce à sa paroi et à la gravité qui la ramène vers le sol. Sur un petit corps de quelques kilomètres, la vitesse de libération est de l'ordre du mètre par seconde, alors que les molécules de vapeur se déplacent à plusieurs centaines de mètres par seconde : la gravité ne retient presque rien. Pour un corps de ce type, la conservation devrait donc reposer sur sa structure (croûte, pores, cavités), pas sur sa masse.
+
+### Une recondensation quotidienne sur une comète
+
+La sonde Rosetta a observé sur la comète 67P/Tchourioumov-Guérassimenko de la glace d'eau qui apparaît et disparaît en surface au rythme de l'éclairage de chaque région : la vapeur venue du sous-sol se redépose quand la surface refroidit, puis se sublime de nouveau. C'est une forme de redistribution, et une petite régénération locale de la glace de surface ([De Sanctis et al., *Nature*, 2015](https://sci.esa.int/web/rosetta/-/56519-de-sanctis-et-al-2015)).
+
+### Une croûte qui étouffe l'activité
+
+En s'érodant, une comète découvre des couches de poussière plus compactes et plus cohésives : la pression du gaz ne suffit plus à soulever la poussière et l'activité s'éteint. C'est l'une des explications proposées pour les comètes devenues inactives et les astéroïdes sombres sur des orbites de comètes ([Gundlach et Blum, 2016](https://arxiv.org/abs/1603.09528)). Pour l'hypothèse, c'est un exemple de rétroaction : l'usure du corps finit par ralentir ses propres pertes.
+
+### Des cycles de volatils sur un grand corps glacé
+
+Sur Pluton, l'azote circule entre le sol et l'atmosphère : il se sublime à certaines latitudes et se recondense à d'autres, notamment dans la grande plaine de Spoutnik, au fil des saisons et sur des millions d'années ([Bertrand et al., 2018](https://arxiv.org/abs/1804.02434)). Ici, la gravité aide à conserver la matière : c'est une conservation et une redistribution à l'échelle d'un corps entier, mais sur une planète naine, pas sur un petit corps.
+
+### Ce que cela suggère pour l'hypothèse
+
+Ces exemples montrent séparément la recondensation, l'autorégulation par la croûte et le recyclage des volatils. Une piste serait de définir le caelestère comme un petit corps dont la croûte et la recondensation internes ramèneraient le bilan de matière près de zéro, là où une comète ordinaire s'use. La signature à rechercher deviendrait plus concrète : un corps glacé anormalement peu actif pour sa taille et sa distance à l'étoile, avec de la glace fraîche en surface.
+
 ## 10. Conditions nécessaires à la plausibilité
 
 Pour dépasser le stade de l'analogie, plusieurs questions devront recevoir des réponses quantitatives.
