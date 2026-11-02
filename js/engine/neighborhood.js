@@ -88,9 +88,18 @@
       if (id) enter(id); else if (selected) L.select(null);      // double-clic dans le vide : vue d'ensemble
     });
     // zoom avant sur le Soleil : on rentre dans le système solaire
-    var push = 0, pushT = 0;
+    var push = 0, pushT = 0, atMax = 0, lastW = 0, armed = false, out = 0;
     cv.addEventListener('wheel', function (e) {
       if (OBS.engine.level !== L || flight) return;
+      // zoom arrière en butée, après une courte pause puis en insistant : on sort vers la Voie lactée
+      if (e.deltaY > 0 && !selected) {
+        var t = performance.now(), gap = t - lastW; lastW = t;
+        if (camera.position.distanceTo(controls.target) < controls.maxDistance * .97) { atMax = 0; armed = false; out = 0; return; }
+        if (!atMax) { atMax = t; OBS.emit('edge', 0); return; }
+        if (!armed) { if (gap > 300 && t - atMax > 500) { armed = true; out = 0; } else { OBS.emit('edge', 0); return; } }
+        if (++out >= 5) { out = 0; armed = false; atMax = 0; OBS.engine.go('galaxie', { from: 'voisinage' }); } else OBS.emit('edge', out / 5);
+        return;
+      }
       // zoom avant sur l'étoile choisie : on entre dans son système
       if (e.deltaY < 0 && selected && camera.position.distanceTo(byId[selected].pos) <= controls.minDistance * 1.6 + 2) {
         var now0 = performance.now(); if (now0 - pushT > 900) push = 0; pushT = now0;
@@ -138,7 +147,10 @@
 
   L.enter = function (opts) {
     L._inward = 0; controls.enabled = true; selected = null;
-    if (opts.from === 'systeme') {                     // on vient du système : on part du Soleil et on s'éloigne
+    if (opts.from === 'galaxie') {                     // on plonge depuis la galaxie : on arrive de loin
+      camera.position.copy(homeCam(tmp)).multiplyScalar(2.2); controls.target.set(0, 0, 0);
+      startFlight(null, true); flight.dur = 2.4;
+    } else if (opts.from === 'systeme') {                     // on vient du système : on part du Soleil et on s'éloigne
       camera.position.copy(homeCam(tmp)).multiplyScalar(.05); controls.target.set(0, 0, 0);
       startFlight(null, true); flight.dur = 2.6;
     } else { homeCam(camera.position); controls.target.set(0, 0, 0); }

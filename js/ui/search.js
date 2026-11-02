@@ -24,6 +24,9 @@
       });
     });
     (OBS.CRAFT || []).forEach(function (c) { index.push({ name: c.name, sub: c.kind, href: '#/explorer/' + c.id, key: norm(c.name + ' ' + (c.short || '') + ' ' + c.kind + ' ' + (CRAFT_ALIAS[c.id] || '') + ' sonde engin mission'), w: 2 }); });
+    (OBS.GALAXY_OBJECTS || []).forEach(function (o) { if (!o.sun) index.push({ name: o.name, sub: o.kind + ' · Voie lactée', href: '#/galaxie/' + o.id, key: norm(o.name + ' ' + o.kind + ' galaxie voie lactee'), w: 2 }); });
+    (OBS.GALAXY && OBS.GALAXY.arms || []).forEach(function (A) { index.push({ name: A.name, sub: 'Bras spiral · Voie lactée', href: '#/galaxie/' + A.id, key: norm(A.name + ' ' + (A.alias || '') + ' bras spiral'), w: 1 }); });
+    index.push({ name: 'Voie lactée', sub: 'Notre galaxie, reconstituée', href: '#/galaxie', key: norm('voie lactee galaxie milky way'), w: 3 });
     OBS.REGIONS.forEach(function (r) { index.push({ name: r.name, sub: r.kind, href: '#/explorer/' + r.id, key: norm(r.name + ' ' + (ALIAS[r.id] || '') + ' ' + r.kind), w: 2 }); });
     OBS.STARS.forEach(function (s) {
       index.push({ name: s.name, sub: (s.cls === 'BD' ? 'Naine brune' : 'Étoile') + ' · ' + s.ly.toLocaleString('fr-FR') + ' al · ' + (s.cons || ''), href: '#/etoile/' + s.id, key: norm(s.name + ' ' + (ALIAS[s.id] || '') + ' ' + s.spec + ' ' + (s.cons || '') + ' etoile star'), w: 2 });

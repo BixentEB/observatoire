@@ -12,7 +12,7 @@
   var SCOPES = [
     { id: 'systeme', label: 'Système solaire' },
     { id: 'voisinage', label: 'Voisinage stellaire' },
-    { id: 'galaxie', label: 'Voie lactée', soon: true }
+    { id: 'galaxie', label: 'Voie lactée' }
   ];
   function hex(c) { return '#' + ('000000' + (c >>> 0).toString(16)).slice(-6); }
   function colorOf(b) { return b.id === 'soleil' ? '#ffb23e' : b.look && b.look.c ? hex(b.look.c[1]) : '#8f96b8'; }
@@ -69,7 +69,10 @@
       stars.map(function (s) { return card('#/etoile/' + s.id, hex(OBS.STAR_COLORS[s.cls] || 0xffffff), s.name, s.spec + ' · ' + nf(s.ly, 2) + ' al'); }).join('') + '</div>';
   }
   function galaxie(root) {
-    root.innerHTML = '<div class="atlas-soon"><p class="lead">La Voie lactée vue de l\'extérieur est en préparation.</p><p>Personne n\'a jamais photographié notre galaxie de l\'extérieur : ce sera une reconstitution fondée sur les représentations scientifiques officielles, présentée comme telle, avec la position du Soleil sur le bras d\'Orion et, peut-être, des systèmes d\'exoplanètes connus à visiter.</p></div>';
+    var objs = OBS.GALAXY_OBJECTS.slice().sort(function (a, b) { return a.ly - b.ly; });
+    root.innerHTML = '<p>Personne n\'a jamais vu notre galaxie de l\'extérieur : sa forme est reconstituée d\'après les mesures. Les repères ci-dessous sont, eux, à leurs positions mesurées, du plus proche au plus lointain.</p><div class="grid-list">' +
+      objs.map(function (o) { return card('#/galaxie/' + o.id, o.sun ? '#ffd27a' : '#bfe0ff', o.name, o.kind + (o.ly ? ' · ' + nf(o.ly) + ' al' : '')); }).join('') +
+      OBS.GALAXY.arms.map(function (A) { return card('#/galaxie/' + A.id, '#9aa6d8', A.name, 'Bras spiral · ' + (A.alias || '')); }).join('') + '</div>';
   }
 
   /* ---------------- unités : les repères de l'astronomie ---------------- */

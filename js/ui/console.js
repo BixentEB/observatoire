@@ -137,6 +137,7 @@
     if (!id) { el.hidden = true; el.innerHTML = ''; if (OBS.engine.setShift) OBS.engine.setShift(0, 0); return; }
     if (level === 'etoile') return renderStar(id, part);
     if (level === 'systeme' && OBS.byId[id] && OBS.byId[id].craft) return renderCraft(id);
+    if (level === 'galaxie') return renderGalaxy(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -292,6 +293,34 @@
       if (w) w.innerHTML = n2 && OBS.time.jd > n2 + 1 && !def.fin ? flag('adapt', 'Date', 'à venir', 'trajectoire prévue : elle peut encore changer avec les manœuvres') : '';
     }
     live(); liveTimer = setInterval(live, 500);
+  }
+
+  /* Voie lactée : un objet repère ou un bras */
+  function renderGalaxy(id) {
+    var it = OBS.galaxy.get(id), d = it.def, h = [];
+    current = { level: 'galaxie', id: id }; clearInterval(liveTimer);
+    var col = d.sun ? '#ffd27a' : d.arm ? '#9aa6d8' : '#bfe0ff';
+    h.push('<div class="c-head"><p class="c-kind">' + esc(d.arm ? 'Bras spiral · ' + (d.arm.alias || '') : d.kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(d.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    if (d.arm) {
+      var A = d.arm;
+      h.push('<div class="c-flags">' + flag('real', 'Tracé', 'mesuré en partie', 'distances de masers mesurées par interférométrie radio (Reid et al. 2019)') + flag('sim', 'Suite', 'reconstituée', 'au-delà des portions mesurées, le bras est prolongé avec le même enroulement') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<p class="c-text">' + esc(A.major ? 'Un des deux grands bras de la galaxie, riches en étoiles anciennes comme jeunes.' : A.spur ? 'Le bras où se trouve le Soleil : une branche secondaire, longue d\'environ 20 000 années-lumière, entre les bras du Sagittaire et de Persée.' : 'Un bras secondaire, surtout fait de gaz et d\'étoiles jeunes.') + ' Nous voyons la galaxie de l\'intérieur, à travers la poussière : les bras sont reconstitués en mesurant la distance de nuages où naissent des étoiles, puis en reliant les points.</p>');
+      h.push('<section class="c-sec"><h3>Données</h3><table class="c-facts"><tr><th>Angle d\'enroulement</th><td>' + nf(A.psi[0], 1) + '° puis ' + nf(A.psi[1], 1) + '°</td></tr><tr><th>Largeur</th><td>≈ ' + nf(Math.round(A.w * 3262 / 100) * 100) + ' années-lumière</td></tr><tr><th>Portion mesurée</th><td>' + nf(A.mesure[1] - A.mesure[0]) + '° d\'azimut autour du centre</td></tr></table></section>');
+    } else {
+      var inf = OBS.galaxy.info(id);
+      h.push('<div class="c-flags">' + (d.sun ? flag('real', 'Position', 'mesurée', 'distance au centre : collaboration GRAVITY 2019') : flag('real', 'Position', 'mesurée', 'direction et distance issues des observations (valeurs arrondies)')) + flag('adapt', 'Repère', 'symbolique', 'un point lumineux, pas l\'aspect de l\'objet') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<section class="c-sec"><div class="c-live">' + (d.sun ? '' : '<div><span>Distance au Soleil</span><b>' + nf(inf.fromSun) + ' al</b><small>sa lumière est partie il y a ' + nf(inf.fromSun) + ' ans</small></div>') +
+        '<div><span>Distance au centre</span><b>' + nf(Math.round(inf.fromCenter / 100) * 100) + ' al</b><small>' + (inf.fromCenter > 60000 ? 'hors du disque' : 'dans le disque') + '</small></div></div></section>');
+      h.push('<p class="c-text">' + esc(d.text || '') + '</p>');
+      h.push(facts(d));
+      if (d.sun) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-down>Voir le voisinage du Soleil →</button></div></section>');
+    }
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Personne n\'a jamais vu la Voie lactée de l\'extérieur. Sa forme est reconstituée d\'après les mesures : bras spiraux tracés à partir des distances de masers, barre centrale, disque et bulbe. Les objets repères sont à leurs positions mesurées ; leur repère lumineux est symbolique.</p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.galaxy.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var dn = el.querySelector('[data-down]'); if (dn) dn.addEventListener('click', function () { OBS.engine.go('voisinage', { from: 'galaxie' }); });
   }
 
   /* système d'une étoile voisine : l'étoile, sa compagne ou une de ses planètes */

@@ -45,6 +45,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/system.js` | Niveau « Système solaire » (échelle, objets, orbites, ceintures, étiquettes, caméra) |
 | `js/engine/neighborhood.js` | Niveau « Voisinage stellaire » |
 | `js/engine/starsystem.js` | Niveau « Système d'une étoile voisine » |
+| `js/engine/galaxy.js` | Niveau « Voie lactée » : reconstitution (bras, barre, disque, poussière) et objets repères (`js/data/galaxy.js`) |
 | `js/ui/search.js` | Recherche ( / ou Ctrl+K ) |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
 | `js/ui/pages.js` | Méthode (avec les crédits) |

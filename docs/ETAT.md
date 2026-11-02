@@ -16,6 +16,7 @@
   - Vecteurs interpolés (Catmull-Rom) autour du Soleil ou d'un astre ; éléments osculateurs propagés (Kepler) pour les orbiteurs rapides (ISS, orbiteurs de Mars et de la Lune, Juno).
   - Près d'un astre : direction réelle, distance compressée comme les lunes. Hors des dates couvertes : rien n'est affiché. Réglage « Engins spatiaux » pour les masquer.
   - Trajectoire de l'engin choisi tracée ; vols terminés (Artemis I et II) rejouables depuis la console.
+- **Voie lactée** (reconstitution signalée) : bras d'après Reid et al. 2019 (masers VLBI, prolongés au-delà des portions mesurées), barre de 5 kpc à 27°, bulbe, disque exponentiel, poussière, Nuages de Magellan ; 12 repères aux positions mesurées (Sagittarius A*, M42, Pléiades, Crabe, Aigle, Êta Carinae, Cygnus X-1, Oméga du Centaure, naine du Sagittaire, Nuages de Magellan). Entrée : dézoomer en butée depuis le voisinage, ou fil d'Ariane ; sortie : zoomer sur le Soleil. Adresse `#/galaxie[/objet]`. Points : 60 000 à 240 000 selon la qualité.
 - **Voisinage stellaire** : 21 étoiles et naines brunes à moins de 12 années-lumière, à leurs vraies positions 3D, avec repères de 5 et 10 al.
 - Passage d'un niveau à l'autre en zoomant (ou par le fil d'Ariane), avec un fondu court.
 - Consoles d'objets : valeurs en direct (distance au Soleil, à la Terre, temps-lumière), fiche de données, carte de surface, exploration, « ce qui est représenté », hypothèses liées.
