@@ -121,8 +121,8 @@
       '<p>Et ce n\'est qu\'un début : carte des lunaisons, dôme des constellations vu depuis chez vous, comparateur, visites guidées… sont dans les cartons.</p>',
       '<h2>Écrire</h2>',
       '<p>Une question, une erreur repérée, une idée d\'astre à ajouter ?</p>',
-      '<div class="c-chips"><a class="btn btn-main" href="https://codexmental.com/#contact" rel="noopener" target="_blank">✉ Écrire à Vincent</a><a class="btn" href="https://codexmental.com" rel="noopener" target="_blank">Codex Mental</a><a class="btn" href="https://github.com/BixentEB/observatoire" rel="noopener" target="_blank">Le code sur GitHub</a></div>',
-      '<p class="note" style="margin-top:12px">Le formulaire de contact est celui de Codex Mental : aucune adresse n\'est affichée ici.</p>'
+      '<div class="c-chips"><a class="btn btn-main" href="mailto:contact@codexmental.com?subject=Observatoire">✉ contact@codexmental.com</a><a class="btn" href="https://codexmental.com" rel="noopener" target="_blank">Codex Mental</a><a class="btn" href="https://github.com/BixentEB/observatoire" rel="noopener" target="_blank">Le code sur GitHub</a></div>',
+      '<p class="note" style="margin-top:12px">Le bouton ouvre votre messagerie. Vous pouvez aussi passer par le <a href="https://codexmental.com/#contact" rel="noopener" target="_blank">formulaire de Codex Mental</a>.</p>'
     ].join('');
   };
 
