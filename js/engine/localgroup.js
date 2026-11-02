@@ -29,7 +29,7 @@
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR,uScaleH; varying vec3 vC; varying float vA;',
     'void main(){ vC=aColor; vec4 mv=modelViewMatrix*vec4(position,1.0); float s=aSize*uPR*uScaleH/max(-mv.z,0.001);',
-    '  vA=s<1.6?max(s/1.6,0.0)*max(s/1.6,0.0)+0.03:1.0; gl_PointSize=clamp(s,1.6,8.0*uPR); gl_Position=projectionMatrix*mv; }'
+    '  vA=s<1.6?max(s/1.6,0.0)*max(s/1.6,0.0)+0.07:1.0; gl_PointSize=clamp(s,1.6,8.0*uPR); gl_Position=projectionMatrix*mv; }'
   ].join('\n');
   var FRAG = 'varying vec3 vC; varying float vA; void main(){ float d=length(gl_PointCoord-0.5); float a=1.0-smoothstep(0.0,0.5,d); gl_FragColor=vec4(vC*a*a*vA,1.0); }';
   function gauss() { var u = 1 - Math.random(), v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * v); }
@@ -55,7 +55,7 @@
         if (o.form === 'irreguliere') { r = .75; g = .85; bl = 1; } else { r = 1; g = .85; bl = .65; }
         s = .7;
       }
-      var k = (.25 + .5 * Math.random()) * (o.home ? .8 : 1);
+      var k = (.4 + .6 * Math.random()) * (o.home ? .9 : 1.15);
       pos[i * 3] = center.x + u.x * a + v.x * b + n.x * c; pos[i * 3 + 1] = center.y + u.y * a + v.y * b + n.y * c; pos[i * 3 + 2] = center.z + u.z * a + v.z * b + n.z * c;
       col[i * 3] = r * k; col[i * 3 + 1] = g * k; col[i * 3 + 2] = bl * k; size[i] = s * Math.max(.02, R * .03) * (1 + Math.random());
     }
@@ -93,7 +93,7 @@
       var count = Math.round((o.form === 'spirale' ? (o.home || o.big ? 26000 : 12000) : Math.max(500, Math.min(3000, o.d / 4))) * scaleN);
       galaxyCloud(o, center, u, v, n, count);
       // halo lumineux discret : la galaxie reste repérable de loin
-      var gl = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color: o.form === 'spirale' ? 0xd8dcff : 0xc8c8e0, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: o.form === 'spirale' ? .3 : .22 }));
+      var gl = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color: o.form === 'spirale' ? 0xd8dcff : 0xc8c8e0, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: o.form === 'spirale' ? .55 : .4 }));
       gl.scale.setScalar(o.d / U * 1.3); gl.position.copy(center); scene.add(gl);
       var hit = new T.Mesh(hitGeo, hitMat); hit.position.copy(center); hit.userData.id = o.id; scene.add(hit); hits.push(hit);
       var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl' + (o.home ? ' is-sun' : o.form === 'spirale' ? '' : ' is-moon');
@@ -128,7 +128,14 @@
       var id = pick(e.clientX, e.clientY); if (id) clickItem(id);
     });
     cv.addEventListener('pointermove', function (e) { if (OBS.engine.level !== L) return; var id = pick(e.clientX, e.clientY); hover = id; cv.classList.toggle('over', !!id); });
-    cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
+    cv.addEventListener('dblclick', function (e) {           // double-clic : entrer dans la galaxie quand elle a une carte détaillée
+      if (OBS.engine.level !== L) return;
+      var id = pick(e.clientX, e.clientY);
+      if (!id) { if (selected) L.select(null); return; }
+      if (id === 'voielactee') OBS.engine.go('galaxie', { from: 'groupe-local' });
+      else if (byId[id].def.galaxie) OBS.engine.go('galaxie', { focus: byId[id].def.galaxie });
+      else L.select(id);
+    });
     var push = 0, pushT = 0;
     cv.addEventListener('wheel', function (e) {                // zoom avant sur la Voie lactée, en insistant : on y entre
       if (OBS.engine.level !== L || flight || e.deltaY >= 0 || selected !== 'voielactee') return;

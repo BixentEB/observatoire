@@ -51,6 +51,7 @@
     });
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
     closePage();
+    lastScene = location.hash || '#/';
     if (!ok) return;
     if (r.name === 'etoile' && r.param && (OBS.neighborhood.get(r.param) || (OBS.exoById && OBS.exoById[r.param]))) {
       var cur = OBS.starsystem.star();
@@ -71,7 +72,9 @@
       else if (id !== OBS.system.selected() || OBS.system.siteSelected()) OBS.system.select(id);
     }
   }
-  function setHash(h) { if (location.hash === h || (h === '#/' && !location.hash)) return; silent = true; history.replaceState(null, '', h); silent = false; }
+  var lastScene = '#/';                 // dernière adresse de la scène : une page fermée y ramène (Voie lactée comprise)
+  function backToScene() { location.hash = lastScene; }
+  function setHash(h) { if (!PAGES[parse().name]) lastScene = h; if (location.hash === h || (h === '#/' && !location.hash)) return; silent = true; history.replaceState(null, '', h); silent = false; }
   OBS.on('select', function (e) {
     if (PAGES[parse().name]) return;
     if (e.level === 'etoile') { setHash('#/etoile/' + e.id); return; }
@@ -97,11 +100,12 @@
     document.title = 'Observatoire · Codex Mental';
   }
   window.addEventListener('hashchange', route);
+  document.querySelector('.page-close').addEventListener('click', function (e) { e.preventDefault(); backToScene(); });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (!$('settings').hidden) { toggleSettings(false); return; }
     if (!$('photo').hidden) { OBS.photo.close(); return; }
-    if (!page.hidden) { location.hash = '#/'; return; }
+    if (!page.hidden) { backToScene(); return; }
     var L = OBS.engine.level;
     if (L === OBS.system && L.siteSelected()) { L.select(L.selected()); return; }      // d'un lieu, on remonte à l'astre
     if (L === OBS.system && L.selected() && !L.sysView() && L.hasMoons(L.selected())) { L.select(L.selected()); return; }   // de près, on recule d'abord à la vue du système
@@ -144,15 +148,45 @@
     if (L === OBS.neighborhood) items.push({ label: '↓ Entrer dans le système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
     render(items);
   }
+  /* menu « Aller vers… » : tous les niveaux, et quelques destinations du niveau actuel */
+  var gotoEl = $('goto');
+  function gotoItems() {
+    var L = OBS.engine.level, out = [];
+    var levels = [['groupe-local', 'Groupe local', 'Andromède, le Triangle, les galaxies naines'], ['galaxie', 'Voie lactée', 'Notre galaxie, reconstituée'], ['voisinage', 'Voisinage stellaire', 'Les étoiles à moins de 12 al'], ['systeme', 'Système solaire', 'Le Soleil, les planètes, les sondes']];
+    out.push({ h: 'Niveaux' });
+    levels.forEach(function (l) { out.push({ label: l[1], sub: l[2], cur: L && L.id === l[0], act: function () { location.hash = l[0] === 'systeme' ? '#/' : '#/' + l[0]; } }); });
+    var here = [];
+    if (L === OBS.galaxy) { here = [['sgra', 'Centre galactique'], ['soleil-g', 'Le Soleil']].concat((OBS.EXOSYS || []).slice(0, 6).map(function (x) { return [x.id, x.name, 'exoplanètes · ' + x.ly.toLocaleString('fr-FR') + ' al']; })); here = here.map(function (x) { return { label: x[1], sub: x[2], act: function () { location.hash = '#/galaxie/' + x[0]; } }; }); }
+    else if (L === OBS.localgroup) here = ['m31', 'm33', 'lg-gnm', 'm32'].map(function (id) { return { label: OBS.localgroup.get(id).def.name, act: function () { location.hash = '#/groupe-local/' + id; } }; });
+    else if (L === OBS.neighborhood) here = OBS.STARS.slice(0, 6).map(function (s) { return { label: s.name, sub: s.ly.toLocaleString('fr-FR') + ' al', act: function () { location.hash = '#/voisinage/' + s.id; } }; });
+    else if (L === OBS.system) here = ['terre', 'lune', 'mars', 'jupiter', 'saturne'].map(function (id) { return { label: OBS.byId[id].name, act: function () { location.hash = '#/explorer/' + id; } }; });
+    if (here.length) { out.push({ h: 'Dans ce niveau' }); out = out.concat(here); }
+    out.push({ label: 'Tout l\'Atlas →', act: function () { location.hash = '#/atlas'; } });
+    return out;
+  }
+  function openGoto(btn) {
+    if (!gotoEl.hidden) { gotoEl.hidden = true; return; }
+    gotoEl.innerHTML = '';
+    gotoItems().forEach(function (it) {
+      if (it.h) { var h = document.createElement('h4'); h.textContent = it.h; gotoEl.appendChild(h); return; }
+      var b = document.createElement('button'); b.type = 'button'; b.innerHTML = OBS.esc(it.label) + (it.sub ? '<small>' + OBS.esc(it.sub) + '</small>' : '');
+      if (it.cur) b.setAttribute('aria-current', 'true');
+      b.addEventListener('click', function () { gotoEl.hidden = true; it.act(); }); gotoEl.appendChild(b);
+    });
+    var r = btn.getBoundingClientRect(); gotoEl.style.left = Math.min(r.left, window.innerWidth - 310) + 'px'; gotoEl.style.top = (r.bottom + 6) + 'px'; gotoEl.hidden = false;
+  }
+  document.addEventListener('pointerdown', function (e) { if (!gotoEl.hidden && !gotoEl.contains(e.target) && !e.target.closest('.c-goto')) gotoEl.hidden = true; });
   function render(items) {
+    items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     crumbs.innerHTML = '';
     items.forEach(function (c, i) {
-      if (i && !c.down) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
+      if (i && !c.down && !c.goto) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
       var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
       if (c.soon) { b.className = 'c-soon'; b.title = 'Niveau en préparation'; }
       else if (c.current) b.setAttribute('aria-current', 'location');
       else if (c.act) b.addEventListener('click', c.act);
       if (c.down) b.className = 'c-down';
+      if (c.goto) { b.className = 'c-goto'; b.addEventListener('click', function () { openGoto(b); }); }
       crumbs.appendChild(b);
     });
   }
@@ -163,7 +197,9 @@
   OBS.on('level', function (L) {
     $('timebar').hidden = L.id === 'voisinage' || L.id === 'galaxie' || L.id === 'groupe-local'; $('scale-badge').hidden = L.id !== 'systeme'; $('views').hidden = L.id !== 'systeme';
     legendView();
-    $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
+    sizeBadgeView(L);
+    capView(L);
+    if (false) $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
     $('size-badge').title = L.id === 'galaxie' ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur : forme reconstituée d\'après les mesures (voir Méthode). Les objets repères sont à leurs positions mesurées.' : '';
     toggleSettings(false);
     if (firstLevel) { firstLevel = false; return; }
@@ -172,6 +208,22 @@
     title.innerHTML = '<b>' + L.label + '</b><span>' + sub + '</span>';
     title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2200);
   });
+  /* badge du bas : dans la Voie lactée, il bascule le mode « mesuré / reconstitué » */
+  function sizeBadgeView(L) {
+    var b = $('size-badge'), gal = L && L.id === 'galaxie';
+    b.classList.toggle('badge-quiet', !gal); b.classList.toggle('on', gal && !!OBS.galaxy.unc);
+    b.textContent = !L ? '' : L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
+    b.title = gal ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur. Cliquer pour distinguer les portions de bras mesurées (masers) de celles qui sont prolongées.' : '';
+  }
+  $('size-badge').addEventListener('click', function () { if (OBS.engine.level === OBS.galaxy) OBS.galaxy.setUnc(!OBS.galaxy.unc); });
+  OBS.on('unc', function () { sizeBadgeView(OBS.engine.level); });
+  /* légende du niveau : reste lisible sous le fil d'Ariane après le titre d'arrivée */
+  var cap = $('level-cap');
+  function capView(L) {
+    var t = { voisinage: 'Les étoiles à moins de 12 années-lumière · positions réelles', galaxie: 'Reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre', 'groupe-local': 'Une soixantaine de galaxies sur 10 millions d\'années-lumière · positions mesurées' }[L.id];
+    cap.textContent = t || ''; cap.hidden = !t;
+  }
+
   var edge = $('edge'), edgeT = 0;
   OBS.on('edge', function (k) {
     var lv = OBS.engine.level && OBS.engine.level.id;

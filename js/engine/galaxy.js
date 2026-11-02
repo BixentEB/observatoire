@@ -40,8 +40,9 @@
 
   /* ---------- nuages de points ---------- */
   var VERT = [
-    'attribute float aSize; attribute vec3 aColor; uniform float uPR,uScaleH; varying vec3 vC; varying float vA;',
-    'void main(){ vC=aColor; vec4 mv=modelViewMatrix*vec4(position,1.0); float s=aSize*uPR*uScaleH/max(-mv.z,0.001);',
+    'attribute float aSize; attribute vec3 aColor; attribute float aEx; uniform float uPR,uScaleH,uUnc; varying vec3 vC; varying float vA;',
+    // mode « mesuré / reconstitué » : les portions de bras extrapolées s'estompent et virent au gris
+    'void main(){ vC=mix(aColor, vec3(dot(aColor,vec3(0.33)))*0.22, uUnc*aEx); vec4 mv=modelViewMatrix*vec4(position,1.0); float s=aSize*uPR*uScaleH/max(-mv.z,0.001);',
     // un point plus petit qu'un pixel garde sa part de lumière au lieu de scintiller
     '  vA=s<1.6?max(s/1.6,0.0)*max(s/1.6,0.0)+0.04:1.0; gl_PointSize=clamp(s,1.6,9.0*uPR); gl_Position=projectionMatrix*mv; }'
   ].join('\n');
@@ -49,10 +50,12 @@
   var FRAG_DUST = 'varying vec3 vC; varying float vA; void main(){ float d=length(gl_PointCoord-0.5); float a=1.0-smoothstep(0.1,0.5,d); gl_FragColor=vec4(vC,a*0.16*vA); }';
 
   function cloud(n, fill, dust) {
-    var pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n), p = { x: 0, y: 0, z: 0, r: 1, g: 1, b: 1, s: 1 };
+    var pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n), ex = new Float32Array(n), p = { x: 0, y: 0, z: 0, r: 1, g: 1, b: 1, s: 1, x2: 0 };
     var k = 0;
     for (var i = 0; i < n; i++) {
+      p.x2 = 0;
       if (!fill(p, i)) continue;
+      ex[k] = p.x2;
       pos[k * 3] = p.x; pos[k * 3 + 1] = p.y; pos[k * 3 + 2] = p.z;
       col[k * 3] = p.r; col[k * 3 + 1] = p.g; col[k * 3 + 2] = p.b; size[k] = p.s; k++;
     }
@@ -60,7 +63,8 @@
     g.setAttribute('position', new T.BufferAttribute(pos.subarray(0, k * 3), 3));
     g.setAttribute('aColor', new T.BufferAttribute(col.subarray(0, k * 3), 3));
     g.setAttribute('aSize', new T.BufferAttribute(size.subarray(0, k), 1));
-    var u = { uPR: { value: PR }, uScaleH: { value: 500 } }; uniforms.push(u);
+    g.setAttribute('aEx', new T.BufferAttribute(ex.subarray(0, k), 1));
+    var u = { uPR: { value: PR }, uScaleH: { value: 500 }, uUnc: { value: 0 } }; uniforms.push(u);
     var m = new T.ShaderMaterial({ uniforms: u, vertexShader: VERT, fragmentShader: dust ? FRAG_DUST : FRAG_ADD, transparent: true, depthWrite: false,
       blending: dust ? T.NormalBlending : T.AdditiveBlending });
     var pts = new T.Points(g, m); pts.frustumCulled = false; if (dust) pts.renderOrder = 2; scene.add(pts);
@@ -68,6 +72,10 @@
   }
   function gauss() { var u = 1 - Math.random(), v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * v); }
   function expo(scale) { return -Math.log(1 - Math.random()) * scale; }
+
+  /* une portion de bras est « mesurée » si son azimut est dans la plage couverte par les masers */
+  function extrap(A, beta) { return beta >= A.mesure[0] && beta <= A.mesure[1] ? 0 : 1; }
+  L.setUnc = function (on) { L.unc = !!on; uniforms.forEach(function (u) { u.uUnc.value = on ? 1 : 0; }); OBS.emit('unc', L.unc); };
 
   /* échantillonne un point le long d'un bras (pondéré par la longueur) */
   function armTables() {
@@ -124,7 +132,7 @@
     });
     // 3. bras : étoiles jeunes bleutées, et nébuleuses rosées
     cloud(Math.round(N * .44), function (p) {
-      var tab = pickArm(), f = onArm(tab, tmpA); if (Math.random() > f) return false;
+      var tab = pickArm(), f = onArm(tab, tmpA); if (Math.random() > f) return false; p.x2 = extrap(tab.A, tmpA.b);
       var w = tab.A.w * KPC * (Math.random() < .6 ? .8 : 1.8), off = gauss() * w;
       p.x = tmpA.x * KPC + tmpA.nx * off; p.z = tmpA.z * KPC + tmpA.nz * off; p.y = gauss() * 2.2;
       var hii = Math.random() < .012;
@@ -139,7 +147,7 @@
         p.x = -a * cb + b * sb; p.z = -a * sb - b * cb; p.y = gauss() * 3;
         p.r = .05; p.g = .038; p.b = .024; p.s = 14 + Math.random() * 10; return true;
       }
-      var tab = pickArm(), f = onArm(tab, tmpA); if (Math.random() > f) return false;
+      var tab = pickArm(), f = onArm(tab, tmpA); if (Math.random() > f) return false; p.x2 = extrap(tab.A, tmpA.b);
       var off = gauss() * tab.A.w * KPC * 1.3;
       p.x = tmpA.x * KPC + tmpA.nx * off; p.z = tmpA.z * KPC + tmpA.nz * off; p.y = gauss() * 2;
       var k = tab.A.major ? 1 : .7; p.r = .022 * k; p.g = .028 * k; p.b = .04 * k; p.s = 10 + Math.random() * 10;
@@ -166,7 +174,7 @@
       var inner = Math.random() < .7;
       if (inner) {
         var tab = pickArm(); if (tab.A.spur && Math.random() < .5) return false;
-        var f = onArm(tab, tmpA); if (Math.random() > f) return false;
+        var f = onArm(tab, tmpA); if (Math.random() > f) return false; p.x2 = extrap(tab.A, tmpA.b);
         var off = (-.55 + gauss() * .3) * tab.A.w * KPC;          // côté intérieur (vers le centre)
         var sgn = (tmpA.nx * -tmpA.x + tmpA.nz * -tmpA.z) > 0 ? 1 : -1;
         p.x = tmpA.x * KPC + tmpA.nx * off * -sgn; p.z = tmpA.z * KPC + tmpA.nz * off * -sgn;
@@ -247,7 +255,15 @@
       var id = pick(e.clientX, e.clientY); if (id) clickItem(id);
     });
     cv.addEventListener('pointermove', function (e) { if (OBS.engine.level !== L) return; var id = pick(e.clientX, e.clientY); hover = id; cv.classList.toggle('over', !!id); });
-    cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
+    // double-clic sur un objet : y aller de plus près (le voisinage pour le Soleil, la visite pour un système d'exoplanètes) ; dans le vide : vue d'ensemble
+    cv.addEventListener('dblclick', function (e) {
+      if (OBS.engine.level !== L) return;
+      var id = pick(e.clientX, e.clientY);
+      if (!id) { if (selected) L.select(null); return; }
+      if (id === 'soleil-g') OBS.engine.go('voisinage', { from: 'galaxie' });
+      else if (byId[id].exo) OBS.engine.go('etoile', { star: id });
+      else L.select(id);
+    });
     // zoom avant au plus près du Soleil, en insistant : on entre dans le voisinage stellaire
     var push = 0, pushT = 0, atMax = 0, lastW = 0, armed = false, out = 0;
     cv.addEventListener('wheel', function (e) {
