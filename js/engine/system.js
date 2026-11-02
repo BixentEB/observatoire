@@ -170,12 +170,13 @@
     bodies.forEach(function (P) { if (P.sites) P.sites.forEach(function (S) { makeSiteLabel(P, S); }); });
     rebuildOrbits(OBS.time.jd);
     buildCraft();
+    buildExtras();
 
     controls = L.controls = new T.OrbitControls(camera, OBS.engine.canvas);
     controls.enableDamping = true; controls.dampingFactor = .08;
     controls.enablePan = true; controls.screenSpacePanning = true; controls.zoomSpeed = .9; controls.rotateSpeed = .6;
     controls.enabled = false;
-    controls.addEventListener('start', function () { interacting = true; if (flight) { flight = null; } });
+    controls.addEventListener('start', function () { interacting = true; if (flight) { flight = null; } if (L._view && L._view !== 'libre') { L._view = 'libre'; OBS.emit('view', 'libre'); } });
     controls.addEventListener('end', function () { interacting = false; });
     bindPointer();
     homeView(true);
@@ -293,10 +294,10 @@
     bodies.forEach(function (P) {
       if (!P.def || P.def.moon || P.region || P.id === 'soleil' || !A.hasOrbit(P.id)) return;
       var path = A.orbitPath(P.id, jd, P.def.comet ? 720 : 360), pts = path.map(function (v) { return toScene(v, new T.Vector3()); });
-      var color = P.def.comet ? 0x9fd0ff : P.def.dwarf ? 0x9aa6d8 : 0x8fa4ff;
+      var color = P.def.comet ? 0x9fd0ff : P.def.dwarf || P.def.minor ? 0x9aa6d8 : 0x8fa4ff;
       var m = new T.LineBasicMaterial({ color: color, transparent: true, opacity: .14, depthWrite: false });
       var line = new T.Line(new T.BufferGeometry().setFromPoints(pts), m);
-      line.userData.id = P.id; orbitGroup.add(line); P.line = line; P.lineBase = P.def.dwarf || P.def.comet ? .08 : .15;
+      line.userData.id = P.id; orbitGroup.add(line); P.line = line; P.lineBase = P.def.minor ? .05 : P.def.dwarf || P.def.comet ? .08 : .15;
     });
     // orbites des lunes : cercles dans le plan équatorial de la planète (visibles quand on est près d'elle)
     bodies.forEach(function (P) {
@@ -313,7 +314,7 @@
   function makeLabel(P) {
     var d = P.def, el = document.createElement('button');
     el.type = 'button';
-    el.className = 'lbl' + (d.moon ? ' is-moon' : '') + (d.dwarf ? ' is-dwarf' : '') + (P.region ? ' is-region' : '') + (d.comet ? ' is-comet' : '') + (P.id === 'soleil' ? ' is-sun' : '');
+    el.className = 'lbl' + (d.moon ? ' is-moon' : '') + (d.dwarf ? ' is-dwarf' : '') + (P.region ? ' is-region' : '') + (d.comet ? ' is-comet' : '') + (d.minor ? ' is-minor' : '') + (d.theorique ? ' is-theo' : '') + (P.id === 'soleil' ? ' is-sun' : '');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + (d.short || d.name) + '</span>';
     el.setAttribute('aria-label', d.name + ' — ' + (d.kind || ''));
     el.addEventListener('click', function (e) { e.stopPropagation(); clickBody(P.id); });
@@ -359,6 +360,26 @@
   var selected = null, hover = null, flight = null, interacting = false, lastSel = new T.Vector3(), release = 0;
   var siteSel = null, siteFlight = null, lastSite = new T.Vector3(), qPrev = new T.Quaternion(), qNow = new T.Quaternion(), qInv = new T.Quaternion();
   var showOrbits = true, labelMode = 'all';
+  /* calques (légende) : chaque famille d'objets peut être masquée d'un clic */
+  var layers = { planetes: true, naines: true, lunes: true, ceintures: true, missions: true, theoriques: true };
+  function layerOf(P) {
+    if (P.id === 'soleil') return null;
+    if (P.craft) return 'missions';
+    var d = P.def || {};
+    if (d.theorique) return 'theoriques';
+    if (P.region) return 'ceintures';
+    if (d.moon) return 'lunes';
+    if (d.dwarf || d.comet || d.minor) return 'naines';
+    return 'planetes';
+  }
+  function layerOn(P) { var k = P._layer === undefined ? (P._layer = layerOf(P)) : P._layer; return !k || layers[k]; }
+  L.setLayer = function (k, on) {
+    if (!(k in layers)) return; layers[k] = !!on;
+    if (k === 'missions') L.setCraft(!!on);
+    if (!on && selected && byId[selected] && !layerOn(byId[selected]) && !document.body.classList.contains('photo')) L.select(null);
+    lastJd = null; OBS.emit('layers', layers);
+  };
+  L.layers = function () { return layers; };
   /* vue « système » d'une planète à lunes : la planète et toutes ses lunes à l'écran */
   function sysDist(P) {
     var m = 0;
@@ -372,7 +393,7 @@
       return (hP ? Math.max(P.pos.distanceTo(hP.pos) * 3.2 + hP.r * 2, 1.2) : 14) * Math.max(1, .95 / camera.aspect);
     }
     if (sysView && P.moonsOf && P.moonsOf.length) return sysDist(P) * Math.max(1, .95 / camera.aspect);
-    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? 60 : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
+    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region ? (P.def.viewDist ? P.def.viewDist * (scale.mode === 'reelle' ? 6 : 1) : 60) : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
     return d * Math.max(1, .95 / camera.aspect);           // écran étroit (téléphone) : on recule un peu pour voir l'objet entier
   }
   function homeDist() { return (scale.mode === 'reelle' ? 2600 : 520) / Math.max(.55, Math.min(1.4, camera.aspect)); }
@@ -530,7 +551,7 @@
     } else if (P && !(P.craft && (!P.on || pendingFly))) {
       tmp.copy(P.pos).sub(lastSel); camera.position.add(tmp); controls.target.add(tmp); lastSel.copy(P.pos);
       // zoom arrière loin de l'objet : on le quitte en douceur (on remonte d'un niveau)
-      var dist = camera.position.distanceTo(P.pos), out = P.region ? 400 : Math.max(P.r * 90, P.def.moon ? 30 : 70);
+      var dist = camera.position.distanceTo(P.pos), out = P.region ? (P.def.viewDist ? selDist(P) * 4 : 400) : Math.max(P.r * 90, P.def.moon ? 30 : 70);
       if (!interacting && dist > out) up();
     }
   }
@@ -610,7 +631,7 @@
   function place(jd, jdSpin) {
     bodies.forEach(function (P) {
       var d = P.def; if (!d || P.id === 'soleil') return;
-      if (P.region) { var au = d.au, lon = d.lonDeg * D2R; toScene({ x: au * Math.cos(lon), y: au * Math.sin(lon), z: 0 }, P.pos); return; }
+      if (P.region) { var au = d.au, lon = d.lonDeg * D2R, la = (d.latDeg || 0) * D2R; toScene({ x: au * Math.cos(lon) * Math.cos(la), y: au * Math.sin(lon) * Math.cos(la), z: au * Math.sin(la) }, P.pos); return; }
       if (d.moon || P.craft) return;
       A.helio(P.id, jd, P.helio); toScene(P.helio, P.pos); P.holder.position.copy(P.pos);
     });
@@ -654,19 +675,21 @@
   // rayon (km) dans lequel un engin est placé par rapport à un astre plutôt qu'au Soleil (au-delà de 2× : transition)
   var ZONE = { mercure: 4e5, venus: 1.5e6, terre: 3e6, lune: 6.6e4, mars: 1.5e6, jupiter: 5e7, saturne: 5e7, uranus: 3e7, neptune: 5e7 };
   var HOSTS = ['mercure', 'venus', 'terre', 'mars', 'jupiter', 'saturne', 'uranus', 'neptune'];
+  // repère d'un engin : un petit losange discret (les planètes restent le premier repère) ; il grossit au survol
   var markTex = (function () {
     var c = document.createElement('canvas'); c.width = c.height = 64; var g = c.getContext('2d');
     g.translate(32, 32); g.rotate(Math.PI / 4);
-    g.shadowColor = 'rgba(120,235,215,0.9)'; g.shadowBlur = 10;
-    g.strokeStyle = 'rgba(150,245,225,1)'; g.lineWidth = 5; g.strokeRect(-12, -12, 24, 24);
-    g.fillStyle = 'rgba(150,245,225,0.35)'; g.fillRect(-12, -12, 24, 24);
+    g.shadowColor = 'rgba(120,235,215,0.6)'; g.shadowBlur = 6;
+    g.strokeStyle = 'rgba(150,245,225,0.9)'; g.lineWidth = 4; g.strokeRect(-11, -11, 22, 22);
+    g.fillStyle = 'rgba(150,245,225,0.22)'; g.fillRect(-11, -11, 22, 22);
     return new T.CanvasTexture(c);
   })();
+  var MARK = .0105, MARK_HI = .016;
   function buildCraft() {
     (OBS.CRAFT || []).forEach(function (d) {
       var holder = new T.Group(); scene.add(holder); holder.visible = false;
-      var mk = new T.Sprite(new T.SpriteMaterial({ map: markTex, sizeAttenuation: false, transparent: true, depthWrite: false }));
-      mk.scale.set(.016, .016, 1); mk.renderOrder = 3; holder.add(mk);
+      var mk = new T.Sprite(new T.SpriteMaterial({ map: markTex, sizeAttenuation: false, transparent: true, depthWrite: false, opacity: .7 }));
+      mk.scale.set(MARK, MARK, 1); mk.renderOrder = 3; holder.add(mk);
       var P = { id: d.id, def: d, craft: true, r: .012, holder: holder, mark: mk, pos: new T.Vector3(), helio: { x: 0, y: 0, z: 0 }, on: false, host: null, rel: new T.Vector3() };
       var hit = new T.Mesh(sphereGeo, new T.MeshBasicMaterial({ visible: false })); hit.userData.id = d.id; holder.add(hit); P.hit = hit; hitMeshes.push(hit);
       bodies.push(P); byId[d.id] = P; crafts.push(P); makeLabel(P);
@@ -681,7 +704,11 @@
       lastJd = null; OBS.emit('craft', j);
     }).catch(function () { craftLoading = false; });
   }
-  L.setCraft = function (on) { showCraft = on; if (on) loadCraft(); lastJd = null; if (!on && selected && byId[selected].craft) L.select(null); };
+  L.setCraft = function (on) {
+    showCraft = on; layers.missions = !!on; if (on) loadCraft(); lastJd = null;
+    if (!on && selected && byId[selected].craft && !document.body.classList.contains('photo')) L.select(null);
+    OBS.emit('layers', layers);
+  };
   L.craftShown = function () { return showCraft; };
   L.craftData = function () { return craftData; };
 
@@ -857,11 +884,163 @@
     });
   }
 
+  /* ======================================================================
+     Repères : plan de l'écliptique, inclinaison des orbites, zone de la Planète 9, vues prédéfinies
+     ====================================================================== */
+  var ecliptic = null, showEcl = false, inclMode = 'off', inclGroup = new T.Group(), inclKey = null, inclLabels = [], p9 = null, p9T = 0, p9Alt = false, viewFlight = null;
+  scene.add(inclGroup);
+  function disposeTree(o) { o.traverse(function (c) { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); }); }
+  function rng(seed) { var x = seed >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+  function gauss(r) { var u = Math.max(1e-9, r()), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * v); }
+
+  function buildExtras() { rebuildExtras(); }
+  function rebuildExtras() {
+    // plan de l'écliptique : cercles de distance (UA) et rayons tous les 30° de longitude, la longitude 0 (point vernal) marquée
+    if (ecliptic) { scene.remove(ecliptic); disposeTree(ecliptic); }
+    ecliptic = new T.Group(); ecliptic.visible = showEcl; ecliptic.renderOrder = -1;
+    var RINGS = [1, 2, 5, 10, 20, 30, 40, 50, 100], maxR = scale.dist(100);
+    RINGS.forEach(function (au) {
+      var pts = [], rr = scale.dist(au);
+      for (var i = 0; i <= 160; i++) { var t = i / 160 * TAU; pts.push(new T.Vector3(Math.cos(t) * rr, 0, Math.sin(t) * rr)); }
+      ecliptic.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: 0x9fb2ff, transparent: true, opacity: au === 1 || au === 10 || au === 100 ? .2 : .1, depthWrite: false })));
+    });
+    var seg = [];
+    for (var k = 0; k < 12; k++) {
+      var a = k * 30 * D2R, r0 = scale.dist(.6);
+      seg.push(new T.Vector3(Math.cos(a) * r0, 0, -Math.sin(a) * r0), new T.Vector3(Math.cos(a) * maxR, 0, -Math.sin(a) * maxR));
+    }
+    ecliptic.add(new T.LineSegments(new T.BufferGeometry().setFromPoints(seg), new T.LineBasicMaterial({ color: 0x9fb2ff, transparent: true, opacity: .07, depthWrite: false })));
+    ecliptic.add(new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(scale.dist(.6), 0, 0), new T.Vector3(maxR, 0, 0)]), new T.LineBasicMaterial({ color: 0xf4c77a, transparent: true, opacity: .28, depthWrite: false })));
+    var disk = new T.Mesh(new T.RingGeometry(scale.dist(.3), maxR, 160, 1), new T.MeshBasicMaterial({ color: 0x4c63c8, transparent: true, opacity: .035, side: T.DoubleSide, depthWrite: false }));
+    disk.rotation.x = -Math.PI / 2; ecliptic.add(disk);
+    scene.add(ecliptic);
+
+    // Planète 9 : zone de probabilité (orbites possibles, Brown et Batygin 2021) — points tirés selon leurs incertitudes
+    if (p9) { scene.remove(p9.pts); p9.pts.geometry.dispose(); p9.pts.material.dispose(); p9 = null; }
+    var r = rng(9), n = Math.min(2600, Math.max(900, Math.round((cfg.dust || 3000) * .6))), pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n), el = {};
+    for (var j = 0; j < n; j++) {
+      var aa = Math.max(280, Math.min(560, 380 + gauss(r) * (gauss(r) > 0 ? 70 : 45)));
+      var q = Math.max(220, Math.min(aa * .95, 300 + gauss(r) * 40));
+      var node = 97 + gauss(r) * 12, varpi = 254 + gauss(r) * 14;
+      var e9 = { a: aa, e: 1 - q / aa, i: Math.max(4, 16 + gauss(r) * 5), node: node, peri: varpi - node };
+      A.fromElements(e9, A.solveKepler(r() * TAU, e9.e), el);
+      toScene(el, tmp); pos[j * 3] = tmp.x; pos[j * 3 + 1] = tmp.y; pos[j * 3 + 2] = tmp.z;
+      var b = .16 + .2 * r(); col[j * 3] = .62 * b; col[j * 3 + 1] = .5 * b; col[j * 3 + 2] = 1 * b;   // une brume diffuse, pas des objets
+      size[j] = 3 + r() * 4;
+    }
+    var g = new T.BufferGeometry();
+    g.setAttribute('position', new T.BufferAttribute(pos, 3)); g.setAttribute('aColor', new T.BufferAttribute(col, 3)); g.setAttribute('aSize', new T.BufferAttribute(size, 1));
+    var u = belts[0] ? belts[0].u : { uPR: { value: PR }, uScaleH: { value: H / (2 * tanHalf) } };
+    var pts9 = new T.Points(g, new T.ShaderMaterial({ uniforms: u, vertexShader: G.DUST_VERT, fragmentShader: G.DUST_FRAG, transparent: true, blending: T.AdditiveBlending, depthWrite: false }));
+    pts9.frustumCulled = false; scene.add(pts9); p9 = { pts: pts9 };
+    inclKey = null;
+  }
+
+  /* inclinaison : l'orbite reliée au plan de l'écliptique par des traits verticaux, son ombre dans le plan et la ligne des nœuds */
+  function clearIncl() {
+    while (inclGroup.children.length) { var o = inclGroup.children.pop(); disposeTree(o); }
+    inclLabels.forEach(function (x) { x.el.remove(); }); inclLabels = [];
+  }
+  function inclFor(id, color, strong) {
+    var P = byId[id]; if (!P) return;
+    var pts = null, iDeg = null, nodeDeg = null, jd = OBS.time.jd;
+    if (P.craft) {                                            // trajectoire d'un engin autour du Soleil
+      if (!P.path || P.path.userData.rel) return;
+      var arr = P.path.geometry.attributes.position; pts = [];
+      for (var k = 0; k < arr.count; k += Math.max(1, Math.floor(arr.count / 400))) pts.push(new T.Vector3(arr.getX(k), arr.getY(k), arr.getZ(k)));
+    } else if (A.hasOrbit(id) && !P.def.moon) {
+      pts = A.orbitPath(id, jd, 240).map(function (v) { return toScene(v, new T.Vector3()); });
+      var el = A.elements(id, jd); iDeg = el.i; nodeDeg = el.node;
+    }
+    if (!pts || pts.length < 3) return;
+    var stems = [], shadow = [], top = pts[0], bot = pts[0], R = 0, every = Math.max(1, Math.floor(pts.length / (strong ? 48 : 24)));
+    pts.forEach(function (p, idx) {
+      shadow.push(new T.Vector3(p.x, 0, p.z));
+      if (idx % every === 0) stems.push(p, new T.Vector3(p.x, 0, p.z));
+      if (p.y > top.y) top = p; if (p.y < bot.y) bot = p;
+      R = Math.max(R, Math.hypot(p.x, p.z));
+    });
+    inclGroup.add(new T.LineSegments(new T.BufferGeometry().setFromPoints(stems), new T.LineBasicMaterial({ color: color, transparent: true, opacity: strong ? .32 : .16, depthWrite: false })));
+    var sh = new T.Line(new T.BufferGeometry().setFromPoints(shadow), new T.LineDashedMaterial({ color: color, transparent: true, opacity: strong ? .35 : .18, dashSize: R / 60, gapSize: R / 60, depthWrite: false }));
+    sh.computeLineDistances(); inclGroup.add(sh);
+    if (strong) {
+      var hl = new T.Line(new T.BufferGeometry().setFromPoints(pts.concat(P.craft ? [] : [pts[0]])), new T.LineBasicMaterial({ color: color, transparent: true, opacity: .75, depthWrite: false }));
+      inclGroup.add(hl);
+    }
+    if (nodeDeg !== null && strong) {                       // ligne des nœuds : là où l'orbite traverse le plan de l'écliptique
+      var nd = nodeDeg * D2R, dx = Math.cos(nd), dz = -Math.sin(nd);
+      inclGroup.add(new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-dx * R, 0, -dz * R), new T.Vector3(dx * R, 0, dz * R)]), new T.LineBasicMaterial({ color: color, transparent: true, opacity: .4, depthWrite: false })));
+    }
+    if (iDeg === null && P.craft) {                          // engin : inclinaison apparente, d'après le point le plus éloigné du plan
+      var far = Math.abs(top.y) > Math.abs(bot.y) ? top : bot, rr = far.length();
+      iDeg = rr ? Math.abs(Math.asin(far.y / rr)) / D2R : 0; iDeg = { approx: iDeg };
+    }
+    var el2 = document.createElement('span'); el2.className = 'lbl is-incl hid' + (strong ? ' strong' : '');
+    var val = typeof iDeg === 'object' ? '≈ ' + iDeg.approx.toFixed(0) + '° hors du plan' : 'i = ' + Math.abs(iDeg).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + '°';
+    el2.innerHTML = '<span class="nm">' + (strong ? '' : OBS.esc(P.def.short || P.def.name) + ' · ') + val + '</span>';
+    labelsEl.appendChild(el2);
+    inclLabels.push({ el: el2, at: (Math.abs(top.y) >= Math.abs(bot.y) ? top : bot).clone() });
+  }
+  function rebuildIncl() {
+    var sel = selected && byId[selected];
+    var key = inclMode + '|' + scale.mode + '|' + Math.floor(OBS.time.jd / 200) + '|' + (inclMode === 'off' ? '' : sel ? sel.id + (sel.craft ? sel.pathKey : '') : '-') + '|' + JSON.stringify(layers);
+    if (key === inclKey) return; inclKey = key;
+    clearIncl();
+    if (inclMode === 'off') return;
+    if (inclMode === 'all') bodies.forEach(function (P) {
+      if (P.def && !P.def.moon && !P.region && !P.craft && P.id !== 'soleil' && A.hasOrbit(P.id) && layerOn(P) && P.id !== (sel && sel.id))
+        inclFor(P.id, P.def.comet ? 0x9fd0ff : P.def.dwarf || P.def.minor ? 0xb7a8ff : 0x8fa4ff, false);
+    });
+    if (sel && !sel.region && (sel.craft || (A.hasOrbit(sel.id) && !sel.def.moon))) inclFor(sel.id, sel.craft ? 0x8ff0dc : 0xf4c77a, true);
+  }
+
+  function updateExtras(dt) {
+    if (ecliptic) ecliptic.visible = showEcl;
+    if (p9) p9.pts.visible = layers.theoriques;
+    // Planète 9 : son nom alterne avec un « ? », sur place
+    var P9 = byId.planete9;
+    if (P9 && P9.el) {
+      p9T += dt;
+      if (p9T > (p9Alt ? 1.6 : 3.2)) {
+        p9T = 0; p9Alt = !p9Alt;
+        var nm = P9.el.querySelector('.nm'); nm.classList.add('swap');
+        setTimeout(function () { nm.textContent = p9Alt ? '?' : 'Planète 9'; nm.classList.remove('swap'); }, 220);
+      }
+    }
+    rebuildIncl();
+    inclLabels.forEach(function (it) {
+      var el = it.el; camSpace.copy(it.at).applyMatrix4(camera.matrixWorldInverse);
+      v3.copy(it.at).project(camera);
+      var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H, ok = camSpace.z < 0 && x > 0 && x < W && y > TOPZONE && y < H - 30 && labelMode !== 'none';
+      el.classList.toggle('hid', !ok);
+      if (ok) el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+    });
+    // vue prédéfinie : la caméra pivote autour de la cible, à distance constante
+    if (viewFlight && !flight && !siteFlight) {
+      viewFlight.t += dt;
+      var kv = Math.min(1, viewFlight.t / viewFlight.dur), ev = ease(kv), off = camera.position.clone().sub(controls.target), dd = off.length();
+      var ph = viewFlight.ph0 + (viewFlight.ph1 - viewFlight.ph0) * ev;
+      camera.position.copy(controls.target).add(tmp.setFromSphericalCoords(dd, ph, viewFlight.th));
+      if (kv >= 1) { viewFlight = null; controls.enabled = true; }
+    }
+  }
+
+  L.setEcliptic = function (on) { showEcl = !!on; };
+  L.setIncl = function (mode) { inclMode = mode === 'sel' || mode === 'all' ? mode : 'off'; inclKey = null; };
+  /* vues : dessus (plan de l'écliptique vu d'en haut), profil (vu par la tranche), libre (angle par défaut) */
+  L.setView = function (kind) {
+    var off = camera.position.clone().sub(controls.target), sp = new T.Spherical().setFromVector3(off);
+    var ph1 = kind === 'dessus' ? .002 : kind === 'profil' ? Math.PI / 2 - .0005 : (90 - 24) * D2R;
+    viewFlight = { t: 0, dur: 1.3, ph0: sp.phi, ph1: ph1, th: sp.theta };
+    controls.enabled = false; L._view = kind; OBS.emit('view', kind);
+  };
+  L.view = function () { return L._view || 'libre'; };
+
   /* ---------- API d'affichage ---------- */
   L.setScale = function (mode) {
     if (mode === scale.mode) return;
     scale.mode = mode;
-    rebuildOrbits(OBS.time.jd); place(OBS.time.jd, OBS.time.jdSpin); updateBelts(OBS.time.jd, true);
+    rebuildOrbits(OBS.time.jd); place(OBS.time.jd, OBS.time.jdSpin); updateBelts(OBS.time.jd, true); rebuildExtras();
     controls.maxDistance = homeDist() * 2.4;
     if (selected) { lastSel.copy(byId[selected].pos); startFlight(selected); } else startFlight(null);
     OBS.emit('scale', mode);
@@ -978,26 +1157,33 @@
     bodies.forEach(function (P) {
       var dist = camera.position.distanceTo(P.pos);
       P.rPx = (P.r || 1) / (dist * tanHalf) * (H / 2);
+      P._cam = dist;
+      var lon = layerOn(P);
+      if (P.holder && !P.craft) P.holder.visible = lon;
       if (P.hit && P.id !== 'soleil') {
         P.hit.scale.setScalar(P.r * Math.max(1.3, 14 / Math.max(P.rPx, .5)));
-        P.hit.visible = !P.def.moon || P.def.parent === focusSys || (byId[P.def.parent].rPx > 18);
+        P.hit.visible = lon && (!P.def.moon || P.def.parent === focusSys || (byId[P.def.parent].rPx > 18));
         if (P.craft) {                                     // un engin autour d'un astre lointain : caché tant que l'astre n'est qu'un point
           var hb = P.host && byId[P.host], hostSys = hb && (hb.def.moon ? hb.def.parent : hb.id);
-          P.shown = P.on && (P.id === selected || !hb || hb.rPx > 6 || hostSys === focusSys);
+          P.shown = P.on && lon && (P.id === selected || !hb || hb.rPx > 6 || hostSys === focusSys);
           P.holder.visible = P.shown; P.hit.visible = P.shown;
+          var hiM = P.id === selected || P.id === hover, ms = hiM ? MARK_HI : MARK;
+          P.mark.scale.set(ms, ms, 1); P.mark.material.opacity = hiM ? 1 : .7;
         }
       }
       if (P.line) {
         var tgt;
-        if (P.moonRing) tgt = showOrbits && (P.def.parent === focusSys || byId[P.def.parent].rPx > 22) ? P.lineBase : 0;
-        else tgt = (hover === P.id || selected === P.id) ? .55 : (showOrbits ? P.lineBase : 0);
+        if (P.moonRing) tgt = showOrbits && lon && (P.def.parent === focusSys || byId[P.def.parent].rPx > 22) ? P.lineBase : 0;
+        else tgt = !lon ? 0 : (hover === P.id || selected === P.id) ? .55 : (showOrbits ? P.lineBase : 0);
         P.line.material.opacity += (tgt - P.line.material.opacity) * .12;
         P.line.visible = P.line.material.opacity > .004;
         if (P.moonRing && P.line.visible) { var par = byId[P.def.parent]; P.line.position.copy(par.pos); P.line.quaternion.setFromUnitVectors(tmp.set(0, 1, 0), P.ringN || par.pole); }
       }
     });
-    belts.forEach(function (B) { B.pts.visible = labelMode !== 'none' || true; });
+    belts.forEach(function (B) { B.pts.visible = layers.ceintures; });
+    if (hal && hal.tail && !layers.naines) { hal.tail[0].pts.visible = hal.tail[1].pts.visible = false; }
     updateCraftPaths();
+    updateExtras(dt, focusSys);
 
     layoutLabels(focusSys);
   };
@@ -1059,16 +1245,28 @@
       if (d.moon) show = show && (d.parent === focusSys || byId[d.parent].rPx > 26);
       if (P.region) show = show && labelMode === 'all' && !selected;
       if ((d.dwarf || d.comet) && labelMode === 'planetes') show = selected === P.id;
-      if (P.craft) show = P.shown && labelMode !== 'none' && (selected === P.id || hover === P.id || (labelMode === 'all' && (P.host ? byId[P.host].rPx > 30 || P.host === focusSys || (byId[P.host].def.moon && byId[P.host].def.parent === focusSys && byId[P.host].rPx > 8) : !selected)));
+      // engins : nom au survol, à la sélection, ou quand on s'en approche (autour d'un astre : quand l'astre est assez grand à l'écran)
+      if (P.craft) show = P.shown && labelMode !== 'none' && (selected === P.id || hover === P.id || (labelMode === 'all' && (P.host ? byId[P.host].rPx > 30 || P.host === focusSys || (byId[P.host].def.moon && byId[P.host].def.parent === focusSys && byId[P.host].rPx > 8) : (!selected && P._cam < 75))));
+      if (d.minor) show = show && (selected === P.id || hover === P.id || P._cam < 70);   // petits corps : seulement de près
+      if (d.theorique) show = show && labelMode === 'all' && (selected === P.id || !selected);
+      if (!layerOn(P)) show = false;
       camSpace.copy(P.pos).applyMatrix4(camera.matrixWorldInverse);
       if (camSpace.z > 0) show = false;
+      var vis = camSpace.z <= 0 && layerOn(P) && !P.region && (!P.craft || P.shown) && (!d.moon || P.hit.visible);
       v3.copy(P.pos).project(camera);
       var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H;
       if (x < -60 || x > W + 60 || y < -40 || y > H + 40) show = false;
       if (show && P.id !== 'soleil' && camera.position.distanceTo(P.pos) > camera.position.length() && Math.hypot(sx - x, sy - y) < sunPx) show = false;   // caché derrière le Soleil
       if (show) { P._sx = x; P._sy = y; P._cd = -camSpace.z; }
-      var pri = (P.id === selected ? 1000 : P.id === hover ? 500 : 0) + (P.id === 'soleil' ? 120 : P.id === 'terre' ? 115 : d.moon ? 20 : P.craft ? 15 : d.dwarf || d.comet ? 40 : P.region ? 10 : 100) + Math.min(60, P.rPx || 0);
-      items.push({ P: P, el: el, x: x, y: y, show: show, pri: pri });
+      var pri = (P.id === selected ? 1000 : P.id === hover ? 500 : 0) + (P.id === 'soleil' ? 120 : P.id === 'terre' ? 115 : d.moon ? 20 : P.craft ? 15 : d.dwarf || d.comet ? 40 : d.minor ? 30 : P.region ? 10 : 100) + Math.min(60, P.rPx || 0);
+      items.push({ P: P, el: el, x: x, y: y, show: show, pri: pri, vis: vis });
+    });
+    // repères à l'écran (disque d'un astre, losange d'un engin) : une étiquette ne doit pas les recouvrir
+    var marks = [];
+    items.forEach(function (it) {
+      if (!it.vis || it.x < -20 || it.x > W + 20 || it.y < -20 || it.y > H + 20) return;
+      var rr = Math.max(it.P.craft ? 6 : 3, Math.min(it.P.rPx || 0, 60)) + 2;
+      marks.push({ P: it.P, l: it.x - rr, r: it.x + rr, t: it.y - rr, b: it.y + rr });
     });
     // caché derrière un astre plus proche qui occupe de la place à l'écran (une lune derrière sa planète…)
     var big = items.filter(function (it) { return it.show && it.P.rPx > 24 && !it.P.region; });
@@ -1086,13 +1284,26 @@
       if (!it.show) { if (!el.classList.contains('hid')) el.classList.add('hid'); return; }
       if (((P.rPx || 0) > 150 || (P.id === selected && (P.rPx || 0) > 60)) && P.id !== 'soleil') { el.classList.add('hid'); return; }   // l'objet remplit l'écran : la console porte déjà son nom
       var off = Math.max(P.rPx || 4, 4) + 6;
-      if (!el._w) { el._w = el.offsetWidth || 80; el._h = el.offsetHeight || 22; }
-      var bx = it.x + off, by = it.y - el._h / 2, box = { l: bx, t: by, r: bx + el._w, b: by + el._h };
-      var clash = box.t < TOPZONE || occupied.some(function (o) { return box.l < o.r + 4 && box.r + 4 > o.l && box.t < o.b + 2 && box.b + 2 > o.t; });
-      var keep = !clash || (P.id === selected && box.t >= TOPZONE);
-      el.classList.toggle('hid', !keep);
-      if (!keep) return;
+      if (!el._w || el._wTxt !== el.textContent) { el._w = el.offsetWidth || 80; el._h = el.offsetHeight || 22; el._wTxt = el.textContent; }
+      // places essayées dans l'ordre : à droite, à gauche, au-dessus, en dessous ; la place précédente d'abord (pas de sautillement)
+      var w = el._w, hh = el._h, cands = {
+        r: { l: it.x + off, t: it.y - hh / 2 }, g: { l: it.x - off - w, t: it.y - hh / 2 },
+        h: { l: it.x - w / 2, t: it.y - off - hh }, b: { l: it.x - w / 2, t: it.y + off }
+      }, order = ['r', 'g', 'h', 'b'];
+      if (el._side && el._side !== 'r') order.unshift(el._side);
+      var pick2 = null, box = null;
+      for (var oi = 0; oi < order.length && !pick2; oi++) {
+        var c = cands[order[oi]], bb = { l: c.l, t: c.t, r: c.l + w, b: c.t + hh };
+        if (bb.t < TOPZONE) continue;
+        var hit = occupied.some(function (o) { return bb.l < o.r + 4 && bb.r + 4 > o.l && bb.t < o.b + 2 && bb.b + 2 > o.t; }) ||
+          marks.some(function (m) { return m.P !== P && bb.l < m.r && bb.r > m.l && bb.t < m.b && bb.b > m.t; });
+        if (!hit) { pick2 = order[oi]; box = bb; }
+      }
+      if (!pick2 && P.id === selected) { pick2 = 'r'; box = { l: cands.r.l, t: cands.r.t, r: cands.r.l + w, b: cands.r.t + hh }; if (box.t < TOPZONE) pick2 = null; }
+      el.classList.toggle('hid', !pick2);
+      if (!pick2) return;
       occupied.push(box);
+      if (el._side !== pick2) { el.classList.remove('s-r', 's-g', 's-h', 's-b'); el.classList.add('s-' + pick2); el._side = pick2; }
       el.style.transform = 'translate(' + it.x.toFixed(1) + 'px,' + it.y.toFixed(1) + 'px)';
       el.style.setProperty('--off', off.toFixed(1) + 'px');
       el.classList.toggle('active', P.id === selected);

@@ -231,7 +231,7 @@
     look: { type: 0, scale: 1.8, seed: 55, relief: .05, ice: .1, c: [0x6e6a64, 0x948f88, 0x4a4743, 0xbab5ad] },
     text: "La plus lointaine des grandes lunes d'Uranus, couverte de vieux cratères.", facts: [['Diamètre', '1 523 km'], ['Révolution', '13,5 jours']] },
 
-  { id: 'triton', tex: 'triton.jpg', name: 'Triton', kind: 'Satellite de Neptune', parent: 'neptune', rKm: 1353.4, moon: true, lock: true, orbit: { aKm: 354759, P: 5.876854, retro: true },
+  { id: 'triton', tex: 'triton.jpg', lookNote: 'Carte réelle de Voyager 2 pour la moitié sud. Le nord n\'a jamais été photographié : il est laissé dans une teinte neutre et floue, sans aucun détail inventé.', name: 'Triton', kind: 'Satellite de Neptune', parent: 'neptune', rKm: 1353.4, moon: true, lock: true, orbit: { aKm: 354759, P: 5.876854, retro: true },
     look: { type: 0, scale: 1.6, seed: 56, relief: .02, ice: .6, c: [0xb9a69a, 0xe0d2c8, 0x8a7468, 0xf3ebe5] },
     text: "La grande lune de Neptune tourne en sens inverse de la rotation de sa planète : sans doute un objet de la ceinture de Kuiper capturé. Voyager 2 y a observé des geysers d'azote.",
     facts: [['Diamètre', '2 707 km'], ['Distance à Neptune', '354 800 km'], ['Révolution', '5,88 jours, en sens rétrograde'], ['Température', '≈ −235 °C']] },
@@ -242,6 +242,14 @@
     facts: [['Diamètre', '1 212 km'], ['Distance à Pluton', '19 591 km'], ['Révolution', '6,39 jours']] }
   ];
 
+  /* Petits corps remarquables (nom affiché seulement de près) */
+  B.push({ id: 'arrokoth', name: 'Arrokoth', kind: 'Objet de la ceinture de Kuiper', parent: 'soleil', rKm: 9, minor: true, stretch: [1.75, 1, .7],
+    look: { type: 0, scale: 2.2, seed: 91, relief: .05, c: [0x8a4a33, 0xa8644a, 0x5e3122, 0xc07a5a] },
+    text: "Un petit corps glacé de la ceinture de Kuiper, fait de deux lobes aplatis soudés en douceur : un bloc de construction des planètes resté presque intact depuis la naissance du système solaire. New Horizons l'a survolé le 1er janvier 2019 à 3 538 km, l'objet le plus lointain jamais visité.",
+    facts: [['Dimensions', '≈ 35 × 20 × 14 km'], ['Distance au Soleil', '≈ 44 UA'], ['Révolution', '≈ 294 ans'], ['Rotation', '15,94 heures'], ['Survol', 'New Horizons, 1er janvier 2019']],
+    missions: 'New Horizons (survol le 1er janvier 2019, à 3 538 km).',
+    lookNote: 'Aspect simulé : la forme à deux lobes est approchée par un ellipsoïde aplati, aux couleurs rougeâtres mesurées par New Horizons ; taille très agrandie.' });
+
   /* Régions (repères cliquables sans corps unique) */
   var REGIONS = [
     { id: 'ceinture', name: 'Ceinture principale', kind: 'Ceinture d\'astéroïdes', au: 2.7, lonDeg: 128,
@@ -251,12 +259,20 @@
     { id: 'kuiper', name: 'Ceinture de Kuiper', kind: 'Disque de corps glacés', au: 42, lonDeg: 210,
       text: "Un vaste anneau de corps glacés au-delà de Neptune, vestiges de la formation du système solaire. Pluton, Hauméa et Makémaké en font partie.",
       facts: [['Étendue', 'de 30 à 50 UA environ'], ['Membres notables', 'Pluton, Hauméa, Makémaké, Arrokoth']],
-      lookNote: 'Les corps affichés sont répartis selon la structure réelle de la ceinture, pas des objets catalogués un à un.' }
+      lookNote: 'Les corps affichés sont répartis selon la structure réelle de la ceinture, pas des objets catalogués un à un.' },
+    /* Planète hypothétique : jamais observée. Repère placé dans la zone la plus probable (près de l'aphélie), pas sur un objet. */
+    { id: 'planete9', name: 'Planète 9', short: 'Planète 9', kind: 'Planète hypothétique · jamais observée', theorique: true, au: 450, lonDeg: 74, latDeg: -6, viewDist: 1100,
+      text: "Une planète que l'on suppose très loin au-delà de Neptune, pour expliquer l'alignement inattendu des orbites de quelques corps lointains de la ceinture de Kuiper. Elle n'a jamais été observée et pourrait ne pas exister : d'autres explications sont étudiées. Ce qui est affiché est la zone où les calculs la placeraient le plus probablement, pas un objet.",
+      facts: [['Statut', 'hypothèse, jamais observée'], ['Proposée par', 'K. Batygin et M. Brown (2016)'], ['Masse estimée', '≈ 6 Terres (de 5 à 8)'], ['Demi-grand axe', '≈ 380 UA (de 300 à 520)'],
+        ['Périhélie', '≈ 300 UA (de 240 à 385)'], ['Aphélie', '≈ 460 UA (de 350 à 660)'], ['Inclinaison', '≈ 16° (± 5°)'], ['Période', '≈ 7 400 ans (calculée)']],
+      sources: [['K. Batygin et M. Brown, « Evidence for a distant giant planet in the Solar System » (2016)', 'https://arxiv.org/abs/1601.05438'], ['M. Brown et K. Batygin, « The Orbit of Planet Nine » (2021)', 'https://arxiv.org/abs/2108.09868']],
+      lookNote: 'Zone de probabilité : des points répartis le long des orbites possibles estimées par M. Brown et K. Batygin (2021), avec la dispersion de leurs incertitudes. La zone est plus dense là où la planète passerait le plus de temps, près de l\'aphélie. Aucune position n\'est connue.' }
   ];
 
   OBS.BODIES = B;
   OBS.REGIONS = REGIONS;
   OBS.byId = {};
+  REGIONS.forEach(function (r) { r.region = true; });
   B.concat(REGIONS).forEach(function (b) { OBS.byId[b.id] = b; });
   OBS.childrenOf = function (id) { return B.filter(function (b) { return b.parent === id && b.moon; }); };
 })();

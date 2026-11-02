@@ -61,6 +61,20 @@
 - Plus de faux relief tiré des couleurs : sans altimétrie, la surface est lisse (signalé).
 - Bouton « Avancer jusqu'au lever du Soleil » sur un lieu plongé dans la nuit ; la caméra tourne avec la surface au-dessus d'un lieu.
 
+### Grande mise à jour du cahier (novembre 2026)
+- Missions plus discrètes : losanges plus petits, nom au survol, à la sélection ou de près ; ils grossissent au survol.
+- Étiquettes sans chevauchement : chaque nom essaie la droite, la gauche, le dessus puis le dessous, et évite aussi les disques des astres et les losanges (fin de la collision « Ceinture principale » / Mars).
+- Légende-filtre en bas à droite : Planètes, naines et petits corps, lunes, ceintures, missions, objets hypothétiques ; un clic masque ou réaffiche le calque (mémorisé). Croix de fermeture, message qui renvoie aux Réglages, case « Légende » dans les Réglages. Effacée quand une console est ouverte.
+- Vues prédéfinies (Dessus, Profil, Libre) à côté des repères d'échelle.
+- Réglages « Plan de l'écliptique » (grille translucide, point vernal en doré) et « Inclinaison des orbites » (masquée, objet choisi, toutes) : traits jusqu'au plan, ombre de l'orbite, ligne des nœuds, valeur de i.
+- Planète 9 : zone de probabilité (Brown et Batygin 2021) en brume violette, nom qui alterne avec « ? », fiche sourcée ; calque « Objets hypothétiques ».
+- Arrokoth ajouté (éléments SBDB), nom affiché seulement de près ; Ulysses ajoutée à la liste des engins (données au prochain passage du robot JPL), avec un bouton vers son passage le plus haut au-dessus du plan.
+- Renvois entre fiches : les noms d'objets dans les textes et données des consoles sont soulignés en pointillé, bulle d'information et bouton « Aller voir ».
+- Mode photo (bouton appareil photo de la barre du temps, ou Outils) : choix des éléments affichés, capture PNG avec les noms et une signature, définition ×2 si l'appareil le permet.
+- Menu : nouvelle page Outils (Simulateur, Mode photo, outils prévus) ; Méthode devient un menu à onglets (Méthode, Crédits et licences) ; la page Hypothèses ne garde que les fiches.
+- Première vraie hypothèse publiée : Caelesterium, avec un encadré d'avertissement et une animation 3D dédiée (`js/ui/hypo-anim.js` : régimes conservatif et actif, distance à l'étoile, vue en coupe, bilan illustratif).
+- Correctifs : Atlas › Unités, titre et symbole ne se chevauchent plus (le symbole passe à la ligne si besoin) ; carte de Triton retouchée (`tools/triton-carte.py` : quadrillage effacé, nord jamais photographié en teinte neutre au lieu d'un aplat gris), signalé dans la fiche. Les ceintures sont de nouveau reconnues comme régions par la console.
+
 ### Pistes suivantes
 - Relief réel pour Mercure, Pluton, Charon, Cérès, Téthys et Dioné (altimétries USGS), et lunes d'Uranus (Voyager, couverture partielle).
 - Carte des lunaisons (la Lune au centre, phases à venir, curseur de dates).

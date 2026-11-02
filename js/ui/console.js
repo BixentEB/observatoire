@@ -23,7 +23,7 @@
     'dione.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18434), couleurs atténuées',
     'tethys.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18439), couleurs atténuées',
     'japet.jpg': 'NASA/JPL-Caltech/SSI/LPI (Paul Schenk), mosaïque Cassini (PIA18436), couleurs atténuées',
-    'triton.jpg': 'NASA/JPL-Caltech/LPI (Paul Schenk), mosaïque Voyager 2 (PIA18668) ; zones grises non photographiées',
+    'triton.jpg': 'NASA/JPL-Caltech/LPI (Paul Schenk), mosaïque Voyager 2 (PIA18668) ; le nord, jamais photographié (Voyager 2 n\'a vu que l\'hémisphère éclairé en 1989), est rendu d\'une teinte neutre et floue',
     'pluton.jpg': 'NASA/JHUAPL/SwRI, carte New Horizons ; zones grises non photographiées',
     'charon.jpg': 'NASA/JHUAPL/SwRI/LPI, mosaïque New Horizons (USGS) ; zones grises non photographiées',
     'ceres.jpg': 'NASA/JPL-Caltech/UCLA/MPS/DLR/IDA, mosaïque Dawn (USGS), domaine public',
@@ -39,6 +39,7 @@
   };
 
   function swatch(def) {
+    if (def.theorique) return '#b49cff';
     var c = def.look && def.look.c ? def.look.c[1] : 0xf4c77a;
     if (def.id === 'soleil') c = 0xffb23e;
     if (def.cls) c = OBS.STAR_COLORS[def.cls] || 0xffffff;
@@ -90,6 +91,10 @@
       f.push(flag('real', 'Position', 'mesurée', 'position 3D issue des mesures de parallaxe'));
       f.push(flag('real', 'Distances', 'réelles', 'échelle linéaire, une année-lumière = une même longueur partout'));
       f.push(flag('adapt', 'Aspect', 'symbolique', 'la taille du repère dépend de la luminosité, aucune étoile n\'est à l\'échelle'));
+    } else if (def.theorique) {
+      f.push(flag('sim', 'Statut', 'hypothétique', 'objet supposé, jamais observé'));
+      f.push(flag('sim', 'Position', 'inconnue', 'seule une zone probable est calculée'));
+      f.push(flag('real', 'Zone', 'publiée', 'orbites possibles d\'après Brown et Batygin (2021)'));
     } else if (def.region) {
       f.push(flag('real', 'Étendue', 'réelle', 'la ceinture occupe sa vraie zone'));
       f.push(flag('sim', 'Corps', 'répartis', 'des points distribués selon la structure réelle, pas des objets catalogués'));
@@ -118,9 +123,10 @@
     return { nom: h.join(''), projets: pj };
   }
 
+  var xr = function (t, self) { return OBS.xref ? OBS.xref(t, self) : esc(t || ''); };
   function facts(def) {
     if (!def.facts || !def.facts.length) return '';
-    return '<section class="c-sec"><h3>Données</h3><table class="c-facts">' + def.facts.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + esc(f[1]) + '</td></tr>'; }).join('') + '</table></section>';
+    return '<section class="c-sec"><h3>Données</h3><table class="c-facts">' + def.facts.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + xr(f[1], def.id) + '</td></tr>'; }).join('') + '</table></section>';
   }
 
   function render(level, id, part, site) {
@@ -147,7 +153,7 @@
       h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Position réelle dans l\'espace (ascension droite, déclinaison, distance). La taille du repère est symbolique et dépend de la luminosité de l\'étoile.</p></section>');
     } else {
       if (!def.region) h.push('<section class="c-sec"><h3>Le ' + esc(dateLabel()) + '</h3><div data-live>' + liveSystem(id) + '</div></section>');
-      h.push('<p class="c-text">' + esc(def.text || '') + '</p>');
+      h.push('<p class="c-text">' + xr(def.text, id) + '</p>');
       h.push(lr.nom);
       h.push(facts(def));
       var SF = OBS.SURFACE && OBS.SURFACE[id];
@@ -168,13 +174,14 @@
       if (moons.length) h.push('<section class="c-sec"><h3>Lunes principales</h3><div class="c-chips">' + moons.map(function (m) { return '<button class="chip" type="button" data-go="' + m.id + '">' + esc(m.name) + '</button>'; }).join('') + '</div></section>');
       if (def.moon) h.push('<section class="c-sec"><div class="c-chips"><button class="chip" type="button" data-go="' + def.parent + '">← ' + esc(OBS.byId[def.parent].name) + '</button></div></section>');
       if (def.tex) h.push('<section class="c-sec"><h3>Carte de surface</h3><img class="c-map" src="textures/' + def.tex + '" alt="Carte de la surface de ' + esc(def.name) + ' à plat" loading="lazy"><p class="c-cap">' + esc(CREDITS[def.tex] || '') + '</p></section>');
-      if (def.missions) h.push('<section class="c-sec"><h3>Exploration</h3><p class="c-text">' + esc(def.missions) + '</p></section>');
+      if (def.missions) h.push('<section class="c-sec"><h3>Exploration</h3><p class="c-text">' + xr(def.missions, id) + '</p></section>');
       h.push(lr.projets);
       var rep = [];
       if (def.lookNote) rep.push(def.lookNote);
       else if (def.look && !def.tex) rep.push('Aspect approché : rendu simulé aux couleurs connues de l\'objet.');
       if (OBS.SURFACE && OBS.SURFACE[id] && OBS.SURFACE[id].res) rep.push('Netteté des données : ' + OBS.SURFACE[id].res + ' De très près, l\'image devient floue plutôt que d\'inventer des détails.');
       if (!def.region && id !== 'soleil') rep.push(def.moon ? 'Taille et distance à la planète agrandies pour rester visibles.' : 'Taille agrandie pour rester visible : à l\'échelle des distances, ce serait un point.');
+      if (def.sources) h.push('<section class="c-sec"><h3>Sources</h3><ul class="c-src">' + def.sources.map(function (x) { return '<li><a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a></li>'; }).join('') + '</ul></section>');
       if (rep.length) h.push('<section class="c-sec"><h3>Ce qui est représenté</h3>' + rep.map(function (r) { return '<p class="c-note">' + esc(r) + '</p>'; }).join('') + '</section>');
     }
     h.push('<div data-hypo></div></div>');
@@ -212,6 +219,16 @@
     return OBS.astro.dateFromJd(jd).toLocaleDateString('fr-FR', o) + (withTime ? ' UTC' : '');
   }
   function deNom(n) { return n === 'Terre' || n === 'Lune' ? 'la ' + n : n; }
+  /* engin d'archive : date où il s'éloigne le plus du plan de l'écliptique (Ulysses au-dessus des pôles du Soleil) */
+  function highLat(id) {
+    var d = OBS.system.get(id) && OBS.system.get(id).data; if (!d) return null;
+    var best = null, bv = 0;
+    d.segs.forEach(function (S) {
+      if (S.k !== 'v' || S.c !== 'soleil') return;
+      for (var i = 0; i < S.n; i++) { var x = S.p[i * 3], y = S.p[i * 3 + 1], z = S.p[i * 3 + 2], r = Math.sqrt(x * x + y * y + z * z), v = r ? Math.abs(z) / r : 0; if (v > bv) { bv = v; best = S.jd0 + i * S.dt; } }
+    });
+    return best;
+  }
   function liveCraft(def) {
     var lv = OBS.system.live(def.id) || {}, AU = OBS.astro.AU_KM, h = [];
     function cell(label, big, small, wide) { h.push('<div' + (wide ? ' class="wide"' : '') + '><span>' + label + '</span><b>' + big + '</b>' + (small ? '<small>' + small + '</small>' : '') + '</div>'); }
@@ -222,7 +239,8 @@
       var target = lv.from === undefined ? null : (OBS.time.jd < lv.from ? lv.from + .02 : lv.to - .02);
       var now = OBS.astro.jdFromDate(new Date());
       if (target && now && now > lv.from && now < lv.to) target = now;
-      return '<p class="c-note">' + esc(msg) + '</p>' + (target ? '<div class="c-chips" style="margin-top:8px"><button class="chip chip-go" type="button" data-jump="' + target + '">' + (def.vol ? 'Revivre le vol depuis le départ' : 'Aller au ' + esc(fmtDate(target))) + '</button></div>' : '');
+      if (target && def.archive) { var hl = highLat(def.id); if (hl) target = hl; }
+      return '<p class="c-note">' + esc(msg) + '</p>' + (target ? '<div class="c-chips" style="margin-top:8px"><button class="chip chip-go" type="button" data-jump="' + target + '">' + (def.vol ? 'Revivre le vol depuis le départ' : def.archive ? 'Aller au passage le plus haut au-dessus du plan (' + esc(fmtDate(target)) + ')' : 'Aller au ' + esc(fmtDate(target))) + '</button></div>' : '');
     }
     if (lv.hostKm !== undefined) {
       var alt = lv.hostKm - lv.hostR;
@@ -241,16 +259,16 @@
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind) + '</p><h2 class="c-name"><span class="c-swatch c-craft" style="background:' + col + ';color:' + col + '"></span>' + esc(def.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
     var now = OBS.astro.jdFromDate(new Date());
-    var pos = def.fin && !def.vol ? flag('real', 'Position', 'extrapolée par le JPL', 'la sonde ne transmet plus : sa trajectoire est prolongée par le calcul')
+    var pos = def.fin && !def.vol && !def.archive ? flag('real', 'Position', 'extrapolée par le JPL', 'la sonde ne transmet plus : sa trajectoire est prolongée par le calcul')
       : flag('real', 'Position', 'JPL Horizons', 'trajectoire reconstituée ou prévue par les équipes de navigation, mise à jour chaque jour') ;
     h.push('<div class="c-flags">' + pos + '<span data-when></span>' + flag('adapt', 'Aspect', 'symbolique', 'un repère, pas une image de l\'engin') +
       flag('adapt', 'Échelle', 'adaptée', 'près d\'un astre, la distance est compressée comme celle des lunes ; la direction reste réelle') + '<a class="flag-help" href="#/methode">?</a></div>');
     h.push('<section class="c-sec"><h3>Le ' + esc(dateLabel()) + '</h3><div data-live>' + liveCraft(def) + '</div></section>');
-    h.push('<p class="c-text">' + esc(def.text || '') + '</p>');
-    h.push(facts(def));
+    h.push('<p class="c-text">' + xr(def.text, id) + '</p>');
+    h.push(facts(def, id));
     var host = def.host && OBS.byId[def.host];
     if (host) h.push('<section class="c-sec"><div class="c-chips"><button class="chip" type="button" data-go="' + host.id + '">← ' + esc(host.name) + '</button></div></section>');
-    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Position : JPL Horizons (NASA/JPL-Caltech), ' + (def.fin && !def.vol ? 'trajectoire extrapolée après la fin des contacts' : 'reconstituée pour le passé, prévue pour l\'avenir et recalculée chaque jour') + '. Près d\'un astre, l\'engin est placé dans sa vraie direction, mais à une distance compressée comme celle des lunes. Hors des dates couvertes par les données, il n\'est pas affiché.</p></section>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Position : JPL Horizons (NASA/JPL-Caltech), ' + (def.fin && !def.vol && !def.archive ? 'trajectoire extrapolée après la fin des contacts' : 'reconstituée pour le passé, prévue pour l\'avenir et recalculée chaque jour') + '. Près d\'un astre, l\'engin est placé dans sa vraie direction, mais à une distance compressée comme celle des lunes. Hors des dates couvertes par les données, il n\'est pas affiché.</p></section>');
     h.push('</div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
     el.querySelector('.c-close').addEventListener('click', function () { OBS.system.select(def.host || null); });
@@ -385,6 +403,9 @@
     else OBS.engine.setShift(Math.round((window.innerWidth - r.left + 16) / 2), 0);
   }
   if (window.ResizeObserver) new ResizeObserver(reshift).observe(el);
+  // console ouverte : la légende et l'aide du coin bas droit s'effacent (elles seraient dessous)
+  function consoleFlag() { document.body.classList.toggle('console-open', !el.hidden); }
+  if (window.MutationObserver) new MutationObserver(consoleFlag).observe(el, { attributes: true, attributeFilter: ['hidden'] });
   window.addEventListener('resize', reshift);
 
   OBS.on('select', function (e) {

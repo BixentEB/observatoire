@@ -53,12 +53,14 @@
       h.push('<h2>' + title + '</h2><div class="grid-list">' + list.map(function (b) { return card('#/explorer/' + b.id, colorOf(b), b.name, b.kind); }).join('') + '</div>');
     }
     group('Étoile', B.filter(function (b) { return b.id === 'soleil'; }));
-    group('Planètes', B.filter(function (b) { return b.parent === 'soleil' && !b.dwarf && !b.comet && !b.moon; }));
+    group('Planètes', B.filter(function (b) { return b.parent === 'soleil' && !b.dwarf && !b.comet && !b.moon && !b.minor; }));
     group('Planètes naines', B.filter(function (b) { return b.dwarf; }));
     var parents = []; B.forEach(function (b) { if (b.moon && parents.indexOf(b.parent) < 0) parents.push(b.parent); });
     parents.forEach(function (p) { group('Lunes · ' + OBS.byId[p].name, B.filter(function (b) { return b.moon && b.parent === p; })); });
     group('Comète', B.filter(function (b) { return b.comet; }));
-    group('Régions', OBS.REGIONS);
+    group('Petits corps', B.filter(function (b) { return b.minor; }));
+    group('Régions', OBS.REGIONS.filter(function (r) { return !r.theorique; }));
+    group('<span style="color:var(--hypo)">Objets hypothétiques</span>', OBS.REGIONS.filter(function (r) { return r.theorique; }));
     root.innerHTML = h.join('');
   }
   function listeVoisinage(root) {
@@ -85,7 +87,7 @@
     ];
     root.innerHTML = '<p class="lead" style="margin-top:0">Les distances de l\'univers sont si grandes qu\'on change d\'unité à chaque étape. Chacune sert à une échelle.</p>' +
       '<div class="units">' + U.map(function (x) {
-        return '<div class="unit"><span class="unit-sym">' + esc(x.u) + '</span><h3>' + esc(x.n) + '</h3><p class="unit-v">' + esc(x.v) + '</p><p>' + esc(x.ex) + '</p><p class="unit-use">' + esc(x.use) + '</p></div>';
+        return '<div class="unit"><div class="unit-head"><h3>' + esc(x.n) + '</h3><span class="unit-sym">' + esc(x.u) + '</span></div><p class="unit-v">' + esc(x.v) + '</p><p>' + esc(x.ex) + '</p><p class="unit-use">' + esc(x.use) + '</p></div>';
       }).join('') + '</div>' +
       '<h2>Une échelle pour se représenter</h2><div class="scale-row">' +
       [['Terre → Lune', '1,3 seconde-lumière'], ['Terre → Soleil', '8 minutes-lumière'], ['Soleil → Neptune', '4 heures-lumière'], ['Soleil → Proxima', '4,24 années-lumière'], ['Traversée de la Voie lactée', '≈ 100 000 années-lumière']]
@@ -101,7 +103,7 @@
       { id: 'mercure' }, { id: 'venus' }, { id: 'terre' }, { id: 'mars' },
       { region: 'ceinture', members: ['ceres'] },
       { id: 'jupiter' }, { id: 'saturne' }, { id: 'uranus' }, { id: 'neptune' },
-      { region: 'kuiper', members: ['pluton', 'haumea', 'makemake'] },
+      { region: 'kuiper', members: ['pluton', 'haumea', 'makemake', 'arrokoth'] },
       { id: 'eris', far: true }, { id: 'halley', far: true }
     ].map(function (c) { c.def = B[c.id || c.region]; return c; });
   }

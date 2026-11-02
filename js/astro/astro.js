@@ -47,6 +47,8 @@
     ceres:    { ep: 2460000.5, a: 2.76718174, e: 0.07881745, i: 10.58634327, node: 80.26014869, peri: 73.47046154, M: 17.21565150 },
     makemake: { ep: 2460600.5, a: 45.38390777, e: 0.16353397, i: 29.03373563, node: 79.26052040, peri: 296.75383162, M: 168.41683818 },
     haumea:   { ep: 2460200.5, a: 42.89, e: 0.1999, i: 28.21, node: 121.97, peri: 240.7, M: 219.87 },
+    /* Arrokoth (486958), objet de la ceinture de Kuiper survolé par New Horizons (époque 21 nov. 2025) */
+    arrokoth: { ep: 2461000.5, a: 44.231, e: 0.0378, i: 2.450, node: 159.045, peri: 183.861, M: 315.242 },
     eris:     { ep: 2460800.5, a: 68.05060149, e: 0.43567548, i: 43.82162477, node: 36.04603608, peri: 150.71436356, M: 211.03207767 },
     /* comète de Halley : passage au périhélie le 9 février 1986 (M = 0 à cette date) */
     halley:   { ep: 2446470.5, a: 17.834, e: 0.96714, i: 162.262, node: 58.420, peri: 111.332, M: 0 }

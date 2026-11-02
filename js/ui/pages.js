@@ -13,9 +13,38 @@
 
   var pages = OBS.pages = {};
 
+  /* Outils : les instruments pour manipuler et comparer (le simulateur, puis d'autres) */
+  pages.outils = function (root) {
+    var T = [
+      { href: '#/simulateur', t: 'Simulateur d\'objets', k: 'Disponible', d: 'Modeler un corps céleste : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère, puis copier les réglages.' },
+      { act: 'photo', t: 'Mode photo', k: 'Disponible', d: 'Choisir ce qui apparaît à l\'écran (noms, orbites, engins, ceintures, plan de l\'écliptique, signature) et enregistrer une image du ciel à la date affichée.' },
+      { soon: true, t: 'Simulateur de lunaisons', k: 'Prévu', d: 'La Lune au centre, ses phases à venir et un curseur de dates.' },
+      { soon: true, t: 'Comparateur', k: 'Prévu', d: 'Deux astres côte à côte, à la même échelle : tailles, distances, durées du jour et de l\'année.' },
+      { soon: true, t: 'Scénarios « et si… »', k: 'À l\'étude', d: 'Et si la Terre avait deux lunes ? Des expériences calculées quand un modèle simple le permet, toujours marquées comme simulées.' }
+    ];
+    root.innerHTML = '<p class="p-kicker">Outils</p><h1>Manipuler, comparer, capturer</h1>' +
+      '<p class="lead">Les instruments de l\'Observatoire. Les données ne changent jamais : les outils permettent de les regarder autrement, ou de modeler un objet à part, clairement marqué comme simulé.</p>' +
+      '<div class="tools">' + T.map(function (x) {
+        var inner = '<span class="tool-k' + (x.soon ? ' soon' : '') + '">' + esc(x.k) + '</span><h3>' + esc(x.t) + '</h3><p>' + esc(x.d) + '</p>';
+        if (x.soon) return '<div class="tool soon">' + inner + '</div>';
+        if (x.act) return '<button type="button" class="tool" data-tool="' + x.act + '">' + inner + '</button>';
+        return '<a class="tool" href="' + x.href + '">' + inner + '</a>';
+      }).join('') + '</div>';
+    var ph = root.querySelector('[data-tool="photo"]');
+    if (ph) ph.addEventListener('click', function () { location.hash = '#/'; setTimeout(function () { if (OBS.photo) OBS.photo.open(); }, 450); });
+  };
+
+  /* Méthode : un menu à onglets (Méthode, Crédits), d'autres pourront s'ajouter */
+  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences']];
+  function infoTabs(cur) {
+    return '<div class="tabs" role="tablist" aria-label="Informations">' + INFO_TABS.map(function (t) {
+      return '<a role="tab" class="tab" href="#/' + t[0] + '" aria-selected="' + (t[0] === cur) + '">' + t[1] + '</a>';
+    }).join('') + '</div>';
+  }
   pages.methode = function (root) {
     root.innerHTML = [
       '<p class="p-kicker">Méthode</p><h1>Le visuel peut être adapté, les données jamais</h1>',
+      infoTabs('methode'),
       '<p class="lead">L\'Observatoire représente les positions calculées des corps célestes pour la date sélectionnée, avec des adaptations visuelles explicitement signalées.</p>',
       '<p>Ce n\'est pas exactement le ciel tel qu\'un observateur le verrait depuis la Terre : les positions affichées sont géométriques, calculées dans un référentiel centré sur le Soleil (l\'écliptique J2000). Vu d\'ici, chaque astre apparaît là où il était quand sa lumière en est partie, quelques minutes plus tôt pour les planètes, plusieurs années pour les étoiles. Les consoles indiquent ce temps de parcours de la lumière.</p>',
       '<div class="legend">',
@@ -36,6 +65,10 @@
       '<p>La scène démarre à la date et à l\'heure d\'aujourd\'hui. On peut accélérer de « temps réel » jusqu\'à « un an par seconde », revenir en arrière ou revenir à aujourd\'hui. Au-delà de deux jours par seconde, la rotation des planètes sur elles-mêmes est ralentie à l\'écran pour éviter un effet stroboscopique ; les positions sur les orbites, elles, restent exactes.</p>',
       '<h2>Les niveaux</h2>',
       '<p>On passe d\'un niveau à l\'autre en zoomant : un objet, le système solaire, puis le voisinage stellaire. Chaque niveau a sa propre scène et sa propre échelle, pour garder la précision du calcul. Le niveau suivant, la Voie lactée, est en préparation.</p>',
+      '<h2>Les objets hypothétiques</h2>',
+      '<p>Certains objets sont supposés par les astronomes sans avoir jamais été observés, comme la Planète 9. Ils sont affichés à part (calque « Objets hypothétiques » de la légende), dans la couleur des hypothèses, et jamais comme un astre : la Planète 9 apparaît comme une zone de probabilité, des points répartis le long des orbites possibles publiées (M. Brown et K. Batygin, 2021), avec leurs incertitudes. Sa fiche ne contient que des valeurs publiées.</p>',
+      '<h2>Plan de l\'écliptique, inclinaisons et vues</h2>',
+      '<p>Le plan de l\'écliptique, celui de l\'orbite de la Terre, sert de référence. Il peut être affiché comme une grille translucide (cercles à 1, 2, 5, 10, 20, 30, 40, 50 et 100 UA, rayons tous les 30° de longitude, la longitude 0, direction du point vernal, en doré). Le réglage « Inclinaison des orbites » relie une orbite à ce plan par des traits verticaux, trace son ombre dans le plan et la ligne des nœuds, là où elle le traverse, avec la valeur de l\'inclinaison. Avec la vue « Profil », on voit le système par la tranche : les orbites très inclinées, comme celles d\'Éris, de Pluton ou de la comète de Halley, ressortent nettement. En échelle adaptée, les distances sont compressées mais les angles d\'inclinaison restent justes.</p>',
       '<h2>Les reconstitutions</h2>',
       '<p>Quand aucune image réelle n\'existe, comme pour notre galaxie vue de l\'extérieur, la représentation se fonde sur les calculs et les représentations officielles, éventuellement retravaillés dans leur aspect (couleur, densité), tout en restant proche de ce que la science juge probable. Une reconstitution est toujours étiquetée comme telle. Une éventuelle touche de fantaisie ne sera ajoutée que si elle reste acceptable, et elle sera signalée.</p>',
       '<h2>Sources des calculs</h2>',
@@ -50,7 +83,14 @@
       '<li>Données physiques : NASA Planetary Fact Sheets.</li>',
       '<li>Étoiles voisines : catalogues RECONS et SIMBAD, parallaxes Gaia et Hipparcos.</li>',
       '</ul>',
-      '<h2 id="credits">Crédits et licences</h2>',
+    ].join('');
+  };
+
+  pages.credits = function (root) {
+    root.innerHTML = [
+      '<p class="p-kicker">Méthode</p><h1>Crédits et licences</h1>',
+      infoTabs('credits'),
+      '<p class="lead">Les images, données et logiciels qui font l\'Observatoire, avec leurs auteurs et leurs licences.</p>',
       '<h3>Cartes de surface</h3><ul class="credits-list">',
       '<li><b>Solar System Scope</b> — cartes de la Terre, de Jupiter, de Saturne et de ses anneaux, d\'Uranus et de Neptune. Licence <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>, d\'après les données des missions de la NASA. <a href="https://www.solarsystemscope.com/textures/" rel="noopener" target="_blank">solarsystemscope.com/textures</a></li>',
       '<li><b>NASA Scientific Visualization Studio</b>, CGI Moon Kit — carte de la Lune (mosaïque de la caméra LROC, en 2k et 4k) et relief (altimètre laser LOLA de Lunar Reconnaissance Orbiter), domaine public. Le relief est converti ici en carte de pentes ; les conversions intermédiaires viennent du projet libre LUNAOPS.</li>',
@@ -60,6 +100,7 @@
       '<li><b>Lunes et planètes naines</b> — mosaïques de l\'USGS et de la NASA (Galileo, Voyager, Cassini, New Horizons, Dawn ; cartes de Paul Schenk au LPI ; cartes de Phil Stooke pour Phobos et Déimos), domaine public, préparées par le projet « solar-system » d\'A. Marcher (teintes atténuées ou ajoutées sur les mosaïques en noir et blanc, zones jamais photographiées en gris).</li>',
       '</ul>',
       '<h3>Données et calculs</h3><ul class="credits-list">',
+      '<li>Planète 9 : K. Batygin et M. Brown (2016), M. Brown et K. Batygin, « The Orbit of Planet Nine » (2021). Arrokoth : JPL Small-Body Database et mission New Horizons (NASA/JHUAPL/SwRI).</li>',
       '<li>NASA / JPL : éléments orbitaux des planètes (Standish), Small-Body Database et trajectoires des engins spatiaux (Horizons).</li>',
       '<li>IAU WGCCRE : orientation et rotation des astres.</li>',
       '<li>IAU, Gazetteer of Planetary Nomenclature, et NASA : noms et coordonnées des lieux remarquables (cratères, mers, volcans, sites d\'atterrissage).</li>',
@@ -75,9 +116,4 @@
     ].join('');
   };
 
-  /* les crédits sont une section de la page Méthode */
-  pages.credits = function (root) {
-    pages.methode(root);
-    var c = root.querySelector('#credits'); if (c) setTimeout(function () { c.scrollIntoView({ block: 'start' }); }, 60);
-  };
 })();

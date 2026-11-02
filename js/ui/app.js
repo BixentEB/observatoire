@@ -4,7 +4,7 @@
      #/                      exploration (système solaire)
      #/explorer/<objet>      un objet du système solaire
      #/voisinage[/<étoile>]  le voisinage stellaire
-     #/atlas[/<portée>[/carte|liste]]  #/hypotheses[/<fiche>]  #/simulateur  #/methode  #/credits
+     #/atlas[/<portée>[/carte|liste|unites]]  #/outils  #/simulateur  #/hypotheses[/<fiche>]  #/methode  #/credits
    ====================================================================== */
 (function () {
   'use strict';
@@ -30,7 +30,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1 };
+  var PAGES = { atlas: 1, outils: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -44,7 +44,7 @@
     closeMenu();
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
       var rt = a.getAttribute('data-route');
-      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || (r.name === 'credits' && rt === 'methode') || (r.name === 'simulateur' && rt === 'hypotheses');
+      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || (r.name === 'credits' && rt === 'methode') || (r.name === 'simulateur' && rt === 'outils');
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
@@ -94,6 +94,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (!$('settings').hidden) { toggleSettings(false); return; }
+    if (!$('photo').hidden) { OBS.photo.close(); return; }
     if (!page.hidden) { location.hash = '#/'; return; }
     var L = OBS.engine.level;
     if (L === OBS.system && L.siteSelected()) { L.select(L.selected()); return; }      // d'un lieu, on remonte à l'astre
@@ -137,7 +138,8 @@
   /* titre du niveau, au changement */
   var title = $('level-title'), titleT = 0, firstLevel = true;
   OBS.on('level', function (L) {
-    $('timebar').hidden = L.id === 'voisinage'; $('scale-badge').hidden = L.id !== 'systeme';
+    $('timebar').hidden = L.id === 'voisinage'; $('scale-badge').hidden = L.id !== 'systeme'; $('views').hidden = L.id !== 'systeme';
+    legendView();
     $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : 'Tailles agrandies';
     toggleSettings(false);
     if (firstLevel) { firstLevel = false; return; }
@@ -206,7 +208,61 @@
     keysView();
     sLabels.value = get('obs.labels') || 'all'; OBS.system.setLabels(sLabels.value);
     sLabels.addEventListener('change', function () { OBS.system.setLabels(sLabels.value); set('obs.labels', sLabels.value); });
+
+    /* plan de l'écliptique, inclinaison des orbites */
+    var sEcl = $('s-ecl'), sIncl = $('s-incl');
+    sEcl.checked = get('obs.ecl') === '1'; OBS.system.setEcliptic(sEcl.checked);
+    sEcl.addEventListener('change', function () { OBS.system.setEcliptic(sEcl.checked); set('obs.ecl', sEcl.checked ? '1' : '0'); });
+    sIncl.value = get('obs.incl') || 'off'; OBS.system.setIncl(sIncl.value);
+    sIncl.addEventListener('change', function () { OBS.system.setIncl(sIncl.value); set('obs.incl', sIncl.value); });
+
+    /* vues prédéfinies */
+    var views = $('views');
+    views.addEventListener('click', function (e) { var b = e.target.closest('[data-view]'); if (b) OBS.system.setView(b.getAttribute('data-view')); });
+    OBS.on('view', function (k) { Array.prototype.forEach.call(views.querySelectorAll('[data-view]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === k)); }); });
+
+    /* légende : explique les symboles et masque ou réaffiche chaque famille d'objets */
+    var legend = $('legend'), sLegend = $('s-legend');
+    var LAYERS_SAVED = (function () { try { return JSON.parse(get('obs.layers') || '{}'); } catch (e) { return {}; } })();
+    Object.keys(LAYERS_SAVED).forEach(function (k) { if (k !== 'missions') OBS.system.setLayer(k, !!LAYERS_SAVED[k]); });
+    function renderLayers() {
+      var ly = OBS.system.layers();
+      Array.prototype.forEach.call(legend.querySelectorAll('[data-layer]'), function (b) {
+        var on = ly[b.getAttribute('data-layer')] !== false; b.setAttribute('aria-pressed', String(on));
+        b.title = on ? 'Cliquer pour masquer' : 'Cliquer pour réafficher';
+      });
+      sCraft.checked = ly.missions;
+    }
+    legend.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-layer]'); if (!b) return;
+      var k = b.getAttribute('data-layer'), on = b.getAttribute('aria-pressed') !== 'true';
+      if (k === 'missions') { set('obs.craft', on ? '1' : '0'); }
+      OBS.system.setLayer(k, on);
+      var ly = OBS.system.layers(), keep = {}; Object.keys(ly).forEach(function (x) { if (x !== 'missions' && !ly[x]) keep[x] = false; });
+      set('obs.layers', JSON.stringify(keep));
+    });
+    OBS.on('layers', renderLayers); renderLayers();
+    sLegend.checked = get('obs.legend') !== '0';
+    sLegend.addEventListener('change', function () { set('obs.legend', sLegend.checked ? '1' : '0'); legendView(); });
+    legend.querySelector('.legend-x').addEventListener('click', function () {
+      sLegend.checked = false; set('obs.legend', '0'); legendView();
+      toast('Légende masquée : vous pouvez la réafficher ou la masquer dans les <b>Réglages</b> ⚙');
+    });
+    legendView();
   }
+  function legendView() {
+    var L = OBS.engine.level, lg = $('legend');
+    lg.hidden = !$('s-legend').checked || !L || L.id !== 'systeme';
+    document.documentElement.style.setProperty('--legend-h', !lg.hidden && window.innerWidth <= 720 ? (lg.offsetHeight + 8) + 'px' : '0px');
+  }
+  window.addEventListener('resize', legendView);
+  var toastT = 0;
+  function toast(html) {
+    var t = document.querySelector('.toast'); if (t) t.remove();
+    t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.innerHTML = html;
+    document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(function () { t.remove(); }, 5200);
+  }
+  OBS.toast = toast;
   renderScale();
   sQ.value = OBS.perf.pref;
   $('s-quality-note').textContent = 'Qualité actuelle : ' + OBS.perf.LEVELS[OBS.perf.tier].label.toLowerCase() + (OBS.perf.pref === 'auto' ? ' (choisie d\'après votre appareil).' : '.');

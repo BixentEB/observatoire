@@ -30,6 +30,7 @@
   <nav id="menu" class="menu" aria-label="Menu principal">
     <a href="#/" data-route="explorer">Explorer</a>
     <a href="#/atlas" data-route="atlas">Atlas</a>
+    <a href="#/outils" data-route="outils">Outils</a>
     <a href="#/hypotheses" data-route="hypotheses" class="m-hypo">Hypothèses</a>
     <a href="#/methode" data-route="methode">Méthode</a>
     <a href="https://codexmental.com" class="m-out">Codex Mental <span aria-hidden="true">↗</span></a>
@@ -48,8 +49,26 @@
 <div class="hud">
   <button id="scale-badge" class="badge" type="button" title="Changer l'échelle des distances"></button>
   <span id="size-badge" class="badge badge-quiet">Tailles agrandies</span>
+  <div id="views" class="views" role="group" aria-label="Vue">
+    <button type="button" data-view="dessus" aria-pressed="false" title="Vue de dessus : le plan de l'écliptique vu d'en haut">Dessus</button>
+    <button type="button" data-view="profil" aria-pressed="false" title="Vue de profil : le plan de l'écliptique vu par la tranche, les inclinaisons ressortent">Profil</button>
+    <button type="button" data-view="libre" aria-pressed="true" title="Perspective libre (angle par défaut)">Libre</button>
+  </div>
 </div>
 
+<div class="corner">
+<aside id="legend" class="legend-box" aria-label="Légende" hidden>
+  <button class="legend-x" type="button" aria-label="Masquer la légende" title="Masquer (réactivable dans les réglages)">✕</button>
+  <h3>Légende</h3>
+  <ul>
+    <li><button class="lg" type="button" data-layer="planetes" aria-pressed="true"><span class="sym sym-planete"><i></i></span>Planètes<span class="tick"></span></button></li>
+    <li><button class="lg" type="button" data-layer="naines" aria-pressed="true"><span class="sym sym-naine"><i></i></span>Naines et petits corps<span class="tick"></span></button></li>
+    <li><button class="lg" type="button" data-layer="lunes" aria-pressed="true"><span class="sym sym-lune"><i></i></span>Lunes<span class="tick"></span></button></li>
+    <li><button class="lg" type="button" data-layer="ceintures" aria-pressed="true"><span class="sym sym-ceinture"><i></i></span>Ceintures d'astéroïdes<span class="tick"></span></button></li>
+    <li><button class="lg" type="button" data-layer="missions" aria-pressed="true"><span class="sym sym-mission"><i></i></span>Missions (losanges)<span class="tick"></span></button></li>
+    <li><button class="lg" type="button" data-layer="theoriques" aria-pressed="true"><span class="sym sym-theo"><i></i></span>Objets hypothétiques<span class="tick"></span></button></li>
+  </ul>
+</aside>
 <aside id="keys" class="keys" aria-label="Commandes" hidden>
   <button class="keys-x" type="button" aria-label="Masquer l'aide des commandes" title="Masquer (réactivable dans les réglages)">✕</button>
   <dl>
@@ -59,6 +78,7 @@
     <dt>Échap</dt><dd>reculer d'un cran · <kbd>/</kbd> rechercher</dd>
   </dl>
 </aside>
+</div>
 
 <div id="timebar" class="timebar" role="group" aria-label="Contrôle du temps">
   <button id="t-rev" class="tb" type="button" aria-label="Inverser le sens du temps" title="Inverser le sens du temps">⇄</button>
@@ -67,6 +87,7 @@
   <button id="t-fast" class="tb" type="button" aria-label="Accélérer" title="Accélérer">+</button>
   <div class="t-read"><span id="t-date" class="t-date"></span><span id="t-speed" class="t-speed"></span></div>
   <button id="t-now" class="tb tb-text tb-live" type="button" title="Passer en direct : date et heure actuelles, en temps réel"><span class="live-dot" aria-hidden="true"></span><span class="live-txt">En direct</span></button>
+  <button id="photo-btn" class="tb" type="button" aria-label="Mode photo" title="Mode photo : choisir ce qui apparaît, puis capturer l'image"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></button>
   <button id="settings-btn" class="tb" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages">⚙</button>
 </div>
 
@@ -76,6 +97,10 @@
     <select id="s-scale"><option value="adaptee">Échelle adaptée</option><option value="reelle">Distances réelles</option></select></label>
   <label class="row"><span>Orbites</span><input id="s-orbits" type="checkbox" checked></label>
   <label class="row"><span>Engins spatiaux</span><input id="s-craft" type="checkbox" checked></label>
+  <label class="row"><span>Plan de l'écliptique</span><input id="s-ecl" type="checkbox"></label>
+  <label class="row"><span>Inclinaison des orbites</span>
+    <select id="s-incl"><option value="off">Masquée</option><option value="sel">Objet choisi</option><option value="all">Toutes les orbites</option></select></label>
+  <label class="row"><span>Légende</span><input id="s-legend" type="checkbox" checked></label>
   <label class="row"><span>Clic droit : vue précédente</span><input id="s-back" type="checkbox" checked></label>
   <label class="row"><span>Aide des commandes</span><input id="s-keys" type="checkbox" checked></label>
   <label class="row"><span>Noms affichés</span>
@@ -85,6 +110,8 @@
   <p id="s-quality-note" class="note"></p>
   <p class="note">Glissez pour tourner, molette ou pincement pour zoomer, clic droit ou deux doigts pour déplacer. Double-clic : revenir à la vue d'ensemble.</p>
 </section>
+
+<section id="photo" class="settings photo-panel" hidden aria-label="Mode photo"></section>
 
 <div id="edge" class="edge" hidden>Faites une courte pause, puis dézoomez encore pour sortir du système solaire</div>
 <div id="level-title" class="level-title" aria-hidden="true"></div>
@@ -123,8 +150,11 @@
 <script src="js/ui/pages.js"></script>
 <script src="js/ui/atlas.js"></script>
 <script src="js/ui/hypotheses.js"></script>
+<script src="js/ui/hypo-anim.js"></script>
 <script src="js/ui/search.js"></script>
+<script src="js/ui/xref.js"></script>
 <script src="js/ui/demo.js"></script>
 <script src="js/ui/app.js"></script>
+<script src="js/ui/photo.js"></script>
 </body>
 </html>

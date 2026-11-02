@@ -88,11 +88,11 @@
     engine.resize();
   };
 
-  engine.resize = function () {
+  engine.resize = function (prOverride) {
     if (!renderer) return;
     var r = stage.getBoundingClientRect();
     engine.W = Math.max(280, Math.round(r.width)); engine.H = Math.max(300, Math.round(r.height));
-    engine.PR = OBS.perf.pixelRatio();
+    engine.PR = prOverride || OBS.perf.pixelRatio();
     renderer.setPixelRatio(engine.PR);
     renderer.setSize(engine.W, engine.H, false);
     if (customRT) composer.setSize(engine.W * engine.PR, engine.H * engine.PR); else { composer.setPixelRatio(engine.PR); composer.setSize(engine.W, engine.H); }
@@ -100,6 +100,18 @@
     Object.keys(engine.levels).forEach(function (k) { engine.levels[k].resize(engine.W, engine.H, engine.PR); });
   };
 
+  /* capture de l'image (mode photo) : un rendu, copié aussitôt dans une toile 2D (avant que le navigateur n'efface l'image) */
+  engine.capture = function (k) {
+    var L = engine.level; if (!L || !renderer) return null;
+    var pr0 = engine.PR, hi = k && k > 1;
+    if (hi) engine.resize(Math.min(4, pr0 * k));
+    L.update(0, performance.now()); composer.render();
+    var src = renderer.domElement, out = document.createElement('canvas');
+    out.width = src.width; out.height = src.height;
+    out.getContext('2d').drawImage(src, 0, 0);
+    if (hi) { engine.resize(); L.update(0, performance.now()); composer.render(); }
+    return out;
+  };
   engine.add = function (level) { engine.levels[level.id] = level; level.resize(engine.W, engine.H, engine.PR); };
 
   /* ---------- changement de niveau, avec fondu court (jamais d'écran noir complet) ---------- */

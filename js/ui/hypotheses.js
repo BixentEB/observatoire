@@ -42,10 +42,9 @@
     if (param === 'atelier' || param === 'simulateur') { location.replace('#/simulateur'); return; }
     if (param) return fiche(root, param);
     root.innerHTML = '<p class="p-kicker" style="color:var(--hypo)">Hypothèses</p><h1>Pistes de réflexion</h1>' +
-      '<div class="h-intro"><b>Hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
+      '<div class="h-intro"><b>Hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories, présentées par des textes et des animations 3D. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
       '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>' +
-      '<h2>Simulateur</h2><p>Pour modeler un corps céleste et mettre une idée en perspective : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère. Les scénarios « et si… » y viendront aussi.</p>' +
-      '<p><a class="btn btn-hypo" href="#/simulateur">Ouvrir le simulateur</a></p>';
+      '<p class="note" style="margin-top:24px">Pour modeler un objet et mettre une idée en perspective, le simulateur est dans les <a href="#/outils">Outils</a>.</p>';
     list().then(function (l) {
       var box = document.getElementById('h-list'); if (!box) return;
       if (l === null) { box.innerHTML = '<p class="note">Les fiches n\'ont pas pu être chargées. Elles s\'affichent quand le site est servi par un serveur web (en ligne, ou en local avec <code>python3 -m http.server</code>).</p>'; return; }
@@ -65,10 +64,12 @@
         '<p class="h-badge">Hypothèse personnelle' + (h.exemple ? ' · fiche d\'exemple' : '') + '</p><h1>' + esc(h.titre) + '</h1>' + meta(h) +
         (h.resume ? '<p class="lead" style="margin-top:14px">' + esc(h.resume) + '</p>' : '') +
         (objs.length ? '<div class="h-objs">' + objs.map(function (o) { return '<a class="btn" href="#/explorer/' + o + '">Voir ' + esc(OBS.byId[o].name) + ' dans l\'espace</a>'; }).join('') + '</div>' : '') +
-        (h.modele ? '<div id="h-viewer"></div>' : '') +
+        (h.avertissement ? '<div class="h-warn" role="note"><b>Avant de lire</b><p>' + esc(h.avertissement) + '</p></div>' : '') +
+        (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim] ? '<div id="h-anim"></div>' : h.modele ? '<div id="h-viewer"></div>' : '') +
         '<div class="h-body" id="h-body"></div>' +
         '<p class="note" style="margin-top:30px">Une hypothèse est une piste de réflexion, pas un résultat établi. Les données de l\'Observatoire, elles, ne sont jamais modifiées pour servir une hypothèse.</p>';
-      if (h.modele) activeViewer = new Viewer(document.getElementById('h-viewer'), h.modele, { tag: 'Modèle de l\'hypothèse' });
+      if (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim]) activeViewer = OBS.HYPO_ANIM[h.anim](document.getElementById('h-anim'));
+      else if (h.modele) activeViewer = new Viewer(document.getElementById('h-viewer'), h.modele, { tag: 'Modèle de l\'hypothèse' });
       if (h.fichier) fetch('hypotheses/' + h.fichier, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
         var b = document.getElementById('h-body'); if (b) b.innerHTML = OBS.md(t);
       });
@@ -78,11 +79,11 @@
   /* ---------- simulateur (page à part, #/simulateur) ---------- */
   OBS.pages.simulateur = function (root) {
     disposeViewer();
-    root.innerHTML = '<p class="p-kicker" style="color:var(--hypo)">Simulateur</p><h1>Modeler un corps céleste</h1>' +
+    root.innerHTML = '<p><a href="#/outils" class="chip">← Outils</a></p><p class="p-kicker" style="color:var(--hypo)">Simulateur</p><h1>Modeler un corps céleste</h1>' +
       '<p class="lead">Partez d\'un objet réel ou d\'une page blanche. Les réglages peuvent être copiés pour accompagner une fiche d\'hypothèse.</p>' +
       '<div id="h-viewer"></div>' +
       '<h2>Bientôt : les scénarios « et si… »</h2><p>Et si la Terre avait deux lunes ? Si Jupiter était plus massive ? Si Mars avait gardé une atmosphère épaisse ? Des expériences avec des résultats calculés quand un modèle simple le permet, et clairement marquées comme simulées.</p>' +
-      '<p><a href="#/hypotheses" class="chip">Voir les hypothèses</a></p>';
+      '<p><a href="#/outils" class="chip">Tous les outils</a> <a href="#/hypotheses" class="chip">Voir les hypothèses</a></p>';
     activeViewer = new Viewer(document.getElementById('h-viewer'), { base: 'saturne' }, { tag: 'Simulateur · objet modelé' });
   };
 

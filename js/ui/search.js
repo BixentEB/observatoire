@@ -7,7 +7,7 @@
 (function () {
   'use strict';
   var OBS = window.OBS, esc = OBS.esc;
-  var ALIAS = { soleil: 'sun sol', terre: 'earth', lune: 'moon luna', venus: 'venus', mars: 'mars', saturne: 'saturn', neptune: 'neptune', pluton: 'pluto',
+  var ALIAS = { planete9: 'planet nine planete neuf planete x hypothetique', arrokoth: 'ultima thule 2014 mu69 kuiper', soleil: 'sun sol', terre: 'earth', lune: 'moon luna', venus: 'venus', mars: 'mars', saturne: 'saturn', neptune: 'neptune', pluton: 'pluto',
     europe: 'europa', ganymede: 'ganymede', encelade: 'enceladus', japet: 'iapetus', rhea: 'rhea', dione: 'dione', tethys: 'tethys', oberon: 'oberon',
     ceres: 'ceres', eris: 'eris', haumea: 'haumea', makemake: 'makemake', halley: '1p comete comet', ceinture: 'asteroides asteroid belt',
     kuiper: 'kuiper belt', proxima: 'proxima centauri', alphacen: 'rigil kentaurus alpha centauri', sirius: 'sirius canicule', '61cyg': '61 cygni', tauceti: 'tau ceti', epseri: 'epsilon eridani' };
@@ -31,7 +31,8 @@
       if (s.comp) index.push({ name: s.comp.n, sub: 'Étoile compagne · ' + s.name, href: '#/etoile/' + s.id, key: norm(s.comp.n + ' ' + s.name), w: 1 });
     });
     [['Atlas', 'Cartes et listes de tous les objets', '#/atlas', 'atlas carte liste index'], ['Unités', 'UA, année-lumière, parsec… les repères de l\'astronomie', '#/atlas/systeme/unites', 'unites ua annee lumiere parsec al km'],
-     ['Méthode', 'Ce qui est réel, adapté ou simulé ; sources et crédits', '#/methode', 'methode sources credits licences'], ['Simulateur', 'Modeler un corps céleste', '#/simulateur', 'simulateur modeler'],
+     ['Méthode', 'Ce qui est réel, adapté ou simulé ; sources', '#/methode', 'methode sources ecliptique inclinaison'], ['Crédits', 'Images, données et logiciels, avec leurs licences', '#/credits', 'credits licences auteurs'],
+     ['Outils', 'Simulateur, mode photo, et bientôt comparateur et lunaisons', '#/outils', 'outils instruments photo capture image'], ['Simulateur', 'Modeler un corps céleste', '#/simulateur', 'simulateur modeler'],
      ['Hypothèses', 'Pistes de réflexion personnelles', '#/hypotheses', 'hypotheses idees']].forEach(function (p) { index.push({ name: p[0], sub: p[1], href: p[2], key: norm(p[0] + ' ' + p[3]), w: 2, page: true }); });
     if (OBS.hypo) OBS.hypo.list().then(function (l) { (l || []).forEach(function (h) { index.push({ name: h.titre, sub: 'Hypothèse personnelle', href: '#/hypotheses/' + encodeURIComponent(h.id), key: norm(h.titre + ' ' + (h.resume || '') + ' hypothese'), w: 1, hypo: true }); }); });
   }

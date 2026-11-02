@@ -29,6 +29,7 @@ SPEC = [
   ('pioneer10', '-23', [('v', 'soleil', 'cov', 'cov', '15d')]),
   ('pioneer11', '-24', [('v', 'soleil', 'cov', 'cov', '15d')]),
   ('newhorizons', '-98', [('v', 'soleil', 'cov', 'cov', '10d')]),
+  ('ulysses', '-55',   [('v', 'soleil', 'cov', 'cov', '4d')]),
   ('parker', '-96',    [('v', 'soleil', 'cov', 'cov', '1d')]),
   ('solarorbiter', '-144', [('v', 'soleil', 'cov', 'cov', '2d')]),
   ('bepicolombo', '-121', [('v', 'soleil', 'cov', 'cov', '2d'), ('v', 'mercure', 'J-20', 'cov', '2h')]),

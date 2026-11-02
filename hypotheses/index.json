@@ -1,6 +1,17 @@
 {
-  "_aide": "Liste des hypothèses. Une entrée par fiche ; le texte est dans le fichier .md indiqué. statut : piste, reflexion, developpement, abandonnee ou exemple. objets : identifiants des objets liés (voir js/data/bodies.js). modele (facultatif) : réglages du viewer, à copier depuis l'atelier. brouillon: true pour masquer une fiche.",
+  "_aide": "Liste des hypothèses. Une entrée par fiche ; le texte est dans le fichier .md indiqué. statut : piste, reflexion, developpement, abandonnee ou exemple. objets : identifiants des objets liés (voir js/data/bodies.js). modele (facultatif) : réglages du viewer, à copier depuis l'atelier. brouillon: true pour masquer une fiche. avertissement (facultatif) : encadré affiché en tête de la fiche. anim (facultatif) : animation 3D dédiée (voir js/ui/hypo-anim.js), à la place du viewer.",
   "hypotheses": [
+    {
+      "id": "caelesterium",
+      "titre": "Caelesterium",
+      "resume": "Et si certains corps célestes savaient mieux conserver leur matière, voire en régénérer une partie ? Née de l'observation de 3I/ATLAS et de l'image d'un terrarium fermé, l'hypothèse d'un corps à conservation, autorégulation et régénération (principe C.A.R.).",
+      "statut": "reflexion",
+      "date": "2026-11-02",
+      "objets": [],
+      "fichier": "caelesterium.md",
+      "anim": "caelesterium",
+      "avertissement": "Une pure hypothèse, en cours de réflexion : aucune preuve ni aucune donnée ne montre qu'un tel objet existe. Je n'ai pas de formation scientifique ni astronomique ; c'est une exploration personnelle et spéculative, qui cherche à rester au plus près de la réalité et sera corrigée à mesure, en confrontant l'idée aux connaissances établies. L'animation est une illustration conceptuelle, pas une simulation physique."
+    },
     {
       "id": "exemple-fiche",
       "titre": "Exemple de fiche (à remplacer)",
@@ -8,9 +19,16 @@
       "statut": "exemple",
       "exemple": true,
       "date": "2026-10-27",
-      "objets": ["saturne"],
+      "objets": [
+        "saturne"
+      ],
       "fichier": "exemple-fiche.md",
-      "modele": { "base": "saturne", "carte": true, "inclinaison": 26.7 }
+      "modele": {
+        "base": "saturne",
+        "carte": true,
+        "inclinaison": 26.7
+      },
+      "brouillon": true
     }
   ]
 }
