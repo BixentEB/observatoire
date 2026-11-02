@@ -28,7 +28,7 @@
     lines.forEach(function (l) {
       var m;
       if (!l.trim()) { flush(); return; }
-      if ((m = l.match(/^(#{1,3})\s+(.*)$/))) { flush(); var n = Math.min(3, m[1].length + 1); out.push('<h' + n + '>' + inline(m[2]) + '</h' + n + '>'); return; }
+      if ((m = l.match(/^(#{1,4})\s+(.*)$/))) { flush(); var n = Math.min(4, m[1].length + 1); out.push('<h' + n + '>' + inline(m[2]) + '</h' + n + '>'); return; }
       if ((m = l.match(/^\s*[-*]\s+(.*)$/))) { if (para.length) flush(); if (!list || list.t !== 'ul') { flush(); list = { t: 'ul', items: [] }; } list.items.push(m[1]); return; }
       if ((m = l.match(/^\s*\d+[.)]\s+(.*)$/))) { if (para.length) flush(); if (!list || list.t !== 'ol') { flush(); list = { t: 'ol', items: [] }; } list.items.push(m[1]); return; }
       if ((m = l.match(/^>\s?(.*)$/))) { flush(); out.push('<blockquote>' + inline(m[1]) + '</blockquote>'); return; }

@@ -71,9 +71,38 @@
       if (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim]) activeViewer = OBS.HYPO_ANIM[h.anim](document.getElementById('h-anim'));
       else if (h.modele) activeViewer = new Viewer(document.getElementById('h-viewer'), h.modele, { tag: 'Modèle de l\'hypothèse' });
       if (h.fichier) fetch('hypotheses/' + h.fichier, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
-        var b = document.getElementById('h-body'); if (b) b.innerHTML = OBS.md(t);
+        var b = document.getElementById('h-body'); if (b) { b.innerHTML = OBS.md(t); enhance(b); }
       });
     });
+  }
+
+  /* mise en page de lecture : numéros de section, sommaire, phrases clés, définitions */
+  function enhance(b) {
+    var secs = [];
+    Array.prototype.forEach.call(b.querySelectorAll('h3'), function (h, i) {
+      var m = h.textContent.match(/^(\d+)\.\s*(.*)$/), id = 'sec-' + (i + 1);
+      h.id = id;
+      if (m) h.innerHTML = '<span class="h-num">' + m[1] + '</span>' + OBS.esc(m[2]);
+      secs.push({ id: id, n: m ? m[1] : '', t: m ? m[2] : h.textContent });
+    });
+    Array.prototype.forEach.call(b.querySelectorAll('p'), function (p, i) {
+      var kids = Array.prototype.filter.call(p.childNodes, function (n) { return n.nodeType === 1 || n.textContent.trim(); });
+      if (kids.length === 1 && kids[0].nodeName === 'STRONG') p.classList.add('h-key');           // phrase clé, mise en exergue
+      else if (kids.length === 1 && kids[0].nodeName === 'EM') p.classList.add(i === 0 ? 'h-sub' : 'h-endnote');
+      else if (kids[0] && kids[0].nodeName === 'STRONG' && (/:\s*$/.test(kids[0].textContent) || (kids[1] && /^\s*:/.test(kids[1].textContent)))) p.classList.add('h-def');   // « Formation : … »
+      else if (i === 1 && /^Statut/.test(p.textContent)) p.classList.add('h-status-line');
+    });
+    if (secs.length >= 4) {
+      var nav = document.createElement('nav'); nav.className = 'h-toc'; nav.setAttribute('aria-label', 'Sommaire');
+      nav.innerHTML = '<p class="h-toc-t">Sommaire</p><ol>' + secs.map(function (x) {
+        return '<li><a href="#' + x.id + '" data-sec="' + x.id + '">' + (x.n ? '<span>' + x.n + '</span>' : '<span>·</span>') + OBS.esc(x.t) + '</a></li>';
+      }).join('') + '</ol>';
+      var firstH = b.querySelector('h3'); b.insertBefore(nav, firstH);
+      nav.addEventListener('click', function (e) {
+        var a = e.target.closest('[data-sec]'); if (!a) return; e.preventDefault();
+        var t = document.getElementById(a.getAttribute('data-sec')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   }
 
   /* ---------- simulateur (page à part, #/simulateur) ---------- */

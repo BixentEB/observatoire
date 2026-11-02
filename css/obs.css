@@ -437,8 +437,33 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .h-status { color: var(--hypo); border: 1px solid var(--hypo-line); padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .08em; }
 .h-status.ex { color: var(--muted); border-color: var(--line2); }
 .h-badge { display: inline-block; font: 11px var(--mono); color: var(--hypo); letter-spacing: .12em; text-transform: uppercase; }
-.h-body { margin-top: 14px; }
+/* corps d'une fiche d'hypothèse : une mise en page de lecture, aérée */
+.h-body { margin-top: 26px; font-size: 16.5px; line-height: 1.75; }
+.h-body > * { max-width: 68ch; }
+.h-body p { margin: 0 0 1.05em; }
+.h-body strong { color: var(--fg); font-weight: 600; }
 .h-body h2 { color: var(--fg); font-size: 18px; }
+.h-body h3 { display: flex; align-items: baseline; gap: 14px; font: 700 23px/1.25 var(--display); color: var(--fg); margin: 64px 0 18px; padding-top: 22px; border-top: 1px solid var(--line); max-width: none; scroll-margin-top: 80px; }
+.h-num { flex: none; font: 500 13px var(--mono); color: var(--hypo); border: 1px solid var(--hypo-line); border-radius: 999px; min-width: 30px; height: 26px; display: inline-grid; place-items: center; padding: 0 8px; transform: translateY(-3px); }
+.h-body h4 { font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--hypo); margin: 34px 0 10px; }
+.h-body ul, .h-body ol { padding-left: 0; list-style: none; margin: 0 0 1.2em; }
+.h-body li { position: relative; padding-left: 22px; margin: 0 0 .5em; }
+.h-body li::before { content: ''; position: absolute; left: 4px; top: .72em; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--hypo); }
+.h-body .h-sub { font-size: 19px; line-height: 1.5; color: var(--fg); margin-bottom: 8px; }
+.h-body .h-status-line { font-size: 13px; font-family: var(--mono); color: var(--muted); padding-bottom: 6px; }
+.h-body .h-key { margin: 26px 0; padding: 14px 20px; border-left: 3px solid var(--hypo); background: var(--hypo-bg); border-radius: 0 12px 12px 0; font-size: 18px; line-height: 1.6; }
+.h-body .h-def { padding-left: 16px; border-left: 1px solid var(--hypo-line); }
+.h-body .h-def strong:first-child { color: var(--hypo); }
+.h-body .h-endnote { margin-top: 48px; padding-top: 16px; border-top: 1px dashed var(--hypo-line); font-size: 14px; color: var(--muted); }
+.h-toc { margin: 8px 0 10px; padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); max-width: none; }
+.h-toc-t { margin: 0 0 8px !important; font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.h-toc ol { columns: 2 260px; column-gap: 28px; margin: 0; }
+.h-toc li { padding: 0; margin: 0 0 4px; break-inside: avoid; font-size: 14.5px; line-height: 1.45; }
+.h-toc li::before { display: none; }
+.h-toc a { color: var(--soft); text-decoration: none; display: flex; gap: 10px; }
+.h-toc a:hover { color: var(--fg); }
+.h-toc a span { flex: none; width: 20px; font: 12px var(--mono); color: var(--hypo); padding-top: 2px; }
+@media (max-width: 720px) { .h-body { font-size: 15.5px; } .h-body h3 { font-size: 20px; margin-top: 48px; } .h-body .h-key { font-size: 16.5px; } }
 .h-objs { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
 .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line2); background: var(--panel); color: var(--fg); padding: 9px 14px; border-radius: 10px; cursor: pointer; text-decoration: none; font-size: 14px; }
 .btn:hover { border-color: var(--accent); }
