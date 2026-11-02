@@ -40,9 +40,15 @@
     if (name === 'index') name = 'atlas';
     return { name: name, param: h[1] || null, sub: h[2] || null };
   }
+  var prevHash = '', returnTo = null;   // venu d'une page (Atlas…) : un bouton du fil d'Ariane permet d'y retourner
+  var PAGE_NAMES = { atlas: 'l\'Atlas', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode' };
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();
+    var prevName = prevHash.replace(/^#\/?/, '').split('/')[0];
+    if (PAGES[r.name]) returnTo = null;
+    else if (PAGES[prevName]) { returnTo = { hash: prevHash, name: PAGE_NAMES[prevName] || 'la page' }; setTimeout(renderCrumbs, 0); }
+    prevHash = location.hash;
     closeMenu();
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
       var rt = a.getAttribute('data-route');
@@ -178,14 +184,16 @@
   document.addEventListener('pointerdown', function (e) { if (!gotoEl.hidden && !gotoEl.contains(e.target) && !e.target.closest('.c-goto')) gotoEl.hidden = true; });
   function render(items) {
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
+    if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });
     crumbs.innerHTML = '';
     items.forEach(function (c, i) {
-      if (i && !c.down && !c.goto) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
+      if (i && !c.down && !c.goto && !items[i - 1].back) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
       var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
       if (c.soon) { b.className = 'c-soon'; b.title = 'Niveau en préparation'; }
       else if (c.current) b.setAttribute('aria-current', 'location');
       else if (c.act) b.addEventListener('click', c.act);
       if (c.down) b.className = 'c-down';
+      if (c.back) { b.className = 'c-back'; b.addEventListener('click', function () { var h = returnTo.hash; returnTo = null; location.hash = h; }); }
       if (c.goto) { b.className = 'c-goto'; b.addEventListener('click', function () { openGoto(b); }); }
       crumbs.appendChild(b);
     });
