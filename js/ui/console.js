@@ -74,8 +74,8 @@
   function liveStar(def) {
     var yr = OBS.astro.dateFromJd(OBS.time.jd).getUTCFullYear(), dep = Math.round(yr - def.ly);
     return '<div class="c-live">' +
-      '<div><span>Distance</span><b>' + nf(def.ly, 2) + ' al</b><small>' + nf(def.ly * OBS.astro.LY_KM / 1e12) + ' milliards de km</small></div>' +
-      '<div><span>Lumière visible aujourd\'hui</span><b>partie vers ' + dep + '</b><small>il y a ' + nf(def.ly, 1) + ' ans</small></div>' +
+      '<div><span>Distance</span><b>' + nf(def.ly, def.ly < 100 ? 2 : 0) + ' al</b><small>' + nf(def.ly * OBS.astro.LY_KM / 1e12) + ' milliards de km</small></div>' +
+      '<div><span>Lumière visible aujourd\'hui</span><b>partie vers ' + (dep > 0 ? dep : (1 - dep) + ' av. J.-C.') + '</b><small>il y a ' + nf(def.ly, def.ly < 100 ? 1 : 0) + ' ans</small></div>' +
       '<div><span>Type spectral</span><b>' + esc(def.spec) + '</b></div>' +
       '<div><span>Constellation</span><b>' + esc(def.cons || '—') + '</b></div></div>';
   }
@@ -138,6 +138,7 @@
     if (level === 'etoile') return renderStar(id, part);
     if (level === 'systeme' && OBS.byId[id] && OBS.byId[id].craft) return renderCraft(id);
     if (level === 'galaxie') return renderGalaxy(id);
+    if (level === 'groupe-local') return renderLG(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -295,14 +296,45 @@
     live(); liveTimer = setInterval(live, 500);
   }
 
+  /* Groupe local : une galaxie */
+  function renderLG(id) {
+    var it = OBS.localgroup.get(id), d = it.def, inf = OBS.localgroup.info(id), h = [];
+    current = { level: 'groupe-local', id: id }; clearInterval(liveTimer);
+    var col = d.home ? '#ffd27a' : d.form === 'spirale' ? '#c9d8ff' : '#aab4d8';
+    var ml = function (v) { return v >= 1e6 ? nf(v / 1e6, 2) + ' millions d\'al' : nf(Math.round(v / 1000) * 1000) + ' al'; };
+    h.push('<div class="c-head"><p class="c-kind">' + esc(d.kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(d.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div class="c-flags">' + flag('real', 'Position', d.home ? 'centre du repère' : 'mesurée', 'direction et distance issues des observations (valeurs arrondies)') +
+      (d.pa !== undefined ? flag('real', 'Orientation', 'mesurée', 'inclinaison et angle de position du disque') : '') + flag('sim', 'Aspect', 'reconstitué', 'des points répartis selon le type de la galaxie, pas une image') + '<a class="flag-help" href="#/methode">?</a></div>');
+    if (!d.home) h.push('<section class="c-sec"><div class="c-live"><div><span>Distance au Soleil</span><b>' + ml(d.ly) + '</b><small>sa lumière est partie il y a ' + ml(d.ly).replace(' d\'al', ' d\'années').replace(' al', ' ans') + '</small></div>' +
+      '<div><span>Distance à la Voie lactée</span><b>' + ml(inf.fromMW) + '</b><small>de centre à centre</small></div></div></section>');
+    h.push('<p class="c-text">' + esc(d.text) + '</p>');
+    h.push(facts(d));
+    if (d.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans la Voie lactée →</button></div></section>');
+    if (d.galaxie) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-gal>La voir depuis la Voie lactée →</button></div></section>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Positions mesurées, à l\'échelle réelle (une unité, 10 000 années-lumière). L\'aspect des galaxies est reconstitué : des points répartis selon leur forme et leur taille. Andromède et le Triangle sont orientés comme on les observe.</p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.localgroup.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('galaxie', { from: 'groupe-local' }); });
+    var bg = el.querySelector('[data-gal]'); if (bg) bg.addEventListener('click', function () { OBS.engine.go('galaxie', { focus: d.galaxie }); });
+  }
+
   /* Voie lactée : un objet repère ou un bras */
   function renderGalaxy(id) {
     var it = OBS.galaxy.get(id), d = it.def, h = [];
     current = { level: 'galaxie', id: id }; clearInterval(liveTimer);
-    var col = d.sun ? '#ffd27a' : d.arm ? '#9aa6d8' : '#bfe0ff';
+    var col = d.sun ? '#ffd27a' : d.arm ? '#9aa6d8' : d.exo ? '#9fe3b0' : '#bfe0ff';
     h.push('<div class="c-head"><p class="c-kind">' + esc(d.arm ? 'Bras spiral · ' + (d.arm.alias || '') : d.kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(d.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
-    if (d.arm) {
+    if (d.exo) {
+      h.push('<div class="c-flags">' + flag('real', 'Position', 'mesurée', 'ascension droite, déclinaison et distance (parallaxe Gaia)') + flag('real', 'Planètes', 'confirmées', 'NASA Exoplanet Archive, valeurs arrondies') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<section class="c-sec"><div class="c-live"><div><span>Distance au Soleil</span><b>' + nf(d.ly, d.ly < 100 ? 1 : 0) + ' al</b><small>sa lumière est partie il y a ' + nf(d.ly) + ' ans</small></div>' +
+        '<div><span>Planètes</span><b>' + d.sys.length + '</b><small>découverte' + (d.sys.length > 1 ? 's' : '') + ' en ' + esc(d.annee) + '</small></div>' +
+        '<div><span>Étoile</span><b>' + esc(d.spec) + '</b></div><div><span>Constellation</span><b>' + esc(d.cons) + '</b></div></div></section>');
+      h.push('<p class="c-text">' + esc(d.text) + '</p>');
+      h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-visit="' + d.id + '">Visiter le système →</button></div></section>');
+    } else if (d.arm) {
       var A = d.arm;
       h.push('<div class="c-flags">' + flag('real', 'Tracé', 'mesuré en partie', 'distances de masers mesurées par interférométrie radio (Reid et al. 2019)') + flag('sim', 'Suite', 'reconstituée', 'au-delà des portions mesurées, le bras est prolongé avec le même enroulement') + '<a class="flag-help" href="#/methode">?</a></div>');
       h.push('<p class="c-text">' + esc(A.major ? 'Un des deux grands bras de la galaxie, riches en étoiles anciennes comme jeunes.' : A.spur ? 'Le bras où se trouve le Soleil : une branche secondaire, longue d\'environ 20 000 années-lumière, entre les bras du Sagittaire et de Persée.' : 'Un bras secondaire, surtout fait de gaz et d\'étoiles jeunes.') + ' Nous voyons la galaxie de l\'intérieur, à travers la poussière : les bras sont reconstitués en mesurant la distance de nuages où naissent des étoiles, puis en reliant les points.</p>');
@@ -320,6 +352,7 @@
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
     el.querySelector('.c-close').addEventListener('click', function () { OBS.galaxy.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var vs = el.querySelector('[data-visit]'); if (vs) vs.addEventListener('click', function () { OBS.engine.go('etoile', { star: d.id }); });
     var dn = el.querySelector('[data-down]'); if (dn) dn.addEventListener('click', function () { OBS.engine.go('voisinage', { from: 'galaxie' }); });
   }
 
@@ -418,16 +451,16 @@
       var aAU = SS.keplerAU(st.m || .3, p.P);
       h.push(head('Exoplanète · système de ' + st.name, p.n, p.giant ? '#c8b894' : '#8c857c'));
       h.push('<div class="c-flags">' + flag('real', 'Période', 'mesurée', 'déduite des observations de l\'étoile') + flag('real', 'Distance', 'calculée', 'troisième loi de Kepler, à partir de la période et de la masse de l\'étoile') +
-        flag('sim', 'Position', 'indicative', 'emplacement sur l\'orbite non calculé') + flag('sim', 'Aspect', 'inconnu', 'aucune image de cette planète n\'existe') + flag('adapt', 'Taille', 'estimée', 'seule une masse minimale est connue') + '<a class="flag-help" href="#/methode">?</a></div>');
+        flag('sim', 'Position', 'indicative', 'emplacement sur l\'orbite non calculé') + flag('sim', 'Aspect', 'inconnu', 'aucune image de cette planète n\'existe') + flag('adapt', 'Taille', 'estimée', p.est ? 'seul le rayon est mesuré ; la masse en est déduite' : st.ttv ? 'déduite de la masse mesurée' : 'seule une masse minimale est connue') + '<a class="flag-help" href="#/methode">?</a></div>');
       h.push('<div class="c-live" style="margin-top:14px"><div><span>Période</span><b>' + (p.P > 400 ? nf(p.P / 365.25, 1) + ' ans' : nf(p.P, 2) + ' jours') + '</b><small>une année sur cette planète</small></div>' +
         '<div><span>Distance à l\'étoile</span><b>≈ ' + nf(aAU, aAU < .1 ? 3 : 2) + ' UA</b><small>≈ ' + nf(aAU * OBS.astro.AU_KM / 1e6, 1) + ' millions de km</small></div>' +
-        (p.me ? '<div class="wide"><span>Masse minimale</span><b>' + (p.me > 100 ? nf(p.me / 317.8, 2) + ' Jupiter' : nf(p.me, 2) + ' Terre' + (p.me >= 2 ? 's' : '')) + '</b><small>la vraie masse dépend de l\'inclinaison de l\'orbite, inconnue</small></div>' : '') + '</div>');
+        (p.me ? '<div class="wide"><span>' + (p.est ? 'Masse estimée' : st.ttv ? 'Masse' : 'Masse minimale') + '</span><b>' + (p.me > 100 ? nf(p.me / 317.8, 2) + ' Jupiter' : nf(p.me, 2) + ' Terre' + (p.me >= 2 ? 's' : '')) + '</b><small>' + (p.est ? 'déduite du rayon mesuré lors des transits : seul le rayon est connu' : st.ttv ? 'mesurée grâce aux petits décalages des passages devant l\'étoile' : 'la vraie masse dépend de l\'inclinaison de l\'orbite, inconnue') + '</small></div>' : '') + '</div>');
       h.push('<p class="c-text">' + (aAU < .1 ? 'Elle tourne bien plus près de son étoile que Mercure du Soleil (0,39 UA). Autour d\'une étoile aussi peu lumineuse, cette distance peut pourtant correspondre à des températures modérées.' : 'Une planète géante sur une orbite large, détectée par le mouvement qu\'elle imprime à son étoile.') + '</p>');
       h.push('<section class="c-sec"><div class="c-chips"><button class="chip" type="button" data-part="">← ' + esc(st.name) + '</button></div></section>');
     }
     h.push('</div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
-    el.querySelector('.c-close').addEventListener('click', function () { if (part) SS.select(null); else OBS.engine.go('voisinage', { focus: st.id, from: 'etoile' }); });
+    el.querySelector('.c-close').addEventListener('click', function () { if (part) SS.select(null); else if (st.exo) OBS.engine.go('galaxie', { focus: st.id }); else OBS.engine.go('voisinage', { focus: st.id, from: 'etoile' }); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-part]'), function (b) { b.addEventListener('click', function () { SS.select(b.getAttribute('data-part') || null); }); });
   }

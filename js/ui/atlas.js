@@ -12,7 +12,8 @@
   var SCOPES = [
     { id: 'systeme', label: 'Système solaire' },
     { id: 'voisinage', label: 'Voisinage stellaire' },
-    { id: 'galaxie', label: 'Voie lactée' }
+    { id: 'galaxie', label: 'Voie lactée' },
+    { id: 'groupe-local', label: 'Groupe local' }
   ];
   function hex(c) { return '#' + ('000000' + (c >>> 0).toString(16)).slice(-6); }
   function colorOf(b) { return b.id === 'soleil' ? '#ffb23e' : b.look && b.look.c ? hex(b.look.c[1]) : '#8f96b8'; }
@@ -38,6 +39,7 @@
     var body = root.querySelector('#atlas-body');
     if (view === 'unites') return unites(body);
     if (scope === 'galaxie') return galaxie(body);
+    if (scope === 'groupe-local') return groupeLocal(body);
     if (view === 'liste') return scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     return scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
   };
@@ -72,7 +74,14 @@
     var objs = OBS.GALAXY_OBJECTS.slice().sort(function (a, b) { return a.ly - b.ly; });
     root.innerHTML = '<p>Personne n\'a jamais vu notre galaxie de l\'extérieur : sa forme est reconstituée d\'après les mesures. Les repères ci-dessous sont, eux, à leurs positions mesurées, du plus proche au plus lointain.</p><div class="grid-list">' +
       objs.map(function (o) { return card('#/galaxie/' + o.id, o.sun ? '#ffd27a' : '#bfe0ff', o.name, o.kind + (o.ly ? ' · ' + nf(o.ly) + ' al' : '')); }).join('') +
+      (OBS.EXOSYS || []).map(function (x) { return card('#/galaxie/' + x.id, '#9fe3b0', x.name, x.kind + ' · ' + nf(x.ly) + ' al'); }).join('') +
       OBS.GALAXY.arms.map(function (A) { return card('#/galaxie/' + A.id, '#9aa6d8', A.name, 'Bras spiral · ' + (A.alias || '')); }).join('') + '</div>';
+  }
+
+  function groupeLocal(root) {
+    var gs = OBS.LOCALGROUP.slice().sort(function (a, b) { return a.ly - b.ly; });
+    root.innerHTML = '<p>Les galaxies du Groupe local, de la plus proche à la plus lointaine. Positions mesurées, aspect reconstitué.</p><div class="grid-list">' +
+      gs.map(function (g) { return card('#/groupe-local/' + g.id, g.home ? '#ffd27a' : '#c9d8ff', g.name, g.kind + (g.ly ? ' · ' + (g.ly >= 1e6 ? nf(g.ly / 1e6, 2) + ' millions d\'al' : nf(g.ly) + ' al') : '')); }).join('') + '</div>';
   }
 
   /* ---------------- unités : les repères de l'astronomie ---------------- */

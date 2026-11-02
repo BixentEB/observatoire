@@ -204,6 +204,14 @@
       var hit = new T.Mesh(hitGeo, hitMat); hit.position.copy(pos); hit.userData.id = o.id; scene.add(hit); hits.push(hit);
       add(o.id, o, pos, o.sun ? 'is-sun' : '');
     });
+    // systèmes d'exoplanètes remarquables, à leurs positions mesurées (petits repères verts)
+    (OBS.EXOSYS || []).forEach(function (o) {
+      var pos = galToScene(o.l, o.b, o.ly, new T.Vector3());
+      var sp = new T.Sprite(new T.SpriteMaterial({ map: mark, color: 0x9fe3b0, sizeAttenuation: false, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+      sp.scale.set(.012, .012, 1); sp.position.copy(pos); sp.renderOrder = 4; scene.add(sp);
+      var hit = new T.Mesh(hitGeo, hitMat); hit.position.copy(pos); hit.userData.id = o.id; scene.add(hit); hits.push(hit);
+      add(o.id, o, pos, 'is-exo'); byId[o.id].exo = true; byId[o.id].sprite = sp;
+    });
     // noms des bras, sur leur portion mesurée
     GX.arms.forEach(function (A) {
       var bm = (A.mesure[0] + A.mesure[1]) / 2 + (A.id === 'orion' ? 14 : 0), R = armR(A, bm);
@@ -241,9 +249,19 @@
     cv.addEventListener('pointermove', function (e) { if (OBS.engine.level !== L) return; var id = pick(e.clientX, e.clientY); hover = id; cv.classList.toggle('over', !!id); });
     cv.addEventListener('dblclick', function () { if (OBS.engine.level === L && selected) L.select(null); });
     // zoom avant au plus près du Soleil, en insistant : on entre dans le voisinage stellaire
-    var push = 0, pushT = 0;
+    var push = 0, pushT = 0, atMax = 0, lastW = 0, armed = false, out = 0;
     cv.addEventListener('wheel', function (e) {
-      if (OBS.engine.level !== L || flight || e.deltaY >= 0) return;
+      if (OBS.engine.level !== L || flight) return;
+      // dézoom en butée, après une courte pause puis en insistant : on sort vers le Groupe local
+      if (e.deltaY > 0 && !selected) {
+        var t = performance.now(), gap = t - lastW; lastW = t;
+        if (camera.position.distanceTo(controls.target) < controls.maxDistance * .97) { atMax = 0; armed = false; out = 0; return; }
+        if (!atMax) { atMax = t; OBS.emit('edge', 0); return; }
+        if (!armed) { if (gap > 300 && t - atMax > 500) { armed = true; out = 0; } else { OBS.emit('edge', 0); return; } }
+        if (++out >= 5) { out = 0; armed = false; atMax = 0; OBS.engine.go('groupe-local', { from: 'galaxie' }); } else OBS.emit('edge', out / 5);
+        return;
+      }
+      if (e.deltaY >= 0) return;
       if (selected !== 'soleil-g' || camera.position.distanceTo(sunPos) > controls.minDistance * 1.8 + 1) return;
       var now = performance.now(); if (now - pushT > 900) push = 0; pushT = now;
       if (++push >= 3) { push = 0; OBS.engine.go('voisinage', { from: 'galaxie' }); }
@@ -252,6 +270,7 @@
 
   function clickItem(id) {
     if (id === selected && id === 'soleil-g' && !flight) { OBS.engine.go('voisinage', { from: 'galaxie' }); return; }
+    if (id === selected && byId[id].exo && !flight) { OBS.engine.go('etoile', { star: id }); return; }
     L.select(id);
   }
   function homeCam(out) { var el = 52 * D2R, d = 1150 / Math.max(.42, Math.min(1.3, camera.aspect)); return out.set(-Math.cos(el) * d * .35, Math.sin(el) * d, Math.cos(el) * d * .94); }
@@ -259,6 +278,7 @@
   function viewDist(it) {
     if (!it) return homeCam(tmp).length();
     if (it.arm) return 520;
+    if (it.exo) return 70 * Math.max(1, .95 / camera.aspect);
     var d = it.def.id === 'soleil-g' ? 240 : it.def.id === 'sgra' ? 160 : it.def.gal ? 420 : it.def.ly > 50000 ? 600 : 120;
     return d * Math.max(1, .95 / camera.aspect);
   }
@@ -291,6 +311,8 @@
     if (opts.from === 'voisinage') {                   // on vient du voisinage : on part du Soleil et on s'éloigne
       controls.target.copy(sunPos); camera.position.copy(sunPos).add(tmp.set(0, 3, 6));
       startFlight(null, 3.4);
+    } else if (opts.from === 'groupe-local') {          // on plonge depuis le Groupe local
+      camera.position.copy(homeCam(tmp)).multiplyScalar(3.2); controls.target.set(0, 0, 0); startFlight(null, 2.6);
     } else { homeCam(camera.position); controls.target.set(0, 0, 0); }
     if (opts.focus) L.select(opts.focus);
     OBS.emit('select', { level: 'galaxie', id: selected });
@@ -324,7 +346,7 @@
     items.forEach(function (it) { it.hitScale = 16 / (H / 2) * camera.position.distanceTo(it.pos) * tanHalf; });
     hits.forEach(function (h) { var it = byId[h.userData.id]; h.scale.setScalar(Math.max(.5, it.hitScale || 1)); });
     var list = items.slice().sort(function (a, b) {
-      function pri(x) { return x.id === selected ? 100 : x.id === hover ? 90 : x.def.sun ? 80 : x.id === 'sgra' ? 70 : x.arm ? 10 : 30; }
+      function pri(x) { return x.id === selected ? 100 : x.id === hover ? 90 : x.def.sun ? 80 : x.id === 'sgra' ? 70 : x.arm ? 10 : x.exo ? 5 : 30; }
       return pri(b) - pri(a);
     });
     list.forEach(function (it) {
@@ -334,6 +356,8 @@
       var x = (v3.x * .5 + .5) * W, y = (-v3.y * .5 + .5) * H;
       var show = camSpace.z < 0 && x > -60 && x < W + 60 && y > -30 && y < H + 30;
       if (it.arm && selected && selected !== it.id) show = false;
+      // exoplanètes : près du Soleil seulement (sinon elles se confondent avec lui)
+      if (it.exo && it.id !== selected && it.id !== hover && camera.position.distanceTo(it.pos) > 140) show = false;
       if (show) {
         if (!el._w) { el._w = el.offsetWidth || 90; el._h = el.offsetHeight || 22; }
         var off = it.arm ? -el._w / 2 : 10, box = { l: x + off, t: y - el._h / 2, r: x + off + el._w, b: y + el._h / 2 };

@@ -46,6 +46,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/neighborhood.js` | Niveau « Voisinage stellaire » |
 | `js/engine/starsystem.js` | Niveau « Système d'une étoile voisine » |
 | `js/engine/galaxy.js` | Niveau « Voie lactée » : reconstitution (bras, barre, disque, poussière) et objets repères (`js/data/galaxy.js`) |
+| `js/engine/localgroup.js` | Niveau « Groupe local » (`js/data/localgroup.js`) ; exoplanètes remarquables : `js/data/exoplanets.js` |
 | `js/ui/search.js` | Recherche ( / ou Ctrl+K ) |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
 | `js/ui/pages.js` | Méthode (avec les crédits) |

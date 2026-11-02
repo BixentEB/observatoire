@@ -89,7 +89,7 @@
   }
 
   L.show = function (id) {
-    var def = OBS.neighborhood.get(id) ? OBS.neighborhood.get(id).def : null; if (!def) return false;
+    var def = OBS.neighborhood.get(id) ? OBS.neighborhood.get(id).def : (OBS.exoById && OBS.exoById[id]) || null; if (!def) return false;
     clear(); star = def;
     var main = makeStar(def, def.r || .3, def.cls, def.id, def.name, 'star');
     var maxD = main.r * 6, inner = main.r * 1.6;
@@ -136,8 +136,9 @@
   L.selected = function () { return selected; };
   L.star = function () { return star; };
   L.crumbs = function () {
-    var c = [{ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { focus: star.id, from: 'etoile' }); } },
-             { label: star.name, act: function () { L.select(null); }, current: !selected }];
+    var c = star.exo ? [{ label: star.name, act: function () { L.select(null); }, current: !selected }]
+      : [{ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { focus: star.id, from: 'etoile' }); } },
+         { label: star.name, act: function () { L.select(null); }, current: !selected }];
     if (selected) c.push({ label: byKey[selected].name, current: true });
     return c;
   };

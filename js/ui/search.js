@@ -26,6 +26,9 @@
     (OBS.CRAFT || []).forEach(function (c) { index.push({ name: c.name, sub: c.kind, href: '#/explorer/' + c.id, key: norm(c.name + ' ' + (c.short || '') + ' ' + c.kind + ' ' + (CRAFT_ALIAS[c.id] || '') + ' sonde engin mission'), w: 2 }); });
     (OBS.GALAXY_OBJECTS || []).forEach(function (o) { if (!o.sun) index.push({ name: o.name, sub: o.kind + ' · Voie lactée', href: '#/galaxie/' + o.id, key: norm(o.name + ' ' + o.kind + ' galaxie voie lactee'), w: 2 }); });
     (OBS.GALAXY && OBS.GALAXY.arms || []).forEach(function (A) { index.push({ name: A.name, sub: 'Bras spiral · Voie lactée', href: '#/galaxie/' + A.id, key: norm(A.name + ' ' + (A.alias || '') + ' bras spiral'), w: 1 }); });
+    (OBS.LOCALGROUP || []).forEach(function (g) { if (!g.home && !g.galaxie) index.push({ name: g.name, sub: g.kind + ' · Groupe local', href: '#/groupe-local/' + g.id, key: norm(g.name + ' ' + g.kind + ' galaxie groupe local' + (g.id === 'm31' ? ' andromede andromeda' : g.id === 'm33' ? ' triangle triangulum' : '')), w: 3 }); });
+    (OBS.EXOSYS || []).forEach(function (x) { index.push({ name: x.name, sub: x.kind + ' · ' + x.ly.toLocaleString('fr-FR') + ' al', href: '#/galaxie/' + x.id, key: norm(x.name + ' ' + x.sys.map(function (p) { return p.n; }).join(' ') + ' exoplanete systeme'), w: 2 }); });
+    index.push({ name: 'Groupe local', sub: 'Andromède, le Triangle et les galaxies naines', href: '#/groupe-local', key: norm('groupe local galaxies'), w: 3 });
     index.push({ name: 'Voie lactée', sub: 'Notre galaxie, reconstituée', href: '#/galaxie', key: norm('voie lactee galaxie milky way'), w: 3 });
     OBS.REGIONS.forEach(function (r) { index.push({ name: r.name, sub: r.kind, href: '#/explorer/' + r.id, key: norm(r.name + ' ' + (ALIAS[r.id] || '') + ' ' + r.kind), w: 2 }); });
     OBS.STARS.forEach(function (s) {

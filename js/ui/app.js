@@ -26,7 +26,8 @@
     OBS.neighborhood.build(OBS.engine.renderer, $('labels-voisinage'));
     OBS.starsystem.build(OBS.engine.renderer, $('labels-etoile'));
     OBS.galaxy.build(OBS.engine.renderer, $('labels-galaxie'));
-    OBS.engine.add(OBS.system); OBS.engine.add(OBS.neighborhood); OBS.engine.add(OBS.starsystem); OBS.engine.add(OBS.galaxy);
+    OBS.localgroup.build(OBS.engine.renderer, $('labels-groupe-local'));
+    OBS.engine.add(OBS.system); OBS.engine.add(OBS.neighborhood); OBS.engine.add(OBS.starsystem); OBS.engine.add(OBS.galaxy); OBS.engine.add(OBS.localgroup);
     OBS.on('ready', function () { setTimeout(function () { boot.classList.add('done'); }, 150); setTimeout(function () { boot.hidden = true; }, 1100); });
   }
 
@@ -51,11 +52,12 @@
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
     closePage();
     if (!ok) return;
-    if (r.name === 'etoile' && r.param && OBS.neighborhood.get(r.param)) {
+    if (r.name === 'etoile' && r.param && (OBS.neighborhood.get(r.param) || (OBS.exoById && OBS.exoById[r.param]))) {
       var cur = OBS.starsystem.star();
       if (OBS.engine.level === OBS.starsystem && cur && cur.id === r.param) return;
       OBS.engine.go('etoile', { star: r.param, instant: !OBS.engine.level });
     }
+    else if (r.name === 'groupe-local') OBS.engine.go('groupe-local', { focus: r.param && OBS.localgroup.get(r.param) ? r.param : undefined, instant: !OBS.engine.level });
     else if (r.name === 'galaxie') OBS.engine.go('galaxie', { focus: r.param && OBS.galaxy.get(r.param) ? r.param : undefined, instant: !OBS.engine.level });
     else if (r.name === 'voisinage') OBS.engine.go('voisinage', { focus: r.param && OBS.neighborhood.get(r.param) ? r.param : undefined });
     else {
@@ -73,6 +75,7 @@
   OBS.on('select', function (e) {
     if (PAGES[parse().name]) return;
     if (e.level === 'etoile') { setHash('#/etoile/' + e.id); return; }
+    if (e.level === 'groupe-local') { setHash('#/groupe-local' + (e.id ? '/' + e.id : '')); return; }
     if (e.level === 'galaxie') { setHash('#/galaxie' + (e.id ? '/' + e.id : '')); return; }
     if (e.level === 'systeme') setHash(e.id ? '#/explorer/' + e.id + (e.site ? '/' + e.site : '') : '#/');
     else setHash(e.id ? '#/voisinage/' + e.id : '#/');   // le voisinage n'est pas une adresse d'arrivée : un rechargement ramène au système solaire
@@ -117,12 +120,19 @@
     var L = OBS.engine.level; if (!L) return;
     var items = [];
     // niveaux au-dessus du niveau actuel (on peut y remonter d'un clic)
-    if (L === OBS.galaxy) {
+    if (L === OBS.localgroup) {
       items = L.crumbs();
+      if (L.selected() === 'voielactee') items.push({ label: '↓ Entrer dans la Voie lactée', down: true, act: function () { OBS.engine.go('galaxie', { from: 'groupe-local' }); } });
+      render(items); return;
+    }
+    items.push({ label: 'Groupe local', act: function () { OBS.engine.go('groupe-local', {}); } });
+    if (L === OBS.galaxy) {
+      items = items.concat(L.crumbs());
       if (L.selected() === 'soleil-g') items.push({ label: '↓ Voisinage stellaire', down: true, act: function () { OBS.engine.go('voisinage', { from: 'galaxie' }); } });
       render(items); return;
     }
-    items.push({ label: 'Voie lactée', act: function () { OBS.engine.go('galaxie', { from: L === OBS.neighborhood ? 'voisinage' : 'haut' }); } });
+    var exoSt = L === OBS.starsystem && OBS.starsystem.star() && OBS.starsystem.star().exo;
+    items.push({ label: 'Voie lactée', act: function () { OBS.engine.go('galaxie', exoSt ? { focus: exoSt ? OBS.starsystem.star().id : undefined } : { from: L === OBS.neighborhood ? 'voisinage' : 'haut' }); } });
     if (L === OBS.system) items.push({ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { from: 'systeme' }); } });
     if (L === OBS.neighborhood && L.selected()) {
       var sid = L.selected(); items = items.concat(L.crumbs());
@@ -151,21 +161,21 @@
   /* titre du niveau, au changement */
   var title = $('level-title'), titleT = 0, firstLevel = true;
   OBS.on('level', function (L) {
-    $('timebar').hidden = L.id === 'voisinage' || L.id === 'galaxie'; $('scale-badge').hidden = L.id !== 'systeme'; $('views').hidden = L.id !== 'systeme';
+    $('timebar').hidden = L.id === 'voisinage' || L.id === 'galaxie' || L.id === 'groupe-local'; $('scale-badge').hidden = L.id !== 'systeme'; $('views').hidden = L.id !== 'systeme';
     legendView();
-    $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : 'Tailles agrandies';
+    $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
     $('size-badge').title = L.id === 'galaxie' ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur : forme reconstituée d\'après les mesures (voir Méthode). Les objets repères sont à leurs positions mesurées.' : '';
     toggleSettings(false);
     if (firstLevel) { firstLevel = false; return; }
     if (L.id === 'etoile') { var st = OBS.starsystem.star(); title.innerHTML = '<b>' + OBS.esc(st ? st.name : '') + '</b><span>' + (st && st.sys ? st.sys.length + (st.sys.length > 1 ? ' planètes confirmées' : ' planète confirmée') : 'Aucune planète confirmée') + ' · à ' + (st ? st.ly.toLocaleString('fr-FR') : '') + ' années-lumière</span>'; title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2400); return; }
-    var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : L.id === 'galaxie' ? 'Une reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : L.id === 'galaxie' ? 'Une reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre' : L.id === 'groupe-local' ? 'Andromède, le Triangle et une soixantaine de galaxies naines · 10 millions d\'années-lumière' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
     title.innerHTML = '<b>' + L.label + '</b><span>' + sub + '</span>';
     title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2200);
   });
   var edge = $('edge'), edgeT = 0;
   OBS.on('edge', function (k) {
     var lv = OBS.engine.level && OBS.engine.level.id;
-    edge.textContent = 'Faites une courte pause, puis dézoomez encore pour sortir ' + (lv === 'voisinage' ? 'du voisinage stellaire' : 'du système solaire');
+    edge.textContent = 'Faites une courte pause, puis dézoomez encore pour sortir ' + (lv === 'voisinage' ? 'du voisinage stellaire' : lv === 'galaxie' ? 'de la Voie lactée' : 'du système solaire');
     edge.hidden = false; clearTimeout(edgeT); edgeT = setTimeout(function () { edge.hidden = true; }, 1400); });
   OBS.on('level:leaving', function () { edge.hidden = true; });
 
