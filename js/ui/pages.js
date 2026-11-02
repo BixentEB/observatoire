@@ -121,10 +121,21 @@
       '<p>Et ce n\'est qu\'un début : carte des lunaisons, dôme des constellations vu depuis chez vous, comparateur, visites guidées… sont dans les cartons.</p>',
       '<h2>Écrire</h2>',
       '<p>Une question, une erreur repérée, une idée d\'astre à ajouter ?</p>',
-      '<div class="c-chips"><a class="btn btn-main" href="mailto:contact@codexmental.com?subject=Observatoire">✉ contact@codexmental.com</a><a class="btn" href="https://codexmental.com" rel="noopener" target="_blank">Codex Mental</a><a class="btn" href="https://github.com/BixentEB/observatoire" rel="noopener" target="_blank">Le code sur GitHub</a></div>',
-      '<p class="note" style="margin-top:12px">Le bouton ouvre votre messagerie. Vous pouvez aussi passer par le <a href="https://codexmental.com/#contact" rel="noopener" target="_blank">formulaire de Codex Mental</a>.</p>'
+      '<div class="c-chips"><a class="btn btn-main mlink" data-u="tcatnoc" data-d="moc.latnemxedoc" href="#">✉ Écrire à Vincent</a><a class="btn" href="https://codexmental.com" rel="noopener" target="_blank">Codex Mental</a><a class="btn" href="https://github.com/BixentEB/observatoire" rel="noopener" target="_blank">Le code sur GitHub</a></div>',
+      '<p class="note" style="margin-top:12px">Le bouton ouvre votre messagerie, à l\'adresse <span class="mtext" data-u="tcatnoc" data-d="moc.latnemxedoc"></span>. Vous pouvez aussi passer par le <a href="https://codexmental.com/#contact" rel="noopener" target="_blank">formulaire de Codex Mental</a>.</p>'
     ].join('');
   };
+
+  /* adresse de contact : assemblée à l'affichage, jamais écrite en clair (les robots qui aspirent les adresses ne la voient pas) */
+  function rev(x) { return x.split('').reverse().join(''); }
+  function mails(root) {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-u][data-d]'), function (m) {
+      var ad = rev(m.getAttribute('data-u')) + String.fromCharCode(64) + rev(m.getAttribute('data-d'));
+      if (m.tagName === 'A') m.href = 'mai' + 'lto:' + ad + '?subject=Observatoire'; else m.textContent = ad;
+    });
+  }
+  var _projet = pages.projet;
+  pages.projet = function (root) { _projet(root); mails(root); };
 
   pages.credits = function (root) {
     root.innerHTML = [
