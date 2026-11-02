@@ -116,7 +116,12 @@
     // niveaux au-dessus du niveau actuel (on peut y remonter d'un clic)
     items.push({ label: 'Voie lactée', soon: true });
     if (L === OBS.system) items.push({ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { from: 'systeme' }); } });
-    if (L === OBS.neighborhood && L.selected()) { var sid = L.selected(); items = items.concat(L.crumbs()); items.push({ label: '↓ Visiter ce système', down: true, act: function () { OBS.engine.go('etoile', { star: sid }); } }); items.push({ label: '↓ Système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } }); render(items); return; }
+    if (L === OBS.neighborhood && L.selected()) {
+      var sid = L.selected(); items = items.concat(L.crumbs());
+      if (sid !== 'soleil-v') items.push({ label: '↓ Visiter ce système', down: true, act: function () { OBS.engine.go('etoile', { star: sid }); } });
+      items.push({ label: sid === 'soleil-v' ? '↓ Entrer dans le système solaire' : '↓ Système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
+      render(items); return;
+    }
     items = items.concat(L.crumbs());
     if (L === OBS.neighborhood) items.push({ label: '↓ Entrer dans le système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
     render(items);

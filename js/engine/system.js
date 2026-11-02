@@ -233,10 +233,13 @@
 
   /* objet hypothétique (Planète 9) : une planète d'aspect imaginé, placée là où elle serait le plus probablement,
      entourée d'un cercle en tirets (la même marque que son nom) pour qu'on ne la confonde jamais avec un astre observé */
-  var dashTex = (function () {
-    var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
-    g.strokeStyle = 'rgba(180,156,255,0.75)'; g.lineWidth = 2.5; g.setLineDash([9, 9]);
-    g.beginPath(); g.arc(128, 128, 116, 0, Math.PI * 2); g.stroke();
+  // un « ? » dans un cadre en tirets, sous la planète (la même marque que son nom)
+  var askTex = (function () {
+    var c = document.createElement('canvas'); c.width = c.height = 128; var g = c.getContext('2d');
+    g.fillStyle = 'rgba(20,12,40,0.55)'; g.strokeStyle = 'rgba(180,156,255,0.9)'; g.lineWidth = 3; g.setLineDash([8, 6]);
+    g.beginPath(); if (g.roundRect) g.roundRect(14, 14, 100, 100, 18); else g.rect(14, 14, 100, 100); g.fill(); g.stroke();
+    g.setLineDash([]); g.fillStyle = '#c9b8ff'; g.font = '700 74px Syne, "Trebuchet MS", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('?', 64, 70);
     return new T.CanvasTexture(c);
   })();
   function makeTheo(P) {
@@ -244,8 +247,8 @@
     var holder = new T.Group(); scene.add(holder);
     var spin = new T.Group(); holder.add(spin);
     var mat = planetMaterial(d.look || {}, r), mesh = new T.Mesh(sphereGeo, mat); mesh.scale.setScalar(r); spin.add(mesh);
-    var ring = new T.Sprite(new T.SpriteMaterial({ map: dashTex, transparent: true, depthWrite: false, opacity: .8 }));
-    ring.scale.setScalar(r * 3.4); holder.add(ring);
+    var ring = new T.Sprite(new T.SpriteMaterial({ map: askTex, transparent: true, depthWrite: false, depthTest: false }));
+    ring.scale.setScalar(r * .62); ring.renderOrder = 4; holder.add(ring);
     var hit = new T.Mesh(sphereGeo, new T.MeshBasicMaterial({ visible: false })); hit.userData.id = P.id; holder.add(hit); hitMeshes.push(hit);
     P.r = r; P.holder = holder; P.spin = spin; P.mesh = mesh; P.mat = mat; P.hit = hit; P.pole = new T.Vector3(0, 1, 0); P.moonsOf = []; P.theoRing = ring;
   }
@@ -413,7 +416,7 @@
       return (hP ? Math.max(P.pos.distanceTo(hP.pos) * 3.2 + hP.r * 2, 1.2) : 14) * Math.max(1, .95 / camera.aspect);
     }
     if (sysView && P.moonsOf && P.moonsOf.length) return sysDist(P) * Math.max(1, .95 / camera.aspect);
-    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region && !P.mesh ? (P.def.viewDist ? P.def.viewDist * (scale.mode === 'reelle' ? 6 : 1) : 60) : Math.max(P.r * (P.def.ring ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
+    var d = P.id === 'soleil' ? SUN_R * 4.5 : P.region && !P.mesh ? (P.def.viewDist ? P.def.viewDist * (scale.mode === 'reelle' ? 6 : 1) : 60) : Math.max(P.r * (P.def.ring || P.theoRing ? 6.5 : 4.2), P.def.moon ? .9 : 2.2);
     return d * Math.max(1, .95 / camera.aspect);           // écran étroit (téléphone) : on recule un peu pour voir l'objet entier
   }
   function homeDist() { return (scale.mode === 'reelle' ? 2600 : 520) / Math.max(.55, Math.min(1.4, camera.aspect)); }
@@ -1027,6 +1030,8 @@
         setTimeout(function () { nm.textContent = p9Alt ? '?' : 'Planète 9'; nm.classList.remove('swap'); }, 220);
       }
     }
+    // le « ? » reste toujours sous la planète, quel que soit l'angle de vue
+    if (P9 && P9.theoRing) P9.theoRing.position.set(0, -1, 0).applyQuaternion(camera.quaternion).multiplyScalar(P9.r * 1.38);
     rebuildIncl();
     inclLabels.forEach(function (it) {
       var el = it.el; camSpace.copy(it.at).applyMatrix4(camera.matrixWorldInverse);

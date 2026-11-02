@@ -59,6 +59,7 @@
       el.className = 'lbl is-star' + (s.sun ? ' is-sun' : '') + (s.cls === 'BD' ? ' is-dwarf' : '');
       el.innerHTML = '<span class="dot"></span><span class="nm">' + s.name + (s.sun ? ' <em>vous êtes ici</em>' : '') + '</span>';
       el.addEventListener('click', function (e) { e.stopPropagation(); clickStar(s.id); });
+      el.addEventListener('dblclick', function (e) { e.stopPropagation(); enter(s.id); });
       el.addEventListener('pointerenter', function () { hover = s.id; });
       el.addEventListener('pointerleave', function () { if (hover === s.id) hover = null; });
       labelsContainer.appendChild(el); S.el = el;
@@ -81,6 +82,11 @@
       var id = pick(e.clientX, e.clientY); if (id) clickStar(id);
     });
     cv.addEventListener('pointermove', function (e) { if (OBS.engine.level !== L) return; var id = pick(e.clientX, e.clientY); hover = id; cv.classList.toggle('over', !!id); });
+    cv.addEventListener('dblclick', function (e) {
+      if (OBS.engine.level !== L) return;
+      var id = pick(e.clientX, e.clientY);
+      if (id) enter(id); else if (selected) L.select(null);      // double-clic dans le vide : vue d'ensemble
+    });
     // zoom avant sur le Soleil : on rentre dans le système solaire
     var push = 0, pushT = 0;
     cv.addEventListener('wheel', function (e) {
@@ -88,7 +94,7 @@
       // zoom avant sur l'étoile choisie : on entre dans son système
       if (e.deltaY < 0 && selected && camera.position.distanceTo(byId[selected].pos) <= controls.minDistance * 1.6 + 2) {
         var now0 = performance.now(); if (now0 - pushT > 900) push = 0; pushT = now0;
-        if (++push >= 3) { push = 0; OBS.engine.go('etoile', { star: selected }); }
+        if (++push >= 3) { push = 0; enter(selected); }
         return;
       }
       if (e.deltaY < 0 && controls.target.length() < 1 && camera.position.length() <= controls.minDistance * 1.6 + 2) {
@@ -98,11 +104,14 @@
     }, { passive: true });
   };
 
+  /* un clic : on va voir l'étoile (le Soleil compris) ; un second clic, ou un double-clic : on entre dans son système */
+  function enter(id) {
+    if (id === 'soleil-v') OBS.engine.go('systeme', { from: 'voisinage' });
+    else OBS.engine.go('etoile', { star: id });
+  }
+  L.enter2 = enter;
   function clickStar(id) {
-    if (id === 'soleil-v') {
-      if (selected === null && camera.position.length() < 60) { OBS.engine.go('systeme', { from: 'voisinage' }); return; }
-      if (selected === null) { L.select(null, true); return; }
-    }
+    if (id === selected && !flight) { enter(id); return; }
     L.select(id);
   }
 
@@ -113,7 +122,6 @@
     controls.enabled = false;
   }
   L.select = function (id, home) {
-    if (id === 'soleil-v') id = null;
     selected = id && byId[id] ? id : null;
     startFlight(selected, !selected);
     OBS.emit('select', { level: 'voisinage', id: selected });

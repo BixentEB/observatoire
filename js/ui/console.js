@@ -145,7 +145,13 @@
     h.push('<div class="c-body">');
     h.push(flags(level, def, id));
     var lr = lore(id);
-    if (level === 'voisinage') {
+    if (level === 'voisinage' && def.sun) {             // le Soleil vu du voisinage : « vous êtes ici »
+      var nb = OBS.STARS.length;
+      h.push('<section class="c-sec"><div class="c-live"><div class="wide"><span>Vous êtes ici</span><b>au centre de la carte</b><small>toutes les distances sont comptées depuis le Soleil</small></div>' +
+        '<div><span>Étoiles et naines brunes</span><b>' + nb + '</b><small>à moins de 12 années-lumière</small></div><div><span>La plus proche</span><b>Proxima</b><small>4,24 années-lumière</small></div></div></section>');
+      h.push('<p class="c-text">Notre étoile, une naine jaune parmi ses voisines. À cette échelle, tout le système solaire, jusqu\'à la ceinture de Kuiper, tient dans un point bien plus petit que le repère du Soleil : la lumière met 4 heures pour atteindre Neptune, mais plus de 4 ans pour la plus proche étoile voisine.</p>');
+      h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-enter="soleil-v">Entrer dans le système solaire →</button></div><p class="c-note" style="margin-top:8px">Astuce : un second clic ou un double-clic sur une étoile entre dans son système ; un double-clic dans le vide revient à la vue d\'ensemble.</p></section>');
+    } else if (level === 'voisinage') {
       h.push('<section class="c-sec"><h3>Aujourd\'hui</h3>' + liveStar(def) + '</section>');
       h.push('<p class="c-text">' + esc(def.text || '') + '</p>');
       h.push(lr.nom);
@@ -198,6 +204,7 @@
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-go]'), function (b) { b.addEventListener('click', function () { OBS.system.select(b.getAttribute('data-go')); }); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-site]'), function (b) { b.addEventListener('click', function () { OBS.system.site(id, b.getAttribute('data-site')); }); });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-enter]'), function (b) { b.addEventListener('click', function () { OBS.engine.go('systeme', { from: 'voisinage' }); }); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-visit]'), function (b) { b.addEventListener('click', function () { OBS.engine.go('etoile', { star: b.getAttribute('data-visit') }); }); });
     // hypothèses liées (chargées à la demande)
     if (OBS.hypo) OBS.hypo.forObject(id).then(function (list) {
