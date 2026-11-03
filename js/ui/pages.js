@@ -16,6 +16,7 @@
   /* Outils : les instruments pour manipuler et comparer (le simulateur, puis d'autres) */
   pages.outils = function (root) {
     var T = [
+      { href: '#/lexique', t: 'Lexique', k: 'Disponible', d: 'Ce qui compose l\'Univers, les éléments, les étoiles (qu\'est-ce qu\'une naine ?), les planètes, les galaxies et les mots pour les mesurer : des définitions courtes, avec une recherche.' },
       { href: '#/simulateur', t: 'Simulateur d\'objets', k: 'Disponible', d: 'Modeler un corps céleste : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère, puis copier les réglages.' },
       { act: 'photo', t: 'Mode photo', k: 'Disponible', d: 'Choisir ce qui apparaît à l\'écran (noms, orbites, engins, ceintures, plan de l\'écliptique, signature) et enregistrer une image du ciel à la date affichée.' },
       { soon: true, t: 'Simulateur de lunaisons', k: 'Prévu', d: 'La Lune au centre, ses phases à venir et un curseur de dates.' },

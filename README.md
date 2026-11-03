@@ -25,6 +25,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `#/voisinage`, `#/voisinage/<étoile>` | Voisinage stellaire (ex. `#/voisinage/proxima`) |
 | `#/etoile/<étoile>` | Système d'une étoile voisine : étoile, compagne, planètes confirmées |
 | `#/atlas[/systeme\|voisinage[/carte\|liste]]` | Atlas : carte à plat ou liste, selon l'endroit où l'on est |
+| `#/lexique[/<thème>[/<terme>]]` | Lexique |
 | `#/hypotheses`, `#/hypotheses/<fiche>` | Hypothèses personnelles |
 | `#/hypotheses/chercheurs`, `#/hypotheses/chercheurs/<fiche>` | Hypothèses de chercheurs |
 | `#/simulateur` | Simulateur (modeler un corps céleste ; scénarios « et si… » à venir) |
@@ -49,6 +50,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/galaxy.js` | Niveau « Voie lactée » : reconstitution (bras, barre, disque, poussière) et objets repères (`js/data/galaxy.js`) |
 | `js/engine/localgroup.js` | Niveau « Groupe local » (`js/data/localgroup.js`) ; exoplanètes remarquables : `js/data/exoplanets.js` |
 | `js/ui/search.js` | Recherche ( / ou Ctrl+K ) |
+| `js/ui/lexique.js`, `js/data/lexique.js` | Lexique : onglets, recherche, définitions (ajouter une entrée : `{ t, tab, d, voir, obs }`) |
 | `js/ui/facts.js` | « Le saviez-vous ? » : faits et ordres de grandeur par niveau (liste `FACTS` à compléter) |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
 | `js/ui/pages.js` | Méthode (avec les crédits) |

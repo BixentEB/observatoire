@@ -28,6 +28,8 @@
     (OBS.GALAXY && OBS.GALAXY.arms || []).forEach(function (A) { index.push({ name: A.name, sub: 'Bras spiral · Voie lactée', href: '#/galaxie/' + A.id, key: norm(A.name + ' ' + (A.alias || '') + ' bras spiral'), w: 1 }); });
     (OBS.LOCALGROUP || []).forEach(function (g) { if (!g.home && !g.galaxie) index.push({ name: g.name, sub: g.kind + ' · Groupe local', href: '#/groupe-local/' + g.id, key: norm(g.name + ' ' + g.kind + ' galaxie groupe local' + (g.id === 'm31' ? ' andromede andromeda' : g.id === 'm33' ? ' triangle triangulum' : '')), w: 3 }); });
     (OBS.EXOSYS || []).forEach(function (x) { index.push({ name: x.name, sub: x.kind + ' · ' + x.ly.toLocaleString('fr-FR') + ' al', href: '#/galaxie/' + x.id, key: norm(x.name + ' ' + x.sys.map(function (p) { return p.n; }).join(' ') + ' exoplanete systeme'), w: 2 }); });
+    (OBS.LEXIQUE || []).forEach(function (e) { index.push({ name: e.t, sub: 'Lexique', href: '#/lexique/' + e.tab + '/' + OBS.lexSlug(e.t), key: norm(e.t + ' lexique definition'), w: 1, page: true }); });
+    index.push({ name: 'Lexique', sub: 'Les mots de l\'espace : définitions', href: '#/lexique', key: norm('lexique glossaire definitions dictionnaire mots'), w: 3, page: true });
     index.push({ name: 'Groupe local', sub: 'Andromède, le Triangle et les galaxies naines', href: '#/groupe-local', key: norm('groupe local galaxies'), w: 3 });
     index.push({ name: 'Voie lactée', sub: 'Notre galaxie, reconstituée', href: '#/galaxie', key: norm('voie lactee galaxie milky way'), w: 3 });
     OBS.REGIONS.forEach(function (r) { index.push({ name: r.name, sub: r.kind, href: '#/explorer/' + r.id, key: norm(r.name + ' ' + (ALIAS[r.id] || '') + ' ' + r.kind), w: 2 }); });
