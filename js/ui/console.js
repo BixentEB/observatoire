@@ -39,7 +39,7 @@
   };
 
   function swatch(def) {
-    if (def.theorique) return '#b49cff';
+    if (def.theorique) return '#7cc4ff';
     var c = def.look && def.look.c ? def.look.c[1] : 0xf4c77a;
     if (def.id === 'soleil') c = 0xffb23e;
     if (def.cls) c = OBS.STAR_COLORS[def.cls] || 0xffffff;
@@ -130,6 +130,18 @@
     return '<section class="c-sec"><h3>Données</h3><table class="c-facts">' + def.facts.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + xr(f[1], def.id) + '</td></tr>'; }).join('') + '</table></section>';
   }
 
+  /* hypothèses liées à un objet : les miennes (violet), celles des chercheurs (bleu) */
+  function hypoBox(id) {
+    if (!OBS.hypo) return;
+    OBS.hypo.forObject(id).then(function (list) {
+      if (!current || current.id !== id || !list.length) return;
+      var box = el.querySelector('[data-hypo]'); if (!box) return;
+      box.innerHTML = '<section class="c-sec c-hypo"><h3>Hypothèses liées</h3>' + list.map(function (hy) {
+        return '<a href="' + OBS.hypo.href(hy) + '"' + (hy.sci ? ' class="sci"' : '') + '><small>' + (hy.sci ? esc(OBS.hypo.credit(hy)) + ' · ' + esc(OBS.hypo.etat(hy)) : 'Hypothèse personnelle' + (hy.exemple ? ' · exemple' : '')) + '</small>' + esc(hy.titre) + '</a>';
+      }).join('') + '</section>';
+    });
+  }
+
   function render(level, id, part, site) {
     if (level === 'systeme' && id && site) return renderSite(id, site);
     current = id ? { level: level, id: id } : null;
@@ -209,13 +221,7 @@
     Array.prototype.forEach.call(el.querySelectorAll('[data-enter]'), function (b) { b.addEventListener('click', function () { OBS.engine.go('systeme', { from: 'voisinage' }); }); });
     Array.prototype.forEach.call(el.querySelectorAll('[data-visit]'), function (b) { b.addEventListener('click', function () { OBS.engine.go('etoile', { star: b.getAttribute('data-visit') }); }); });
     // hypothèses liées (chargées à la demande)
-    if (OBS.hypo) OBS.hypo.forObject(id).then(function (list) {
-      if (!current || current.id !== id || !list.length) return;
-      var box = el.querySelector('[data-hypo]'); if (!box) return;
-      box.innerHTML = '<section class="c-sec c-hypo"><h3>Hypothèses liées</h3>' + list.map(function (hy) {
-        return '<a href="#/hypotheses/' + encodeURIComponent(hy.id) + '"><small>Hypothèse personnelle' + (hy.exemple ? ' · exemple' : '') + '</small>' + esc(hy.titre) + '</a>';
-      }).join('') + '</section>';
-    });
+    hypoBox(id);
     if (level === 'systeme' && !def.region) liveTimer = setInterval(function () {
       var box = el.querySelector('[data-live]'); if (!box || el.hidden) return;
       box.innerHTML = liveSystem(id);
@@ -348,12 +354,13 @@
       h.push(facts(d));
       if (d.sun) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-down>Voir le voisinage du Soleil →</button></div></section>');
     }
-    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Personne n\'a jamais vu la Voie lactée de l\'extérieur. Sa forme est reconstituée d\'après les mesures : bras spiraux tracés à partir des distances de masers, barre centrale, disque et bulbe. Les objets repères sont à leurs positions mesurées ; leur repère lumineux est symbolique.</p></section></div>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Personne n\'a jamais vu la Voie lactée de l\'extérieur. Sa forme est reconstituée d\'après les mesures : bras spiraux tracés à partir des distances de masers, barre centrale, disque et bulbe. Les objets repères sont à leurs positions mesurées ; leur repère lumineux est symbolique.</p></section><div data-hypo></div></div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
     el.querySelector('.c-close').addEventListener('click', function () { OBS.galaxy.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var vs = el.querySelector('[data-visit]'); if (vs) vs.addEventListener('click', function () { OBS.engine.go('etoile', { star: d.id }); });
     var dn = el.querySelector('[data-down]'); if (dn) dn.addEventListener('click', function () { OBS.engine.go('voisinage', { from: 'galaxie' }); });
+    hypoBox(id);
   }
 
   /* système d'une étoile voisine : l'étoile, sa compagne ou une de ses planètes */

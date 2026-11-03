@@ -23,7 +23,7 @@
 - Passage d'un niveau à l'autre en zoomant (ou par le fil d'Ariane), avec un fondu court.
 - Consoles d'objets : valeurs en direct (distance au Soleil, à la Terre, temps-lumière), fiche de données, carte de surface, exploration, « ce qui est représenté », hypothèses liées.
 - Temps : temps réel jusqu'à 1 an par seconde, retour arrière, pause, retour à aujourd'hui.
-- Pages : Index des objets, Hypothèses (liste, fiche, atelier de modelage), Méthode, Crédits.
+- Pages : Index des objets, Hypothèses (deux onglets : personnelles en violet, signées Vincent une fois par page ; de chercheurs en bleu, avec auteurs, année et statut), Méthode, Crédits.
 - Mobile : console en panneau du bas (réductible), vue recentrée au-dessus, menu repliable.
 - Qualité : niveau estimé une fois à l'arrivée ; changement manuel dans les réglages (rechargement) ; seule adaptation automatique : baisse discrète de la définition si l'appareil peine durablement.
 
@@ -70,7 +70,7 @@
 - Légende-filtre en bas à droite : Planètes, naines et petits corps, lunes, ceintures, missions, objets hypothétiques ; un clic masque ou réaffiche le calque (mémorisé). Croix de fermeture, message qui renvoie aux Réglages, case « Légende » dans les Réglages. Effacée quand une console est ouverte.
 - Vues prédéfinies (Dessus, Profil, Libre) à côté des repères d'échelle.
 - Réglages « Plan de l'écliptique » (grille translucide, point vernal en doré) et « Inclinaison des orbites » (masquée, objet choisi, toutes) : traits jusqu'au plan, ombre de l'orbite, ligne des nœuds, valeur de i.
-- Planète 9 : planète d'aspect imaginé (petite géante de glace) placée dans la région la plus probable, avec un « ? » en cadre pointillé dessous, et zone de probabilité (Brown et Batygin 2021) en brume violette ; nom qui alterne avec « ? », fiche sourcée ; calque et réglage « Objets hypothétiques ».
+- Planète 9 : planète d'aspect imaginé (petite géante de glace) placée dans la région la plus probable, avec un « ? » en cadre pointillé dessous, et zone de probabilité (Brown et Batygin 2021) en brume bleue (couleur des hypothèses de chercheurs) ; nom qui alterne avec « ? », fiche sourcée ; calque et réglage « Objets hypothétiques ».
 - Arrokoth ajouté (éléments SBDB), nom affiché seulement de près ; Ulysses ajoutée à la liste des engins (données au prochain passage du robot JPL), avec un bouton vers son passage le plus haut au-dessus du plan.
 - Renvois entre fiches : les noms d'objets dans les textes et données des consoles sont soulignés en pointillé, bulle d'information et bouton « Aller voir ».
 - Mode photo (bouton appareil photo de la barre du temps, ou Outils) : choix des éléments affichés, capture PNG avec les noms et une signature, définition ×2 si l'appareil le permet.
@@ -92,3 +92,10 @@
 - Images de missions dans les consoles (domaine public NASA), sondes (Voyager, New Horizons…).
 - Héliosphère et nuage d'Oort comme couche intermédiaire.
 - Page de présentation légère sur codexmental.com, comme pour le Laboratoire.
+
+## Hypothèses de chercheurs (3 novembre 2026)
+- Onglets « Hypothèses personnelles » / « Hypothèses de chercheurs » ; cartes en pointillés, violet pour les miennes (sans nom, signature « Vincent » une fois sur la page et en bas de chaque fiche), bleu pour les chercheurs (auteurs et année sur chaque carte).
+- Sept fiches (`hypotheses/chercheurs.json`) : Planète 9 (en débat), Théia (admise, débattue dans le détail), Némésis (écartée), Vulcain (historique), ʻOumuamua voile artificielle (en débat), étoile de Tabby (écartée), panspermie (en débat). Statut en pastille de couleur, légende des statuts, sources.
+- Les consoles de la Lune, de la Terre, du Soleil, de Mercure, de Mars, de la Planète 9 et de l'étoile de Tabby listent ces hypothèses (en bleu, auteurs et statut).
+- Nouveau repère dans la Voie lactée : l'étoile de Tabby (KIC 8462852, ≈ 1 470 al, Cygne).
+- Planète 9 passée en bleu (étiquette, « ? », brume, légende, Atlas, Méthode).

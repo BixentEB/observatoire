@@ -39,8 +39,9 @@
     [['Atlas', 'Cartes et listes de tous les objets', '#/atlas', 'atlas carte liste index'], ['Unités', 'UA, année-lumière, parsec… les repères de l\'astronomie', '#/atlas/systeme/unites', 'unites ua annee lumiere parsec al km'],
      ['Méthode', 'Ce qui est réel, adapté ou simulé ; sources', '#/methode', 'methode sources ecliptique inclinaison'], ['Crédits', 'Images, données et logiciels, avec leurs licences', '#/credits', 'credits licences auteurs'],
      ['Outils', 'Simulateur, mode photo, et bientôt comparateur et lunaisons', '#/outils', 'outils instruments photo capture image'], ['Simulateur', 'Modeler un corps céleste', '#/simulateur', 'simulateur modeler'],
-     ['Hypothèses', 'Pistes de réflexion personnelles', '#/hypotheses', 'hypotheses idees']].forEach(function (p) { index.push({ name: p[0], sub: p[1], href: p[2], key: norm(p[0] + ' ' + p[3]), w: 2, page: true }); });
+     ['Hypothèses', 'Pistes de réflexion personnelles', '#/hypotheses', 'hypotheses idees'], ['Hypothèses de chercheurs', 'Planète 9, Némésis, Vulcain, Théia…', '#/hypotheses/chercheurs', 'hypotheses chercheurs scientifiques theories']].forEach(function (p) { index.push({ name: p[0], sub: p[1], href: p[2], key: norm(p[0] + ' ' + p[3]), w: 2, page: true }); });
     if (OBS.hypo) OBS.hypo.list().then(function (l) { (l || []).forEach(function (h) { index.push({ name: h.titre, sub: 'Hypothèse personnelle', href: '#/hypotheses/' + encodeURIComponent(h.id), key: norm(h.titre + ' ' + (h.resume || '') + ' hypothese'), w: 1, hypo: true }); }); });
+    if (OBS.hypo && OBS.hypo.listSci) OBS.hypo.listSci().then(function (l) { (l || []).forEach(function (h) { index.push({ name: h.titre, sub: 'Hypothèse de chercheurs · ' + OBS.hypo.credit(h), href: OBS.hypo.href(h), key: norm(h.titre + ' ' + (h.auteurs || '') + ' ' + (h.resume || '') + ' hypothese chercheur'), w: 1, sci: true }); }); });
   }
   function find(q) {
     var n = norm(q); if (!n) return [];
@@ -63,7 +64,7 @@
     if (!q.trim()) { list.innerHTML = '<li class="s-hint">Un astre, une lune, une étoile, une sonde… par exemple <b>Titan</b>, <b>Proxima</b> ou <b>Voyager</b>.</li>'; return; }
     if (!results.length) { list.innerHTML = '<li class="s-hint">Aucun objet ne correspond. L\'Observatoire ne montre que des objets réels : il n\'y a peut-être pas encore de fiche pour celui-ci.</li>'; return; }
     list.innerHTML = results.map(function (r, i) {
-      return '<li role="option" aria-selected="' + (i === cur) + '"><a href="' + r.href + '" class="' + (r.hypo ? 's-hypo' : r.page ? 's-page' : '') + '"><b>' + esc(r.name) + '</b><small>' + esc(r.sub || '') + '</small></a></li>';
+      return '<li role="option" aria-selected="' + (i === cur) + '"><a href="' + r.href + '" class="' + (r.hypo ? 's-hypo' : r.sci ? 's-sci' : r.page ? 's-page' : '') + '"><b>' + esc(r.name) + '</b><small>' + esc(r.sub || '') + '</small></a></li>';
     }).join('');
   }
   function move(d) { if (!results.length) return; cur = (cur + d + results.length) % results.length; Array.prototype.forEach.call(list.querySelectorAll('li[role=option]'), function (li, i) { li.setAttribute('aria-selected', String(i === cur)); if (i === cur) li.scrollIntoView({ block: 'nearest' }); }); }

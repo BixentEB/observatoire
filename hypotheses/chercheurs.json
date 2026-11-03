@@ -1,0 +1,82 @@
+{
+  "_aide": "Hypothèses proposées par des chercheurs. etat : debat (toujours discutée), admise (largement acceptée, débattue dans le détail), ecartee (réfutée par les observations), historique (abandonnée, importante dans l'histoire des idées). objets : identifiants dans le système solaire (js/data/bodies.js) ; galaxie : identifiant d'un repère de la Voie lactée (js/data/galaxy.js). texte : Markdown.",
+  "hypotheses": [
+    {
+      "id": "planete-9",
+      "titre": "Planète 9",
+      "auteurs": "Konstantin Batygin et Michael Brown",
+      "annee": 2016,
+      "etat": "debat",
+      "resume": "Une planète de 5 à 10 fois la masse de la Terre, très loin au-delà de Neptune, qui expliquerait l'étrange alignement des orbites de certains objets lointains.",
+      "objets": ["planete9"],
+      "texte": "### L'idée\n\nUne poignée d'objets de la ceinture de Kuiper, sur des orbites très allongées, ont des orbites curieusement alignées dans la même direction. Pour Batygin et Brown, une planète encore inconnue les « rangerait » ainsi par sa gravité : environ 7 fois la masse de la Terre, à 500 UA du Soleil en moyenne, un tour en 5 000 à 10 000 ans.\n\n### Ce qui l'appuie\n\nL'alignement d'une quinzaine d'objets transneptuniens extrêmes, et l'inclinaison de leurs orbites. Les recherches ont déjà exclu une bonne partie des zones où elle pourrait se trouver, sans l'éliminer.\n\n### Ce qui la contredit\n\nAucune détection à ce jour. Plusieurs équipes pensent que l'alignement pourrait venir d'un biais d'observation : on découvre plus facilement les objets dans certaines directions du ciel. D'autres explications existent (anneau de matière, rencontre ancienne avec une autre étoile).\n\n### Où en est-on\n\nL'observatoire Vera Rubin, en service depuis 2025, balaie tout le ciel austral : s'il ne la trouve pas dans ses premières années, l'hypothèse sera très affaiblie.",
+      "sources": [["Live Science (2024), où en est la recherche", "https://www.livescience.com/space/planets/planet-nine-is-the-search-for-this-elusive-world-nearly-over"]]
+    },
+    {
+      "id": "theia",
+      "titre": "Théia et l'impact géant",
+      "auteurs": "William Hartmann et Donald Davis ; Alastair Cameron et William Ward",
+      "annee": 1975,
+      "etat": "admise",
+      "resume": "La Lune serait née d'une collision entre la jeune Terre et un corps de la taille de Mars, baptisé Théia, il y a environ 4,5 milliards d'années.",
+      "objets": ["lune", "terre"],
+      "texte": "### L'idée\n\nPeu après la formation de la Terre, un corps de la taille de Mars l'aurait percutée. Les débris projetés en orbite se seraient rassemblés pour former la Lune. Le nom de Théia, la mère de Séléné (la Lune) dans la mythologie grecque, a été donné plus tard.\n\n### Ce qui l'appuie\n\nLes roches rapportées par Apollo, le petit noyau de fer de la Lune, sa composition proche de celle du manteau terrestre, et la rotation rapide du système Terre-Lune s'expliquent bien par un tel choc. En 2023, une équipe (Qian Yuan et ses collègues, revue Nature) a proposé que deux immenses masses enfouies au fond du manteau terrestre, sous l'Afrique et le Pacifique, soient des restes de Théia.\n\n### Ce qui reste débattu\n\nLa Terre et la Lune sont presque identiques chimiquement, plus que ne le prévoit un impact simple : variantes avec un choc plus violent, plusieurs impacts, ou un nuage de roche vaporisée. L'origine des masses du manteau, elle, est encore discutée.\n\n### Où en est-on\n\nC'est l'explication la plus admise de l'origine de la Lune ; ses détails restent ouverts. De futurs échantillons lunaires, notamment du bassin Pôle Sud–Aitken, pourraient trancher.",
+      "sources": [["Sky & Telescope (2023), des restes de Théia dans le manteau ?", "https://skyandtelescope.org/astronomy-news/bits-of-theia-might-be-in-earths-mantle/"]]
+    },
+    {
+      "id": "nemesis",
+      "titre": "Némésis, l'étoile compagne",
+      "auteurs": "Daniel Whitmire et Albert Jackson ; Marc Davis, Piet Hut et Richard Muller",
+      "annee": 1984,
+      "etat": "ecartee",
+      "resume": "Une petite étoile compagne du Soleil qui, tous les 26 millions d'années, enverrait une pluie de comètes vers la Terre et provoquerait des extinctions de masse.",
+      "objets": ["soleil"],
+      "texte": "### L'idée\n\nEn 1984, les paléontologues David Raup et Jack Sepkoski pensent voir un rythme dans les extinctions de masse : environ une tous les 26 millions d'années. Deux équipes proposent la même année, dans la revue Nature, une explication : une petite étoile (naine rouge ou brune) tournerait autour du Soleil sur une orbite très large et, à chaque passage, bousculerait le nuage d'Oort, envoyant des comètes vers la Terre.\n\n### Ce qui l'appuie\n\nLe rythme des extinctions, s'il est réel, et le fait que beaucoup d'étoiles vivent en couple.\n\n### Ce qui la contredit\n\nAucun des grands relevés du ciel en infrarouge (IRAS dans les années 1980, 2MASS, puis WISE en 2014) n'a trouvé une telle étoile proche. Une orbite aussi large serait instable, et la régularité des extinctions est elle-même contestée.\n\n### Où en est-on\n\nL'hypothèse est considérée comme écartée, même si les relevés ne couvrent pas toutes les distances proposées.",
+      "sources": [["Wikipédia (anglais), Nemesis (hypothetical star)", "https://en.wikipedia.org/wiki/Nemesis_(hypothetical_star)"]]
+    },
+    {
+      "id": "vulcain",
+      "titre": "Vulcain, la planète fantôme",
+      "auteurs": "Urbain Le Verrier",
+      "annee": 1859,
+      "etat": "historique",
+      "resume": "Une planète cachée entre Mercure et le Soleil, imaginée pour expliquer une anomalie de l'orbite de Mercure… que la relativité générale a résolue en 1915.",
+      "objets": ["mercure"],
+      "texte": "### L'idée\n\nL'orbite de Mercure tourne lentement sur elle-même, un peu plus vite que ne le prévoient les calculs de Newton : 43 secondes d'arc par siècle de trop. Le Verrier, qui avait prédit Neptune avec succès en 1846, propose en 1859 la même solution : une planète inconnue, très proche du Soleil, qu'il baptise Vulcain.\n\n### Ce qui l'a appuyée\n\nLe succès de Neptune, et quelques observations d'astronomes amateurs ou professionnels qui crurent voir un petit point passer devant le Soleil.\n\n### Ce qui l'a réfutée\n\nAucune observation n'a jamais été confirmée, y compris lors des éclipses totales. En 1915, la relativité générale d'Albert Einstein explique exactement les 43 secondes d'arc : il n'y avait rien à chercher.\n\n### Où en est-on\n\nUne histoire célèbre de la science : la même méthode a découvert Neptune et inventé Vulcain. On cherche encore, sans succès, de petits astéroïdes dans cette région, les « vulcanoïdes ».",
+      "sources": [["Brian Koberlein, The planet that never was", "https://briankoberlein.com/post/planet-that-never-was/"]]
+    },
+    {
+      "id": "oumuamua-voile",
+      "titre": "ʻOumuamua, une voile artificielle ?",
+      "auteurs": "Shmuel Bialy et Abraham Loeb",
+      "annee": 2018,
+      "etat": "debat",
+      "resume": "Le premier objet venu d'une autre étoile accélérait sans montrer de queue de comète : et s'il s'agissait d'une voile solaire construite par une civilisation ?",
+      "objets": [],
+      "texte": "### L'idée\n\nʻOumuamua, découvert en 2017, est le premier objet observé venant d'au-delà du système solaire. En s'éloignant du Soleil, il a légèrement accéléré, comme une comète qui dégaze, mais sans aucune queue visible. Bialy et Loeb ont proposé qu'il soit très mince et très léger, poussé par la lumière du Soleil : une voile solaire, peut-être artificielle.\n\n### Ce qui l'appuie\n\nL'accélération inexpliquée sans dégazage visible, et sa forme probablement très allongée ou aplatie.\n\n### Ce qui la contredit\n\nDes explications naturelles ont été publiées : un fragment de glace d'azote (Jackson et Desch, 2021), ou de l'hydrogène piégé dans la glace par les rayons cosmiques, libéré en se réchauffant (Bergner et Seligman, Nature, 2023), un mécanisme sans doute courant chez les comètes.\n\n### Où en est-on\n\nToujours défendue par Loeb, l'hypothèse artificielle reste très minoritaire. ʻOumuamua est parti trop loin pour être observé de nouveau.",
+      "sources": [["Université de Chicago (2023), une explication simple", "https://news.uchicago.edu/story/surprisingly-simple-explanation-interstellar-visitor-oumuamuas-weird-orbit"]]
+    },
+    {
+      "id": "etoile-tabby",
+      "titre": "L'étoile de Tabby et la mégastructure",
+      "auteurs": "Tabetha Boyajian et ses collègues ; Jason Wright",
+      "annee": 2015,
+      "etat": "ecartee",
+      "resume": "Une étoile dont la lumière baissait parfois de 20 %, de façon irrégulière : on a envisagé une gigantesque structure construite autour d'elle.",
+      "galaxie": "tabby",
+      "texte": "### L'idée\n\nKIC 8462852, à environ 1 470 années-lumière, a été repérée par des volontaires du projet Planet Hunters dans les données du télescope Kepler. Sa lumière baissait parfois de plus de 20 %, sans régularité, ce qu'aucune planète ne peut faire. Parmi les explications envisagées, l'astronome Jason Wright a évoqué, en dernier recours, des structures géantes construites par une civilisation pour capter l'énergie de l'étoile.\n\n### Ce qui l'a appuyée\n\nDes baisses de lumière profondes, irrégulières, que les explications habituelles peinaient à reproduire.\n\n### Ce qui l'a réfutée\n\nEn 2018, une campagne d'observation menée avec plus de 200 coauteurs a montré que la lumière baisse davantage dans le bleu que dans le rouge : c'est la signature de la poussière. Un objet solide et opaque bloquerait toutes les couleurs de la même façon.\n\n### Où en est-on\n\nL'hypothèse artificielle est écartée ; l'origine exacte de la poussière (comètes, débris d'une collision…) reste discutée.",
+      "sources": [["Penn State (2018), pas de mégastructure", "https://www.psu.edu/news/research/story/alien-megastructure-not-cause-behind-most-mysterious-star-universe"]]
+    },
+    {
+      "id": "panspermie",
+      "titre": "La panspermie",
+      "auteurs": "Svante Arrhenius ; Fred Hoyle et Chandra Wickramasinghe",
+      "annee": 1903,
+      "etat": "debat",
+      "resume": "La vie, ou ses briques, aurait voyagé d'un monde à l'autre, portée par des météorites ou des comètes, plutôt que d'apparaître sur Terre.",
+      "objets": ["terre", "mars"],
+      "texte": "### L'idée\n\nL'idée remonte à l'Antiquité ; le chimiste Svante Arrhenius lui donne une forme scientifique au début du XXe siècle, puis Fred Hoyle et Chandra Wickramasinghe la défendent à partir des années 1970. La vie, ou au moins ses ingrédients, se serait formée ailleurs, puis aurait été transportée jusqu'à la Terre par des roches ou des comètes.\n\n### Ce qui l'appuie\n\nDes météorites venues de Mars sont tombées sur Terre : des roches voyagent bien entre les planètes. Certaines bactéries et les tardigrades survivent un temps dans l'espace. Des acides aminés et d'autres molécules de la vie ont été trouvés dans des météorites et dans les échantillons des astéroïdes Ryugu et Bennu.\n\n### Ce qui la contredit\n\nAucun être vivant venu de l'espace n'a jamais été identifié. Trouver des briques de la vie n'est pas trouver la vie. Et l'hypothèse ne fait que déplacer la question : où et comment la vie est-elle apparue la première fois ?\n\n### Où en est-on\n\nLa version « les ingrédients viennent de l'espace » est largement acceptée ; la version « la vie elle-même a voyagé » reste une hypothèse ouverte, que l'exploration de Mars ou des lunes glacées pourrait éclairer.",
+      "sources": []
+    }
+  ]
+}

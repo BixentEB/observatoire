@@ -236,9 +236,9 @@
   // un « ? » dans un cadre en tirets, sous la planète (la même marque que son nom)
   var askTex = (function () {
     var c = document.createElement('canvas'); c.width = c.height = 128; var g = c.getContext('2d');
-    g.fillStyle = 'rgba(20,12,40,0.55)'; g.strokeStyle = 'rgba(180,156,255,0.9)'; g.lineWidth = 3; g.setLineDash([8, 6]);
+    g.fillStyle = 'rgba(8,22,40,0.55)'; g.strokeStyle = 'rgba(124,196,255,0.9)'; g.lineWidth = 3; g.setLineDash([8, 6]);
     g.beginPath(); if (g.roundRect) g.roundRect(14, 14, 100, 100, 18); else g.rect(14, 14, 100, 100); g.fill(); g.stroke();
-    g.setLineDash([]); g.fillStyle = '#c9b8ff'; g.font = '700 74px Syne, "Trebuchet MS", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.setLineDash([]); g.fillStyle = '#bfe2ff'; g.font = '700 74px Syne, "Trebuchet MS", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     g.fillText('?', 64, 70);
     return new T.CanvasTexture(c);
   })();
@@ -948,7 +948,7 @@
       var e9 = { a: aa, e: 1 - q / aa, i: Math.max(4, 16 + gauss(r) * 5), node: node, peri: varpi - node };
       A.fromElements(e9, A.solveKepler(r() * TAU, e9.e), el);
       toScene(el, tmp); pos[j * 3] = tmp.x; pos[j * 3 + 1] = tmp.y; pos[j * 3 + 2] = tmp.z;
-      var b = .16 + .2 * r(); col[j * 3] = .62 * b; col[j * 3 + 1] = .5 * b; col[j * 3 + 2] = 1 * b;   // une brume diffuse, pas des objets
+      var b = .16 + .2 * r(); col[j * 3] = .49 * b; col[j * 3 + 1] = .77 * b; col[j * 3 + 2] = 1 * b;   // une brume diffuse, pas des objets
       size[j] = 3 + r() * 4;
     }
     var g = new T.BufferGeometry();

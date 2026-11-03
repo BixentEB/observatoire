@@ -62,7 +62,7 @@
     group('Comète', B.filter(function (b) { return b.comet; }));
     group('Petits corps', B.filter(function (b) { return b.minor; }));
     group('Régions', OBS.REGIONS.filter(function (r) { return !r.theorique; }));
-    group('<span style="color:var(--hypo)">Objets hypothétiques</span>', OBS.REGIONS.filter(function (r) { return r.theorique; }));
+    group('<span style="color:var(--sci)">Objets hypothétiques</span>', OBS.REGIONS.filter(function (r) { return r.theorique; }));
     root.innerHTML = h.join('');
   }
   function listeVoisinage(root) {

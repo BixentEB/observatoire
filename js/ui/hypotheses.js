@@ -1,8 +1,8 @@
 /* ======================================================================
    OBSERVATOIRE — espace « Hypothèses »
-   Des pistes de réflexion personnelles, pas assez développées pour être des théories.
-   Elles ont leur propre couleur (--hypo) et ne sont jamais mêlées aux données.
-   Fichiers : hypotheses/index.json (liste) et hypotheses/<id>.md (texte de chaque fiche).
+   Deux onglets : mes hypothèses personnelles (couleur --hypo, violet, signées Vincent une fois par page)
+   et des hypothèses de chercheurs (couleur --sci, bleu, auteurs et année sur chaque fiche).
+   Fichiers : hypotheses/index.json + hypotheses/<id>.md (personnelles), hypotheses/chercheurs.json (chercheurs).
    Le simulateur permet de modeler un corps céleste pour mettre une hypothèse en perspective.
    ====================================================================== */
 (function () {
@@ -11,49 +11,115 @@
   var T = window.THREE, G = OBS.GLSL, esc = OBS.esc;
 
   /* ---------- données ---------- */
-  var listP = null;
-  function list() {
-    if (!listP) listP = fetch('hypotheses/index.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (j) { return (j.hypotheses || j || []).filter(function (h) { return !h.brouillon; }); })
-      .catch(function () { listP = null; return null; });
+  function load(file, keep) {
+    return fetch('hypotheses/' + file, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) { return (j.hypotheses || j || []).filter(keep); });
+  }
+  var listP = null, sciP = null;
+  function list() {   // hypothèses personnelles
+    if (!listP) listP = load('index.json', function (h) { return !h.brouillon; }).catch(function () { listP = null; return null; });
     return listP;
   }
+  function listSci() {   // hypothèses de chercheurs
+    if (!sciP) sciP = load('chercheurs.json', function (h) { return !h.brouillon; })
+      .then(function (l) { l.forEach(function (h) { h.sci = true; }); return l; }).catch(function () { sciP = null; return null; });
+    return sciP;
+  }
+  function linked(h, id) { return (h.objets || []).indexOf(id) >= 0 || h.galaxie === id; }
   OBS.hypo = {
-    list: list,
-    forObject: function (id) { return list().then(function (l) { return (l || []).filter(function (h) { return (h.objets || []).indexOf(id) >= 0; }); }); },
-    get: function (id) { return list().then(function (l) { return (l || []).filter(function (h) { return h.id === id; })[0] || null; }); }
+    list: list, listSci: listSci,
+    // personnelles d'abord, puis celles des chercheurs (h.sci)
+    forObject: function (id) { return Promise.all([list(), listSci()]).then(function (r) { return (r[0] || []).concat(r[1] || []).filter(function (h) { return linked(h, id); }); }); },
+    get: function (id) { return list().then(function (l) { return (l || []).filter(function (h) { return h.id === id; })[0] || null; }); },
+    getSci: function (id) { return listSci().then(function (l) { return (l || []).filter(function (h) { return h.id === id; })[0] || null; }); },
+    href: function (h) { return '#/hypotheses/' + (h.sci ? 'chercheurs/' : '') + encodeURIComponent(h.id); },
+    etat: function (h) { return ETAT[h.etat] || h.etat || ''; },
+    credit: function (h) { return (h.auteurs || '') + (h.annee ? ', ' + h.annee : ''); }
   };
 
   var STATUS = { piste: 'Piste', reflexion: 'En réflexion', developpement: 'En développement', abandonnee: 'Abandonnée', exemple: 'Exemple' };
+  var ETAT = { debat: 'En débat', admise: 'Admise, débattue dans le détail', ecartee: 'Écartée', historique: 'Historique' };
   function dateFr(s) { if (!s) return ''; var d = new Date(s + 'T12:00:00'); return isNaN(d) ? esc(s) : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
+  function objNames(h) {
+    var n = (h.objets || []).filter(function (o) { return OBS.byId[o]; }).map(function (o) { return OBS.byId[o].name; });
+    var g = h.galaxie && (OBS.GALAXY_OBJECTS || []).filter(function (o) { return o.id === h.galaxie; })[0]; if (g) n.push(g.name);
+    return n.length ? '<span>· ' + esc(n.join(', ')) + '</span>' : '';
+  }
   function meta(h) {
     var st = h.statut || 'piste';
-    return '<div class="h-meta"><span class="h-status' + (st === 'exemple' ? ' ex' : '') + '">' + esc(STATUS[st] || st) + '</span>' + (h.date ? '<span>' + dateFr(h.date) + '</span>' : '') +
-      ((h.objets || []).length ? '<span>· ' + h.objets.map(function (o) { return esc((OBS.byId[o] || { name: o }).name); }).join(', ') + '</span>' : '') + '</div>';
+    return '<div class="h-meta"><span class="h-status' + (st === 'exemple' ? ' ex' : '') + '">' + esc(STATUS[st] || st) + '</span>' + (h.date ? '<span>' + dateFr(h.date) + '</span>' : '') + objNames(h) + '</div>';
   }
+  function metaSci(h) {
+    return '<div class="h-meta"><span class="h-status e-' + esc(h.etat || 'debat') + '">' + esc(OBS.hypo.etat(h)) + '</span>' + objNames(h) + '</div>';
+  }
+  var SIGN = '<p class="h-sign">Vincent<span>auteur des hypothèses personnelles</span></p>';
 
   /* ---------- pages ---------- */
   var activeViewer = null;
   function disposeViewer() { if (activeViewer) { activeViewer.dispose(); activeViewer = null; } }
   OBS.on('page', disposeViewer);
 
-  OBS.pages.hypotheses = function (root, param) {
+  function tabs(sci) {
+    return '<p class="p-kicker">Hypothèses</p><h1>Pistes et hypothèses</h1>' +
+      '<div class="h-tabs" role="tablist">' +
+      '<a role="tab" class="h-tab t-perso" href="#/hypotheses" aria-selected="' + !sci + '">Hypothèses personnelles</a>' +
+      '<a role="tab" class="h-tab t-sci" href="#/hypotheses/chercheurs" aria-selected="' + !!sci + '">Hypothèses de chercheurs</a></div>';
+  }
+  function failed(box) { box.innerHTML = '<p class="note">Les fiches n\'ont pas pu être chargées. Elles s\'affichent quand le site est servi par un serveur web (en ligne, ou en local avec <code>python3 -m http.server</code>).</p>'; }
+
+  OBS.pages.hypotheses = function (root, param, sub) {
     disposeViewer();
     if (param === 'atelier' || param === 'simulateur') { location.replace('#/simulateur'); return; }
+    if (param === 'chercheurs') return sub ? ficheSci(root, sub) : listSciPage(root);
     if (param) return fiche(root, param);
-    root.innerHTML = '<p class="p-kicker" style="color:var(--hypo)">Hypothèses</p><h1>Pistes de réflexion</h1>' +
-      '<div class="h-intro"><b>Hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories, présentées par des textes et des animations 3D. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
-      '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>' +
+    root.innerHTML = tabs(false) +
+      '<div class="h-intro"><b>Mes hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories, présentées par des textes et des animations 3D. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
+      '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>' + SIGN +
       '<p class="note" style="margin-top:24px">Pour modeler un objet et mettre une idée en perspective, le simulateur est dans les <a href="#/outils">Outils</a>.</p>';
     list().then(function (l) {
       var box = document.getElementById('h-list'); if (!box) return;
-      if (l === null) { box.innerHTML = '<p class="note">Les fiches n\'ont pas pu être chargées. Elles s\'affichent quand le site est servi par un serveur web (en ligne, ou en local avec <code>python3 -m http.server</code>).</p>'; return; }
+      if (l === null) return failed(box);
       if (!l.length) { box.innerHTML = '<p class="note">Aucune hypothèse publiée pour l\'instant.</p>'; return; }
       box.innerHTML = l.map(function (h) {
         return '<a class="h-card" href="#/hypotheses/' + encodeURIComponent(h.id) + '">' + meta(h) + '<h3>' + esc(h.titre) + '</h3><p>' + esc(h.resume || '') + '</p></a>';
       }).join('');
     });
   };
+
+  function listSciPage(root) {
+    root.innerHTML = tabs(true) +
+      '<div class="h-intro sci"><b>Hypothèses de chercheurs.</b> Des idées proposées par des astronomes et des scientifiques, publiées dans des revues : certaines sont encore débattues, d\'autres ont été écartées par les observations, quelques-unes sont devenues des chapitres de l\'histoire des sciences. Chaque fiche donne les auteurs, l\'année, ce qui appuie l\'idée, ce qui la contredit et où en est la recherche.</div>' +
+      '<div class="h-legend">' + [['debat', 'En débat', 'encore discutée'], ['admise', 'Admise', 'largement acceptée'], ['ecartee', 'Écartée', 'réfutée par les observations'], ['historique', 'Historique', 'abandonnée depuis longtemps']].map(function (e) {
+        return '<span class="h-lg"><span class="h-status e-' + e[0] + '">' + e[1] + '</span>' + e[2] + '</span>'; }).join('') + '</div>' +
+      '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>';
+    listSci().then(function (l) {
+      var box = document.getElementById('h-list'); if (!box) return;
+      if (l === null) return failed(box);
+      box.innerHTML = l.map(function (h) {
+        return '<a class="h-card sci" href="' + OBS.hypo.href(h) + '">' + metaSci(h) + '<h3>' + esc(h.titre) + '</h3><p class="h-by">' + esc(OBS.hypo.credit(h)) + '</p><p>' + esc(h.resume || '') + '</p></a>';
+      }).join('');
+    });
+  }
+
+  function ficheSci(root, id) {
+    root.innerHTML = '<p class="note">Chargement…</p>';
+    OBS.hypo.getSci(id).then(function (h) {
+      if (!h) { root.innerHTML = '<p class="p-kicker">Hypothèses</p><h1>Fiche introuvable</h1><p><a href="#/hypotheses/chercheurs">Revenir à la liste</a></p>'; return; }
+      var objs = (h.objets || []).filter(function (o) { return OBS.byId[o]; });
+      var gal = h.galaxie && (OBS.GALAXY_OBJECTS || []).filter(function (o) { return o.id === h.galaxie; })[0];
+      var links = objs.map(function (o) { return '<a class="btn" href="#/explorer/' + o + '">Voir ' + esc(OBS.byId[o].name) + ' dans l\'espace</a>'; });
+      if (gal) links.push('<a class="btn" href="#/galaxie/' + gal.id + '">Voir ' + esc(gal.name) + ' dans la Voie lactée</a>');
+      root.innerHTML = '<p><a href="#/hypotheses/chercheurs" class="chip">← Hypothèses de chercheurs</a></p>' +
+        '<p class="h-badge sci">Hypothèse de chercheurs</p><h1>' + esc(h.titre) + '</h1>' +
+        '<p class="h-by big">Proposée par ' + esc(h.auteurs || '') + (h.annee ? ' <span>(' + h.annee + ')</span>' : '') + '</p>' + metaSci(h) +
+        (h.resume ? '<p class="lead" style="margin-top:14px">' + esc(h.resume) + '</p>' : '') +
+        (links.length ? '<div class="h-objs">' + links.join('') + '</div>' : '') +
+        '<div class="h-body sci" id="h-body"></div>' +
+        ((h.sources || []).length ? '<h2>Pour aller plus loin</h2><ul class="c-src">' + h.sources.map(function (s) { return '<li><a href="' + esc(s[1]) + '" target="_blank" rel="noopener">' + esc(s[0]) + '</a></li>'; }).join('') + '</ul>' : '') +
+        '<p class="note" style="margin-top:30px">Fiche de vulgarisation rédigée pour l\'Observatoire à partir des publications et de leurs comptes rendus. Les données de l\'Observatoire ne sont jamais modifiées pour servir une hypothèse.</p>';
+      var b = document.getElementById('h-body'); if (b) b.innerHTML = OBS.md(h.texte || '');
+    });
+  }
 
   function fiche(root, id) {
     root.innerHTML = '<p class="note">Chargement…</p>';
@@ -66,7 +132,7 @@
         (objs.length ? '<div class="h-objs">' + objs.map(function (o) { return '<a class="btn" href="#/explorer/' + o + '">Voir ' + esc(OBS.byId[o].name) + ' dans l\'espace</a>'; }).join('') + '</div>' : '') +
         (h.avertissement ? '<div class="h-warn" role="note"><b>Avant de lire</b><p>' + esc(h.avertissement) + '</p></div>' : '') +
         (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim] ? '<div id="h-anim"></div>' : h.modele ? '<div id="h-viewer"></div>' : '') +
-        '<div class="h-body" id="h-body"></div>' +
+        '<div class="h-body" id="h-body"></div>' + SIGN +
         '<p class="note" style="margin-top:30px">Une hypothèse est une piste de réflexion, pas un résultat établi. Les données de l\'Observatoire, elles, ne sont jamais modifiées pour servir une hypothèse.</p>';
       if (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim]) activeViewer = OBS.HYPO_ANIM[h.anim](document.getElementById('h-anim'));
       else if (h.modele) activeViewer = new Viewer(document.getElementById('h-viewer'), h.modele, { tag: 'Modèle de l\'hypothèse' });

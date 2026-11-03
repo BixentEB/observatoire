@@ -1,6 +1,6 @@
 /* ======================================================================
    OBSERVATOIRE · Codex Mental — interface
-   Palette reprise du thème Héliosphère. Couleur réservée aux hypothèses : --hypo (violet),
+   Palette reprise du thème Héliosphère. Couleurs réservées aux hypothèses : --hypo (violet, les miennes), --sci (bleu, celles des chercheurs),
    pour qu'une hypothèse ne soit jamais confondue avec une donnée.
    ====================================================================== */
 :root {
@@ -9,6 +9,7 @@
   --line: rgba(194, 206, 239, .16); --line2: rgba(194, 206, 239, .28);
   --panel: rgba(8, 12, 26, .86); --panel-solid: #070a16; --panel-deep: rgba(2, 4, 12, .55);
   --hypo: #b49cff; --hypo-bg: rgba(140, 110, 255, .10); --hypo-line: rgba(180, 156, 255, .38);
+  --sci: #7cc4ff; --sci-bg: rgba(90, 170, 255, .10); --sci-line: rgba(124, 196, 255, .42);
   --display: 'Syne', 'Trebuchet MS', system-ui, sans-serif;
   --body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -64,8 +65,8 @@ button { font: inherit; color: inherit; }
 .lbl.s-h .nm { left: 0; transform: translate(-50%, calc(-100% - var(--off, 10px))); }
 .lbl.s-b .nm { left: 0; transform: translate(-50%, var(--off, 10px)); }
 .lbl.is-minor .nm { font-size: 10.5px; color: var(--muted); }
-/* objet théorique (Planète 9) : couleur des hypothèses, contour pointillé */
-.lbl.is-theo .nm { font-size: 11px; font-style: normal; color: var(--hypo); background: rgba(20, 12, 40, .4); border: 1px dashed var(--hypo-line); transition: opacity .22s; }
+/* objet théorique (Planète 9) : couleur des hypothèses de chercheurs, contour pointillé */
+.lbl.is-theo .nm { font-size: 11px; font-style: normal; color: var(--sci); background: rgba(8, 22, 40, .4); border: 1px dashed var(--sci-line); transition: opacity .22s; }
 .lbl.is-theo .nm.swap { opacity: 0; }
 /* inclinaison d'une orbite */
 .lbl.is-incl { pointer-events: none; }
@@ -132,6 +133,7 @@ button { font: inherit; color: inherit; }
 .search-results a small { display: block; color: var(--muted); font-size: 12px; }
 .search-results li[aria-selected="true"] a, .search-results a:hover { background: rgba(244, 199, 122, .09); }
 .search-results a.s-hypo b { color: var(--hypo); }
+.search-results a.s-sci b { color: var(--sci); }
 .search-results a.s-page b { color: var(--accent); }
 .s-hint { padding: 12px; color: var(--muted); font-size: 13px; }
 .s-hint b { color: var(--soft); }
@@ -189,7 +191,9 @@ button { font: inherit; color: inherit; }
 .chip-go { color: var(--accent); border-color: rgba(244, 199, 122, .4); }
 .c-hypo a { display: block; text-decoration: none; color: var(--fg); padding: 10px 12px; border-radius: 10px; border: 1px dashed var(--hypo-line); background: var(--hypo-bg); margin-bottom: 6px; }
 .c-hypo a small { display: block; color: var(--hypo); font: 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-.c-sec.c-hypo > h3 { color: var(--hypo); }
+.c-sec.c-hypo > h3 { color: var(--soft); }
+.c-hypo a.sci { border-color: var(--sci-line); background: var(--sci-bg); }
+.c-hypo a.sci small { color: var(--sci); text-transform: none; letter-spacing: .02em; }
 
 .c-flags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; align-items: center; }
 .flag { display: inline-flex; align-items: baseline; gap: 5px; font: 11px var(--mono); padding: 4px 8px; border-radius: 999px; border: 1px solid; cursor: help; }
@@ -239,7 +243,7 @@ button { font: inherit; color: inherit; }
 .sym-lune i { width: 6px; height: 6px; border-radius: 50%; background: #c9cfdf; box-shadow: -4px 0 0 -1px rgba(201, 207, 223, .35); }
 .sym-ceinture i { width: 14px; height: 10px; background: radial-gradient(circle, #b5aa98 1px, transparent 1.4px) 0 0 / 4px 4px; }
 .sym-mission i { width: 8px; height: 8px; border: 1.5px solid #8ff0dc; background: rgba(143, 240, 220, .25); transform: rotate(45deg); }
-.sym-theo i { width: 13px; height: 9px; border-radius: 50%; border: 1px dashed var(--hypo); background: rgba(180, 156, 255, .15); }
+.sym-theo i { width: 13px; height: 9px; border-radius: 50%; border: 1px dashed var(--sci); background: rgba(124, 196, 255, .15); }
 .lg .tick { margin-left: auto; font-size: 11px; color: var(--muted); }
 .lg[aria-pressed="false"] .tick::after { content: 'masqué'; font: 10px var(--mono); }
 .legend-x, .keys-x { position: absolute; top: 5px; right: 6px; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 11px; padding: 3px; }
@@ -466,6 +470,31 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .h-status { color: var(--hypo); border: 1px solid var(--hypo-line); padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .08em; }
 .h-status.ex { color: var(--muted); border-color: var(--line2); }
 .h-badge { display: inline-block; font: 11px var(--mono); color: var(--hypo); letter-spacing: .12em; text-transform: uppercase; }
+/* deux onglets : mes hypothèses (violet) et celles des chercheurs (bleu) */
+.h-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+.h-tab { text-decoration: none; padding: 8px 16px; border-radius: 999px; border: 1px dashed var(--line2); color: var(--soft); font-size: 14px; }
+.h-tab.t-perso[aria-selected="true"] { color: var(--hypo); border-color: var(--hypo); background: var(--hypo-bg); }
+.h-tab.t-sci[aria-selected="true"] { color: var(--sci); border-color: var(--sci); background: var(--sci-bg); }
+.h-tab:hover { color: var(--fg); }
+.h-intro.sci { border-color: var(--sci-line); background: var(--sci-bg); }
+.h-intro.sci b { color: var(--sci); }
+.h-card { border-style: dashed; }
+.h-card.sci { border-color: var(--sci-line); background: linear-gradient(135deg, var(--sci-bg), rgba(8, 12, 26, .85)); }
+.h-card.sci:hover { border-color: var(--sci); }
+.h-by { font: 12px var(--mono); color: var(--sci) !important; margin: 0 0 6px !important; }
+.h-by.big { font-size: 14px; margin: 4px 0 10px !important; }
+.h-by span { color: var(--muted); }
+.h-status.e-debat { color: #ffd38a; border-color: rgba(255, 211, 138, .45); }
+.h-status.e-admise { color: #9fe3b0; border-color: rgba(159, 227, 176, .45); }
+.h-status.e-ecartee { color: #ff9f9f; border-color: rgba(255, 159, 159, .45); }
+.h-status.e-historique { color: #c9cfdf; border-color: var(--line2); }
+.h-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 14px 0 0; font-size: 12.5px; color: var(--muted); }
+.h-lg { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; margin-right: 8px; }
+.h-badge.sci { color: var(--sci); }
+.h-body.sci h4 { color: var(--sci); }
+.h-body.sci h3 { color: var(--sci); font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; margin: 30px 0 8px; }
+.h-sign { margin: 28px 0 0; text-align: right; font: italic 600 22px var(--display); color: var(--hypo); }
+.h-sign span { display: block; font: 10.5px var(--mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 /* corps d'une fiche d'hypothèse : une mise en page de lecture, aérée */
 .h-body { margin-top: 26px; font-size: 16.5px; line-height: 1.75; }
 .h-body > * { max-width: 68ch; }

@@ -25,7 +25,8 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `#/voisinage`, `#/voisinage/<étoile>` | Voisinage stellaire (ex. `#/voisinage/proxima`) |
 | `#/etoile/<étoile>` | Système d'une étoile voisine : étoile, compagne, planètes confirmées |
 | `#/atlas[/systeme\|voisinage[/carte\|liste]]` | Atlas : carte à plat ou liste, selon l'endroit où l'on est |
-| `#/hypotheses`, `#/hypotheses/<fiche>` | Hypothèses |
+| `#/hypotheses`, `#/hypotheses/<fiche>` | Hypothèses personnelles |
+| `#/hypotheses/chercheurs`, `#/hypotheses/chercheurs/<fiche>` | Hypothèses de chercheurs |
 | `#/simulateur` | Simulateur (modeler un corps céleste ; scénarios « et si… » à venir) |
 | `#/methode` (`#/credits` y mène) | Méthode, sources, crédits et licences |
 
@@ -33,7 +34,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Page unique : scène, barre du haut, fil d'Ariane, console, temps, réglages, pages |
-| `css/obs.css` | Toute l'interface (palette d'Héliosphère ; violet `--hypo` réservé aux hypothèses) |
+| `css/obs.css` | Toute l'interface (palette d'Héliosphère ; violet `--hypo` réservé à mes hypothèses, bleu `--sci` à celles des chercheurs et à la Planète 9) |
 | `js/core/perf.js` | Qualité : une seule fabrication au niveau estimé, une seconde seulement si le visiteur change la qualité ; jamais d'écran noir |
 | `js/astro/astro.js` | Calculs : positions à la date (JPL), Lune, orientation des astres (IAU), conversions |
 | `js/data/bodies.js` | Données réelles du système solaire (planètes, planètes naines, lunes, Halley, régions) |
@@ -54,7 +55,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/data/lore.js` | Origine des noms, projets et pistes |
 | `js/ui/hypotheses.js` | Hypothèses (liste, fiche) et Simulateur |
 | `js/ui/app.js` | Démarrage, navigation par adresse, fil d'Ariane, temps, réglages |
-| `hypotheses/` | `index.json` (liste) et un `.md` par fiche |
+| `hypotheses/` | `index.json` (liste) et un `.md` par fiche personnelle ; `chercheurs.json` (hypothèses de chercheurs, texte inclus) |
 | `textures/` | Cartes de surface (voir `textures/README.md` pour les sources et licences) |
 
 ## Ajouter une hypothèse
@@ -69,6 +70,9 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
    - `modele` : réglages du viewer (facultatif), à copier depuis le Simulateur avec « Copier les réglages » ;
    - `brouillon: true` masque une fiche.
 3. Supprimer l'entrée d'exemple `exemple-fiche` quand les vraies fiches arrivent.
+
+## Ajouter une hypothèse de chercheurs
+Ajouter une entrée dans `hypotheses/chercheurs.json` : `id`, `titre`, `auteurs`, `annee`, `etat` (`debat`, `admise`, `ecartee`, `historique`), `resume`, `objets` (identifiants du système solaire) ou `galaxie` (identifiant d'un repère de la Voie lactée), `texte` (Markdown, sections `###`) et `sources` (`[["titre", "url"]]`). La fiche apparaît dans l'onglet « Hypothèses de chercheurs » et dans la console des objets liés, en bleu.
 
 ## Ajouter un objet
 Ajouter une entrée dans `js/data/bodies.js` (données réelles uniquement). Pour un corps à orbite propre, ajouter ses éléments orbitaux dans `js/astro/astro.js` (`SMALL`, source JPL Small-Body Database).
