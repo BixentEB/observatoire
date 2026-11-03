@@ -49,6 +49,7 @@ Un serveur est nécessaire pour les fiches d'hypothèses (chargées avec `fetch`
 | `js/engine/galaxy.js` | Niveau « Voie lactée » : reconstitution (bras, barre, disque, poussière) et objets repères (`js/data/galaxy.js`) |
 | `js/engine/localgroup.js` | Niveau « Groupe local » (`js/data/localgroup.js`) ; exoplanètes remarquables : `js/data/exoplanets.js` |
 | `js/ui/search.js` | Recherche ( / ou Ctrl+K ) |
+| `js/ui/facts.js` | « Le saviez-vous ? » : faits et ordres de grandeur par niveau (liste `FACTS` à compléter) |
 | `js/ui/console.js` | Console d'un objet : valeurs en direct, fiche, carte, exploration, ce qui est représenté, hypothèses liées |
 | `js/ui/pages.js` | Méthode (avec les crédits) |
 | `js/ui/atlas.js` | Atlas : carte à plat du système solaire (tailles lisibles ou réelles), règle des distances du voisinage, listes |

@@ -109,7 +109,7 @@
       var pts = []; for (var i = 0; i <= 200; i++) { var t = i / 200 * TAU; pts.push(new T.Vector3(Math.cos(t) * r / U, 0, Math.sin(t) * r / U)); }
       scene.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: 0x7f8fd0, transparent: true, opacity: .1, depthWrite: false })));
       var tag = document.createElement('span'); tag.className = 'ring-tag'; tag.textContent = (r / 1e6) + ' million' + (r > 1e6 ? 's' : '') + ' d\'al';
-      labelsContainer.appendChild(tag); items.push({ tag: true, el: tag, pos: new T.Vector3(r / U, 0, 0) });
+      labelsContainer.appendChild(tag); items.push({ tag: true, el: tag, pos: new T.Vector3(0, 0, r / U) });   // côté proche de la vue d'arrivée : les trois étiquettes ne se chevauchent pas
     });
 
     controls = L.controls = new T.OrbitControls(camera, OBS.engine.canvas);

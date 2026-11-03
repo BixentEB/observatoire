@@ -59,6 +59,12 @@
 </div>
 
 <div class="corner">
+<aside id="facts" class="facts" aria-label="Le saviez-vous ?" aria-live="polite" hidden>
+  <p class="facts-h">Le saviez-vous ?</p>
+  <p class="facts-t"></p>
+  <div class="facts-a"><button class="facts-next" type="button">Suivant ›</button></div>
+  <button class="facts-x" type="button" aria-label="Fermer" title="Fermer (désactivable dans les réglages)">✕</button>
+</aside>
 <aside id="legend" class="legend-box" aria-label="Légende" hidden>
   <button class="legend-x" type="button" aria-label="Masquer la légende" title="Masquer (réactivable dans les réglages)">✕</button>
   <h3>Légende</h3>
@@ -106,6 +112,7 @@
   <label class="row"><span>Légende</span><input id="s-legend" type="checkbox" checked></label>
   <label class="row"><span>Clic droit : vue précédente</span><input id="s-back" type="checkbox" checked></label>
   <label class="row"><span>Aide des commandes</span><input id="s-keys" type="checkbox" checked></label>
+  <label class="row"><span>Le saviez-vous ?</span><input id="s-facts" type="checkbox" checked></label>
   <label class="row"><span>Noms affichés</span>
     <select id="s-labels"><option value="all">Tous</option><option value="planetes">Planètes et lunes</option><option value="none">Aucun</option></select></label>
   <label class="row"><span>Qualité</span>
@@ -159,6 +166,7 @@
 <script src="js/ui/md.js"></script>
 <script src="js/ui/console.js"></script>
 <script src="js/ui/pages.js"></script>
+<script src="js/ui/facts.js"></script>
 <script src="js/ui/atlas.js"></script>
 <script src="js/ui/hypotheses.js"></script>
 <script src="js/ui/hypo-anim.js"></script>

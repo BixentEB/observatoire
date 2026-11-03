@@ -561,6 +561,16 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .keys kbd { font: 500 10px/1 var(--mono, monospace); padding: 1px 4px; border: 1px solid var(--line2, rgba(255,255,255,.2)); border-radius: 4px; }
 .keys-x:hover { color: var(--fg); }
 @media (max-width: 1180px), (max-height: 600px), (pointer: coarse) { .keys { display: none; } }
+/* « Le saviez-vous ? » */
+.facts { position: relative; width: min(330px, calc(100vw - 2 * var(--gut))); padding: 10px 30px 9px 13px; background: rgba(8, 12, 26, .8); border: 1px solid rgba(244, 199, 122, .28);
+  border-radius: 12px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: tin2 .4s ease-out; }
+.facts-h { margin: 0 0 4px; font: 500 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.facts-t { margin: 0; font-size: 13px; line-height: 1.45; color: var(--soft); }
+.facts-a { display: flex; justify-content: flex-end; margin-top: 6px; }
+.facts-next { border: 0; background: none; color: var(--accent); font: 12px var(--body); cursor: pointer; padding: 2px 0; }
+.facts-next:hover { color: #ffd690; }
+.facts-x { position: absolute; top: 5px; right: 6px; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 11px; padding: 3px; }
+.facts-x:hover { color: var(--fg); }
 body.page-open .keys, .demo .keys, body.page-open .corner, .demo .corner, body.photo .corner, body.console-open .corner { display: none; }
 @media (max-width: 560px), (max-height: 360px) {
   .demo-cap { top: 10px; bottom: auto; left: 12px; right: 12px; }

@@ -99,3 +99,7 @@
 - Les consoles de la Lune, de la Terre, du Soleil, de Mercure, de Mars, de la Planète 9 et de l'étoile de Tabby listent ces hypothèses (en bleu, auteurs et statut).
 - Nouveau repère dans la Voie lactée : l'étoile de Tabby (KIC 8462852, ≈ 1 470 al, Cygne).
 - Planète 9 passée en bleu (étiquette, « ? », brume, légende, Atlas, Méthode).
+
+## Le saviez-vous ? (3 novembre 2026)
+- Petite carte en bas à droite (`js/ui/facts.js`) : un ordre de grandeur ou un fait sur le niveau affiché (système solaire, voisinage, Voie lactée, Groupe local, autres systèmes), 6 s après l'arrivée puis toutes les deux minutes ; « Suivant », croix (fermée pour ce niveau), réglage « Le saviez-vous ? » mémorisé.
+- Groupe local : légende corrigée (« les 14 principales galaxies sur plus de 80 connues »), étiquettes des cercles de distance qui ne se chevauchent plus.
