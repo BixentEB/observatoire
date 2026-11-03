@@ -316,9 +316,18 @@
       '<div><span>Distance à la Voie lactée</span><b>' + ml(inf.fromMW) + '</b><small>de centre à centre</small></div></div></section>');
     h.push('<p class="c-text">' + esc(d.text) + '</p>');
     h.push(facts(d));
+    // de quoi elle est faite : ce que l'on sait en général des galaxies de ce type (valeurs typiques, pas une mesure de cette galaxie)
+    var COMPO = {
+      spirale: [['Étoiles', 'jeunes et bleues dans les bras, anciennes et jaunes dans le bulbe central'], ['Gaz et poussière', 'surtout de l\'hydrogène, concentré dans le disque, là où naissent les étoiles'], ['Matière noire', 'un halo invisible, dix à vingt fois plus massif que toutes ses étoiles']],
+      elliptique: [['Étoiles', 'surtout anciennes, rouges et jaunes, nées il y a des milliards d\'années'], ['Gaz et poussière', 'très peu : elle ne forme presque plus d\'étoiles'], ['Matière noire', 'une part importante de sa masse']],
+      spheroidale: [['Étoiles', 'quelques centaines de milliers à quelques millions, presque toutes très anciennes'], ['Gaz et poussière', 'presque rien : son gaz a été soufflé ou arraché'], ['Matière noire', 'de loin l\'essentiel de sa masse, souvent des dizaines à des centaines de fois celle des étoiles']],
+      irreguliere: [['Étoiles', 'des anciennes et des jeunes, qui naissent encore aujourd\'hui'], ['Gaz et poussière', 'beaucoup d\'hydrogène, parfois plus en masse que les étoiles'], ['Matière noire', 'la plus grande part de sa masse']]
+    }[d.form];
+    if (COMPO) h.push('<section class="c-sec"><h3>De quoi elle est faite</h3><table class="c-facts">' + COMPO.map(function (c) { return '<tr><th>' + esc(c[0]) + '</th><td>' + esc(c[1]) + '</td></tr>'; }).join('') +
+      '</table><p class="c-note" style="margin-top:8px">Ce que l\'on sait en général des galaxies de ce type ; les éléments sont surtout de l\'hydrogène et de l\'hélium, comme partout dans l\'Univers. <a href="#/lexique/galaxies">Lexique des galaxies</a></p></section>');
     if (d.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans la Voie lactée →</button></div></section>');
     if (d.galaxie) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-gal>La voir depuis la Voie lactée →</button></div></section>');
-    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Positions mesurées, à l\'échelle réelle (une unité, 10 000 années-lumière). L\'aspect des galaxies est reconstitué : des points répartis selon leur forme et leur taille. Andromède et le Triangle sont orientés comme on les observe. La brume bleutée autour de la Voie lactée et d\'Andromède figure leurs halos de gaz chaud et de matière noire, à leur taille mesurée ou estimée : l\'espace entre les galaxies n\'est pas vide, il est seulement trop peu lumineux pour être vu.</p></section></div>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Positions mesurées, à l\'échelle réelle (une unité, 10 000 années-lumière). L\'aspect des galaxies est reconstitué : des points répartis selon leur forme et leur taille. Un point n\'est pas une étoile : de près, chacun en représente des milliers à des millions. Andromède et le Triangle sont orientés comme on les observe. La brume bleutée autour de la Voie lactée et d\'Andromède figure leurs halos de gaz chaud et de matière noire, à leur taille mesurée ou estimée : l\'espace entre les galaxies n\'est pas vide, il est seulement trop peu lumineux pour être vu.</p></section></div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
     el.querySelector('.c-close').addEventListener('click', function () { OBS.localgroup.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
