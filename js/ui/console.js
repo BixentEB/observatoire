@@ -318,7 +318,7 @@
     h.push(facts(d));
     if (d.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans la Voie lactée →</button></div></section>');
     if (d.galaxie) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-gal>La voir depuis la Voie lactée →</button></div></section>');
-    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Positions mesurées, à l\'échelle réelle (une unité, 10 000 années-lumière). L\'aspect des galaxies est reconstitué : des points répartis selon leur forme et leur taille. Andromède et le Triangle sont orientés comme on les observe.</p></section></div>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Positions mesurées, à l\'échelle réelle (une unité, 10 000 années-lumière). L\'aspect des galaxies est reconstitué : des points répartis selon leur forme et leur taille. Andromède et le Triangle sont orientés comme on les observe. La brume bleutée autour de la Voie lactée et d\'Andromède figure leurs halos de gaz chaud et de matière noire, à leur taille mesurée ou estimée : l\'espace entre les galaxies n\'est pas vide, il est seulement trop peu lumineux pour être vu.</p></section></div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
     el.querySelector('.c-close').addEventListener('click', function () { OBS.localgroup.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });

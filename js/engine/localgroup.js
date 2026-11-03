@@ -104,6 +104,17 @@
       labelsContainer.appendChild(el);
       var it = { id: o.id, def: o, pos: center, el: el, R: o.d / 2 / U, hit: hit }; items.push(it); byId[o.id] = it;
     });
+    /* le noir n'est pas vide : les halos de gaz chaud et de matière noire des deux grandes galaxies.
+       Rayons : Andromède ≈ 1,3 million d'al (Lehner et al. 2020, projet AMIGA) ; Voie lactée ≈ 900 000 al (rayon du viriel, ≈ 280 kpc).
+       Rendu reconstitué : une brume sphérique, sans détail mesuré. */
+    var haloTex = OBS.system.glowTexture([[0, 'rgba(150,175,255,0.55)'], [.45, 'rgba(130,160,255,0.22)'], [.8, 'rgba(120,150,255,0.07)'], [1, 'rgba(120,150,255,0)']]);
+    [['voielactee', 9e5], ['m31', 1.3e6]].forEach(function (h) {
+      var it = byId[h[0]]; if (!it) return;
+      var sp = new T.Sprite(new T.SpriteMaterial({ map: haloTex, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: .2 }));
+      sp.scale.setScalar(h[1] * 2 / U); sp.position.copy(it.pos); sp.renderOrder = -1; scene.add(sp);
+      var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag'; tag.textContent = 'halo de gaz et de matière noire';
+      labelsContainer.appendChild(tag); items.push({ tag: true, el: tag, pos: it.pos.clone().add(new T.Vector3(0, -h[1] * .72 / U, 0)) });
+    });
     // repères de distance : 1, 2 et 3 millions d'années-lumière autour de la Voie lactée, dans son plan
     [1e6, 2e6, 3e6].forEach(function (r) {
       var pts = []; for (var i = 0; i <= 200; i++) { var t = i / 200 * TAU; pts.push(new T.Vector3(Math.cos(t) * r / U, 0, Math.sin(t) * r / U)); }
@@ -203,7 +214,7 @@
     var occ = [];
     items.forEach(function (it) { if (it.hit) it.hit.scale.setScalar(Math.max(it.R * 1.1, 16 / (H / 2) * camera.position.distanceTo(it.pos) * tanHalf)); });
     items.slice().sort(function (a, b) {
-      function pri(x) { return x.tag ? -1 : x.id === selected ? 100 : x.id === hover ? 90 : x.def.home ? 80 : x.def.form === 'spirale' ? 60 : 20; }
+      function pri(x) { return x.tag ? -1 : x.id === selected ? 100 : x.id === hover ? 90 : x.def.home ? 80 : x.def.form === 'spirale' ? 60 : x.def.minor ? 10 : 20; }
       return pri(b) - pri(a);
     }).forEach(function (it) {
       var el = it.el;

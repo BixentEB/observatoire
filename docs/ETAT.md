@@ -103,3 +103,4 @@
 ## Le saviez-vous ? (3 novembre 2026)
 - Petite carte en bas à droite (`js/ui/facts.js`) : un ordre de grandeur ou un fait sur le niveau affiché (système solaire, voisinage, Voie lactée, Groupe local, autres systèmes), 6 s après l'arrivée puis toutes les deux minutes ; « Suivant », croix (fermée pour ce niveau), réglage « Le saviez-vous ? » mémorisé.
 - Groupe local : légende corrigée (« les 14 principales galaxies sur plus de 80 connues »), étiquettes des cercles de distance qui ne se chevauchent plus.
+- Groupe local : 29 galaxies naines ajoutées (43 en tout), positions de Mateo (1998) et distances de McConnachie (2012) ou des articles de découverte (Lion T, Bouvier I, Chiens de chasse I, Coupe II, Machine pneumatique 2…). Halos de gaz chaud et de matière noire autour de la Voie lactée (≈ 900 000 al de rayon) et d'Andromède (≈ 1,3 million d'al, projet AMIGA) en brume bleutée, avec étiquette.

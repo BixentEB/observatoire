@@ -40,6 +40,7 @@
       "Le Groupe local compte plus de 80 galaxies connues, presque toutes des naines si pâles qu'on en découvre encore dans les grands relevés du ciel. Seules les principales sont dessinées ici.",
       "Andromède se rapproche de nous à environ 110 km/s. Selon une étude de 2025 (Sawala et ses collègues), il y a à peu près une chance sur deux qu'elle percute la Voie lactée dans les 10 milliards d'années à venir.",
       "La lumière d'Andromède que l'on voit à l'œil nu est partie il y a 2,5 millions d'années, vers l'époque où les premiers humains du genre Homo apparaissaient en Afrique.",
+      "Le noir n'est pas le vide. La brume bleutée autour de la Voie lactée et d'Andromède figure leurs halos : du gaz chaud, trop ténu pour briller, et surtout de la matière noire, qui ne brille pas du tout mais pèse environ cinq fois plus que toute la matière ordinaire.",
       "Entre les galaxies, il ne reste que quelques atomes par mètre cube. Dans un seul centimètre cube d'air, il y en a environ 25 milliards de milliards."
     ],
     etoile: [

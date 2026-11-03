@@ -228,7 +228,7 @@
   /* légende du niveau : reste lisible sous le fil d'Ariane après le titre d'arrivée */
   var cap = $('level-cap');
   function capView(L) {
-    var t = { voisinage: 'Les étoiles à moins de 12 années-lumière · positions réelles', galaxie: 'Reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre', 'groupe-local': 'Les 14 principales galaxies sur plus de 80 connues · positions mesurées' }[L.id];
+    var t = { voisinage: 'Les étoiles à moins de 12 années-lumière · positions réelles', galaxie: 'Reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre', 'groupe-local': (OBS.LOCALGROUP || []).length + ' galaxies sur plus de 80 connues · positions mesurées' }[L.id];
     cap.textContent = t || ''; cap.hidden = !t;
   }
 

@@ -94,6 +94,7 @@ button { font: inherit; color: inherit; }
 .c-geo { display: grid; gap: 8px; }
 .c-geo div { font-size: 13px; color: var(--soft); }
 .c-geo b { display: block; color: var(--fg); font-weight: 600; font-size: 13px; margin-bottom: 1px; }
+.ring-tag.halo-tag { color: rgba(160, 185, 255, .55); font-style: italic; }
 .ring-tag { position: absolute; left: 0; top: 0; font: 10px var(--mono); color: var(--faint); transform: translate(6px, -14px); white-space: nowrap; }
 
 /* ---------- barre du haut ---------- */
