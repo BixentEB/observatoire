@@ -69,7 +69,6 @@
   L.build = function (renderer, labelsContainer) {
     L.labelsEl = labelsContainer;
     var cfg = OBS.perf.cfg, scaleN = cfg.stars > 8000 ? 1 : cfg.stars > 5000 ? .6 : .3;
-    var glowTex = OBS.system.glowTexture([[0, 'rgba(255,255,255,0.9)'], [.25, 'rgba(255,255,255,0.25)'], [1, 'rgba(255,255,255,0)']]);
     var hitGeo = new T.SphereGeometry(1, 10, 8), hitMat = new T.MeshBasicMaterial({ visible: false });
     OBS.LOCALGROUP.forEach(function (o) {
       var center = new T.Vector3(), u = new T.Vector3(), v = new T.Vector3(), n = new T.Vector3();
@@ -93,7 +92,7 @@
       var count = Math.round((o.form === 'spirale' ? (o.home || o.big ? 26000 : 12000) : Math.max(500, Math.min(3000, o.d / 4))) * scaleN);
       galaxyCloud(o, center, u, v, n, count);
       // halo lumineux discret : la galaxie reste repérable de loin
-      var gl = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color: o.form === 'spirale' ? 0xd8dcff : 0xc8c8e0, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: o.form === 'spirale' ? .55 : .4 }));
+      var gl = OBS.system.glowMesh([[0, .9], [.25, .25], [1, 0]], o.form === 'spirale' ? 0xd8dcff : 0xc8c8e0, o.form === 'spirale' ? .55 : .4);
       gl.scale.setScalar(o.d / U * 1.3); gl.position.copy(center); scene.add(gl);
       var hit = new T.Mesh(hitGeo, hitMat); hit.position.copy(center); hit.userData.id = o.id; scene.add(hit); hits.push(hit);
       var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl' + (o.home ? ' is-sun' : o.form === 'spirale' ? '' : ' is-moon');
@@ -107,10 +106,10 @@
     /* le noir n'est pas vide : les halos de gaz chaud et de matière noire des deux grandes galaxies.
        Rayons : Andromède ≈ 1,3 million d'al (Lehner et al. 2020, projet AMIGA) ; Voie lactée ≈ 900 000 al (rayon du viriel, ≈ 280 kpc).
        Rendu reconstitué : une brume sphérique, sans détail mesuré. */
-    var haloTex = OBS.system.glowTexture([[0, 'rgba(150,175,255,0.55)'], [.45, 'rgba(130,160,255,0.22)'], [.8, 'rgba(120,150,255,0.07)'], [1, 'rgba(120,150,255,0)']]);
+
     [['voielactee', 9e5], ['m31', 1.3e6]].forEach(function (h) {
       var it = byId[h[0]]; if (!it) return;
-      var sp = new T.Sprite(new T.SpriteMaterial({ map: haloTex, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: .2 }));
+      var sp = OBS.system.glowMesh([[0, .55], [.45, .22], [.8, .07], [1, 0]], 0x8aa6ff, .2);
       sp.scale.setScalar(h[1] * 2 / U); sp.position.copy(it.pos); sp.renderOrder = -1; scene.add(sp);
       var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag'; tag.textContent = 'halo de gaz et de matière noire';
       labelsContainer.appendChild(tag); items.push({ tag: true, el: tag, pos: it.pos.clone().add(new T.Vector3(0, -h[1] * .72 / U, 0)) });

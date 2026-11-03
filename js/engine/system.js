@@ -107,6 +107,31 @@
   var softTex = glowTexture([[0, 'rgba(255,255,255,1)'], [.35, 'rgba(255,255,255,0.35)'], [1, 'rgba(255,255,255,0)']]);
   L.glowTexture = glowTexture; L.softTex = softTex; L.glowA = glowA;
 
+  /* lueur calculée : un disque toujours tourné vers la caméra, dont l'intensité suit un dégradé radial
+     calculé pixel par pixel (paliers lissés, exactement nul au bord du cercle, léger tramage contre les
+     bandes de couleur). Remplace les textures carrées, dont les coins pouvaient laisser voir un contour. */
+  var GLOW_VERT = 'varying vec2 vP; void main(){ vP = position.xy * 2.0; float s = length(modelMatrix[0].xyz);' +
+    ' vec4 mv = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0); mv.xy += position.xy * s; gl_Position = projectionMatrix * mv; }';
+  var GLOW_FRAG = 'uniform vec3 uColor; uniform float uOpacity; uniform float uP[5]; uniform float uA[5]; varying vec2 vP;' +
+    'void main(){ float r = length(vP); if (r >= 1.0) discard; float a = uA[0];' +
+    ' for (int i = 1; i < 5; i++) { a = mix(a, uA[i], smoothstep(uP[i - 1], uP[i], r)); }' +
+    ' a *= 1.0 - smoothstep(0.82, 1.0, r);' +                                   // fondu final : pente nulle au bord
+    ' float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;' +
+    ' float o = a * uOpacity; gl_FragColor = vec4(uColor, max(0.0, o + n * min(1.0, o * 255.0) / 255.0)); }';   // tramage nul là où la lueur s\'éteint
+  var glowGeo = new T.PlaneGeometry(1, 1);
+  // stops : [[position 0..1, intensité 0..1], …] (5 au plus, positions croissantes) ; color : couleur ; opacity : intensité globale
+  function glowMesh(stops, color, opacity) {
+    var P = [], A = [];
+    for (var i = 0; i < 5; i++) { var s = stops[Math.min(i, stops.length - 1)]; P.push(i < stops.length ? s[0] : 1 + i * .01); A.push(s[1]); }
+    var m = new T.Mesh(glowGeo, new T.ShaderMaterial({
+      uniforms: { uColor: { value: new T.Color(color) }, uOpacity: { value: opacity == null ? 1 : opacity }, uP: { value: P }, uA: { value: A } },
+      vertexShader: GLOW_VERT, fragmentShader: GLOW_FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending
+    }));
+    m.material.opacity = 1; m.isGlow = true;
+    return m;
+  }
+  L.glowMesh = glowMesh;
+
   /* ---------- matériaux ---------- */
   function C(h) { return new T.Color(h); }
   function planetMaterial(look, rScene) {
