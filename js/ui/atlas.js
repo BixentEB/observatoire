@@ -13,7 +13,10 @@
     { id: 'systeme', label: 'Système solaire' },
     { id: 'voisinage', label: 'Voisinage stellaire' },
     { id: 'galaxie', label: 'Voie lactée' },
-    { id: 'groupe-local', label: 'Groupe local' }
+    { id: 'groupe-local', label: 'Groupe local' },
+    { id: 'visiteurs', label: 'Visiteurs', theme: true, title: 'Les visiteurs du système solaire' },
+    { id: 'types', label: 'Types d\'objets', theme: true, title: 'Les types d\'objets' },
+    { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' }
   ];
   function hex(c) { return '#' + ('000000' + (c >>> 0).toString(16)).slice(-6); }
   function colorOf(b) { return b.id === 'soleil' ? '#ffb23e' : b.look && b.look.c ? hex(b.look.c[1]) : '#8f96b8'; }
@@ -25,21 +28,26 @@
   OBS.pages.atlas = function (root, scope, view) {
     if (!scope) scope = OBS.engine.level && OBS.engine.level.id === 'voisinage' ? 'voisinage' : 'systeme';   // l'atlas suit l'endroit où l'on est
     if (!SCOPES.some(function (s) { return s.id === scope; })) scope = 'systeme';
+    var S = SCOPES.filter(function (s) { return s.id === scope; })[0], sub = view;
     view = view === 'liste' || view === 'unites' ? view : 'carte';
     var h = [];
-    h.push('<p class="p-kicker">Atlas</p><h1>' + esc(SCOPES.filter(function (s) { return s.id === scope; })[0].label) + '</h1>');
-    h.push('<div class="tabs" role="tablist" aria-label="Portée">' + SCOPES.map(function (s) {
-      return '<a role="tab" class="tab' + (s.soon ? ' soon' : '') + '" href="#/atlas/' + s.id + '/' + view + '" aria-selected="' + (s.id === scope) + '">' + esc(s.label) + (s.soon ? ' <small>bientôt</small>' : '') + '</a>';
-    }).join('') + '<span class="tabs-sep"></span>' +
+    h.push('<p class="p-kicker">Atlas</p><h1>' + esc(S.title || S.label) + '</h1>');
+    var tab = function (s) { return '<a role="tab" class="tab' + (s.theme ? ' tab-theme' : '') + '" href="#/atlas/' + s.id + (s.theme ? '' : '/' + view) + '" aria-selected="' + (s.id === scope) + '">' + esc(s.label) + '</a>'; };
+    h.push('<div class="tabs" role="tablist" aria-label="Portée">' + SCOPES.filter(function (s) { return !s.theme; }).map(tab).join('') +
+      '<span class="tabs-gap"></span>' + SCOPES.filter(function (s) { return s.theme; }).map(tab).join('') +
+      (S.theme ? '' : '<span class="tabs-sep"></span>' +
       '<a class="tab tab-view" href="#/atlas/' + scope + '/carte" aria-selected="' + (view === 'carte') + '">Carte</a>' +
       '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a>' +
-      '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a></div>');
+      '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a>') + '</div>');
     h.push('<div id="atlas-body"></div>');
     root.innerHTML = h.join('');
     var body = root.querySelector('#atlas-body');
+    if (scope === 'visiteurs') return visiteurs(body, sub);
+    if (scope === 'types') return types(body, sub);
+    if (scope === 'echelles') return echelles(body);
     if (view === 'unites') return unites(body);
-    if (scope === 'galaxie') return galaxie(body);
-    if (scope === 'groupe-local') return groupeLocal(body);
+    if (scope === 'galaxie') return view === 'liste' ? galaxie(body) : carteGalaxie(body);
+    if (scope === 'groupe-local') return view === 'liste' ? groupeLocal(body) : carteGroupeLocal(body);
     if (view === 'liste') return scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     return scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
   };
@@ -228,35 +236,173 @@
     return out.join('');
   }
 
+  /* ---------------- règle commune : un axe (linéaire ou logarithmique), des points, des étiquettes en couloirs ----------------
+     items : { v (valeur), name, href, color, r, title, sub } ; o : { min, max, log, ticks [[valeur, texte]], origin {name, href, color}, W, label } */
+  function ruler(items, o) {
+    var W = o.W || 1100, L0 = 50, L1 = W - 40, lanesMax = o.lanes || 7, LH = 40, out = [], pos;
+    if (o.log) { var a0 = Math.log10(o.min), a1 = Math.log10(o.max); pos = function (v) { return L0 + (Math.log10(Math.max(v, o.min)) - a0) / (a1 - a0) * (L1 - L0); }; }
+    else pos = function (v) { return L0 + (v - o.min) / (o.max - o.min) * (L1 - L0); };
+    var placed = [], lastEnd = {}, order = [];
+    for (var i = 1; i <= lanesMax; i++) order.push(-i, i);
+    items.slice().sort(function (p, q) { return p.v - q.v; }).forEach(function (it, k) {
+      var sx = pos(it.v), w = it.name.length * 6.3 + 14, lane = 0;
+      for (var li = 0; li < order.length; li++) { var ln = order[li]; if (lastEnd[ln] === undefined || lastEnd[ln] < sx - w / 2) { lane = ln; break; } }
+      if (!lane) lane = order[k % order.length];
+      lastEnd[lane] = sx + w / 2;
+      placed.push({ it: it, sx: sx, lane: lane });
+    });
+    var up = 1, down = 1; placed.forEach(function (p) { if (p.lane < 0) up = Math.max(up, -p.lane); else down = Math.max(down, p.lane); });
+    var AX = 40 + up * LH + 10, H = AX + down * LH + 50;
+    (o.ticks || []).forEach(function (t, i) {
+      var tx = pos(t[0]);
+      out.push('<line x1="' + tx.toFixed(1) + '" y1="' + (AX - (t[2] ? 5 : 9)) + '" x2="' + tx.toFixed(1) + '" y2="' + (AX + (t[2] ? 5 : 9)) + '" class="at-tick"/>');
+      if (t[1]) out.push('<text x="' + tx.toFixed(1) + '" y="' + (AX + 26) + '" class="at-d" text-anchor="middle">' + t[1] + '</text>');
+    });
+    if (o.origin) out.push('<a href="' + o.origin.href + '" class="ab"><circle cx="' + L0 + '" cy="' + AX + '" r="9" fill="' + (o.origin.color || '#ffd27a') + '"/><text x="' + L0 + '" y="' + (AX - 20) + '" class="at-n at-sun" text-anchor="middle">' + esc(o.origin.name) + '</text></a>');
+    placed.forEach(function (p) {
+      var it = p.it, ly = AX + p.lane * LH - (p.lane > 0 ? -8 : 8), tx = Math.max(L0 + 10, Math.min(L1 + 20, p.sx));
+      out.push('<line x1="' + p.sx.toFixed(1) + '" y1="' + AX + '" x2="' + p.sx.toFixed(1) + '" y2="' + ly + '" class="at-stem"/>');
+      out.push('<a href="' + it.href + '" class="ab"><title>' + esc(it.title || it.name) + '</title><circle cx="' + p.sx.toFixed(1) + '" cy="' + AX + '" r="' + (it.r || 4).toFixed(1) + '" fill="' + (it.color || '#cfd6f0') + '" class="at-star"/>' +
+        '<text x="' + tx.toFixed(1) + '" y="' + (ly + (p.lane > 0 ? 12 : -4)) + '" class="at-m' + (it.cls ? ' ' + it.cls : '') + '" text-anchor="middle">' + esc(it.name) + '</text></a>');
+    });
+    return '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(o.label || 'Carte') + '">' +
+      '<line x1="' + L0 + '" y1="' + AX + '" x2="' + L1 + '" y2="' + AX + '" class="at-axis strong"/>' + out.join('') + '</svg>';
+  }
+  function flags(list) { return '<div class="c-flags atlas-flags">' + list.map(function (f) { return '<span class="flag f-' + f[0] + '" title="' + esc(f[3]) + '"><i>' + f[1] + '</i>' + f[2] + '</span>'; }).join('') + '</div>'; }
+  function logTicks(minExp, maxExp, fmt) {
+    var t = [];
+    for (var e = minExp; e <= maxExp; e++) { t.push([Math.pow(10, e), fmt(e)]); if (e < maxExp) for (var m = 2; m < 10; m++) t.push([m * Math.pow(10, e), '', 1]); }
+    return t;
+  }
+  function lyTxt(v) { return v >= 1e6 ? nf(v / 1e6, v >= 1e7 ? 0 : 1) + ' M al' : v >= 1000 ? nf(v / 1000) + ' 000 al' : nf(v) + ' al'; }
+
   /* ---------------- carte du voisinage : une règle à l'échelle réelle ---------------- */
   function carteVoisinage(root) {
-    var stars = OBS.STARS.slice().sort(function (a, b) { return a.ly - b.ly; });
-    var W = 1100, L0 = 50, L1 = W - 40, AX = 250, k = (L1 - L0) / 12, H = 500, out = [];
-    for (var t = 0; t <= 12; t++) {
-      var tx = L0 + t * k;
-      out.push('<line x1="' + tx + '" y1="' + (AX - (t % 2 ? 5 : 9)) + '" x2="' + tx + '" y2="' + (AX + (t % 2 ? 5 : 9)) + '" class="at-tick"/>');
-      if (!(t % 2)) out.push('<text x="' + tx + '" y="' + (AX + 26) + '" class="at-d" text-anchor="middle">' + t + ' al</text>');
-    }
-    out.push('<a href="#/explorer/soleil" class="ab"><circle cx="' + L0 + '" cy="' + AX + '" r="9" fill="#ffd27a"/><text x="' + L0 + '" y="' + (AX - 20) + '" class="at-n at-sun" text-anchor="middle">Soleil</text></a>');
-    var lanes = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5], lastX = {};
-    stars.forEach(function (s, i) {
-      var sx = L0 + s.ly * k, col = hex(OBS.STAR_COLORS[s.cls] || 0xffffff), r = s.cls === 'BD' ? 3 : 3 + 3.5 * Math.pow(Math.min(s.lum, 30), .2);
-      var lane = 0;
-      for (var li = 0; li < lanes.length; li++) { var ln = lanes[li]; if (lastX[ln] === undefined || sx - lastX[ln] > 150) { lane = ln; break; } }
-      if (!lane) lane = lanes[i % lanes.length];
-      lastX[lane] = sx;
-      var ly = AX + lane * 42 - (lane > 0 ? -8 : 8);
-      out.push('<line x1="' + sx + '" y1="' + AX + '" x2="' + sx + '" y2="' + ly + '" class="at-stem"/>');
-      out.push('<a href="#/etoile/' + s.id + '" class="ab"><title>' + esc(s.name + ' — ' + nf(s.ly, 2) + ' al') + '</title><circle cx="' + sx + '" cy="' + AX + '" r="' + r.toFixed(1) + '" fill="' + col + '" class="at-star"/>' +
-        '<text x="' + sx + '" y="' + (ly + (lane > 0 ? 12 : -4)) + '" class="at-m" text-anchor="middle">' + esc(s.name) + '</text></a>');
+    var ticks = []; for (var t = 0; t <= 12; t++) ticks.push([t, t % 2 ? '' : t + ' al', t % 2]);
+    var items = OBS.STARS.map(function (s) {
+      return { v: s.ly, name: s.name, href: '#/etoile/' + s.id, color: hex(OBS.STAR_COLORS[s.cls] || 0xffffff), r: s.cls === 'BD' ? 3 : 3 + 3.5 * Math.pow(Math.min(s.lum, 30), .2), title: s.name + ' — ' + nf(s.ly, 2) + ' al' };
     });
-    var svg = '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Distances des étoiles voisines">' +
-      '<line x1="' + L0 + '" y1="' + AX + '" x2="' + L1 + '" y2="' + AX + '" class="at-axis strong"/>' + out.join('') + '</svg>';
-    root.innerHTML = '<div class="c-flags atlas-flags">' +
-      '<span class="flag f-real" title="Réel — distances mesurées, à l\'échelle"><i>Distances</i>réelles</span>' +
-      '<span class="flag f-adapt" title="Adapté — toutes les étoiles sont ramenées sur une seule ligne : leur direction dans le ciel n\'est pas représentée"><i>Directions</i>non représentées</span>' +
-      '<span class="flag f-adapt" title="Adapté — la taille des points dépend de la luminosité"><i>Tailles</i>symboliques</span></div>' +
-      '<div class="atlas-scroll" tabindex="0">' + svg + '</div>' +
+    root.innerHTML = flags([['real', 'Distances', 'réelles', 'Réel — distances mesurées, à l\'échelle'], ['adapt', 'Directions', 'non représentées', 'Adapté — toutes les étoiles sont ramenées sur une seule ligne : leur direction dans le ciel n\'est pas représentée'], ['adapt', 'Tailles', 'symboliques', 'Adapté — la taille des points dépend de la luminosité']]) +
+      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 0, max: 12, ticks: ticks, origin: { name: 'Soleil', href: '#/explorer/soleil' }, label: 'Distances des étoiles voisines', lanes: 5 }) + '</div>' +
       '<p class="note">À cette échelle, tout le système solaire jusqu\'à Neptune tiendrait dans moins d\'un dixième de pixel autour du Soleil. Cliquez sur une étoile pour visiter son système.</p>';
+  }
+
+  /* ---------------- carte de la Voie lactée : distances au Soleil, échelle logarithmique ---------------- */
+  function carteGalaxie(root) {
+    var items = OBS.GALAXY_OBJECTS.filter(function (o) { return !o.sun && o.ly; }).map(function (o) {
+      return { v: o.ly, name: o.name, href: '#/galaxie/' + o.id, color: '#bfe0ff', r: 4.5, title: o.name + ' — ' + o.kind + ' — ' + nf(o.ly) + ' al' };
+    }).concat((OBS.EXOSYS || []).map(function (x) {
+      return { v: x.ly, name: x.name, href: '#/galaxie/' + x.id, color: '#9fe3b0', r: 3.5, cls: 'at-exo', title: x.name + ' — système planétaire — ' + nf(x.ly) + ' al' };
+    }));
+    root.innerHTML = flags([['real', 'Distances', 'mesurées', 'Réel — distances au Soleil mesurées (valeurs arrondies)'], ['adapt', 'Échelle', 'logarithmique', 'Adapté — chaque graduation principale multiplie la distance par 10 : sinon, tout le voisinage tiendrait dans un point'], ['adapt', 'Directions', 'non représentées', 'Adapté — tout est ramené sur une seule ligne']]) +
+      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 10, max: 300000, log: true, W: 1500, ticks: logTicks(1, 5, function (e) { return lyTxt(Math.pow(10, e)); }).concat([[300000, '']]), origin: { name: 'Soleil', href: '#/galaxie/soleil-g' }, label: 'Distances des repères de la Voie lactée' }) + '</div>' +
+      '<p class="note"><span class="at-key"><i style="background:#bfe0ff"></i>repères de la Voie lactée</span> <span class="at-key"><i style="background:#9fe3b0"></i>systèmes d\'exoplanètes</span> Échelle logarithmique : de 10 à 100 années-lumière il y a autant de place que de 10 000 à 100 000. La Voie lactée mesure environ 100 000 années-lumière de diamètre ; les Nuages de Magellan sont déjà en dehors.</p>';
+  }
+
+  /* ---------------- carte du Groupe local : distances au Soleil, échelle logarithmique ---------------- */
+  function carteGroupeLocal(root) {
+    var items = OBS.LOCALGROUP.filter(function (g) { return !g.home; }).map(function (g) {
+      return { v: g.ly, name: g.name, href: '#/groupe-local/' + g.id, color: g.form === 'spirale' ? '#c9d8ff' : '#9aa6cc', r: g.form === 'spirale' ? 6 : g.minor ? 3 : 4, cls: g.form === 'spirale' ? 'at-big' : '', title: g.name + ' — ' + g.kind + ' — ' + lyTxt(g.ly) };
+    });
+    root.innerHTML = flags([['real', 'Distances', 'mesurées', 'Réel — distances au Soleil mesurées (valeurs arrondies)'], ['adapt', 'Échelle', 'logarithmique', 'Adapté — chaque graduation principale multiplie la distance par 10'], ['adapt', 'Directions', 'non représentées', 'Adapté — tout est ramené sur une seule ligne']]) +
+      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 30000, max: 6000000, log: true, W: 1900, lanes: 7, ticks: logTicks(5, 6, function (e) { return lyTxt(Math.pow(10, e)); }).concat([[30000, '30 000 al'], [5000000, '5 M al']]), origin: { name: 'Voie lactée', href: '#/groupe-local/voielactee' }, label: 'Distances des galaxies du Groupe local' }) + '</div>' +
+      '<p class="note">Les satellites de la Voie lactée sont à quelques centaines de milliers d\'années-lumière ; ceux d\'Andromède se pressent autour de 2,5 millions ; au-delà de 4 millions, les naines du bord du Groupe local. Cliquez sur une galaxie pour la rejoindre.</p>';
+  }
+
+  /* ---------------- visiteurs du système solaire ---------------- */
+  function today() { var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function parseD(t) { var p = t.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function rel(d) {
+    var n = today(), days = Math.round((d - n) / 864e5), a = Math.abs(days), y = a / 365.25, txt;
+    if (days === 0) return 'aujourd\'hui';
+    txt = a < 45 ? a + ' jour' + (a > 1 ? 's' : '') : a < 700 ? Math.round(a / 30.44) + ' mois' : nf(Math.floor(y)) + ' ans';
+    return (days > 0 ? 'dans ' : 'il y a ') + txt;
+  }
+  function dateFr(d) { return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
+  function wiki(t) { return 'https://fr.wikipedia.org/w/index.php?search=' + encodeURIComponent(t); }
+  function nextYearly(md) { var n = today(), p = md.split('-'), d = new Date(n.getFullYear(), +p[0] - 1, +p[1]); if (d < n) d.setFullYear(d.getFullYear() + 1); return d; }
+  function visitorCard(v) {
+    var h = '<article class="v-card" id="v-' + v.id + '"><p class="c-kind">' + esc(v.kind) + '</p><h3>' + esc(v.name) + (v.des && v.des !== v.name ? ' <small>' + esc(v.des) + '</small>' : '') + '</h3>';
+    if (v.yearly) { var nd = nextYearly(v.yearly); h += '<ul class="v-dates"><li class="fut"><b>' + dateFr(nd) + '</b><span>prochain maximum · ' + rel(nd) + '</span></li></ul>'; }
+    else h += '<ul class="v-dates">' + v.dates.map(function (d) { var dd = parseD(d[0]), fut = dd >= today(); return '<li class="' + (fut ? 'fut' : 'past') + '"><b>' + dateFr(dd) + '</b><span>' + esc(d[1]) + ' · ' + rel(dd) + '</span></li>'; }).join('') + '</ul>';
+    h += '<p>' + esc(v.text) + '</p>';
+    if (v.facts && v.facts.length) h += '<table class="c-facts">' + v.facts.map(function (f) { return '<tr><th>' + esc(f[0]) + '</th><td>' + esc(f[1]) + '</td></tr>'; }).join('') + '</table>';
+    h += '<div class="lx-links">' + (v.obs ? '<a class="chip chip-go" href="' + v.obs[0] + '">' + esc(v.obs[1]) + ' ›</a>' : '') +
+      (v.hypo ? '<a class="chip chip-sci" href="#/hypotheses/chercheurs/' + v.hypo + '">Hypothèse liée</a>' : '') +
+      (v.wiki ? '<a class="chip" href="' + wiki(v.wiki) + '" target="_blank" rel="noopener">Photos et détails (Wikipédia) ↗</a>' : '') + '</div></article>';
+    return h;
+  }
+  function visiteurs(root, cat) {
+    var cats = OBS.VISITOR_CATS, V = OBS.VISITORS;
+    if (!cats.some(function (c) { return c[0] === cat; })) cat = null;
+    // frise des passages : chaque date connue entre 1985 et 2065
+    var ev = [], y0 = 1985, y1 = 2066;
+    V.forEach(function (v) { (v.dates || []).filter(function (d, i) { return (v.frise || [0]).indexOf(i) >= 0; }).forEach(function (d) { var dd = parseD(d[0]), yf = dd.getFullYear() + (dd - new Date(dd.getFullYear(), 0, 1)) / 31557600000; if (yf >= y0 && yf <= y1) ev.push({ v: yf, name: v.name, href: '#/atlas/visiteurs/' + v.cat, color: dd >= today() ? '#f4c77a' : '#8f96b8', r: 4, title: v.name + ' — ' + dateFr(dd) + ' — ' + d[1] }); }); });
+    var now = today(), nowY = now.getFullYear() + (now - new Date(now.getFullYear(), 0, 1)) / 31557600000;
+    ev.push({ v: nowY, name: 'Aujourd\'hui', href: '#/atlas/visiteurs', color: '#9fe3b0', r: 6, cls: 'at-big' });
+    var ticks = []; for (var y = y0; y <= y1; y += 5) ticks.push([y, y % 10 ? '' : String(y), y % 10 ? 1 : 0]);
+    var list = (cat ? cats.filter(function (c) { return c[0] === cat; }) : cats).map(function (c) {
+      return '<section class="v-sec"><h2>' + esc(c[1]) + '</h2><p class="note">' + esc(c[2]) + '</p><div class="v-grid">' + V.filter(function (v) { return v.cat === c[0]; }).map(visitorCard).join('') + '</div></section>';
+    }).join('');
+    root.innerHTML = '<p class="lead">Comètes venues d\'ailleurs, retours attendus, astéroïdes qui frôlent la Terre et rendez-vous annuels avec les étoiles filantes. Les durées sont calculées par rapport à aujourd\'hui.</p>' +
+      '<h2 class="v-h">Frise des passages</h2><div class="atlas-scroll" tabindex="0">' + ruler(ev, { min: y0, max: y1, W: 1500, lanes: 4, ticks: ticks, label: 'Frise des passages' }) + '</div>' +
+      '<p class="note"><span class="at-key"><i style="background:#8f96b8"></i>passé</span><span class="at-key"><i style="background:#f4c77a"></i>à venir</span>Dates du JPL (NASA) et de l\'ESA. Le prochain retour de la comète de Halley, en 2061, est au bout de la frise.</p>' +
+      '<div class="v-filter">' + '<a class="chip' + (!cat ? ' on' : '') + '" href="#/atlas/visiteurs">Tous</a>' + cats.map(function (c) { return '<a class="chip' + (cat === c[0] ? ' on' : '') + '" href="#/atlas/visiteurs/' + c[0] + '">' + esc(c[1]) + '</a>'; }).join('') + '</div>' + list +
+      '<p class="note">Les photos ne sont pas hébergées ici : chaque fiche renvoie vers Wikipédia, qui rassemble les images de la NASA, de l\'ESA et des observatoires avec leurs crédits.</p>';
+  }
+
+  /* ---------------- types d'objets ---------------- */
+  function types(root, fam) {
+    var F = OBS.TYPE_FAMILIES, lexHref = function (t) { var e = (OBS.LEXIQUE || []).filter(function (x) { return x.t === t; })[0]; return e ? '#/lexique/' + e.tab + '/' + OBS.lexSlug(e.t) : null; };
+    var nav = '<div class="v-filter"><a class="chip' + (!fam ? ' on' : '') + '" href="#/atlas/types">Tous</a>' + F.map(function (f) { return '<a class="chip' + (fam === f[0] ? ' on' : '') + '" href="#/atlas/types/' + f[0] + '">' + esc(f[1]) + '</a>'; }).join('') +
+      '<a class="chip' + (fam === 'cycles' ? ' on' : '') + '" href="#/atlas/types/cycles">Cycles de formation</a></div>';
+    var secs = (fam === 'cycles' ? [] : F.filter(function (f) { return !fam || f[0] === fam; })).map(function (f) {
+      return '<section class="v-sec"><h2>' + esc(f[1]) + '</h2><p class="note">' + esc(f[2]) + '</p><div class="v-grid t-grid">' + OBS.TYPES.filter(function (t) { return t.fam === f[0]; }).map(function (t) {
+        var lh = t.lex && lexHref(t.lex);
+        return '<article class="v-card t-card"><h3>' + esc(t.name) + '</h3>' + (t.note ? '<p class="t-note">' + esc(t.note) + '</p>' : '') +
+          '<table class="c-facts">' + t.traits.map(function (x) { return '<tr><th>' + esc(x[0]) + '</th><td>' + esc(x[1]) + '</td></tr>'; }).join('') + '</table>' +
+          '<div class="lx-links">' + t.ex.map(function (e) { return '<a class="chip chip-go" href="' + e[0] + '">' + esc(e[1]) + '</a>'; }).join('') + (lh ? '<a class="chip" href="' + lh + '">Définition</a>' : '') + '</div></article>';
+      }).join('') + '</div></section>';
+    }).join('');
+    var cyc = (!fam || fam === 'cycles') ? '<section class="v-sec" id="cycles"><h2>Cycles de formation</h2>' + flags([['sim', 'Schéma', 'simplifié', 'Simulé — étapes résumées, durées non représentées ; les exemples, eux, sont réels']]) + OBS.CYCLES.map(cycle).join('') + '</section>' : '';
+    root.innerHTML = '<p class="lead">Les grandes familles d\'objets de l\'Univers, avec leurs caractéristiques typiques et des exemples à visiter dans l\'Observatoire. Les définitions détaillées sont dans le <a href="#/lexique">Lexique</a>.</p>' + nav + secs + cyc;
+  }
+  function stepHtml(st, i) {
+    return '<div class="cy-step" style="--i:' + i + '"><b>' + esc(st[0]) + '</b>' + (st[1] ? '<a href="' + st[1] + '">' + esc(st[2]) + ' ›</a>' : '') + '</div>';
+  }
+  function cycle(c) {
+    var n = c.start.length, h = '<div class="cy"><h3>' + esc(c.title) + '</h3><p>' + esc(c.intro) + '</p><div class="cy-flow">' +
+      c.start.map(function (st, i) { return (i ? '<span class="cy-arrow" style="--i:' + i + '" aria-hidden="true"></span>' : '') + stepHtml(st, i); }).join('') + '</div>';
+    if (c.branches) h += '<div class="cy-branches">' + c.branches.map(function (b, bi) {
+      return '<div class="cy-branch b' + bi + '"><p class="cy-label">' + esc(b.label) + '</p><div class="cy-flow">' + b.steps.map(function (st, i) { return '<span class="cy-arrow" style="--i:' + (n + i) + '" aria-hidden="true"></span>' + stepHtml(st, n + i); }).join('') + '</div></div>';
+    }).join('') + '</div>';
+    return h + '<p class="note">' + esc(c.note) + '</p></div>';
+  }
+
+  /* ---------------- de l'atome à l'Univers ---------------- */
+  var SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  function pow10(e) { return '10' + String(e).split('').map(function (c) { return SUP[c]; }).join('') + ' m'; }
+  function sizeTxt(m) {
+    if (m >= 9.46e15) return nf(m / 9.46e15, m < 9.46e16 ? 1 : 0) + ' al';
+    if (m >= 1e9) return nf(m / 1e3 / 1e6, 0) + ' millions de km';
+    var f = function (v, u) { return nf(v, v < 10 && v % 1 ? 1 : 0) + ' ' + u; };
+    if (m >= 1e3) return f(m / 1e3, 'km');
+    if (m >= 1) return f(m, 'm');
+    if (m >= 1e-3) return f(m * 1e3, 'mm');
+    if (m >= 1e-6) return f(m * 1e6, 'µm');
+    if (m >= 1e-9) return f(m * 1e9, 'nm');
+    return pow10(Math.round(Math.log10(m)));
+  }
+  function echelles(root) {
+    var S = OBS.SCALES, ticks = [];
+    for (var e = -15; e <= 27; e++) ticks.push([Math.pow(10, e), e % 3 ? '' : pow10(e), e % 3 ? 1 : 0]);
+    var items = S.map(function (x, i) { return { v: x.m, name: x.name, href: x.go ? x.go[0] : '#/atlas/echelles', color: x.m < 1e-3 ? '#9fe3b0' : x.m < 1e7 ? '#f4c77a' : x.m < 1e13 ? '#ffb23e' : x.m < 1e19 ? '#bfe0ff' : '#c9b8ff', r: 4.5, title: x.name + ' — ' + sizeTxt(x.m) }; });
+    root.innerHTML = flags([['real', 'Tailles', 'réelles', 'Réel — ordres de grandeur publiés, arrondis'], ['adapt', 'Échelle', 'logarithmique', 'Adapté — chaque graduation multiplie la taille par 10 : 42 puissances de dix séparent un proton de l\'Univers observable']]) +
+      '<p class="lead">Du cœur d\'un atome à l\'Univers observable, chaque graduation multiplie la taille par dix. Faites défiler de gauche à droite, et cliquez sur un repère pour le retrouver dans l\'Observatoire ou le Lexique.</p>' +
+      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 1e-15, max: 1e27, log: true, W: 2600, lanes: 5, ticks: ticks, label: 'Échelle des tailles, de l\'atome à l\'Univers' }) + '</div>' +
+      '<p class="note">L\'être humain est à peu près au milieu : il y a autant de puissances de dix entre un atome et nous qu\'entre nous et une étoile géante.</p>' +
+      '<div class="v-grid sc-grid">' + S.map(function (x) {
+        return '<article class="v-card sc-card"><p class="c-kind">' + sizeTxt(x.m) + '</p><h3>' + esc(x.name) + '</h3><p>' + esc(x.d) + '</p>' + (x.go ? '<div class="lx-links"><a class="chip chip-go" href="' + x.go[0] + '">' + esc(x.go[1]) + ' ›</a></div>' : '') + '</article>';
+      }).join('') + '</div>';
   }
 })();
