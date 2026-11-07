@@ -14,7 +14,7 @@
   var OBS = window.OBS = window.OBS || {}, T = window.THREE;
   if (!T) return;
   var reduced = false; try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var R = null, items = [], visible = new Set(), io = null, raf = 0, lastT = 0;
+  var frameN = 0, R = null, items = [], visible = new Set(), io = null, raf = 0, lastT = 0;
 
   function renderer() {
     if (R) return R;
@@ -226,13 +226,82 @@
     o.tick = function (t) { pts.rotation.y = t * .05; pts.rotation.x = .3; }; return o;
   };
 
+
+  /* ---------- vignettes : une scène par type d'objet (data-mini="nom:paramètres"), objet centré en x = 2,7 ---------- */
+  function cloudPts(seed, N, fn, alpha) { var r = rnd(seed), pos = [], col = [], size = []; for (var k = 0; k < N; k++) { var o = fn(r, k); pos.push(o[0], o[1], o[2]); col.push(o[3], o[4], o[5]); size.push(o[6]); } return points(pos, col, size, alpha); }
+  function hex3(h) { var c = new T.Color(h); return [c.r, c.g, c.b]; }
+  var TH = {
+    star: function (c1, c2, sc) { var o = base(), k = +sc || 1, st = sphere(.95 * k, 0, c1, c2, c1, k * 7); st.position.x = 2.7; o.scene.add(st); var g = glow(c2, 3.4 * k, .9); g.position.x = 2.7; o.scene.add(g);
+      o.tick = function (t) { st.userData.mat.uniforms.uT.value = t; st.rotation.y = t * .08; }; return o; },
+    wd: function () { var o = base(), st = sphere(.35, 0, '#ffffff', '#cfe0ff', '#ffffff', 3); st.position.x = 2.7; o.scene.add(st); var g = glow(0xbfd6ff, 2.6, 1); g.position.x = 2.7; o.scene.add(g);
+      o.tick = function (t) { st.userData.mat.uniforms.uT.value = t * 3; g.scale.setScalar(2.6 + Math.sin(t * 2) * .1); }; return o; },
+    pulsar: function () { var o = base(), grp = new T.Group(), st = sphere(.22, 0, '#ffffff', '#9fc0ff', '#ffffff', 5); grp.add(st); grp.add(glow(0x9fc0ff, 1.4, 1));
+      var beamMat = new T.MeshBasicMaterial({ color: 0x9fd0ff, transparent: true, opacity: .35, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide });
+      var beams = new T.Group(); [1, -1].forEach(function (d) { var c = new T.Mesh(new T.ConeGeometry(.35, 2.4, 24, 1, true), beamMat); c.position.y = d * 1.25; if (d < 0) c.rotation.x = Math.PI; c.rotation.x += Math.PI; beams.add(c); });
+      beams.rotation.z = .5; grp.add(beams); grp.position.x = 2.7; o.scene.add(grp);
+      o.tick = function (t) { grp.rotation.y = t * 3.5; st.userData.mat.uniforms.uT.value = t; }; return o; },
+    bh: function () { return S.compact(); },
+    smbh: function () { var o = S.compact(); var g = glow(0xffd8a0, 5.5, .35); g.position.x = 2.8; o.scene.add(g); return o; },
+    planet: function (kind, c1, c2, ring) { var o = base(), p = sphere(1.05, kind === 'band' ? 1 : 2, c1, c2, '#ffffff', c1.length * 3), grp = new T.Group(); grp.add(p);
+      if (ring) { var rg = new T.Mesh(new T.RingGeometry(1.35, 2.2, 96, 1), new T.MeshBasicMaterial({ color: 0xe9d3a3, transparent: true, opacity: .45, side: T.DoubleSide, depthWrite: false })); rg.rotation.x = Math.PI / 2; grp.add(rg); grp.rotation.set(.4, 0, -.3); }
+      grp.position.x = 2.7; o.scene.add(grp); o.tick = function (t) { p.rotation.y = t * .3; }; return o; },
+    hotjup: function () { var o = base(), st = sphere(1.2, 0, '#fff1c8', '#ffa040', '#ffd27a', 2); st.position.set(4.4, 0, -1); o.scene.add(st); var g = glow(0xffc070, 4, .8); g.position.copy(st.position); o.scene.add(g);
+      var p = sphere(.55, 1, '#d98a5a', '#5a2a1a', '#ffb070', 9); p.position.set(2.2, 0, 0); p.userData.mat.uniforms.uL.value.set(1, 0, .2).normalize(); o.scene.add(p);
+      o.tick = function (t) { st.userData.mat.uniforms.uT.value = t; p.rotation.y = t * .5; }; return o; },
+    rocks: function () { return S.asteroide(); },
+    comet: function () { return S.comete(); },
+    inter: function () { return S.interstellaire(); },
+    neb: function (c1, c2, c3) { var cs = [hex3(c1), hex3(c2), hex3(c3)], o = base();
+      var cl = cloudPts(41, 360, function (r, k) { var a = r() * 6.283, d = Math.pow(r(), .6) * 1.7, c = cs[k % 3]; return [Math.cos(a) * d, Math.sin(a) * d * .9, (r() - .5), c[0], c[1], c[2], 40 + r() * 70]; }, .025);
+      var grp = new T.Group(); grp.add(cl); grp.add(cloudPts(43, 25, function (r) { return [(r() - .5) * 2.6, (r() - .5) * 2.6, 0, 1, 1, 1, 6 + r() * 6]; }, .9)); grp.position.x = 2.7; o.scene.add(grp);
+      o.tick = function (t) { cl.rotation.z = t * .04; }; return o; },
+    ringneb: function () { var o = base(), grp = new T.Group();
+      grp.add(cloudPts(47, 700, function (r) { var a = r() * 6.283, d = 1.3 + (r() - .5) * .35; var c = r() < .5 ? [.4, 1, .85] : [1, .45, .55]; return [Math.cos(a) * d, Math.sin(a) * d * .85, (r() - .5) * .3, c[0], c[1], c[2], 18 + r() * 25]; }, .12));
+      var wd = sphere(.08, 0, '#ffffff', '#cfe0ff', '#ffffff', 2); grp.add(wd); grp.add(glow(0xcfe0ff, .9, 1)); grp.position.x = 2.7; o.scene.add(grp);
+      o.tick = function (t) { grp.rotation.z = t * .05; }; return o; },
+    open: function () { var o = base(), p = cloudPts(53, 90, function (r) { return [(r() - .5) * 3, (r() - .5) * 3, (r() - .5) * 2, .75, .85, 1, 8 + r() * 14]; }, .9); p.position.x = 2.7; o.scene.add(p);
+      var n = cloudPts(59, 80, function (r) { var a = r() * 6.283, d = r() * 1.8; return [Math.cos(a) * d, Math.sin(a) * d, -1, .35, .5, 1, 40 + r() * 60]; }, .05); n.position.x = 2.7; o.scene.add(n);
+      o.tick = function (t) { p.rotation.y = t * .08; }; return o; },
+    globular: function () { return S.amas(); },
+    spiral: function () { return S.galaxie(); },
+    elliptical: function () { var o = base(), p = cloudPts(61, 3500, function (r) { var u = new T.Vector3(r() - .5, r() - .5, r() - .5).normalize(), d = Math.pow(r(), 2.4) * 2.2; return [u.x * d * 1.3, u.y * d * .8, u.z * d, 1, .85, .65, 4 + r() * 6]; }, .5); p.position.x = 2.7; o.scene.add(p); var g = glow(0xffe0b0, 2.6, .6); g.position.x = 2.7; o.scene.add(g);
+      o.tick = function (t) { p.rotation.y = t * .04; }; return o; },
+    irregular: function () { var o = base(), p = cloudPts(67, 2200, function (r, k) { var cx = [[-.6, .3], [.5, -.2], [.1, .7], [.7, .6]][k % 4], d = Math.pow(r(), 1.5) * .9, a = r() * 6.283, b = r() < .35; return [cx[0] + Math.cos(a) * d, cx[1] + Math.sin(a) * d * .7, (r() - .5) * .4, b ? .6 : 1, b ? .75 : .85, b ? 1 : .75, 4 + r() * 5]; }, .22); p.position.x = 2.7; o.scene.add(p);
+      o.tick = function (t) { p.rotation.z = Math.sin(t * .1) * .1; p.rotation.y = t * .05; }; return o; },
+    sph: function () { var o = base(), p = cloudPts(71, 900, function (r) { var u = new T.Vector3(r() - .5, r() - .5, r() - .5).normalize(), d = Math.pow(r(), 1.3) * 1.6; return [u.x * d, u.y * d * .85, u.z * d, .95, .85, .75, 4 + r() * 4]; }, .35); p.position.x = 2.7; o.scene.add(p);
+      var dm = glow(0x6a5aff, 4.4, .25); dm.position.x = 2.7; o.scene.add(dm); o.tick = function (t) { p.rotation.y = t * .06; }; return o; },
+    udg: function () { var o = base(), p = cloudPts(73, 500, function (r) { var u = new T.Vector3(r() - .5, r() - .5, r() - .5).normalize(), d = Math.pow(r(), .7) * 2.4; return [u.x * d, u.y * d * .9, u.z * d, .85, .85, .95, 3 + r() * 4]; }, .3); p.position.x = 2.7; o.scene.add(p);
+      o.tick = function (t) { p.rotation.y = t * .04; }; return o; },
+    belt: function () { return S.region(); },
+    helio: function () { var o = base(), grp = new T.Group(), sh = new T.Mesh(new T.SphereGeometry(1.6, 40, 24), new T.ShaderMaterial({ transparent: true, depthWrite: false, blending: T.AdditiveBlending,
+        vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+        fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(.55, .75, 1.0), f * .9); }' }));
+      sh.scale.set(1.25, 1, 1); grp.add(sh); grp.add(glow(0xffd27a, .9, 1)); grp.position.x = 2.7; o.scene.add(grp);
+      o.tick = function (t) { grp.rotation.y = .6 + Math.sin(t * .2) * .2; }; return o; },
+    arm: function () { return S.bras(); },
+    halo: function () { var o = S.galaxie(); o.scene.children[0].scale.setScalar(.45); var h = glow(0x8aa6ff, 5.5, .35); h.position.x = 2.6; o.scene.add(h); return o; },
+    void: function () { return S.vide(); }
+  };
+  function makeThumb(spec) { var p = spec.split(':'), f = TH[p[0]]; return f ? f.apply(null, p.slice(1)) : null; }
+
   /* ---------- branchement sur les bandeaux ---------- */
   function setup(band) {
     if (band._mini || !renderer()) return;
-    var kind = band.getAttribute('data-kind'), make = S[kind]; if (!make) return;
-    var cv = document.createElement('canvas'); cv.className = 'cat-gl'; cv.setAttribute('aria-hidden', 'true');
-    band.insertBefore(cv, band.firstChild.nextSibling); band.classList.add('has-gl');
-    var it = { band: band, cv: cv, ctx: cv.getContext('2d'), sc: make(), t0: Math.random() * 100 };
+    var it;
+    if (band.hasAttribute('data-mini')) {          // vignette : le canvas lui-même
+      var sc = makeThumb(band.getAttribute('data-mini')); if (!sc) return;
+      it = { band: band, cv: band, ctx: band.getContext('2d'), sc: sc, t0: Math.random() * 100, thumb: true };
+      // cadrage : la taille de l'objet (hors lueurs) remplit la vignette
+      sc.tick(1, .016); var box = new T.Box3();
+      sc.scene.traverse(function (o) { if ((o.isMesh || o.isPoints || o.isLine) && !o.isGlow && o.geometry) { o.updateWorldMatrix(true, false); if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } });
+      var sz = box.isEmpty() ? new T.Vector3(4, 4, 4) : box.getSize(new T.Vector3()), ctr = box.isEmpty() ? new T.Vector3(2.7, 0, 0) : box.getCenter(new T.Vector3());
+      it.dist = Math.max(sz.x, sz.y) / 2 / Math.tan(3 * Math.PI / 180) / .8; it.ctr = ctr;
+    } else {
+      var kind = band.getAttribute('data-kind'), make = S[kind]; if (!make) return;
+      var cv = document.createElement('canvas'); cv.className = 'cat-gl'; cv.setAttribute('aria-hidden', 'true');
+      band.insertBefore(cv, band.firstChild.nextSibling); band.classList.add('has-gl');
+      it = { band: band, cv: cv, ctx: cv.getContext('2d'), sc: make(), t0: Math.random() * 100 };
+    }
     // lumière additive : la couleur s'ajoute, et la transparence s'accumule avec elle (image prémultipliée valide,
     // sinon le navigateur écrase les lueurs en recopiant le dessin dans le bandeau)
     it.sc.scene.traverse(function (o) {
@@ -251,8 +320,11 @@
     if (cs.x < W || cs.y < H) r.setSize(Math.max(cs.x, W), Math.max(cs.y, H), false);
     cs = r.getSize(new T.Vector2());
     // l'objet est placé vers x ≈ 2,7 : on cadre pour qu'il tombe aux trois quarts de la largeur, à taille constante en hauteur
-    var cam = it.sc.cam; cam.aspect = w / h; cam.position.set(2.7 - Math.tan(cam.fov * Math.PI / 360) * 50 * cam.aspect * (w < 600 ? .35 : .5), 0, 50); cam.updateProjectionMatrix();
-    it.sc.scene.traverse(function (o) { if (o.material && o.material.uniforms && o.material.uniforms.uScale) o.material.uniforms.uScale.value = H * .028; });
+    var cam = it.sc.cam; cam.aspect = w / h;
+    if (it.thumb) cam.position.set(it.ctr.x, it.ctr.y, it.ctr.z + it.dist); else cam.position.set(2.7 - Math.tan(cam.fov * Math.PI / 360) * 50 * cam.aspect * (w < 600 ? .35 : .5), 0, 50);
+    cam.updateProjectionMatrix();
+    var us = (it.thumb ? H * 50 / it.dist : H) * .028;
+    it.sc.scene.traverse(function (o) { if (o.material && o.material.uniforms && o.material.uniforms.uScale) o.material.uniforms.uScale.value = us; });
     it.sc.tick(t + it.t0, dt);
     r.setViewport(0, 0, W, H); r.setScissor(0, 0, W, H); r.setScissorTest(true);
     r.clear(); r.render(it.sc.scene, cam);
@@ -261,12 +333,13 @@
   }
   function loop(now) {
     raf = 0;
-    if (!document.body.contains(document.querySelector('.cat-band'))) { cleanup(); return; }
+    if (!document.querySelector('.cat-band, canvas[data-mini]')) { cleanup(); return; }
     if (document.hidden || !visible.size) return;
     raf = requestAnimationFrame(loop);
     if (now - lastT < 33) return;
     var dt = Math.min(.1, lastT ? (now - lastT) / 1000 : .033); lastT = now;
-    visible.forEach(function (it) { draw(it, now / 1000, dt); });
+    frameN++;
+    visible.forEach(function (it) { if (!it.thumb || frameN % 2 === 0) draw(it, now / 1000, it.thumb ? dt * 2 : dt); });   // vignettes : 15 i/s
   }
   function kick() { if (!raf && !reduced) raf = requestAnimationFrame(loop); }
   function cleanup() {
@@ -279,7 +352,7 @@
   }
   function scan() {
     cleanup();
-    Array.prototype.forEach.call(document.querySelectorAll('.cat-band[data-kind]'), setup);
+    Array.prototype.forEach.call(document.querySelectorAll('.cat-band[data-kind], canvas[data-mini]'), setup);
   }
   function start() {
     if (!renderer()) return;

@@ -320,7 +320,21 @@
       '<p class="note">Les satellites de la Voie lactée sont à quelques centaines de milliers d\'années-lumière ; ceux d\'Andromède se pressent autour de 2,5 millions ; au-delà de 4 millions, les naines du bord du Groupe local. Cliquez sur une galaxie pour la rejoindre.</p>';
   }
 
-  function kv(list) { return '<p class="kv">' + list.map(function (f) { return '<span><em>' + esc(f[0]) + '</em> ' + esc(f[1]) + '</span>'; }).join('') + '</p>'; }
+  // nature d'une information → couleur de fond légère (masse, température, taille, durée, lieu, composition, nombre)
+  function infoCls(k) {
+    k = k.toLowerCase();
+    return /masse|densit/.test(k) ? 'i-mass' : /surface|temp|couleur/.test(k) ? 'i-temp' : /dur|âge|age|étape|fin|retour|période|prochain/.test(k) ? 'i-time' :
+      /taille|rayon|noyau|diam|éclat/.test(k) ? 'i-size' : /où|orbite|origine|forme/.test(k) ? 'i-place' : /compos|gaz|lumi|rôle/.test(k) ? 'i-comp' :
+      /étoiles|nombre|connus|fréquence|record|fragments/.test(k) ? 'i-count' : /vitesse|rotation|énergie|risque|changement/.test(k) ? 'i-speed' : 'i-other';
+  }
+  function kv(list) { return '<p class="kv">' + list.map(function (f) { return '<span class="' + infoCls(f[0]) + '"><em>' + esc(f[0]) + '</em> ' + esc(f[1]) + '</span>'; }).join('') + '</p>'; }
+  // barre comparative sur une échelle logarithmique : [min, max] mis en évidence
+  function cmpBar(range, lo, hi, cls, marks) {
+    var L = Math.log10, x = function (v) { return Math.max(0, Math.min(100, (L(v) - L(lo)) / (L(hi) - L(lo)) * 100)); };
+    var a = x(range[0]), b = Math.max(x(range[1]), a + 1.5);
+    return '<div class="cmp ' + cls + '"><i style="left:' + a.toFixed(1) + '%;width:' + (b - a).toFixed(1) + '%"></i>' + (marks || []).map(function (m) { return '<b style="left:' + x(m[0]).toFixed(1) + '%" title="' + esc(m[1]) + '"></b>'; }).join('') + '</div>';
+  }
+  function fmtT(v) { return nf(v) + ' K'; }
   function links(list) { return list.length ? '<p class="row-links">' + list.join('<span class="sep">·</span>') + '</p>' : ''; }
   function traits(list) { return '<dl class="t-traits">' + list.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>'; }
 
@@ -353,6 +367,7 @@
   }
   function visiteurs(root, cat) {
     var cats = OBS.VISITOR_CATS, V = OBS.VISITORS;
+    if (cat === 'chronologie') return chronologie(root);
     if (!cats.some(function (c) { return c[0] === cat; })) cat = null;
     // frise des passages : chaque date connue entre 1985 et 2065
     var ev = [], y0 = 1985, y1 = 2066;
@@ -367,8 +382,30 @@
     root.innerHTML = '<p class="lead">Comètes venues d\'ailleurs, retours attendus, astéroïdes qui frôlent la Terre et rendez-vous annuels avec les étoiles filantes. Les durées sont calculées par rapport à aujourd\'hui.</p>' +
       '<h2 class="v-h">Frise des passages</h2><div class="atlas-scroll" tabindex="0">' + ruler(ev, { min: y0, max: y1, W: 1500, lanes: 4, ticks: ticks, label: 'Frise des passages' }) + '</div>' +
       '<p class="note"><span class="at-key"><i style="background:#8f96b8"></i>passé</span><span class="at-key"><i style="background:#f4c77a"></i>à venir</span>Dates du JPL (NASA) et de l\'ESA. Le prochain retour de la comète de Halley, en 2061, est au bout de la frise.</p>' +
-      '<div class="v-filter">' + '<a class="chip' + (!cat ? ' on' : '') + '" href="#/atlas/visiteurs">Tous</a>' + cats.map(function (c) { return '<a class="chip' + (cat === c[0] ? ' on' : '') + '" href="#/atlas/visiteurs/' + c[0] + '">' + esc(c[1]) + '</a>'; }).join('') + '</div>' + list +
+      '<div class="v-filter">' + '<a class="chip' + (!cat ? ' on' : '') + '" href="#/atlas/visiteurs">Tous</a>' + cats.map(function (c) { return '<a class="chip' + (cat === c[0] ? ' on' : '') + '" href="#/atlas/visiteurs/' + c[0] + '">' + esc(c[1]) + '</a>'; }).join('') + '<a class="chip chip-chrono" href="#/atlas/visiteurs/chronologie">Chronologie ›</a></div>' + list +
       '<p class="note">Les photos ne sont pas hébergées ici : chaque fiche renvoie vers Wikipédia, qui rassemble les images de la NASA, de l\'ESA et des observatoires avec leurs crédits.</p>';
+  }
+
+  function chronologie(root) {
+    var ev = [], now = today(), catOf = {}; OBS.VISITOR_CATS.forEach(function (c) { catOf[c[0]] = c[1]; });
+    OBS.VISITORS.forEach(function (v) {
+      if (v.yearly) { ev.push({ d: nextYearly(v.yearly), v: v, what: 'Maximum des ' + v.name + ' (chaque année)' }); return; }
+      v.dates.forEach(function (d) { ev.push({ d: parseD(d[0]), v: v, what: d[1] }); });
+    });
+    ev.sort(function (a, b) { return a.d - b.d; });
+    var COL = { interstellaire: '#b4f0ff', periodique: '#9fd8ff', grande: '#c9b8ff', geocroiseur: '#e8c48a', pluie: '#ffd27a' };
+    var h = [], nowDone = false, lastY = null;
+    ev.forEach(function (e) {
+      if (!nowDone && e.d >= now) { h.push('<li class="cr-now"><span class="ld-v">' + dateFr(now) + '</span><span class="ld-dot"></span><div class="ld-t"><h3>Aujourd\'hui</h3></div></li>'); nowDone = true; }
+      var y = e.d.getFullYear(), sep = y !== lastY; lastY = y;
+      h.push('<li class="' + (e.d >= now ? 'fut' : 'past') + '" style="--c:' + (COL[e.v.cat] || '#cfd6f0') + '"><span class="ld-v">' + (sep ? '<b>' + y + '</b>' : '') + e.d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) + '</span><span class="ld-dot"></span>' +
+        '<div class="ld-t"><h3><a href="#/atlas/visiteurs/' + e.v.cat + '">' + esc(e.v.name) + '</a></h3><p>' + esc(e.what) + ' <span class="cr-rel">· ' + rel(e.d) + '</span></p><p class="cr-cat">' + esc(catOf[e.v.cat] || '') + '</p></div></li>');
+    });
+    if (!nowDone) h.push('<li class="cr-now"><span class="ld-v">' + dateFr(now) + '</span><span class="ld-dot"></span><div class="ld-t"><h3>Aujourd\'hui</h3></div></li>');
+    root.innerHTML = '<p class="lead">Tous les passages, découvertes et rendez-vous de l\'Atlas, du plus ancien au plus lointain dans l\'avenir.</p>' +
+      '<div class="v-filter"><a class="chip" href="#/atlas/visiteurs">← Par familles</a>' + OBS.VISITOR_CATS.map(function (c) { return '<span class="cr-key" style="--c:' + COL[c[0]] + '">' + esc(c[1]) + '</span>'; }).join('') + '</div>' +
+      '<ol class="ladder chrono">' + h.join('') + '</ol>';
+    var n = root.querySelector('.cr-now'); if (n) setTimeout(function () { n.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 300);
   }
 
   /* ---------------- types d'objets ---------------- */
@@ -378,11 +415,26 @@
       '<a class="chip' + (fam === 'cycles' ? ' on' : '') + '" href="#/atlas/types/cycles">Cycles de formation</a></div>';
     var secs = (fam === 'cycles' ? [] : F.filter(function (f) { return !fam || f[0] === fam; })).map(function (f) {
       var L = OBS.TYPES.filter(function (t) { return t.fam === f[0]; });
-      return '<section class="cat-sec">' + OBS.band({ etoiles: 'etoile', compacts: 'compact', planetes: 'planete', petits: 'asteroide', nuages: 'nebuleuse', galaxies: 'galaxie', non: 'vide' }[f[0]], esc(f[1]), f[2], L.length) + '<div class="rows">' + L.map(function (t) {
+      var n = L.length, cnt = {}, order = [];
+      L.forEach(function (t) { t.traits.forEach(function (x) { if (!cnt[x[0]]) { cnt[x[0]] = 0; order.push(x[0]); } cnt[x[0]]++; }); });
+      var cols = order.filter(function (k) { return cnt[k] >= Math.max(2, Math.ceil(n * .75)); }).slice(0, 3);   // colonnes seulement pour ce que (presque) tous partagent
+      var hasT = L.some(function (t) { return t.temp; }), hasR = L.some(function (t) { return t.rad; });
+      var head = '<div class="tt-head"><span></span><span></span>' + cols.map(function (k) { return '<span class="' + infoCls(k) + '">' + esc(k) + '</span>'; }).join('') +
+        (hasT ? '<span class="i-temp">Température de surface <small>300 K → 40 000 K</small></span>' : '') + (hasR ? '<span class="i-size">Taille <small>par rapport à la Terre</small></span>' : '') + '</div>';
+      var rows = L.map(function (t) {
         var lh = t.lex && lexHref(t.lex), ex = t.ex.map(function (e) { return '<a href="' + e[0] + '">' + esc(e[1]) + '</a>'; });
-        return '<article class="row"><div class="row-h"><h3>' + esc(t.name) + '</h3>' + (t.note ? '<p class="row-kind">' + esc(t.note) + '</p>' : '') + '</div>' +
-          '<div class="row-b">' + kv(t.traits) + links((ex.length ? ['<span class="lbl-ex">Exemples</span> ' + ex.join(', ')] : []).concat(lh ? ['<a href="' + lh + '">Définition ›</a>'] : [])) + '</div></article>';
-      }).join('') + '</div></section>';
+        var get = function (k) { var f = t.traits.filter(function (x) { return x[0] === k; })[0]; return f ? f[1] : '—'; };
+        var extra = t.traits.filter(function (x) { return cols.indexOf(x[0]) < 0; });
+        return '<article class="tt-row">' +
+          '<canvas class="tt-th" data-mini="' + esc(t.mini || '') + '" width="96" height="96" aria-hidden="true"></canvas>' +
+          '<div class="tt-name"><h3>' + esc(t.name) + '</h3>' + (t.note ? '<p>' + esc(t.note) + '</p>' : '') + '</div>' +
+          cols.map(function (k) { var v = get(k); return v === '—' ? '<div class="tt-cell tt-empty"></div>' : '<div class="tt-cell ' + infoCls(k) + '"><em>' + esc(k) + '</em>' + esc(v) + '</div>'; }).join('') +
+          (hasT ? '<div class="tt-cell tt-cmp i-temp"><em>Température de surface</em>' + (t.temp ? cmpBar(t.temp, 300, 40000, 'cmp-temp', [[5772, 'Soleil : 5 772 K']]) + '<small>' + fmtT(t.temp[0]) + ' à ' + fmtT(t.temp[1]) + '</small>' : '—') + '</div>' : '') +
+          (hasR ? '<div class="tt-cell tt-cmp i-size"><em>Taille par rapport à la Terre</em>' + (t.rad ? cmpBar(t.rad, .003, 25, 'cmp-size', [[1, 'Terre'], [11.2, 'Jupiter']]) + '<small>' + nf(t.rad[0], t.rad[0] < 1 ? 2 : 1) + ' à ' + nf(t.rad[1], t.rad[1] < 1 ? 2 : 1) + ' × la Terre</small>' : '—') + '</div>' : '') +
+          '<div class="tt-foot">' + (extra.length ? kv(extra) : '') + links((ex.length ? ['<span class="lbl-ex">Exemples</span> ' + ex.join(', ')] : []).concat(lh ? ['<a href="' + lh + '">Définition ›</a>'] : [])) + '</div></article>';
+      }).join('');
+      return '<section class="cat-sec">' + OBS.band({ etoiles: 'etoile', compacts: 'compact', planetes: 'planete', petits: 'asteroide', nuages: 'nebuleuse', galaxies: 'galaxie', non: 'vide' }[f[0]], esc(f[1]), f[2], L.length) +
+        (function () { var nc = cols.length + (hasT ? 1 : 0) + (hasR ? 1 : 0); return '<div class="tt' + (nc ? '' : ' tt0') + '" style="--cols:' + Math.max(1, nc) + '">' + (nc ? head : '') + rows + '</div>'; })() + '</section>';
     }).join('');
     var cyc = (!fam || fam === 'cycles') ? '<section class="cat-sec" id="cycles">' + OBS.band('nebuleuse', 'Cycles de formation', 'Comment naissent et évoluent les étoiles, les planètes et les galaxies.', null) + flags([['sim', 'Schéma', 'simplifié', 'Simulé — étapes résumées, durées non représentées ; les exemples, eux, sont réels']]) + OBS.CYCLES.map(cycle).join('') + '</section>' : '';
     root.innerHTML = '<p class="lead">Les grandes familles d\'objets de l\'Univers, avec leurs caractéristiques typiques et des exemples à visiter dans l\'Observatoire. Les définitions détaillées sont dans le <a href="#/lexique">Lexique</a>.</p>' + nav + secs + cyc;
