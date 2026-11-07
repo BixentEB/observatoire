@@ -56,7 +56,7 @@
   function card(href, color, name, sub) {
     return '<a class="obj" href="' + href + '"><i style="background:' + color + ';box-shadow:0 0 10px ' + color + '"></i><span><b>' + esc(name) + '</b><small>' + esc(sub) + '</small></span></a>';
   }
-  function grid(list) { return '<div class="grid-list">' + list.join('') + '</div>'; }
+  function grid(list) { return '<div class="obj-list">' + list.join('') + '</div>'; }
   function section(kind, title, sub, cards) { return cards.length ? '<section class="cat-sec">' + OBS.band(kind, title, sub, cards.length) + grid(cards) + '</section>' : ''; }
   function listeSysteme(root) {
     var B = OBS.BODIES, h = [], cb = function (b) { return card('#/explorer/' + b.id, colorOf(b), b.name, b.kind); };
@@ -320,6 +320,8 @@
       '<p class="note">Les satellites de la Voie lactée sont à quelques centaines de milliers d\'années-lumière ; ceux d\'Andromède se pressent autour de 2,5 millions ; au-delà de 4 millions, les naines du bord du Groupe local. Cliquez sur une galaxie pour la rejoindre.</p>';
   }
 
+  function kv(list) { return '<p class="kv">' + list.map(function (f) { return '<span><em>' + esc(f[0]) + '</em> ' + esc(f[1]) + '</span>'; }).join('') + '</p>'; }
+  function links(list) { return list.length ? '<p class="row-links">' + list.join('<span class="sep">·</span>') + '</p>' : ''; }
   function traits(list) { return '<dl class="t-traits">' + list.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>'; }
 
   /* ---------------- visiteurs du système solaire ---------------- */
@@ -335,15 +337,19 @@
   function wiki(t) { return 'https://fr.wikipedia.org/w/index.php?search=' + encodeURIComponent(t); }
   function nextYearly(md) { var n = today(), p = md.split('-'), d = new Date(n.getFullYear(), +p[0] - 1, +p[1]); if (d < n) d.setFullYear(d.getFullYear() + 1); return d; }
   function visitorCard(v) {
-    var h = '<article class="v-card" id="v-' + v.id + '"><p class="c-kind">' + esc(v.kind) + '</p><h3>' + esc(v.name) + (v.des && v.des !== v.name ? ' <small>' + esc(v.des) + '</small>' : '') + '</h3>';
-    if (v.yearly) { var nd = nextYearly(v.yearly); h += '<ul class="v-dates"><li class="fut"><b>' + dateFr(nd) + '</b><span>prochain maximum · ' + rel(nd) + '</span></li></ul>'; }
-    else h += '<ul class="v-dates">' + v.dates.map(function (d) { var dd = parseD(d[0]), fut = dd >= today(); return '<li class="' + (fut ? 'fut' : 'past') + '"><b>' + dateFr(dd) + '</b><span>' + esc(d[1]) + ' · ' + rel(dd) + '</span></li>'; }).join('') + '</ul>';
-    h += '<p>' + esc(v.text) + '</p>';
-    if (v.facts && v.facts.length) h += traits(v.facts);
-    h += '<div class="lx-links">' + (v.obs ? '<a class="chip chip-go" href="' + v.obs[0] + '">' + esc(v.obs[1]) + ' ›</a>' : '') +
-      (v.hypo ? '<a class="chip chip-sci" href="#/hypotheses/chercheurs/' + v.hypo + '">Hypothèse liée</a>' : '') +
-      (v.wiki ? '<a class="chip" href="' + wiki(v.wiki) + '" target="_blank" rel="noopener">Photos et détails (Wikipédia) ↗</a>' : '') + '</div></article>';
-    return h;
+    var dates;
+    if (v.yearly) { var nd = nextYearly(v.yearly); dates = [[nd, 'prochain maximum']]; }
+    else dates = v.dates.map(function (d) { return [parseD(d[0]), d[1]]; });
+    var next = dates.filter(function (d) { return d[0] >= today(); })[0] || dates[dates.length - 1];
+    var L = [];
+    if (v.obs) L.push('<a href="' + v.obs[0] + '">' + esc(v.obs[1]) + ' ›</a>');
+    if (v.hypo) L.push('<a class="sci" href="#/hypotheses/chercheurs/' + v.hypo + '">Hypothèse liée ›</a>');
+    if (v.wiki) L.push('<a href="' + wiki(v.wiki) + '" target="_blank" rel="noopener">Photos et détails sur Wikipédia ↗</a>');
+    return '<article class="row" id="v-' + v.id + '"><div class="row-h"><h3>' + esc(v.name) + '</h3><p class="row-kind">' + esc(v.kind) + (v.des && v.des !== v.name ? ' · ' + esc(v.des) : '') + '</p>' +
+      '<p class="row-when' + (next[0] >= today() ? ' fut' : '') + '">' + rel(next[0]) + '</p></div>' +
+      '<div class="row-b"><p>' + esc(v.text) + '</p>' +
+      '<ul class="row-dates">' + dates.map(function (d) { return '<li' + (d[0] >= today() ? ' class="fut"' : '') + '><time>' + dateFr(d[0]) + '</time> ' + esc(d[1]) + '</li>'; }).join('') + '</ul>' +
+      (v.facts && v.facts.length ? kv(v.facts) : '') + links(L) + '</div></article>';
   }
   function visiteurs(root, cat) {
     var cats = OBS.VISITOR_CATS, V = OBS.VISITORS;
@@ -356,7 +362,7 @@
     var ticks = []; for (var y = y0; y <= y1; y += 5) ticks.push([y, y % 10 ? '' : String(y), y % 10 ? 1 : 0]);
     var list = (cat ? cats.filter(function (c) { return c[0] === cat; }) : cats).map(function (c) {
       var L = V.filter(function (v) { return v.cat === c[0]; });
-      return '<section class="cat-sec">' + OBS.band({ interstellaire: 'interstellaire', periodique: 'comete', grande: 'comete', geocroiseur: 'asteroide', pluie: 'pluie' }[c[0]], esc(c[1]), c[2], L.length) + '<div class="v-grid">' + L.map(visitorCard).join('') + '</div></section>';
+      return '<section class="cat-sec">' + OBS.band({ interstellaire: 'interstellaire', periodique: 'comete', grande: 'comete', geocroiseur: 'asteroide', pluie: 'pluie' }[c[0]], esc(c[1]), c[2], L.length) + '<div class="rows">' + L.map(visitorCard).join('') + '</div></section>';
     }).join('');
     root.innerHTML = '<p class="lead">Comètes venues d\'ailleurs, retours attendus, astéroïdes qui frôlent la Terre et rendez-vous annuels avec les étoiles filantes. Les durées sont calculées par rapport à aujourd\'hui.</p>' +
       '<h2 class="v-h">Frise des passages</h2><div class="atlas-scroll" tabindex="0">' + ruler(ev, { min: y0, max: y1, W: 1500, lanes: 4, ticks: ticks, label: 'Frise des passages' }) + '</div>' +
@@ -372,11 +378,10 @@
       '<a class="chip' + (fam === 'cycles' ? ' on' : '') + '" href="#/atlas/types/cycles">Cycles de formation</a></div>';
     var secs = (fam === 'cycles' ? [] : F.filter(function (f) { return !fam || f[0] === fam; })).map(function (f) {
       var L = OBS.TYPES.filter(function (t) { return t.fam === f[0]; });
-      return '<section class="cat-sec">' + OBS.band({ etoiles: 'etoile', compacts: 'compact', planetes: 'planete', petits: 'asteroide', nuages: 'nebuleuse', galaxies: 'galaxie', non: 'vide' }[f[0]], esc(f[1]), f[2], L.length) + '<div class="v-grid t-grid">' + L.map(function (t) {
-        var lh = t.lex && lexHref(t.lex);
-        return '<article class="v-card t-card"><h3>' + esc(t.name) + '</h3>' + (t.note ? '<p class="t-note">' + esc(t.note) + '</p>' : '') +
-          traits(t.traits) +
-          '<div class="lx-links">' + t.ex.map(function (e) { return '<a class="chip chip-go" href="' + e[0] + '">' + esc(e[1]) + '</a>'; }).join('') + (lh ? '<a class="chip" href="' + lh + '">Définition</a>' : '') + '</div></article>';
+      return '<section class="cat-sec">' + OBS.band({ etoiles: 'etoile', compacts: 'compact', planetes: 'planete', petits: 'asteroide', nuages: 'nebuleuse', galaxies: 'galaxie', non: 'vide' }[f[0]], esc(f[1]), f[2], L.length) + '<div class="rows">' + L.map(function (t) {
+        var lh = t.lex && lexHref(t.lex), ex = t.ex.map(function (e) { return '<a href="' + e[0] + '">' + esc(e[1]) + '</a>'; });
+        return '<article class="row"><div class="row-h"><h3>' + esc(t.name) + '</h3>' + (t.note ? '<p class="row-kind">' + esc(t.note) + '</p>' : '') + '</div>' +
+          '<div class="row-b">' + kv(t.traits) + links((ex.length ? ['<span class="lbl-ex">Exemples</span> ' + ex.join(', ')] : []).concat(lh ? ['<a href="' + lh + '">Définition ›</a>'] : [])) + '</div></article>';
       }).join('') + '</div></section>';
     }).join('');
     var cyc = (!fam || fam === 'cycles') ? '<section class="cat-sec" id="cycles">' + OBS.band('nebuleuse', 'Cycles de formation', 'Comment naissent et évoluent les étoiles, les planètes et les galaxies.', null) + flags([['sim', 'Schéma', 'simplifié', 'Simulé — étapes résumées, durées non représentées ; les exemples, eux, sont réels']]) + OBS.CYCLES.map(cycle).join('') + '</section>' : '';
@@ -416,8 +421,10 @@
       '<p class="lead">Du cœur d\'un atome à l\'Univers observable, chaque graduation multiplie la taille par dix. Faites défiler de gauche à droite, et cliquez sur un repère pour le retrouver dans l\'Observatoire ou le Lexique.</p>' +
       '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 1e-15, max: 1e27, log: true, W: 2600, lanes: 5, ticks: ticks, label: 'Échelle des tailles, de l\'atome à l\'Univers' }) + '</div>' +
       '<p class="note">L\'être humain est à peu près au milieu : il y a autant de puissances de dix entre un atome et nous qu\'entre nous et une étoile géante.</p>' +
-      '<div class="v-grid sc-grid">' + S.map(function (x) {
-        return '<article class="v-card sc-card"><p class="c-kind">' + sizeTxt(x.m) + '</p><h3>' + esc(x.name) + '</h3><p>' + esc(x.d) + '</p>' + (x.go ? '<div class="lx-links"><a class="chip chip-go" href="' + x.go[0] + '">' + esc(x.go[1]) + ' ›</a></div>' : '') + '</article>';
-      }).join('') + '</div>';
+      '<h2 class="ld-h">L\'échelle, pas à pas</h2><ol class="ladder">' + S.map(function (x, i) {
+        var jump = '';
+        if (i) { var r = x.m / S[i - 1].m; if (r >= 1.5) jump = '<span class="ld-jump">× ' + (r >= 1000 ? '10' + String(Math.round(Math.log10(r))).split('').map(function (c) { return SUP[c]; }).join('') : nf(Math.round(r))) + '</span>'; }
+        return '<li style="--c:' + items[i].color + '">' + jump + '<span class="ld-v">' + sizeTxt(x.m) + '</span><span class="ld-dot"></span><div class="ld-t"><h3>' + esc(x.name) + '</h3><p>' + esc(x.d) + (x.go ? ' <a href="' + x.go[0] + '">' + esc(x.go[1]) + ' ›</a>' : '') + '</p></div></li>';
+      }).join('') + '</ol>';
   }
 })();
