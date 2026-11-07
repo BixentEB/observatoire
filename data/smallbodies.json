@@ -1,0 +1,102 @@
+{
+ "_aide": "Généré par tools/smallbodies.py (JPL SBDB + Horizons). Éléments : écliptique J2000, héliocentriques, angles en degrés, q en UA, tp et epoch en JD TDB.",
+ "genere": "2026-11-07",
+ "objets": {
+  "halley": {
+   "label": "Comète de Halley",
+   "jpl": "1P/Halley",
+   "spkid": "1000036",
+   "elements": {
+    "epoch": 2439875.5,
+    "e": 0.9679359956953211,
+    "q": 0.5748638313743413,
+    "i": 162.1905300439129,
+    "om": 59.09894720612437,
+    "w": 112.2414314637764,
+    "tp": 2446469.9736161465
+   },
+   "nongrav": true,
+   "solution": "75",
+   "window": null,
+   "source": "JPL SBDB, solution 75"
+  },
+  "apophis": {
+   "label": "Apophis",
+   "jpl": "99942 Apophis (2004 MN4)",
+   "spkid": "20099942",
+   "elements": {
+    "epoch": 2461200.5,
+    "e": 0.1911492279663492,
+    "q": 0.7460509677535309,
+    "i": 3.340996879880978,
+    "om": 203.8936514240762,
+    "w": 126.6795706895841,
+    "tp": 2461042.919201488
+   },
+   "nongrav": true,
+   "solution": "220",
+   "window": null,
+   "source": "JPL SBDB, solution 220"
+  },
+  "oumuamua": {
+   "label": "ʻOumuamua",
+   "jpl": "'Oumuamua (A/2017 U1)",
+   "spkid": "50788063",
+   "elements": {
+    "epoch": 2458080.5,
+    "e": 1.201133796102373,
+    "q": 0.2559115812959116,
+    "i": 122.7417062847286,
+    "om": 24.59690955523242,
+    "w": 241.8105360304898,
+    "tp": 2458006.0073213754
+   },
+   "nongrav": true,
+   "solution": "16",
+   "window": [
+    "2015-01-01",
+    "2022-01-01"
+   ],
+   "source": "JPL SBDB, solution 16"
+  },
+  "borisov": {
+   "label": "Comète Borisov",
+   "jpl": "C/2019 Q4 (Borisov)",
+   "spkid": "1003639",
+   "elements": {
+    "epoch": 2458853.5,
+    "e": 3.356475782676596,
+    "q": 2.006520878500843,
+    "i": 44.05264247909138,
+    "om": 308.1477292269942,
+    "w": 209.1236864378081,
+    "tp": 2458826.052845906
+   },
+   "nongrav": true,
+   "solution": "54",
+   "window": [
+    "2017-01-01",
+    "2024-01-01"
+   ],
+   "source": "JPL SBDB, solution 54"
+  },
+  "halebopp": {
+   "label": "Hale-Bopp",
+   "jpl": "C/1995 O1 (Hale-Bopp)",
+   "spkid": "1000132",
+   "elements": {
+    "epoch": 2459837.5,
+    "e": 0.9949810027633206,
+    "q": 0.890537663547794,
+    "i": 89.28759424740302,
+    "om": 282.7334213961641,
+    "w": 130.4146670659176,
+    "tp": 2450537.134907144
+   },
+   "nongrav": false,
+   "solution": "226",
+   "window": null,
+   "source": "JPL SBDB, solution 226"
+  }
+ }
+}

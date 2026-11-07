@@ -1,0 +1,162 @@
+{
+ "_aide": "Catalogue généré par tools/images.py — ne pas modifier à la main : corriger data/images-sources.json puis relancer.",
+ "objets": {
+  "m31": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/m31-480.webp",
+     "w": 480,
+     "h": 317,
+     "bytes": 20162
+    },
+    "1280": {
+     "src": "assets/img/m31-1280.webp",
+     "w": 1280,
+     "h": 846,
+     "bytes": 203088
+    }
+   },
+   "title": "M31-Andromede-16-09-2023-Hamois.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:M31-Andromede-16-09-2023-Hamois.jpg",
+   "author": "Lviatour",
+   "credit": "Own work",
+   "license": "CC BY-SA 2.5",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+   "source": "Wikimedia Commons",
+   "qid": "Q2469",
+   "sha1": "e10dc0895104b327d94a5a33dca73475c31d9641",
+   "match": {
+    "method": "recherche « Andromeda Galaxy »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-07",
+   "uses": [
+    "groupe-local/m31",
+    "lexique/galaxie-spirale"
+   ],
+   "alt": "La galaxie d'Andromède, une grande spirale vue presque par la tranche"
+  },
+  "crabe": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/crabe-480.webp",
+     "w": 480,
+     "h": 433,
+     "bytes": 25240
+    },
+    "1280": {
+     "src": "assets/img/crabe-1280.webp",
+     "w": 1280,
+     "h": 1154,
+     "bytes": 191618
+    }
+   },
+   "title": "25 Images to Celebrate NASA’s Chandra 25th Anniversary- Crab Nebula (53893798390).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:25_Images_to_Celebrate_NASA%E2%80%99s_Chandra_25th_Anniversary-_Crab_Nebula_(53893798390).jpg",
+   "author": "NASA's Marshall Space Flight Center",
+   "credit": "25 Images to Celebrate NASA’s Chandra 25th Anniversary: Crab Nebula",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q10934",
+   "sha1": "c2b8d0bf2a325c253a0498dace06a0d7501bc314",
+   "match": {
+    "method": "recherche « Crab Nebula »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-07",
+   "uses": [
+    "galaxie/crabe",
+    "types/remanent"
+   ],
+   "alt": "La nébuleuse du Crabe, reste de l'explosion d'une étoile"
+  },
+  "halley": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/halley-480.webp",
+     "w": 480,
+     "h": 333,
+     "bytes": 35560
+    },
+    "1280": {
+     "src": "assets/img/halley-1280.webp",
+     "w": 1280,
+     "h": 889,
+     "bytes": 393896
+    }
+   },
+   "title": "Lspn comet halley.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lspn_comet_halley.jpg",
+   "author": "NASA/W. Liller",
+   "credit": "NSSDC's Photo Gallery (NASA): http://nssdc.gsfc.nasa.gov/photo_gallery/photogallery-comets.html http://nssdc.gsfc.nasa.gov/image/planetary/comet/lspn_comet_halley1.jpg",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q23054",
+   "sha1": "7436e6f22cdec877624d999ad092b8145f685863",
+   "match": {
+    "method": "recherche « Halley's Comet »",
+    "confidence": "haute"
+   },
+   "status": "auto",
+   "fetched": "2026-11-07",
+   "uses": [
+    "explorer/halley",
+    "visiteurs/halley-v"
+   ],
+   "alt": "La comète de Halley"
+  },
+  "apophis": {
+   "kind": "aucune",
+   "fallback": "asteroide",
+   "status": "licence",
+   "qid": "Q118931",
+   "uses": [
+    "visiteurs/apophis"
+   ]
+  },
+  "oumuamua": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/oumuamua-480.webp",
+     "w": 480,
+     "h": 297,
+     "bytes": 14446
+    },
+    "1280": {
+     "src": "assets/img/oumuamua-1280.webp",
+     "w": 1280,
+     "h": 792,
+     "bytes": 59364
+    }
+   },
+   "title": "A2017U1 5gsmoothWHT enhanced.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:A2017U1_5gsmoothWHT_enhanced.jpg",
+   "author": "Alan Fitzsimmons (Astrophysics Research Centre, Queen's University Belfast), Isaac Newton Group (https://www.ing.iac.es/ - Instituto de Astrofísica de Canarias) Derivative: nagualdesign",
+   "credit": "https://apod.nasa.gov/apod/ap171103.html (https://apod.nasa.gov/ : NASA : Government of the United States)",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q42313338",
+   "sha1": "3143913f332a2617aaaa62d923a465b16c780161",
+   "match": {
+    "method": "recherche « ʻOumuamua »",
+    "confidence": "haute"
+   },
+   "status": "auto",
+   "fetched": "2026-11-07",
+   "uses": [
+    "visiteurs/oumuamua",
+    "hypotheses/oumuamua-voile"
+   ],
+   "alt": "ʻOumuamua"
+  }
+ }
+}
