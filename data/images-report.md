@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-07 20:05 UTC
+# Bibliothèque d'images — rapport du 2026-11-07 20:06 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -10,7 +10,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : The Andromeda galaxy.
-- Téléchargé et converti : 480 px 19 Ko, 1280 px 198 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA04921 — « Andromeda Galaxy » (JPL, 2003-12-10) https://images.nasa.gov/details/PIA04921
   - PIA25163 — « Andromeda Galaxy Imaged by Herschel, Planck, IRAS, COBE » (JPL, 2022-06-16) https://images.nasa.gov/details/PIA25163
@@ -26,7 +26,7 @@
 - Crédit : 25 Images to Celebrate NASA’s Chandra 25th Anniversary: Crab Nebula
 - Nature détectée : **photo**
 - Description : To celebrate the 25th anniversary of its launch, NASA’s Chandra X-ray Observatory is releasing 25 never-before-seen views of a wide range of cosmic objects. These images, which all include data from Chandra, demonstrate 
-- Téléchargé et converti : 480 px 24 Ko, 1280 px 187 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA03606 — « Most Detailed Image of the Crab Nebula » (JPL, 2005-12-01) https://images.nasa.gov/details/PIA03606
   - GSFC_20171208_Archive_e000053 — « Observatories Combine to Crack Open the Crab Nebula » (GSFC, 2017-12-08) https://images.nasa.gov/details/GSFC_20171208_Archive_e000053
@@ -43,7 +43,7 @@
 - Crédit : NSSDC's Photo Gallery (NASA): http://nssdc.gsfc.nasa.gov/photo_gallery/photogallery-comets.html http://nssdc.gsfc.nasa.gov/image/planetary/comet/lspn_comet_halley1.jpg
 - Nature détectée : **photo**
 - Description : Comet 1P/Halley as taken March 8, 1986 by W. Liller, Easter Island, part of the International Halley Watch (IHW) Large Scale Phenomena Network.
-- Téléchargé et converti : 480 px 34 Ko, 1280 px 384 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA17485 — « Comet Halley » (JPL, 1986-03-14) https://images.nasa.gov/details/PIA17485
   - 61c-05-026 — « Astronaut George Nelson working on Comet Halley Active monitoring program » (JSC, 1986-01-14) https://images.nasa.gov/details/61c-05-026
@@ -75,9 +75,9 @@
 - Crédit : https://apod.nasa.gov/apod/ap171103.html (https://apod.nasa.gov/ : NASA : Government of the United States)
 - Nature détectée : **photo**
 - Description : 1I/ʻOumuamua as shown here imaged with the 4.2 meter William Herschel Telescope on the Canary Islands is seen as a point of light in the centre of the image. Background stars appear linear because the telescope was centr
-- Téléchargé et converti : 480 px 14 Ko, 1280 px 57 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA22357 — « 'Oumuamua Races Toward Outskirts of Solar System (Artist's Concept) » (JPL, 2018-06-28) https://images.nasa.gov/details/PIA22357
 
 ---
-Téléchargements : 4. Poids total des images : 921 Ko.
+Téléchargements : 0. Poids total des images : 921 Ko.

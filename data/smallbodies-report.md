@@ -1,4 +1,4 @@
-# Petits corps — rapport du 2026-11-07 20:05 UTC
+# Petits corps — rapport du 2026-11-07 20:06 UTC
 
 Écart = distance entre la position d'une orbite de Kepler simple (calculable dans le navigateur) et la position JPL Horizons (calcul complet). Angle = cet écart vu depuis le Soleil.
 
@@ -23,7 +23,19 @@
 ## Apophis (`apophis`)
 - JPL : 99942 Apophis (2004 MN4) — solution 220, 7370 observations du 2004-03-15 au 2022-04-09, paramètres non gravitationnels : A1, A2, ALN, NK, NM, R0
 - Orbite : e = 0.19115, q = 0.7461 UA, i = 3.34°, passage au périhélie 2026-01-02, époque des éléments 2026-06-09, période 0.9 ans
-- ⚠ Horizons : Horizons : ******************************************************************************* JPL/DASTCOM            Small-body Index Search Results     2026-Nov-07 12:05:24   Comet AND asteroid index search:      DES = 99942;   Matching small-bodies:      No matches found. ******************************************************************************* 
+
+| Date | Distance au Soleil | Écart Kepler / Horizons | Angle |
+|---|---|---|---|
+| 2016-06-08 (époque − 10 ans) | 0.90 UA | 0.0229 UA (3.4 M km) | 1.454° |
+| 2025-06-08 (époque − 1 an) | 1.05 UA | 15456 km | 0.006° |
+| 2026-01-02 (périhélie) | 0.75 UA | 903 km | 0.000° |
+| 2026-06-09 (époque) | 1.10 UA | 0 km | 0.000° |
+| 2026-11-07 (aujourd'hui) | 0.76 UA | 14079 km | 0.007° |
+| 2027-06-09 (époque + 1 an) | 1.07 UA | 45666 km | 0.016° |
+| 2029-04-13 (rapprochement 2029) | 1.01 UA | 51327 km | 0.020° |
+| 2035-01-01 (2035) | 1.09 UA | 1.7695 UA (264.7 M km) | 93.211° |
+| 2036-06-08 (époque + 10 ans) | 0.90 UA | 0.9661 UA (144.5 M km) | 61.477° |
+
 - Rapprochements de la Terre (CAD, < 0,5 UA, 2026-01-01 → 2040-01-01) :
   - 2027-Dec-29 14:23 — 43923794 km (0.2936 UA), vitesse relative 14.7 km/s
   - 2028-Sep-12 04:11 — 38381694 km (0.2566 UA), vitesse relative 7.9 km/s
