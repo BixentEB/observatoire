@@ -82,3 +82,7 @@ Ajouter une entrée dans `js/data/bodies.js` (données réelles uniquement). Pou
 
 ## État
 Voir `docs/ETAT.md`.
+
+## Pages lisibles (moteurs de recherche et IA)
+
+`tools/build_static.py` génère `decouvrir/` : une page de présentation qui liste mes hypothèses et les objets explorés (avec un lien vers chacun dans la scène), une page par hypothèse personnelle, et `sitemap.xml`. Les hypothèses de chercheurs ne sont pas publiées ici ; les fiches `"brouillon": true`, `"exemple": true` ou `"index": false` non plus. La scène n'est pas modifiée. L'action `.github/workflows/pages-lisibles.yml` relance le script à chaque modification des hypothèses ou des données.
