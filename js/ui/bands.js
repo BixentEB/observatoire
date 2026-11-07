@@ -64,8 +64,8 @@
   var n = 0;
   OBS.band = function (kind, title, sub, count, opts) {
     var A = ART[kind] || ART.etoile, u = 'b' + (n++), o = opts || {};
-    return '<header class="cat-band" style="--acc:' + A[0] + '"' + (o.id ? ' id="' + o.id + '"' : '') + '>' +
-      '<svg class="cat-art" viewBox="0 0 640 150" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">' + stars(kind, 70) + A[1](u) + '</svg>' +
+    return '<header class="cat-band" data-kind="' + kind + '" style="--acc:' + A[0] + '"' + (o.id ? ' id="' + o.id + '"' : '') + '>' +
+      '<svg class="cat-art" viewBox="0 0 640 150" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">' + stars(kind, 70) + '<g class="cat-svg-art">' + A[1](u) + '</g></svg>' +
       '<div class="cat-txt"><h2>' + title + '</h2>' + (sub ? '<p>' + esc(sub) + '</p>' : '') + '</div>' +
       (count != null ? '<span class="cat-n">' + count + '<small>' + (count > 1 ? 'objets' : 'objet') + '</small></span>' : '') + '</header>';
   };
