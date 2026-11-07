@@ -136,12 +136,20 @@ def group_bodies(items):
     return [(g, groups[g]) for g in order if g in groups]
 
 
+BAR = ('<header class="bar"><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26"><span>OBSERVATOIRE · CODEX MENTAL</span></a>'
+       '<a class="enter" href="/">Entrer dans l’Observatoire <span aria-hidden="true">→</span></a></header>')
+PROMO = ('<a class="promo%s" href="/"><img src="/decouvrir/apercu.webp" alt="Aperçu du site" width="1280" height="720" loading="lazy">'
+         '<span class="promo-t"><b>L’Observatoire, en 3D</b><span>Le système solaire, les étoiles voisines, la Voie lactée et le Groupe local à leurs vraies positions, avec des données réelles : cliquez sur un astre et explorez.</span>'
+         '<span class="enter">Entrer dans l’Observatoire <span aria-hidden="true">→</span></span></span></a>')
+OG_IMAGE = 'https://obs.codexmental.com/decouvrir/apercu.webp'
+
+
 FOOT = ('<footer class="foot"><p>© %s — Codex Mental. Citation et reprise d\'extraits bienvenues, avec le nom de '
         'l\'auteur et un lien vers la page d\'origine. Pour une reprise plus large, <a href="%s">écrivez-moi</a>.</p>'
         '<p><a href="/decouvrir/">Découvrir l\'Observatoire</a> · <a href="/">Entrer dans l\'Observatoire</a></p></footer>')
 
 
-def shell(title, desc, canonical, body, ld, og_type='article'):
+def shell(title, desc, canonical, body, ld, og_type='article', top=False):
     return '''<!doctype html>
 <html lang="fr">
 <head>
@@ -157,18 +165,22 @@ def shell(title, desc, canonical, body, ld, og_type='article'):
 <meta property="og:description" content="{d}">
 <meta property="og:url" content="{c}">
 <meta property="og:locale" content="fr_FR">
+<meta property="og:image" content="{ogimg}">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/decouvrir/lisible.css">
 <script type="application/ld+json">{ld}</script>
 </head>
 <body>
+{bar}
 <main class="page">
-{b}
+{top}{b}
+{promo}
 {f}
 </main>
 </body>
 </html>
-'''.format(t=esc(title), d=esc(desc), a=esc(AUTHOR), c=esc(canonical), o=og_type, s=esc(SITE_NAME), b=body,
+'''.format(bar=BAR, promo=PROMO % '', top=(PROMO % ' top') if top else '', ogimg=OG_IMAGE, t=esc(title), d=esc(desc), a=esc(AUTHOR), c=esc(canonical), o=og_type, s=esc(SITE_NAME), b=body,
            f=FOOT % (esc(AUTHOR), esc(CONTACT)), ld=json.dumps(ld, ensure_ascii=False).replace('</', '<\\/'))
 
 
@@ -261,7 +273,7 @@ def main():
           'hasPart': [{'@type': 'Article', 'name': t, 'url': u} for u, t, _, _ in hpages]}
     write('decouvrir/index.html', shell('Découvrir l\'Observatoire — ' + SITE_NAME,
                                         'L\'Observatoire de Codex Mental : le système solaire et le voisinage stellaire à leurs vraies positions, des données réelles et les hypothèses personnelles de ' + AUTHOR + '.',
-                                        SITE + '/decouvrir/', '\n'.join(parts), ld, og_type='website'))
+                                        SITE + '/decouvrir/', '\n'.join(parts), ld, og_type='website', top=True))
 
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
           '  <url><loc>%s/</loc></url>' % SITE, '  <url><loc>%s/decouvrir/</loc></url>' % SITE]
