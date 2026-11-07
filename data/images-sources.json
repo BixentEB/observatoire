@@ -1,0 +1,10 @@
+{
+  "_aide": "Objets à illustrer. id : identifiant canonique (une seule image par objet) ; uses : toutes les fiches qui la réutilisent (niveau/id) ; search : noms à chercher dans Wikidata ; expect : mot attendu dans la nature de l'objet (en anglais) ; designation : désignation officielle à retrouver (petits corps) ; wikidata / file : à fixer une fois validé ; status : validé, rejeté ou aucune ; fallback : visuel de remplacement (type d'objet) ; nasa : recherche de candidats dans la photothèque NASA. Test sur cinq objets avant de généraliser.",
+  "objets": [
+    { "id": "m31", "label": "Galaxie d'Andromède", "uses": ["groupe-local/m31", "lexique/galaxie-spirale"], "search": ["Andromeda Galaxy"], "expect": ["galaxy"], "fallback": "galaxie-spirale", "nasa": "Andromeda galaxy", "alt": "La galaxie d'Andromède, une grande spirale vue presque par la tranche" },
+    { "id": "crabe", "label": "Nébuleuse du Crabe", "uses": ["galaxie/crabe", "types/remanent"], "search": ["Crab Nebula"], "expect": ["nebula", "supernova remnant"], "fallback": "nebuleuse", "nasa": "Crab Nebula", "alt": "La nébuleuse du Crabe, reste de l'explosion d'une étoile" },
+    { "id": "halley", "label": "Comète de Halley", "uses": ["explorer/halley", "visiteurs/halley-v"], "search": ["Halley's Comet"], "expect": ["comet"], "designation": "1P", "fallback": "comete", "nasa": "Halley comet 1986", "alt": "La comète de Halley" },
+    { "id": "apophis", "label": "Apophis", "uses": ["visiteurs/apophis"], "search": ["99942 Apophis"], "expect": ["asteroid", "minor planet"], "designation": "99942", "fallback": "asteroide", "nasa": "Apophis asteroid", "alt": "L'astéroïde Apophis" },
+    { "id": "oumuamua", "label": "ʻOumuamua", "uses": ["visiteurs/oumuamua", "hypotheses/oumuamua-voile"], "search": ["ʻOumuamua", "Oumuamua"], "expect": ["interstellar", "asteroid", "comet", "minor planet"], "designation": "1I", "fallback": "interstellaire", "nasa": "Oumuamua", "alt": "ʻOumuamua" }
+  ]
+}

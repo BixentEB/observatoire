@@ -1,0 +1,10 @@
+{
+  "_aide": "Petits corps à intégrer dans la scène. sbdb : désignation pour la base SBDB du JPL ; horizons : commande Horizons ; dates : dates clés de l'Atlas à tester ; window : fenêtre où l'objet est affiché (objets de passage) ; cad : [désignation, début, fin] des rapprochements de la Terre à vérifier ; expect : ce que l'Atlas affirme. Test sur cinq objets avant de généraliser.",
+  "objets": [
+    { "id": "halley", "label": "Comète de Halley", "sbdb": "1P", "horizons": "DES=1P;CAP;NOFRAG", "dates": { "périhélie 1986": "1986-02-09", "aphélie 2023": "2023-12-09", "retour 2061": "2061-07-28" }, "expect": "dernier périhélie 9 février 1986, aphélie vers le 9 décembre 2023, prochain périhélie 28 juillet 2061" },
+    { "id": "apophis", "label": "Apophis", "sbdb": "99942", "horizons": "DES=99942;", "dates": { "aujourd'hui": "2026-11-07", "rapprochement 2029": "2029-04-13", "2035": "2035-01-01" }, "cad": ["99942", "2026-01-01", "2040-01-01"], "expect": "passage à environ 32 000 km de la surface de la Terre le 13 avril 2029" },
+    { "id": "oumuamua", "label": "ʻOumuamua", "sbdb": "1I", "horizons": "DES=A/2017 U1;", "window": ["2015-01-01", "2022-01-01"], "dates": { "périhélie": "2017-09-09", "découverte": "2017-10-19" }, "cad": ["1I", "2017-01-01", "2018-01-01"], "expect": "périhélie 9 septembre 2017 à 0,26 UA, au plus près de la Terre le 14 octobre 2017 à 24 millions de km" },
+    { "id": "borisov", "label": "Comète Borisov", "sbdb": "2I", "horizons": "DES=C/2019 Q4;", "window": ["2017-01-01", "2024-01-01"], "dates": { "découverte": "2019-08-30", "périhélie": "2019-12-08" }, "expect": "découverte le 30 août 2019, périhélie le 8 décembre 2019 à 2 UA" },
+    { "id": "halebopp", "label": "Hale-Bopp", "sbdb": "C/1995 O1", "horizons": "DES=C/1995 O1;CAP", "dates": { "périhélie": "1997-04-01", "aujourd'hui": "2026-11-07" }, "expect": "périhélie le 1er avril 1997, retour dans environ 2 400 ans" }
+  ]
+}
