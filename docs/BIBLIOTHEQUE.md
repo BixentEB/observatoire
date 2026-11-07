@@ -61,3 +61,17 @@ Horizons (calcul complet) à plusieurs dates : le rapport donne l'écart en kilo
 | pluies d'étoiles filantes | orbite de la comète mère | jamais de « nuage » inventé : seulement l'orbite d'origine, signalée |
 
 Aucun déplacement illustratif n'est présenté comme exact : les animations des cycles de formation restent signalées « simulé ».
+
+## Résultats du test sur cinq objets (7 novembre 2026)
+
+Images (rapport complet : `data/images-report.md`) :
+- Andromède, Crabe, Halley : identifiés sans erreur (un jeu vidéo « Halley's Comet » écarté par la vérification de nature), vraies photographies, licences libres, 20 à 35 Ko en 480 px, 190 à 390 Ko en 1280 px.
+- ʻOumuamua : seule photographie authentique, un point lumineux au télescope William Herschel (domaine public) ; les vues d'artiste de la NASA restent en candidats.
+- Apophis : image radar NASA, mais licence absente des métadonnées de Commons → refusée par prudence ; à valider à la main (les images JPL sont du domaine public).
+- Deuxième passage : 0 téléchargement, les fichiers n'avaient pas changé.
+
+Petits corps (rapport complet : `data/smallbodies-report.md`) :
+- Borisov, ʻOumuamua : orbite de Kepler fidèle à moins de 0,2° sur toute la fenêtre affichée → éléments SBDB suffisants.
+- Hale-Bopp : fidèle à 0,01° aujourd'hui, mais 4° au périhélie de 1997 (perturbée par Jupiter en 1996) → éléments valables seulement autour de leur époque.
+- Apophis : fidèle à 0,02° jusqu'au 13 avril 2029, puis 60 à 90° d'écart : le passage près de la Terre change son orbite → vecteurs Horizons obligatoires autour et après 2029. CAD confirme 38 011 km du centre de la Terre (≈ 31 600 km de la surface) le 13 avril 2029 à 21 h 46 UTC.
+- Halley : éléments SBDB de 1968 ; inutilisables pour 2061 (écart de plusieurs UA) → vecteurs Horizons sur toute l'orbite. Un point incohérent (1978) est à revérifier.
