@@ -24,6 +24,18 @@
   var nf = function (v, d) { return v.toLocaleString('fr-FR', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); };
   var sizeMode = 'lisibles';
   try { sizeMode = localStorage.getItem('obs.atlas.tailles') || 'lisibles'; } catch (e) {}
+  // bouton « Tailles : Lisibles | Réelles » des autres cartes (Voisinage, Groupe local), un réglage mémorisé par carte
+  var sizes = {};
+  function sizeGet(k) { if (!sizes[k]) { try { sizes[k] = localStorage.getItem('obs.atlas.tailles.' + k); } catch (e) {} sizes[k] = sizes[k] || 'lisibles'; } return sizes[k]; }
+  function sizesUI(k, tipL, tipR) {
+    var m = sizeGet(k);
+    return '<div class="atlas-sizes"><span class="atlas-sizes-l">Tailles :</span><span class="atlas-toggle"><button type="button" data-k="' + k + '" data-s="lisibles" title="' + esc(tipL) + '" aria-pressed="' + (m === 'lisibles') + '">Lisibles</button><button type="button" data-k="' + k + '" data-s="reelles" title="' + esc(tipR) + '" aria-pressed="' + (m === 'reelles') + '">Réelles</button></span></div>';
+  }
+  function sizesBind(root, redraw) {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-k][data-s]'), function (b) {
+      b.addEventListener('click', function () { var k = b.getAttribute('data-k'); sizes[k] = b.getAttribute('data-s'); try { localStorage.setItem('obs.atlas.tailles.' + k, sizes[k]); } catch (e) {} redraw(root); OBS.armPinch(root); });
+    });
+  }
   var reduced = false; try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
   OBS.ATLAS_SCOPES = SCOPES.map(function (x) { return x.id; });   // niveaux que l'Atlas sait afficher (lu par la règle des échelles)
@@ -287,11 +299,11 @@
       out.push('<line x1="' + tx.toFixed(1) + '" y1="' + (AX - (t[2] ? 5 : 9)) + '" x2="' + tx.toFixed(1) + '" y2="' + (AX + (t[2] ? 5 : 9)) + '" class="at-tick"/>');
       if (t[1]) out.push('<text x="' + tx.toFixed(1) + '" y="' + (AX + 26) + '" class="at-d" text-anchor="middle">' + t[1] + '</text>');
     });
-    if (o.origin) out.push('<a href="' + o.origin.href + '" class="ab"><circle cx="' + L0 + '" cy="' + AX + '" r="9" fill="' + (o.origin.color || '#ffd27a') + '"/><text x="' + L0 + '" y="' + (AX - 20) + '" class="at-n at-sun" text-anchor="middle">' + esc(o.origin.name) + '</text></a>');
+    if (o.origin) { var orr = o.origin.r || 9; out.push('<a href="' + o.origin.href + '" class="ab"><circle cx="' + L0 + '" cy="' + AX + '" r="' + orr.toFixed(1) + '" fill="' + (o.origin.color || '#ffd27a') + '"' + (o.origin.disk ? ' class="at-disk" stroke="' + (o.origin.color || '#ffd27a') + '"' : '') + '/><text x="' + L0 + '" y="' + (AX - Math.max(20, orr + 10)) + '" class="at-n at-sun" text-anchor="middle">' + esc(o.origin.name) + '</text></a>'); }
     placed.forEach(function (p) {
       var it = p.it, ly = AX + p.lane * LH - (p.lane > 0 ? -8 : 8), tx = Math.max(L0 + 10, Math.min(L1 + 20, p.sx));
       out.push('<line x1="' + p.sx.toFixed(1) + '" y1="' + AX + '" x2="' + p.sx.toFixed(1) + '" y2="' + ly + '" class="at-stem"/>');
-      out.push('<a href="' + it.href + '" class="ab"><title>' + esc(it.title || it.name) + '</title><circle cx="' + p.sx.toFixed(1) + '" cy="' + AX + '" r="' + (it.r || 4).toFixed(1) + '" fill="' + (it.color || '#cfd6f0') + '" class="at-star"/>' +
+      out.push('<a href="' + it.href + '" class="ab"><title>' + esc(it.title || it.name) + '</title><circle cx="' + p.sx.toFixed(1) + '" cy="' + AX + '" r="' + (it.r || 4).toFixed(1) + '" fill="' + (it.color || '#cfd6f0') + '" class="' + (it.disk ? 'at-disk" stroke="' + (it.color || '#cfd6f0') : 'at-star') + '"/>' +
         '<text x="' + tx.toFixed(1) + '" y="' + (ly + (p.lane > 0 ? 12 : -4)) + '" class="at-m' + (it.cls ? ' ' + it.cls : '') + '" text-anchor="middle">' + esc(it.name) + '</text></a>');
     });
     return '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(o.label || 'Carte') + '">' +
@@ -308,12 +320,16 @@
   /* ---------------- carte du voisinage : une règle à l'échelle réelle ---------------- */
   function carteVoisinage(root) {
     var ticks = []; for (var t = 0; t <= 12; t++) ticks.push([t, t % 2 ? '' : t + ' al', t % 2]);
+    var real = sizeGet('voisinage') === 'reelles', SUN = 6;          // en tailles réelles : Soleil = 6 px, rayon de chaque étoile à la même échelle
     var items = OBS.STARS.map(function (s) {
-      return { v: s.ly, name: s.name, href: '#/etoile/' + s.id, color: hex(OBS.STAR_COLORS[s.cls] || 0xffffff), r: s.cls === 'BD' ? 3 : 3 + 3.5 * Math.pow(Math.min(s.lum, 30), .2), title: s.name + ' — ' + nf(s.ly, 2) + ' al' };
+      var r = real ? Math.max(.8, SUN * (s.r || .1)) : s.cls === 'BD' ? 3 : 3 + 3.5 * Math.pow(Math.min(s.lum, 30), .2);
+      return { v: s.ly, name: s.name, href: '#/etoile/' + s.id, color: hex(OBS.STAR_COLORS[s.cls] || 0xffffff), r: r, title: s.name + ' — ' + nf(s.ly, 2) + ' al' + (s.r ? ' — rayon ' + nf(s.r, 2) + ' fois le Soleil' : '') };
     });
-    root.innerHTML = flags([['real', 'Distances', 'réelles', 'Réel — distances mesurées, à l\'échelle'], ['adapt', 'Directions', 'non représentées', 'Adapté — toutes les étoiles sont ramenées sur une seule ligne : leur direction dans le ciel n\'est pas représentée'], ['adapt', 'Tailles', 'symboliques', 'Adapté — la taille des points dépend de la luminosité']]) +
-      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 0, max: 12, ticks: ticks, origin: { name: 'Soleil', href: '#/explorer/soleil' }, label: 'Distances des étoiles voisines', lanes: 5 }) + '</div>' +
-      '<p class="note">À cette échelle, tout le système solaire jusqu\'à Neptune tiendrait dans moins d\'un dixième de pixel autour du Soleil. Cliquez sur une étoile pour visiter son système.</p>';
+    root.innerHTML = '<div class="atlas-head">' + flags([['real', 'Distances', 'réelles', 'Réel — distances mesurées, à l\'échelle'], ['adapt', 'Directions', 'non représentées', 'Adapté — toutes les étoiles sont ramenées sur une seule ligne : leur direction dans le ciel n\'est pas représentée']]) +
+      sizesUI('voisinage', 'Adapté — la taille des points dépend de la luminosité de l\'étoile', 'Réel entre étoiles — chaque point a la taille du rayon mesuré de l\'étoile (Soleil = 6 px)') + '</div>' +
+      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 0, max: 12, ticks: ticks, origin: { name: 'Soleil', href: '#/explorer/soleil', r: real ? SUN : 9 }, label: 'Distances des étoiles voisines', lanes: 5 }) + '</div>' +
+      '<p class="note">' + (real ? 'Tailles réelles entre les étoiles : Procyon A est deux fois plus grande que le Soleil, Proxima du Centaure sept fois plus petite, les naines brunes ne sont plus que des points. Les distances, elles, sont à une autre échelle : à l\'échelle des distances, chaque étoile serait des millions de fois trop petite pour être vue.' : 'Tailles lisibles : un point plus gros pour une étoile plus lumineuse. Passez en « tailles réelles » pour comparer les étoiles entre elles. À cette échelle, tout le système solaire jusqu\'à Neptune tiendrait dans moins d\'un dixième de pixel autour du Soleil.') + ' Cliquez sur une étoile pour visiter son système.</p>';
+    sizesBind(root, carteVoisinage);
   }
 
   /* ---------------- carte de la Voie lactée : distances au Soleil, échelle logarithmique ---------------- */
@@ -330,13 +346,28 @@
 
   /* ---------------- carte du Groupe local : distances au Soleil, échelle logarithmique ---------------- */
   function carteGroupeLocal(root) {
+    var real = sizeGet('groupe-local') === 'reelles';
+    // tailles réelles : règle linéaire (sur une règle logarithmique, des tailles ne se comparent pas) et chaque galaxie
+    // en disque à son diamètre mesuré, à la même échelle que les distances
+    var W = 1900, MAX = 5000000, k = (W - 90) / MAX;
     var items = OBS.LOCALGROUP.filter(function (g) { return !g.home; }).map(function (g) {
-      return { v: g.ly, name: g.name, href: '#/groupe-local/' + g.id, color: g.form === 'spirale' ? '#c9d8ff' : '#9aa6cc', r: g.form === 'spirale' ? 6 : g.minor ? 3 : 4, cls: g.form === 'spirale' ? 'at-big' : '', title: g.name + ' — ' + g.kind + ' — ' + lyTxt(g.ly) };
+      var col = g.form === 'spirale' ? '#c9d8ff' : '#9aa6cc';
+      return { v: g.ly, name: g.name, href: '#/groupe-local/' + g.id, color: col, disk: real, r: real ? Math.max(1.2, g.d / 2 * k) : g.form === 'spirale' ? 6 : g.minor ? 3 : 4, cls: g.form === 'spirale' ? 'at-big' : '', title: g.name + ' — ' + g.kind + ' — ' + lyTxt(g.ly) + (g.d ? ' — environ ' + nf(g.d) + ' al de diamètre' : '') };
     });
-    root.innerHTML = flags([['real', 'Distances', 'mesurées', 'Réel — distances au Soleil mesurées (valeurs arrondies)'], ['adapt', 'Échelle', 'logarithmique', 'Adapté — chaque graduation principale multiplie la distance par 10'], ['adapt', 'Directions', 'non représentées', 'Adapté — tout est ramené sur une seule ligne']]) +
-      '<div class="atlas-scroll" tabindex="0">' + ruler(items, { min: 30000, max: 6000000, log: true, W: 1900, lanes: 7, ticks: logTicks(5, 6, function (e) { return lyTxt(Math.pow(10, e)); }).concat([[30000, '30 000 al'], [5000000, '5 M al']]), origin: { name: 'Voie lactée', href: '#/groupe-local/voielactee' }, label: 'Distances des galaxies du Groupe local' }) + '</div>' +
-      '<p class="note">Les satellites de la Voie lactée sont à quelques centaines de milliers d\'années-lumière ; ceux d\'Andromède se pressent autour de 2,5 millions ; au-delà de 4 millions, les naines du bord du Groupe local. Cliquez sur une galaxie pour la rejoindre.</p>';
+    var home = OBS.LOCALGROUP.filter(function (g) { return g.home; })[0] || { d: 100000 };
+    var linTicks = []; for (var t = 0; t <= MAX; t += 250000) linTicks.push([t, t % 1000000 === 0 ? (t ? nf(t / 1e6) + ' M al' : '0') : t % 500000 === 0 ? nf(t / 1e6, 1) + ' M al' : '', t % 500000 ? 1 : 0]);
+    root.innerHTML = '<div class="atlas-head">' + flags([['real', 'Distances', 'mesurées', 'Réel — distances au Soleil mesurées (valeurs arrondies)'],
+      real ? ['real', 'Échelle', 'linéaire', 'Réel — distances et tailles à la même échelle'] : ['adapt', 'Échelle', 'logarithmique', 'Adapté — chaque graduation principale multiplie la distance par 10'],
+      ['adapt', 'Directions', 'non représentées', 'Adapté — tout est ramené sur une seule ligne']]) +
+      sizesUI('groupe-local', 'Adapté — points de taille symbolique, règle logarithmique', 'Réel — chaque galaxie à son diamètre mesuré, distances et tailles à la même échelle (règle linéaire)') + '</div>' +
+      '<div class="atlas-scroll" tabindex="0">' + (real
+        ? ruler(items, { min: 0, max: MAX, W: W, lanes: 7, ticks: linTicks, origin: { name: 'Voie lactée', href: '#/groupe-local/voielactee', r: home.d / 2 * k, color: '#ffd27a', disk: true }, label: 'Galaxies du Groupe local à leur taille réelle' })
+        : ruler(items, { min: 30000, max: 6000000, log: true, W: W, lanes: 7, ticks: logTicks(5, 6, function (e) { return lyTxt(Math.pow(10, e)); }).concat([[30000, '30 000 al'], [5000000, '5 M al']]), origin: { name: 'Voie lactée', href: '#/groupe-local/voielactee' }, label: 'Distances des galaxies du Groupe local' })) + '</div>' +
+      '<p class="note">' + (real ? 'Tailles réelles : chaque galaxie est un disque à son diamètre mesuré, à la même échelle que les distances. Andromède (≈ 150 000 al) et la Voie lactée (≈ 100 000 al) ne sont séparées que de 25 fois leur taille ; les Nuages de Magellan touchent presque la nôtre ; la plupart des naines, quelques milliers d\'années-lumière, ne sont qu\'un point (agrandi à 1 px minimum pour rester visible).'
+        : 'Les satellites de la Voie lactée sont à quelques centaines de milliers d\'années-lumière ; ceux d\'Andromède se pressent autour de 2,5 millions ; au-delà de 4 millions, les naines du bord du Groupe local. Passez en « tailles réelles » pour voir les galaxies à leur vraie taille.') + ' Cliquez sur une galaxie pour la rejoindre.</p>';
+    sizesBind(root, carteGroupeLocal);
   }
+
 
   // nature d'une information → couleur de fond légère (masse, température, taille, durée, lieu, composition, nombre)
   function infoCls(k) {

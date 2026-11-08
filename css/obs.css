@@ -1037,3 +1037,5 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
 .az button { min-width: 28px; height: 26px; padding: 0 6px; border: 0; border-radius: 999px; background: none; color: var(--soft); cursor: pointer; font: 14px var(--body); }
 .az button:hover { background: rgba(255, 255, 255, .07); color: var(--fg); }
 .az .az-pct { font: 11px var(--mono); min-width: 52px; }
+/* disques à taille réelle (Groupe local) : translucides pour voir les recouvrements */
+.atlas-map .at-disk { fill-opacity: .3; stroke-width: 1; stroke-opacity: .8; }
