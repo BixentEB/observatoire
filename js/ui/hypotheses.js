@@ -73,8 +73,7 @@
     if (param === 'atelier' || param === 'simulateur') { location.replace('#/simulateur'); return; }
     if (param === 'chercheurs') return sub ? ficheSci(root, sub) : listSciPage(root);
     if (param === 'seuls') {
-      OBS.seulsPage(root, tabs('seuls'));
-      if (sub) { var el = document.getElementById('sq-' + sub); if (el) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); }
+      OBS.seulsPage(root, tabs('seuls'), sub);
       return;
     }
     if (param) return fiche(root, param);

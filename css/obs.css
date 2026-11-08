@@ -1190,3 +1190,14 @@ body.gt-on .console { bottom: 220px; }
 .ar-k { display: inline-block; margin-bottom: 8px; font: 10.5px var(--mono); padding: 2px 8px; border-radius: 999px; border: 1px solid; }
 .ar-reel { color: #8fe0a8; border-color: rgba(143, 224, 168, .45); }
 .ar-sonif { color: #f4c77a; border-color: rgba(244, 199, 122, .45); }
+
+/* Sommes-nous seuls : onglets par partie, titres marqués */
+.sq-tabs { margin-top: 16px; }
+.sq-tabs .tab[aria-selected="true"] { color: var(--seuls); border-color: rgba(110, 220, 190, .6); background: var(--seuls-bg); }
+.sq-sec { margin-top: 34px; }
+.sq-sec[hidden] { display: none; }
+.sq-sec > h2 { font-size: 30px; margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(110, 220, 190, .35); }
+.sq-sec + .sq-sec { margin-top: 56px; }
+.sq-nav { display: flex; justify-content: space-between; gap: 16px; margin: 36px 0 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.sq-nav a { color: var(--seuls); text-decoration: none; font-size: 15px; }
+.sq-nav a:hover { text-decoration: underline; }

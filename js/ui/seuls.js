@@ -54,12 +54,16 @@
     draw();
   }
 
-  OBS.seulsPage = function (root, tabsHTML) {
+  // onglets : chacun montre une ou plusieurs parties ; les anciennes ancres (fermi) mènent au bon onglet
+  var TABS = [['sait', 'Ce que l\'on sait', ['sait']], ['indices', 'Les indices', ['indices']], ['paradoxes', 'Les paradoxes', ['fermi', 'autres']], ['drake', 'L\'équation de Drake', ['drake']], ['chercher', 'Chercher', ['chercher']], ['messages', 'Nos messages', ['messages']], ['pan', 'Les PAN', ['pan']]];
+  OBS.seulsPage = function (root, tabsHTML, sub) {
+    if (sub === 'fermi' || sub === 'autres') sub = 'paradoxes';
+    var cur = TABS.filter(function (t) { return t[0] === sub; })[0] || TABS[0], idx = TABS.indexOf(cur);
     var h = [];
     h.push(tabsHTML);
     h.push('<div class="h-intro sq"><b>Sommes-nous seuls ?</b> Personne n\'a encore trouvé de vie ailleurs que sur Terre. Mais la question n\'a jamais été autant étudiée : voici ce que l\'on sait, ce que l\'on cherche et ce qui reste ouvert, en séparant toujours les faits, les indices et les hypothèses.</div>');
     h.push('<div class="sq-leg">' + ['fait', 'indice', 'hypo', 'fiction'].map(function (k) { return '<span class="sq-k sq-' + K[k][0] + '">' + K[k][1] + '</span>'; }).join('') + '<span class="sq-when">État des connaissances : novembre 2026</span></div>');
-    h.push('<nav class="sq-toc">' + [['sait', 'Ce que l\'on sait'], ['indices', 'Les indices'], ['fermi', 'Le paradoxe de Fermi'], ['drake', 'L\'équation de Drake'], ['chercher', 'Chercher'], ['messages', 'Nos messages'], ['pan', 'Les PAN']].map(function (x) { return '<a href="#/hypotheses/seuls/' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>');
+    h.push('<nav class="tabs sq-tabs" role="tablist" aria-label="Parties">' + TABS.map(function (t) { return '<a role="tab" class="tab" href="#/hypotheses/seuls/' + t[0] + '" aria-selected="' + (t === cur) + '">' + t[1] + '</a>'; }).join('') + '</nav>');
 
     h.push(sec('sait', 'Ce que l\'on sait', null, [
       row('fait', 'Aucune preuve de vie ailleurs', 'Novembre 2026', 'Aucune observation n\'a encore démontré l\'existence d\'une vie extraterrestre, même microscopique. Plusieurs indices sont étudiés (ci-dessous), aucun n\'est confirmé.'),
@@ -82,6 +86,14 @@
       row('hypo', 'Nous avons à peine cherché', 'J. Wright et al., 2018', 'Comparée à tout ce qu\'il faudrait explorer (directions, fréquences, intensités), la recherche menée depuis 1960 équivaut à examiner un bain à remous pour conclure qu\'il n\'y a pas de poissons dans les océans.'),
       row('hypo', 'L\'hypothèse du zoo', 'J. Ball, 1973', 'Des civilisations avancées nous observeraient sans se manifester, comme on observe une réserve naturelle.'),
       row('fiction', 'La forêt sombre', 'Liu Cixin, roman, 2008', 'Chaque civilisation se cacherait par peur des autres. Une idée de science-fiction, souvent citée dans les débats, mais sans base scientifique.')
+    ]));
+
+    h.push(sec('autres', 'D\'autres paradoxes', 'La question de la vie dans l\'Univers pose d\'autres énigmes que le silence des étoiles. Le paradoxe lui-même est un fait (une contradiction apparente) ; les explications proposées sont des hypothèses, sauf quand elles sont démontrées.', [
+      row('fait', 'Le paradoxe du jeune Soleil faible', 'C. Sagan et G. Mullen, 1972', 'Il y a 4 milliards d\'années, le Soleil brillait environ 25 à 30 % moins qu\'aujourd\'hui : la Terre aurait dû être gelée. Pourtant, les roches montrent de l\'eau liquide et une vie déjà présente. Explication la plus avancée (hypothèse) : un effet de serre bien plus fort, grâce au gaz carbonique et au méthane de l\'atmosphère primitive.', '<a href="#/explorer/soleil">Le Soleil</a><span class="sep">·</span><a href="#/atlas/types/etoiles">La vie d\'une étoile</a>'),
+      row('hypo', 'Une vie apparue très vite', 'C. Lineweaver et T. Davis, 2002', 'La Terre s\'est formée il y a 4,54 milliards d\'années et la vie y apparaît sans doute avant 3,5 milliards d\'années, dès que les conditions le permettent. Certains en déduisent que la vie naît facilement ; d\'autres rappellent qu\'un seul exemple ne permet pas de conclure, puisque nous n\'existerions pas pour nous poser la question sinon.'),
+      row('hypo', 'Pourquoi un soleil jaune ?', 'J. Haqq-Misra et al., 2018', 'Trois étoiles sur quatre sont des naines rouges, et elles vivent des milliers de milliards d\'années. Statistiquement, nous aurions dû naître autour de l\'une d\'elles. Peut-être leurs éruptions violentes, et des planètes qui leur montrent toujours la même face, rendent-elles la vie complexe plus difficile.', '<a href="#/voisinage/proxima">Proxima du Centaure, une naine rouge</a>'),
+      row('hypo', 'Pourquoi si tôt ?', 'A. Loeb, R. Batista et D. Sloan, 2016', 'Si la vie est possible autour des naines rouges, elle devrait être bien plus fréquente dans un lointain avenir, quand ces étoiles auront brillé des milliers de fois plus longtemps que le Soleil. Nous serions alors des pionniers, arrivés très tôt dans l\'histoire de l\'Univers.'),
+      row('fait', 'La nuit noire (paradoxe d\'Olbers)', 'H. Olbers, 1823', 'Si l\'Univers était infini, éternel et rempli d\'étoiles, chaque direction du ciel tomberait sur une étoile, et la nuit serait aussi brillante que le Soleil. Résolu : l\'Univers a un âge (13,8 milliards d\'années), la lumière des étoiles les plus lointaines n\'a pas encore eu le temps de nous parvenir, et l\'expansion affaiblit celle qui arrive.', '<a href="#/atlas/echelles">De l\'atome à l\'Univers</a>')
     ]));
 
     h.push('<section class="sq-sec" id="sq-drake"><h2>L\'équation de Drake</h2><p class="sq-intro">En 1961, l\'astronome Frank Drake écrit une formule pour organiser la question : le nombre de civilisations détectables dans la Voie lactée est le produit de sept termes. Les trois premiers commencent à être mesurés ; les quatre derniers sont inconnus. Changez-les pour voir à quel point le résultat dépend de ce qu\'on ignore.</p>' + drakeUI() +
@@ -114,7 +126,11 @@
       ['CNES, cinq choses à savoir sur le GEIPAN (janvier 2026)', 'https://cnes.fr/actualites/serie-ovnis-5-choses-savoir-geipan'],
       ['The Black Vault, rapport annuel 2025 de l\'AARO (juillet 2026)', 'https://theblackvault.com/documentarchive/aaro-releases-fy2025-uap-report-months-after-statutory-deadline-citing-319-new-cases-and-expanded-satellite-analysis']
     ].map(function (s) { return '<li><a href="' + s[1] + '" target="_blank" rel="noopener">' + esc(s[0]) + '</a></li>'; }).join('') + '</ul></section>');
+    if (idx < TABS.length - 1 || idx > 0) h.push('<nav class="sq-nav">' + (idx > 0 ? '<a href="#/hypotheses/seuls/' + TABS[idx - 1][0] + '">‹ ' + TABS[idx - 1][1] + '</a>' : '<span></span>') + (idx < TABS.length - 1 ? '<a href="#/hypotheses/seuls/' + TABS[idx + 1][0] + '">' + TABS[idx + 1][1] + ' ›</a>' : '') + '</nav>');
     root.innerHTML = h.join('');
-    bindDrake(root);
+    // seules les parties de l'onglet choisi sont affichées ; les sources restent en bas
+    root.querySelectorAll('.sq-sec').forEach(function (el) { el.hidden = cur[2].indexOf(el.id.replace('sq-', '')) < 0; });
+    var src = root.querySelector('.sq-src'), nav = root.querySelector('.sq-nav'); if (src && nav) src.parentNode.insertBefore(nav, src);
+    if (cur[0] === 'drake') bindDrake(root);
   };
 })();
