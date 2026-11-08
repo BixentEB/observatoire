@@ -21,6 +21,11 @@ SOURCES = [
     ('mercure', 'Mercury_Messenger_USGS_DEM_Global_665m_v2.tif', 2439400.0),
     ('pluton', 'Pluto_NewHorizons_Global_DEM_300m_Jul2017_16bit.tif', 1188300.0),
     ('charon', 'Charon_NewHorizons_Global_DEM_300m_Jul2017_16bit.tif', 606000.0),
+]
+# Pluton et Charon : les données commencent à 0° au bord gauche bien que l'en-tête annonce −180° (vérifié le 8/11/2026 :
+# sans ce décalage, Spoutnik Planitia tombait au centre de la carte au lieu du bord, à l'opposé de la carte couleur)
+FORCE_ROLL = {'pluton', 'charon'}
+SOURCES += [
     ('ceres', 'Ceres_Dawn_FC_HAMO_DTM_DLR_Global_60ppd_Oct2016.tif', 470000.0),
 ]
 W4, H4 = 4096, 2048
@@ -92,10 +97,18 @@ for bid, name, R in SOURCES:
         # longitude 0 au centre : les fichiers USGS commencent souvent à 0° au bord gauche
         span = info['right'] - info['left']
         left_deg = info['left'] / span * 360 if span else 0
-        if abs(left_deg) < 5:
+        if abs(left_deg) < 5 or bid in FORCE_ROLL:
             h = np.roll(h, W4 // 2, axis=1); shift = 'décalé de 180° (0° au bord gauche à l\'origine)'
         else:
             shift = 'déjà centré (bord gauche à %.0f°)' % left_deg
+        # forme générale retirée : Cérès est aplatie aux pôles (± 15 km), ce qui inclinait toutes les pentes vers les pôles ;
+        # on enlève la moyenne de chaque latitude (lissée), il ne reste que le relief local
+        zon = np.nanmean(h, axis=1)
+        if np.isfinite(zon).sum() > 10:
+            idx = np.arange(len(zon)); ok_ = np.isfinite(zon)
+            zon = np.interp(idx, idx[ok_], zon[ok_]); k_ = np.ones(41) / 41
+            zon = np.convolve(np.pad(zon, 20, mode='edge'), k_, mode='valid')
+            h = h - zon[:, None]
         nx, ny, nz, hole = normals(h, R)
         save(nx, ny, nz, bid)
         cov = 100 * (1 - hole.mean())
