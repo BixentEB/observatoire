@@ -119,13 +119,42 @@
    "alt": "La comète de Halley"
   },
   "apophis": {
-   "kind": "aucune",
-   "fallback": "asteroide",
-   "status": "licence",
+   "kind": "radar",
+   "files": {
+    "480": {
+     "src": "assets/img/apophis-480.webp",
+     "w": 480,
+     "h": 210,
+     "bytes": 28056
+    },
+    "1024": {
+     "src": "assets/img/apophis-1024.webp",
+     "w": 1024,
+     "h": 449,
+     "bytes": 76730
+    }
+   },
+   "title": "PIA24168-Asteroid-99942Apophis-RadarImages-20210326.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:PIA24168-Asteroid-99942Apophis-RadarImages-20210326.jpg",
+   "author": "NASA/JPL-Caltech and NSF/AUI/GBO",
+   "credit": "https://photojournal.jpl.nasa.gov/figures/PIA24168_fig1.jpg",
+   "license": "Domaine public en principe (œuvre de la NASA/JPL) ; licence non précisée sur Commons",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "PIA24168: Radar Observations of Asteroid 99942 Apophis https://photojournal.jpl.nasa.gov/catalog/PIA24168 These images represent radar observations of asteroid 99942 Apophis on March 8, 9, and 10, 2021, as it made its last close approach before its 2029 Earth encounter that will see the object pass ",
+   "date": "2021-03-26",
    "qid": "Q118931",
+   "sha1": "ee3f7cc66dcbbcb06cc5c377559189f3a239d1fd",
+   "match": {
+    "method": "recherche « 99942 Apophis »",
+    "confidence": "haute"
+   },
+   "status": "validé",
+   "fetched": "2026-11-08",
    "uses": [
     "visiteurs/apophis"
-   ]
+   ],
+   "alt": "L'astéroïde Apophis"
   },
   "oumuamua": {
    "kind": "photo",

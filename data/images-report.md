@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 17:51 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 19:09 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -54,12 +54,12 @@
     candidat Q118931 « (99942) Apophis » — nature : potentially hazardous asteroid, near-earth asteroid, near-earth object — retenu
 - Image principale Wikidata (P18) : PIA24168-Asteroid-99942Apophis-RadarImages-20210326.jpg
 - Fichier : [PIA24168-Asteroid-99942Apophis-RadarImages-20210326.jpg](https://commons.wikimedia.org/wiki/File:PIA24168-Asteroid-99942Apophis-RadarImages-20210326.jpg) — 2999 × 1314
-- Licence : licence non reconnue (absente) ✘
+- Licence : Domaine public en principe (œuvre de la NASA/JPL) ; licence non précisée sur Commons (vérifié à la main) ✔
 - Auteur : NASA/JPL-Caltech and NSF/AUI/GBO
 - Crédit : https://photojournal.jpl.nasa.gov/figures/PIA24168_fig1.jpg
 - Nature détectée : **radar**
 - Description : PIA24168: Radar Observations of Asteroid 99942 Apophis https://photojournal.jpl.nasa.gov/catalog/PIA24168 These images represent radar observations of asteroid 99942 Apophis on March 8, 9, and 10, 2021, as it made its la
-- → non retenue, visuel de remplacement.
+- Téléchargé et converti : 480 px 27 Ko, 1024 px 74 Ko
 - Candidats NASA (à valider, non utilisés) :
   - PIA23195 — « Asteroid Apophis » (JPL, 2019-04-29) https://images.nasa.gov/details/PIA23195
   - PIA24168 — « Radar Observations of Asteroid 99942 Apophis » (JPL, 2021-03-26) https://images.nasa.gov/details/PIA24168
@@ -486,4 +486,4 @@
 - Fichier inchangé : rien à télécharger.
 
 ---
-Téléchargements : 0. Poids total des images : 3611 Ko.
+Téléchargements : 1. Poids total des images : 3713 Ko.
