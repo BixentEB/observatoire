@@ -1,0 +1,41 @@
+# Catalogues de galaxies pour les niveaux 5 à 8 de la règle des échelles (Volume local pour commencer).
+# À la demande, ou quand on modifie les scripts. Ne publie que les fichiers de données et les rapports.
+name: Catalogues de galaxies
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/volume.py'
+      - '.github/workflows/catalogues.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogues
+  cancel-in-progress: false
+
+jobs:
+  catalogues:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Volume local (catalogue de Karachentsev)
+        continue-on-error: true
+        run: python3 tools/volume.py
+      - name: Publier
+        if: always()
+        run: |
+          git add data/volume-local.json data/volume-local-report.md 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
+          git config user.name "observatoire-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Catalogues de galaxies : Volume local du $(date -u +%F)"
+          git pull --rebase --quiet || true
+          git push
