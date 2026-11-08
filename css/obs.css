@@ -94,6 +94,7 @@ button { font: inherit; color: inherit; }
 .c-geo { display: grid; gap: 8px; }
 .c-geo div { font-size: 13px; color: var(--soft); }
 .c-geo b { display: block; color: var(--fg); font-weight: 600; font-size: 13px; margin-bottom: 1px; }
+.ring-tag.oort-tag { color: rgba(170, 185, 230, .6); font-style: italic; transform: translate(-50%, 0); }
 .ring-tag.halo-tag { color: rgba(160, 185, 255, .55); font-style: italic; }
 .ring-tag { position: absolute; left: 0; top: 0; font: 10px var(--mono); color: var(--faint); transform: translate(6px, -14px); white-space: nowrap; }
 
@@ -900,3 +901,14 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
 .h-card.sci:hover { background: linear-gradient(90deg, var(--sci-bg), transparent 70%); border-left-color: var(--sci); }
 .h-list:has(.h-card.sci) { border-top-color: var(--sci-line); }
 @media (max-width: 760px) { .h-card { grid-template-columns: 1fr; } .h-card p, .h-card .h-meta, .h-card .h-by, .h-card h3 { grid-column: 1; grid-row: auto; } }
+
+/* photos dans les fiches (js/ui/images.js) */
+.c-photo { margin: 12px 0 4px; }
+.c-photo a { display: block; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #02030a; }
+.c-photo img { display: block; width: 100%; height: auto; max-height: 240px; object-fit: cover; }
+.c-photo figcaption { margin-top: 6px; font-size: 11px; line-height: 1.45; color: var(--muted); }
+.c-photo figcaption b { color: var(--sci); font-weight: 500; }
+.c-photo figcaption a { color: var(--soft); }
+.row-ph:empty { display: none; }
+.row-ph .c-photo.sm { margin: 0 0 10px; width: 120px; }
+.row-ph .c-photo.sm img { height: 80px; max-height: none; }

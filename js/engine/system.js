@@ -693,6 +693,9 @@
         A.moonGeo(jd + 6.8, ecl2); dirToScene(ecl2, tmp2);
         P.ringN = (P.ringN || new T.Vector3()).crossVectors(tmp, tmp2).normalize();
         P.helio.x = par.helio.x + ecl.x / A.AU_KM; P.helio.y = par.helio.y + ecl.y / A.AU_KM; P.helio.z = par.helio.z + ecl.z / A.AU_KM;
+      } else if (moonState(P.id, jd, mv)) {                      // position réelle : éléments JPL Horizons du jour
+        dirToScene(mv, tmp); P.pos.copy(par.pos).addScaledVector(tmp, dist);
+        P.helio.x = par.helio.x; P.helio.y = par.helio.y; P.helio.z = par.helio.z; P.realKm = Math.sqrt(mv.x * mv.x + mv.y * mv.y + mv.z * mv.z);
       } else {
         var th = P.phase + TAU * (jd - A.J2000) / d.orbit.P * (d.orbit.retro ? -1 : 1);
         N.set(0, 0, 1).cross(par.pole); if (N.lengthSq() < 1e-6) N.set(1, 0, 0); N.normalize(); Mv.crossVectors(par.pole, N);
@@ -708,6 +711,68 @@
     placeCraft(jd);
   }
 
+
+
+  /* ---------- position réelle des lunes (data/moons.json, tools/moons.py) ----------
+     Éléments osculateurs JPL tous les 2 jours autour d'aujourd'hui : on propage le jeu le plus proche.
+     Hors de la fenêtre couverte, la lune revient à sa position indicative. */
+  var moonEls = null, mv = new T.Vector3();
+  function moonState(id, jd, out) {
+    var E = moonEls && moonEls[id]; if (!E || !E.length) return false;
+    var lo = 0, hi = E.length - 1;
+    if (jd < E[0][0] - 2 || jd > E[hi][0] + 2) return false;
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (E[mid][0] <= jd) lo = mid; else hi = mid; }
+    var e = Math.abs(E[hi][0] - jd) < Math.abs(E[lo][0] - jd) ? E[hi] : E[lo];
+    keplerState(e, jd, out); return true;
+  }
+  L.moonLive = function (id) { return moonState(id, OBS.time.jd, new T.Vector3()); };
+  function loadMoons() {
+    fetch('data/moons.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.moons) return; moonEls = {}; Object.keys(j.moons).forEach(function (k) { moonEls[k] = j.moons[k].e; }); L.moonsGen = j.gen; lastJd = null;
+    }).catch(function () {});
+  }
+
+  /* ---------- rovers sur Mars : dernière position publiée (data/rovers.json, tools/rovers.py) ---------- */
+  function loadRovers() {
+    fetch('data/rovers.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var P = byId.mars; if (!j || !j.rovers || !P || !P.sites) return;
+      P.sites.forEach(function (S) {
+        var R = j.rovers[S.def.id]; if (!R || R.lat == null) return;
+        if (!S.def.landing) S.def.landing = [S.def.lat, S.def.lon];
+        S.def.lat = R.lat; S.def.lon = R.lon; S.def.live = { sol: R.sol, date: R.date, gen: j.gen };
+        latLonObj(R.lat, R.lon, S.obj);
+      });
+    }).catch(function () {});
+  }
+
+  /* ---------- héliosphère : la bulle du vent solaire ----------
+     Choc terminal ≈ 90 UA, héliopause ≈ 120 UA (traversées par Voyager 1 en 2012 et Voyager 2 en 2018).
+     Forme schématique : un nez vers le vent interstellaire (longitude écliptique ≈ 255°, latitude ≈ 5°), une queue étirée. */
+  var helio = null;
+  function buildHelio() {
+    var mat = function (col, k) { return new T.ShaderMaterial({ transparent: true, depthWrite: false, blending: T.AdditiveBlending, side: T.DoubleSide, uniforms: { uC: { value: new T.Color(col) }, uK: { value: k } },
+      vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+      fragmentShader: 'uniform vec3 uC; uniform float uK; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 3.5); gl_FragColor = vec4(uC, f * uK); }' }); };
+    var g = new T.Group(), geo = new T.SphereGeometry(1, 64, 40);
+    var pause = new T.Mesh(geo, mat(0x6f9cff, .28)), shock = new T.Mesh(geo, mat(0x9fd8ff, .12));
+    g.add(pause, shock);
+    var nose = new T.Vector3(), lon = 255.4 * D2R, lat = 5.2 * D2R;
+    dirToScene({ x: Math.cos(lat) * Math.cos(lon), y: Math.cos(lat) * Math.sin(lon), z: Math.sin(lat) }, nose);
+    g.quaternion.setFromUnitVectors(new T.Vector3(0, 0, 1), nose);
+    var c = document.createElement('canvas'); c.width = 512; c.height = 64; var x = c.getContext('2d');
+    x.font = 'italic 30px "DM Sans", sans-serif'; x.fillStyle = 'rgba(170,200,255,.85)'; x.textAlign = 'center'; x.fillText('Héliosphère · bulle du vent solaire', 256, 42);
+    var lab = new T.Sprite(new T.SpriteMaterial({ map: new T.CanvasTexture(c), transparent: true, depthWrite: false, sizeAttenuation: false }));
+    lab.scale.set(.17, .021, 1); lab.renderOrder = 5; scene.add(lab);
+    scene.add(g); helio = { g: g, pause: pause, shock: shock, lab: lab, nose: nose };
+  }
+  function updHelio() {
+    if (!helio) return;
+    var R = scale.dist(120), Rs = scale.dist(90);
+    helio.pause.scale.set(R, R, R * 1.7); helio.pause.position.set(0, 0, -R * .7);
+    helio.shock.scale.set(Rs, Rs, Rs * 1.35); helio.shock.position.set(0, 0, -Rs * .35);
+    helio.g.visible = helio.lab.visible = layers.helio !== false;
+    helio.lab.position.copy(helio.nose).multiplyScalar(R * 1.02).add(new T.Vector3(0, R * .12, 0));
+  }
 
   /* ======================================================================
      Engins spatiaux (sondes, stations, vaisseaux) — positions JPL Horizons
@@ -743,7 +808,7 @@
       bodies.push(P); byId[d.id] = P; crafts.push(P); makeLabel(P);
       P.el.classList.add('is-craft');
     });
-    loadCraft();
+    loadCraft(); loadMoons(); loadRovers(); buildHelio();
   }
   function loadCraft() {
     if (craftData || craftLoading || !showCraft) return; craftLoading = true;
@@ -1151,6 +1216,7 @@
     var jd = OBS.time.jd, jdSpin = OBS.time.jdSpin;
     if (Math.abs(jd - builtJd) > 18262) rebuildOrbits(jd);
     if (jd !== lastJd) { place(jd, jdSpin); updateBelts(jd, lastJd === null); lastJd = jd; }
+    updHelio();
     var simT = now / 1000;
     sunMat.uniforms.uTime.value = simT;
     bodies.forEach(function (P) { if (P.mat) P.mat.uniforms.uTime.value = simT; });

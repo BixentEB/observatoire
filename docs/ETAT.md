@@ -123,3 +123,9 @@
 - Pastille « Nouveau » (`js/ui/news.js`) : date fixe, 14 jours, s'éteint une fois la nouveauté ouverte ; point vert sur l'entrée de menu qui la contient.
 - Méthode > Ressources : sources des données et sites de référence, en lignes.
 - Lexique et hypothèses au même style de lignes que l'Atlas ; colonnes alignées des Types choisies par famille (étoiles, restes d'étoiles).
+
+## Lot 2 du grand patch (8 novembre 2026)
+- Position réelle des 20 grandes lunes (`tools/moons.py` → `data/moons.json`, éléments JPL Horizons tous les 2 jours de J−30 à J+180, relancé chaque jour) ; mention « Position calculée (JPL) » dans la console, position indicative hors de la fenêtre.
+- Rovers sur Mars (`tools/rovers.py` → `data/rovers.json`, points de parcours MMGIS de la NASA) : Perseverance et Curiosity à leur dernière position publiée, avec le sol et le site d'atterrissage.
+- Héliosphère (choc terminal ≈ 90 UA, héliopause ≈ 120 UA, forme schématique orientée vers le vent interstellaire) dans le système solaire ; nuage d'Oort (0,03 à 1,6 al, « déduit, jamais observé ») autour du Soleil dans le voisinage.
+- Photos dans les consoles et les fiches Visiteurs (`js/ui/images.js`, `data/images.json`) : 37 objets demandés, crédits et licence sous chaque image ; taille maximale 1024 px.

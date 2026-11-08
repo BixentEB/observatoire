@@ -359,7 +359,7 @@
     if (v.obs) L.push('<a href="' + v.obs[0] + '">' + esc(v.obs[1]) + ' ›</a>');
     if (v.hypo) L.push('<a class="sci" href="#/hypotheses/chercheurs/' + v.hypo + '">Hypothèse liée ›</a>');
     if (v.wiki) L.push('<a href="' + wiki(v.wiki) + '" target="_blank" rel="noopener">Photos et détails sur Wikipédia ↗</a>');
-    return '<article class="row" id="v-' + v.id + '"><div class="row-h"><h3>' + esc(v.name) + '</h3><p class="row-kind">' + esc(v.kind) + (v.des && v.des !== v.name ? ' · ' + esc(v.des) : '') + '</p>' +
+    return '<article class="row" id="v-' + v.id + '"><div class="row-h"><div class="row-ph" data-photo="visiteurs/' + v.id + '" data-photo-sm></div><h3>' + esc(v.name) + '</h3><p class="row-kind">' + esc(v.kind) + (v.des && v.des !== v.name ? ' · ' + esc(v.des) : '') + '</p>' +
       '<p class="row-when' + (next[0] >= today() ? ' fut' : '') + '">' + rel(next[0]) + '</p></div>' +
       '<div class="row-b"><p>' + esc(v.text) + '</p>' +
       '<ul class="row-dates">' + dates.map(function (d) { return '<li' + (d[0] >= today() ? ' class="fut"' : '') + '><time>' + dateFr(d[0]) + '</time> ' + esc(d[1]) + '</li>'; }).join('') + '</ul>' +

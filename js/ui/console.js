@@ -66,7 +66,8 @@
     if (lv.earth !== undefined && id !== 'soleil') cell('Signal depuis la Terre', lightTime(lv.earth * AU), 'aller simple');
     if (id === 'soleil') cell('Lumière jusqu\'à la Terre', lightTime(lv.earth * AU), 'temps de trajet');
     var note = '';
-    if (def.moon && !(def.orbit && def.orbit.real)) note = '<p class="c-note">Position sur l\'orbite : indicative. La distance et la période sont réelles, l\'emplacement exact de la lune à cette date ne l\'est pas encore.</p>';
+    if (def.moon && !(def.orbit && def.orbit.real) && OBS.system.moonLive && OBS.system.moonLive(id)) note = '<p class="c-note">Position calculée à partir des éléments orbitaux du jour (JPL Horizons, mis à jour chaque jour) : précise autour d\'aujourd\'hui ; loin de la date du jour, la lune revient à une position indicative.</p>';
+    else if (def.moon && !(def.orbit && def.orbit.real)) note = '<p class="c-note">Position sur l\'orbite : indicative. La distance et la période sont réelles, l\'emplacement exact de la lune à cette date ne l\'est pas encore.</p>';
     if (OBS.astro.isSmall(id)) note = '<p class="c-note">Position calculée à partir des éléments orbitaux du JPL (orbite képlérienne simple).</p>';
     return '<div class="c-live">' + h.join('') + '</div>' + note;
   }
@@ -101,6 +102,7 @@
       f.push(flag('sim', 'Corps', 'répartis', 'des points distribués selon la structure réelle, pas des objets catalogués'));
     } else {
       var pos = id === 'soleil' ? flag('real', 'Position', 'centre', 'le Soleil est l\'origine du repère')
+        : def.moon && !(def.orbit && def.orbit.real) && OBS.system.moonLive && OBS.system.moonLive(id) ? flag('real', 'Position', 'calculée (JPL)', 'éléments orbitaux JPL Horizons du jour, propagés ; précis autour d\'aujourd\'hui')
         : def.moon && !(def.orbit && def.orbit.real) ? flag('sim', 'Position', 'indicative', 'distance et période réelles, emplacement sur l\'orbite non calculé')
         : OBS.astro.isSmall(id) ? flag('real', 'Position', 'calculée', 'éléments orbitaux du JPL, orbite képlérienne simple (approchée)')
         : flag('real', 'Position', 'calculée', 'modèle du JPL pour la date affichée');
@@ -158,6 +160,7 @@
     h.push('<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div>');
     h.push('<div class="c-body">');
     h.push(flags(level, def, id));
+    h.push('<div data-photo="explorer/' + id + '"></div>');
     var lr = lore(id);
     if (level === 'voisinage' && def.sun) {             // le Soleil vu du voisinage : « vous êtes ici »
       var nb = OBS.STARS.length;
@@ -310,6 +313,7 @@
     var ml = function (v) { return v >= 1e6 ? nf(v / 1e6, 2) + ' millions d\'al' : nf(Math.round(v / 1000) * 1000) + ' al'; };
     h.push('<div class="c-head"><p class="c-kind">' + esc(d.kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(d.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div data-photo="groupe-local/' + id + '"></div>');
     h.push('<div class="c-flags">' + flag('real', 'Position', d.home ? 'centre du repère' : 'mesurée', 'direction et distance issues des observations (valeurs arrondies)') +
       (d.pa !== undefined ? flag('real', 'Orientation', 'mesurée', 'inclinaison et angle de position du disque') : '') + flag('sim', 'Aspect', 'reconstitué', 'des points répartis selon le type de la galaxie, pas une image') + '<a class="flag-help" href="#/methode">?</a></div>');
     if (!d.home) h.push('<section class="c-sec"><div class="c-live"><div><span>Distance au Soleil</span><b>' + ml(d.ly) + '</b><small>sa lumière est partie il y a ' + ml(d.ly).replace(' d\'al', ' d\'années').replace(' al', ' ans') + '</small></div>' +
@@ -356,6 +360,7 @@
       h.push('<section class="c-sec"><h3>Données</h3><table class="c-facts"><tr><th>Angle d\'enroulement</th><td>' + nf(A.psi[0], 1) + '° puis ' + nf(A.psi[1], 1) + '°</td></tr><tr><th>Largeur</th><td>≈ ' + nf(Math.round(A.w * 3262 / 100) * 100) + ' années-lumière</td></tr><tr><th>Portion mesurée</th><td>' + nf(A.mesure[1] - A.mesure[0]) + '° d\'azimut autour du centre</td></tr></table></section>');
     } else {
       var inf = OBS.galaxy.info(id);
+      h.push('<div data-photo="galaxie/' + id + '"></div>');
       h.push('<div class="c-flags">' + (d.sun ? flag('real', 'Position', 'mesurée', 'distance au centre : collaboration GRAVITY 2019') : flag('real', 'Position', 'mesurée', 'direction et distance issues des observations (valeurs arrondies)')) + flag('adapt', 'Repère', 'symbolique', 'un point lumineux, pas l\'aspect de l\'objet') + '<a class="flag-help" href="#/methode">?</a></div>');
       h.push('<section class="c-sec"><div class="c-live">' + (d.sun ? '' : '<div><span>Distance au Soleil</span><b>' + nf(inf.fromSun) + ' al</b><small>sa lumière est partie il y a ' + nf(inf.fromSun) + ' ans</small></div>') +
         '<div><span>Distance au centre</span><b>' + nf(Math.round(inf.fromCenter / 100) * 100) + ' al</b><small>' + (inf.fromCenter > 60000 ? 'hors du disque' : 'dans le disque') + '</small></div></div></section>');
@@ -385,12 +390,16 @@
     var src = SF.src || {};
     h.push('<div class="c-head"><p class="c-kind">' + esc(typeLabel + ' · ' + B.name) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + ';color:' + (S.type === 'site' ? '#f4c77a' : '#c9d2ea') + '"></span>' + esc(S.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Revenir à ' + esc(B.name) + '">✕</button></div><div class="c-body">');
-    h.push('<div class="c-flags">' + flag('real', 'Position', 'coordonnées IAU', 'latitude et longitude officielles du lieu') +
+    h.push('<div class="c-flags">' + (S.live ? flag('real', 'Position', 'suivie (NASA)', 'dernier point de parcours publié par la NASA, mis à jour chaque jour') : flag('real', 'Position', 'coordonnées IAU', 'latitude et longitude officielles du lieu')) +
       (src.relief ? flag('real', 'Relief', src.relief, 'pentes calculées à partir des altitudes mesurées') : flag('adapt', 'Relief', 'non représenté', 'pas de données d\'altitude intégrées pour cet astre : la surface est éclairée comme une sphère lisse')) +
       (src.aspect ? flag('real', 'Aspect', src.aspect, 'images réelles prises par les sondes') : '') +
       (src.relief ? flag('adapt', 'Éclairage', 'sans ombres portées', 'le relief est éclairé par le vrai Soleil, mais les ombres des reliefs sur leurs voisins ne sont pas calculées') : '') + '<a class="flag-help" href="#/methode">?</a></div>');
     h.push('<section class="c-sec"><h3>En ce moment</h3><div data-live></div><p class="c-cap" data-skip></p></section>');
-    var rows = [['Coordonnées', deg(S.lat, 'N', 'S') + ' · ' + deg(S.lon, 'E', 'O')]];
+    var rows = [[S.live ? 'Position actuelle' : 'Coordonnées', deg(S.lat, 'N', 'S') + ' · ' + deg(S.lon, 'E', 'O')]];
+    if (S.live) {
+      if (S.live.sol != null) rows.push(['Dernier point publié', 'sol ' + nf(S.live.sol) + (S.live.date ? ' · ' + String(S.live.date).slice(0, 10) : '')]);
+      if (S.landing) rows.push(['Site d\'atterrissage', deg(S.landing[0], 'N', 'S') + ' · ' + deg(S.landing[1], 'E', 'O')]);
+    }
     if (S.d) rows.push(['Diamètre', '≈ ' + nf(S.d) + ' km']);
     if (S.date) rows.push(['Date', S.date]);
     h.push('<p class="c-text">' + esc(S.text) + '</p>');

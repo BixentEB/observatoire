@@ -38,6 +38,22 @@
       labelsContainer.appendChild(tag); L['tag' + r] = { el: tag, pos: new T.Vector3(r * LY, 0, 0) };
     });
 
+    // nuage d'Oort autour du Soleil : de ≈ 2 000 UA (0,03 al) à ≈ 100 000 UA (1,6 al), déduit des orbites des comètes, jamais observé
+    (function () {
+      var N = 2600, pos = new Float32Array(N * 3), s0 = 7;
+      for (var k = 0; k < N; k++) {
+        s0 = (s0 * 1664525 + 1013904223) >>> 0; var u = s0 / 4294967296; s0 = (s0 * 1664525 + 1013904223) >>> 0; var v = s0 / 4294967296; s0 = (s0 * 1664525 + 1013904223) >>> 0; var w = s0 / 4294967296;
+        var r = (k < N * .25 ? .03 + w * .3 : .3 + Math.sqrt(w) * 1.3) * LY;                 // nuage intérieur aplati, extérieur sphérique
+        var th = u * Math.PI * 2, ph = Math.acos(2 * v - 1), fl = k < N * .25 ? .35 : 1;
+        pos[k * 3] = r * Math.sin(ph) * Math.cos(th); pos[k * 3 + 1] = r * Math.cos(ph) * fl; pos[k * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      }
+      var g = new T.BufferGeometry(); g.setAttribute('position', new T.BufferAttribute(pos, 3));
+      L.oort = new T.Points(g, new T.PointsMaterial({ color: 0x9fb0e0, size: .07, transparent: true, opacity: .3, depthWrite: false, sizeAttenuation: true }));
+      scene.add(L.oort);
+      var tag = document.createElement('span'); tag.className = 'ring-tag oort-tag'; tag.textContent = 'Nuage d\'Oort · déduit, jamais observé';
+      labelsContainer.appendChild(tag); L.tagOort = { el: tag, pos: new T.Vector3(0, -1.75 * LY, 0) };
+    })();
+
     var list = [{ id: 'soleil-v', name: 'Soleil', sun: true, ly: 0, ra: 0, dec: 0, spec: 'G2 V', cls: 'G', lum: 1 }].concat(OBS.STARS);
     var hitGeo = new T.SphereGeometry(1, 12, 8), hitMat = new T.MeshBasicMaterial({ visible: false });
     list.forEach(function (s) {
@@ -204,7 +220,7 @@
       el.classList.toggle('hov', S.id === hover);
       el.classList.toggle('dim', !!selected && S.id !== selected);
     });
-    [5, 10].forEach(function (r) {
+    ['5', '10', 'Oort'].forEach(function (r) {
       var t = L['tag' + r]; camSpace.copy(t.pos).applyMatrix4(camera.matrixWorldInverse); v3.copy(t.pos).project(camera);
       t.el.hidden = camSpace.z > 0;
       t.el.style.transform = 'translate(' + ((v3.x * .5 + .5) * W).toFixed(1) + 'px,' + ((-v3.y * .5 + .5) * H).toFixed(1) + 'px)';

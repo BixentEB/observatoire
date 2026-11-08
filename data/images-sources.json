@@ -115,6 +115,7 @@
     "explorer/mercure"
    ],
    "search": [
+    "Mercury",
     "Mercury (planet)"
    ],
    "expect": [
@@ -304,6 +305,7 @@
     "explorer/ganymede"
    ],
    "search": [
+    "Ganymede",
     "Ganymede (moon)"
    ],
    "expect": [
@@ -319,6 +321,7 @@
     "explorer/callisto"
    ],
    "search": [
+    "Callisto",
     "Callisto (moon)"
    ],
    "expect": [
@@ -334,6 +337,7 @@
     "explorer/titan"
    ],
    "search": [
+    "Titan",
     "Titan (moon)"
    ],
    "expect": [
@@ -379,6 +383,7 @@
     "explorer/charon"
    ],
    "search": [
+    "Charon",
     "Charon (moon)"
    ],
    "expect": [
@@ -530,12 +535,15 @@
     "visiteurs/halebopp"
    ],
    "search": [
+    "C/1995 O1",
+    "Hale-Bopp",
     "Comet Hale–Bopp"
    ],
    "expect": [
     "comet"
    ],
-   "fallback": "comete"
+   "fallback": "comete",
+   "designation": "1995 O1"
   },
   {
    "id": "neowise",
