@@ -278,8 +278,12 @@
         fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(.55, .75, 1.0), f * .9); }' }));
       sh.scale.set(1.25, 1, 1); grp.add(sh); grp.add(glow(0xffd27a, .9, 1)); grp.position.x = 2.7; o.scene.add(grp);
       o.tick = function (t) { grp.rotation.y = .6 + Math.sin(t * .2) * .2; }; return o; },
-    arm: function () { return S.bras(); },
-    halo: function () { var o = S.galaxie(); o.scene.children[0].scale.setScalar(.45); var h = glow(0x8aa6ff, 5.5, .35); h.position.x = 2.6; o.scene.add(h); return o; },
+    arm: function () { var o = S.bras(), p = o.scene.children[0]; p.geometry.center(); p.position.set(2.7, 0, 0); return o; },   // bras recentré dans la vignette
+    halo: function () { var o = S.galaxie(), gal = o.scene.children[0]; gal.scale.setScalar(.3);
+      gal.traverse(function (x) { if (x.material && x.material.uniforms && x.material.uniforms.uAlpha) x.material.uniforms.uAlpha.value *= .45; });
+      var h = cloudPts(79, 1400, function (r) { var u = new T.Vector3(r() - .5, r() - .5, r() - .5).normalize(), d = Math.pow(r(), .5) * 2.4; return [u.x * d, u.y * d, u.z * d, .55, .65, 1, 6 + r() * 8]; }, .14);
+      h.position.x = 2.6; o.scene.add(h); var g = glow(0x8aa6ff, 5.2, .22); g.position.x = 2.6; o.scene.add(g);
+      var tick = o.tick; o.tick = function (t, dt) { tick(t, dt); h.rotation.y = t * .02; }; return o; },
     void: function () { return S.vide(); }
   };
   function makeThumb(spec) { var p = spec.split(':'), f = TH[p[0]]; return f ? f.apply(null, p.slice(1)) : null; }

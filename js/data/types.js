@@ -58,11 +58,11 @@
     { fam: 'galaxies', name: 'Sphéroïdale naine', mini: 'sph', traits: [['Étoiles', 'quelques millions, très vieilles'], ['Masse', 'surtout de la matière noire']], ex: [['#/groupe-local/lg-draco', 'Naine du Dragon'], ['#/groupe-local/sculptor', 'Naine du Sculpteur']], lex: 'Galaxie sphéroïdale naine' },
     { fam: 'galaxies', name: 'Ultra-diffuse', mini: 'udg', traits: [['Taille', 'grande'], ['Éclat', 'des centaines de fois plus pâle']], ex: [['#/groupe-local/lg-crater2', 'Coupe II'], ['#/groupe-local/lg-antlia2', 'Machine pneumatique 2']], lex: 'Galaxie ultra-diffuse' },
     /* non-objets */
-    { fam: 'non', name: 'Ceinture', mini: 'belt', traits: [['Quoi', 'un anneau de petits corps'], ['Masse totale', 'faible : celle de la ceinture principale fait ≈ 3 % de la Lune']], ex: [['#/explorer/ceinture', 'Ceinture principale'], ['#/explorer/kuiper', 'Ceinture de Kuiper']], lex: 'Ceinture de Kuiper' },
-    { fam: 'non', name: 'Héliosphère', mini: 'helio', traits: [['Quoi', 'la bulle du vent solaire'], ['Taille', '≈ 120 UA jusqu\'à sa frontière']], ex: [['#/explorer/voyager1', 'Voyager 1']], lex: null },
-    { fam: 'non', name: 'Bras spiral', mini: 'arm', traits: [['Quoi', 'une onde de densité, pas un objet fixe'], ['Exemple', 'le Soleil est dans le bras d\'Orion']], ex: [['#/galaxie/orion', 'Bras d\'Orion']], lex: 'Bras spiral' },
-    { fam: 'non', name: 'Halo', mini: 'halo', traits: [['Quoi', 'gaz chaud et matière noire autour d\'une galaxie'], ['Taille', 'jusqu\'à plus de 1 million d\'al']], ex: [['#/groupe-local', 'Halos du Groupe local']], lex: 'Halo galactique' },
-    { fam: 'non', name: 'Vide cosmique', mini: 'void', traits: [['Quoi', 'une région presque sans galaxies'], ['Taille', 'des dizaines à des centaines de millions d\'al']], ex: [], lex: 'Toile cosmique', note: "Le Groupe local est au bord du Vide local." }
+    { fam: 'non', name: 'Ceinture', mini: 'belt', traits: [['Masse totale', 'faible : celle de la ceinture principale fait ≈ 3 % de la Lune']], ex: [['#/explorer/ceinture', 'Ceinture principale'], ['#/explorer/kuiper', 'Ceinture de Kuiper']], lex: 'Ceinture de Kuiper', note: 'Un anneau de petits corps.' },
+    { fam: 'non', name: 'Héliosphère', mini: 'helio', traits: [['Taille', '≈ 120 UA jusqu\'à sa frontière']], ex: [['#/explorer/voyager1', 'Voyager 1']], lex: null, note: 'La bulle du vent solaire.' },
+    { fam: 'non', name: 'Bras spiral', mini: 'arm', traits: [['Exemple', 'le Soleil est dans le bras d\'Orion']], ex: [['#/galaxie/orion', 'Bras d\'Orion']], lex: 'Bras spiral', note: 'Une onde de densité, pas un objet fixe.' },
+    { fam: 'non', name: 'Halo', mini: 'halo', traits: [['Taille', 'jusqu\'à plus de 1 million d\'al']], ex: [['#/groupe-local', 'Halos du Groupe local']], lex: 'Halo galactique', note: 'Gaz chaud et matière noire autour d\'une galaxie.' },
+    { fam: 'non', name: 'Vide cosmique', mini: 'void', traits: [['Taille', 'des dizaines à des centaines de millions d\'al']], ex: [], lex: 'Toile cosmique', note: 'Une région presque sans galaxies. Le Groupe local est au bord du Vide local.' }
   ];
 
   OBS.CYCLES = [
