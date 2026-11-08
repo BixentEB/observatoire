@@ -18,7 +18,7 @@
     { id: 'laniakea', n: 'Laniakea', r: '≈ 1 milliard d\'al', s: '100 000 galaxies qui s\'écoulent vers le Grand Attracteur.', mini: 'arm', ok: false },
     { id: 'univers', n: 'Univers observable', r: '93 milliards d\'al', s: 'La toile cosmique, jusqu\'au rayonnement fossile.', mini: 'void', ok: false }
   ];
-  var cur = 0, open = false;
+  var cur = 0, open = true;   // sur ordinateur, le panneau est déplié d'entrée
 
   function index() {
     var L = [];
@@ -36,7 +36,7 @@
     root.innerHTML = '<p class="p-kicker">Maquette · à valider</p><h1>Naviguer par échelles</h1>' +
       '<p class="lead">Huit crans, du Système solaire à l\'Univers observable, à la place de la rangée « Système solaire, Voisinage, Voie lactée, Groupe local ». Les quatre derniers niveaux n\'existent pas encore : ils sont grisés. Cette page n\'est reliée à aucun menu.</p>' +
       '<h2>Sur ordinateur : le panneau dépliant</h2>' +
-      '<p class="note">Replié, c\'est une règle verticale discrète sur le bord gauche. Un clic (ou le survol) la déplie en panneau : chaque niveau avec sa vignette, son étendue et une phrase. + et − changent de cran, la loupe cherche un objet et ouvre le bon niveau.</p>' +
+      '<p class="note">Le panneau des échelles est ouvert d\'entrée, à gauche ; la flèche le replie en fine règle. À droite, la carte horizontale du niveau choisi (la vraie, celle de l\'Atlas). Les deux se complètent : le panneau pour changer d\'échelle, la carte pour voir les objets du niveau.</p>' +
       '<div class="mq-desk"><div class="mq-stage" id="mq-stage"></div><nav class="mq-panel" id="mq-panel" aria-label="Échelles"></nav></div>' +
       '<h2>Sur téléphone : la règle défilante</h2>' +
       '<p class="note">Une ligne de crans qui défile de côté, le cran courant centré, + et − aux extrémités.</p>' +
@@ -66,10 +66,17 @@
       });
     }
     function drawStage() {
-      var l = LV[cur];
-      stage.innerHTML = OBS.band(['planete', 'etoile', 'galaxie', 'galaxie', 'nebuleuse', 'amas', 'bras', 'vide'][cur], esc(l.n), l.s, null) +
-        '<p class="mq-cap">' + (l.ok ? 'Ici s\'afficherait la carte ou la liste du niveau <b>' + esc(l.n) + '</b>. <a href="' + l.href + '">Voir l\'Atlas actuel ›</a>' : 'Niveau à venir : <b>' + esc(l.n) + '</b>, ' + esc(l.r) + '.') +
-        '<br><span class="mq-here">Vous êtes ici : ' + LV.slice(0, cur + 1).map(function (x) { return esc(x.n); }).reverse().join(' ⊃ ') + '</span></p>';
+      var l = LV[cur], here = '<p class="mq-here">Vous êtes ici : ' + LV.slice(0, cur + 1).map(function (x) { return esc(x.n); }).reverse().join(' ⊃ ') + '</p>';
+      if (!l.ok) {
+        stage.innerHTML = OBS.band(['planete', 'etoile', 'galaxie', 'galaxie', 'nebuleuse', 'amas', 'bras', 'vide'][cur], esc(l.n), l.s, null) +
+          '<p class="mq-cap">Niveau à venir : <b>' + esc(l.n) + '</b>, ' + esc(l.r) + '. Sa carte horizontale viendra ici, comme pour les quatre premiers.</p>' + here;
+        return;
+      }
+      // niveaux existants : la vraie carte horizontale de l'Atlas, sans la rangée d'onglets qu'elle remplacerait
+      stage.innerHTML = '<div class="mq-head"><b>' + esc(l.n) + '</b><span>' + esc(l.r) + '</span></div>' + here + '<div class="mq-atlas"></div>';
+      var box = stage.querySelector('.mq-atlas');
+      try { OBS.pages.atlas(box, l.id, 'carte'); } catch (err) { box.innerHTML = '<p class="note">Carte indisponible ici.</p>'; }
+      box.querySelectorAll('.p-kicker, h1, .tabs').forEach(function (x) { x.remove(); });
     }
     function drawPhone() {
       ph.innerHTML = '<button type="button" class="mq-pz" data-z="-1" aria-label="Plus près">−</button><div class="mq-ph-scroll">' + LV.map(function (l, i) {
@@ -80,12 +87,12 @@
       phb.innerHTML = '<p class="mq-ph-t">' + esc(LV[cur].n) + '</p><p>' + esc(LV[cur].s) + '</p>';
     }
     function go(i) { cur = Math.max(0, Math.min(LV.length - 1, i)); drawPanel(); drawStage(); drawPhone(); }
-    root.addEventListener('click', function (e) {
+    root.onclick = function (e) {
       var t = e.target.closest('button'); if (!t || !root.contains(t)) return;
       if (t.classList.contains('mq-tog')) { open = !open; drawPanel(); return; }
       if (t.hasAttribute('data-z')) { go(cur + +t.getAttribute('data-z')); return; }
       if (t.hasAttribute('data-i')) go(+t.getAttribute('data-i'));
-    });
+    };
     go(0);
   };
 })();

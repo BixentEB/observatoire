@@ -1007,3 +1007,8 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
 .mq-pill.soon { opacity: .5; }
 .mq-ph-body { padding: 16px 6px 0; font-size: 14px; color: var(--soft); }
 .mq-ph-t { margin: 0 0 4px; font: 600 18px var(--display); color: var(--fg); }
+.mq-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 2px; }
+.mq-head b { font: 600 22px var(--display); }
+.mq-head span { font: 12px var(--mono); color: var(--muted); }
+.mq-atlas { margin-top: 10px; min-width: 0; overflow-x: auto; }
+.mq-desk .mq-stage { min-width: 0; }
