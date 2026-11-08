@@ -20,7 +20,7 @@
       { href: '#/simulateur', t: 'Simulateur d\'objets', k: 'Disponible', d: 'Modeler un corps céleste : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère, puis copier les réglages.' },
       { act: 'photo', t: 'Mode photo', k: 'Disponible', d: 'Choisir ce qui apparaît à l\'écran (noms, orbites, engins, ceintures, plan de l\'écliptique, signature) et enregistrer une image du ciel à la date affichée.' },
       { href: '#/lunaisons', t: 'Lunaisons', k: 'Disponible', d: 'La Lune telle qu\'on la voit à n\'importe quelle date, ses prochaines phases, les super-lunes et un calendrier du mois, calculés à la minute près.' },
-      { soon: true, t: 'Comparateur', k: 'Prévu', d: 'Deux astres côte à côte, à la même échelle : tailles, distances, durées du jour et de l\'année.' },
+      { href: '#/comparateur', t: 'Comparateur', k: 'Disponible', d: 'Deux astres côte à côte, à la même échelle : la Terre et Jupiter, le Soleil et Sirius… puis leurs données face à face, avec le rapport entre les deux.' },
       { soon: true, t: 'Scénarios « et si… »', k: 'À l\'étude', d: 'Et si la Terre avait deux lunes ? Des expériences calculées quand un modèle simple le permet, toujours marquées comme simulées.' }
     ];
     root.innerHTML = '<p class="p-kicker">Outils</p><h1>Manipuler, comparer, capturer</h1>' +

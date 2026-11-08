@@ -1086,3 +1086,29 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
   .lu-day .lu-ico { width: 22px; height: 22px; }
   .lu-day small { display: none; }
 }
+
+/* ---------- Comparateur (#/comparateur) ---------- */
+.cp-pick { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 18px 0 12px; }
+.cp-sel { flex: 1; min-width: 160px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line2); background: rgba(8, 12, 26, .8); color: var(--fg); font: 15px var(--body); color-scheme: dark; }
+.cp-swap { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line2); background: none; color: var(--fg); font-size: 18px; cursor: pointer; }
+.cp-swap:hover { border-color: var(--accent); color: var(--accent); }
+.cp-stage { position: relative; border: 1px solid var(--line); border-radius: 16px; background: radial-gradient(ellipse at 50% 100%, rgba(120, 140, 200, .08), transparent 60%), rgba(2, 3, 10, .7); padding-bottom: 58px; }
+.cp-cv { display: block; width: 100%; }
+.cp-lbls { position: absolute; inset: 0; pointer-events: none; }
+.cp-lbl { position: absolute; bottom: 30px; transform: translateX(-50%); text-align: center; color: var(--fg); text-decoration: none; pointer-events: auto; white-space: nowrap; }
+.cp-lbl b { display: block; font-weight: 600; }
+.cp-lbl small { font: 11px var(--mono); color: var(--muted); }
+.cp-lbl:hover b { color: var(--accent); }
+.cp-tiny { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 1.5px solid #f4c77a; border-radius: 50%; box-shadow: 0 0 10px rgba(244, 199, 122, .5); }
+.cp-ratio { position: absolute; left: 0; right: 0; bottom: 6px; margin: 0; text-align: center; font: 12px var(--mono); color: var(--soft); }
+.cp-table { margin-top: 18px; }
+.cp-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 11px 4px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.cp-head { font: 600 15px var(--display); border-bottom-color: var(--line2); }
+.cp-l { color: var(--muted); font: 12px var(--mono); padding-top: 2px; }
+.cp-r { color: #f4c77a; font-size: 13px; }
+.cp-fun { margin: 16px 4px 0; color: var(--soft); }
+@media (max-width: 760px) {
+  .cp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 12px; }
+  .cp-l, .cp-r { grid-column: 1 / -1; }
+  .cp-head .cp-l, .cp-head .cp-r { display: none; }
+}
