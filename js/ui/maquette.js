@@ -18,8 +18,6 @@
     { id: 'laniakea', n: 'Laniakea', r: '≈ 1 milliard d\'al', s: '100 000 galaxies qui s\'écoulent vers le Grand Attracteur.', mini: 'arm', ok: false },
     { id: 'univers', n: 'Univers observable', r: '93 milliards d\'al', s: 'La toile cosmique, jusqu\'au rayonnement fossile.', mini: 'void', ok: false }
   ];
-  var cur = 0, open = true;   // sur ordinateur, le panneau est déplié d'entrée
-
   function index() {
     var L = [];
     (OBS.BODIES || []).forEach(function (b) { L.push([b.name, 0]); });
@@ -30,33 +28,39 @@
     return L;
   }
   function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  var BAND = ['planete', 'etoile', 'galaxie', 'galaxie', 'nebuleuse', 'amas', 'bras', 'vide'];
 
-  OBS.pages.maquette = function (root) {
-    var IDX = index();
-    root.innerHTML = '<p class="p-kicker">Maquette · à valider</p><h1>Naviguer par échelles</h1>' +
-      '<p class="lead">Huit crans, du Système solaire à l\'Univers observable, à la place de la rangée « Système solaire, Voisinage, Voie lactée, Groupe local ». Les quatre derniers niveaux n\'existent pas encore : ils sont grisés. Cette page n\'est reliée à aucun menu.</p>' +
-      '<h2>Sur ordinateur : le panneau dépliant</h2>' +
-      '<p class="note">Le panneau des échelles est ouvert d\'entrée, à gauche ; la flèche le replie en fine règle. À droite, la carte horizontale du niveau choisi (la vraie, celle de l\'Atlas). Les deux se complètent : le panneau pour changer d\'échelle, la carte pour voir les objets du niveau.</p>' +
-      '<div class="mq-desk"><div class="mq-stage" id="mq-stage"></div><nav class="mq-panel" id="mq-panel" aria-label="Échelles"></nav></div>' +
-      '<h2>Sur téléphone : la règle défilante</h2>' +
-      '<p class="note">Une ligne de crans qui défile de côté, le cran courant centré, + et − aux extrémités.</p>' +
-      '<div class="mq-phone"><div class="mq-ph-in"><div class="mq-ph-bar" id="mq-ph"></div><div class="mq-ph-body" id="mq-ph-body"></div></div></div>' +
-      '<p class="note" style="margin-top:28px">Dites-moi ce qui vous plaît, ce qui manque, ou ce qu\'il faut changer avant l\'intégration.</p>';
-    var panel = root.querySelector('#mq-panel'), stage = root.querySelector('#mq-stage'), ph = root.querySelector('#mq-ph'), phb = root.querySelector('#mq-ph-body');
+  /* Un navigateur d'échelles autonome. mode 'pc' : panneau à gauche, carte à droite.
+     mode 'tel' : barre compacte (− niveau courant +) au-dessus de la carte ; un appui sur le niveau
+     déplie la même liste que sur PC (vignettes, recherche), le choix la referme. */
+  function mount(host, mode, IDX) {
+    var cur = 0, open = mode === 'pc';
+    host.className = 'mq-nav mq-' + mode;
+    host.innerHTML = '<nav class="mq-panel" aria-label="Échelles"></nav><div class="mq-stage"></div>';
+    var panel = host.querySelector('.mq-panel'), stage = host.querySelector('.mq-stage');
 
+    function search() { return '<label class="mq-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Chercher un objet…" autocomplete="off"></label>'; }
+    function steps(full) {
+      return '<ol class="mq-steps">' + LV.slice().reverse().map(function (l) {
+        var i = LV.indexOf(l);
+        return '<li class="' + (i === cur ? 'on ' : '') + (l.ok ? '' : 'soon') + '"><button type="button" data-i="' + i + '" title="' + esc(l.n + ' · ' + l.r) + '">' +
+          '<span class="mq-dot"></span>' + (full ? '<canvas class="mq-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="mq-t"><b>' + esc(l.n) + '</b><small>' + esc(l.r) + (l.ok ? '' : ' · à venir') + '</small></span>' : '<span class="mq-lbl">' + (i + 1) + '</span>') +
+          '</button></li>';
+      }).join('') + '</ol>';
+    }
     function drawPanel() {
+      var l = LV[cur];
       panel.className = 'mq-panel' + (open ? ' open' : '');
-      panel.innerHTML = '<div class="mq-top"><button type="button" class="mq-tog" aria-label="' + (open ? 'Replier' : 'Déplier') + ' le panneau">' + (open ? '‹' : '›') + '</button>' +
-        (open ? '<label class="mq-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Chercher un objet…" autocomplete="off"></label>' : '') + '</div>' +
-        '<button type="button" class="mq-zoom" data-z="+1" aria-label="Échelle plus grande" title="Plus loin">+</button>' +
-        '<ol class="mq-steps">' + LV.slice().reverse().map(function (l) {
-          var i = LV.indexOf(l);
-          return '<li class="' + (i === cur ? 'on ' : '') + (l.ok ? '' : 'soon') + '"><button type="button" data-i="' + i + '" title="' + esc(l.n + ' · ' + l.r) + '">' +
-            '<span class="mq-dot"></span>' + (open ? '<canvas class="mq-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="mq-t"><b>' + esc(l.n) + '</b><small>' + esc(l.r) + (l.ok ? '' : ' · à venir') + '</small></span>' : '<span class="mq-lbl">' + (i + 1) + '</span>') +
-            '</button></li>';
-        }).join('') + '</ol>' +
-        '<button type="button" class="mq-zoom" data-z="-1" aria-label="Échelle plus petite" title="Plus près">−</button>' +
-        (open ? '<div class="mq-res" hidden></div>' : '');
+      if (mode === 'tel') {
+        panel.innerHTML = '<div class="mq-bar"><button type="button" class="mq-zoom" data-z="-1" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>−</button>' +
+          '<button type="button" class="mq-cur mq-tog" aria-expanded="' + open + '"><canvas class="mq-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="mq-t"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / 8 · ' + esc(l.r) + '</small></span><span class="mq-chev" aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
+          '<button type="button" class="mq-zoom" data-z="+1" aria-label="Échelle plus grande"' + (cur < LV.length - 1 ? '' : ' disabled') + '>+</button></div>' +
+          (open ? '<div class="mq-drop">' + search() + '<div class="mq-res" hidden></div>' + steps(true) + '</div>' : '');
+      } else {
+        panel.innerHTML = '<div class="mq-top"><button type="button" class="mq-tog" aria-label="' + (open ? 'Replier' : 'Déplier') + ' le panneau">' + (open ? '‹' : '›') + '</button>' + (open ? search() : '') + '</div>' +
+          '<button type="button" class="mq-zoom" data-z="+1" aria-label="Échelle plus grande" title="Plus loin">+</button>' + steps(open) +
+          '<button type="button" class="mq-zoom" data-z="-1" aria-label="Échelle plus petite" title="Plus près">−</button>' + (open ? '<div class="mq-res" hidden></div>' : '');
+      }
       var inp = panel.querySelector('input'), res = panel.querySelector('.mq-res');
       if (inp) inp.addEventListener('input', function () {
         var q = norm(inp.value.trim()); if (!q) { res.hidden = true; return; }
@@ -68,31 +72,38 @@
     function drawStage() {
       var l = LV[cur], here = '<p class="mq-here">Vous êtes ici : ' + LV.slice(0, cur + 1).map(function (x) { return esc(x.n); }).reverse().join(' ⊃ ') + '</p>';
       if (!l.ok) {
-        stage.innerHTML = OBS.band(['planete', 'etoile', 'galaxie', 'galaxie', 'nebuleuse', 'amas', 'bras', 'vide'][cur], esc(l.n), l.s, null) +
+        stage.innerHTML = OBS.band(BAND[cur], esc(l.n), l.s, null) +
           '<p class="mq-cap">Niveau à venir : <b>' + esc(l.n) + '</b>, ' + esc(l.r) + '. Sa carte horizontale viendra ici, comme pour les quatre premiers.</p>' + here;
         return;
       }
       // niveaux existants : la vraie carte horizontale de l'Atlas, sans la rangée d'onglets qu'elle remplacerait
-      stage.innerHTML = '<div class="mq-head"><b>' + esc(l.n) + '</b><span>' + esc(l.r) + '</span></div>' + here + '<div class="mq-atlas"></div>';
+      stage.innerHTML = (mode === 'pc' ? '<div class="mq-head"><b>' + esc(l.n) + '</b><span>' + esc(l.r) + '</span></div>' : '') + here + '<div class="mq-atlas"></div>';
       var box = stage.querySelector('.mq-atlas');
       try { OBS.pages.atlas(box, l.id, 'carte'); } catch (err) { box.innerHTML = '<p class="note">Carte indisponible ici.</p>'; }
       box.querySelectorAll('.p-kicker, h1, .tabs').forEach(function (x) { x.remove(); });
     }
-    function drawPhone() {
-      ph.innerHTML = '<button type="button" class="mq-pz" data-z="-1" aria-label="Plus près">−</button><div class="mq-ph-scroll">' + LV.map(function (l, i) {
-        return '<button type="button" data-i="' + i + '" class="mq-pill' + (i === cur ? ' on' : '') + (l.ok ? '' : ' soon') + '">' + esc(l.n) + '<small>' + esc(l.r) + '</small></button>';
-      }).join('') + '</div><button type="button" class="mq-pz" data-z="+1" aria-label="Plus loin">+</button>';
-      var on = ph.querySelector('.mq-pill.on'), sc = ph.querySelector('.mq-ph-scroll');
-      if (on) sc.scrollLeft += on.getBoundingClientRect().left - sc.getBoundingClientRect().left - (sc.clientWidth - on.clientWidth) / 2;
-      phb.innerHTML = '<p class="mq-ph-t">' + esc(LV[cur].n) + '</p><p>' + esc(LV[cur].s) + '</p>';
-    }
-    function go(i) { cur = Math.max(0, Math.min(LV.length - 1, i)); drawPanel(); drawStage(); drawPhone(); }
-    root.onclick = function (e) {
-      var t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    function go(i) { cur = Math.max(0, Math.min(LV.length - 1, i)); if (mode === 'tel') open = false; drawPanel(); drawStage(); }
+    host.onclick = function (e) {
+      var t = e.target.closest('button'); if (!t || !host.contains(t) || !panel.contains(t)) return;
       if (t.classList.contains('mq-tog')) { open = !open; drawPanel(); return; }
       if (t.hasAttribute('data-z')) { go(cur + +t.getAttribute('data-z')); return; }
       if (t.hasAttribute('data-i')) go(+t.getAttribute('data-i'));
     };
     go(0);
+  }
+
+  OBS.pages.maquette = function (root) {
+    var IDX = index(), narrow = window.innerWidth < 760;
+    root.innerHTML = '<p class="p-kicker">Maquette · à valider</p><h1>Naviguer par échelles</h1>' +
+      '<p class="lead">Huit crans, du Système solaire à l\'Univers observable, à la place de la rangée « Système solaire, Voisinage, Voie lactée, Groupe local ». Les quatre derniers niveaux n\'existent pas encore : ils sont grisés. Cette page n\'est reliée à aucun menu.</p>' +
+      (narrow ? '' : '<h2>Sur ordinateur</h2>' +
+      '<p class="note">Le panneau des échelles est ouvert d\'entrée, à gauche ; la flèche le replie en fine règle. À droite, la vraie carte horizontale de l\'Atlas pour le niveau choisi.</p>' +
+      '<div id="mq-pc"></div>') +
+      '<h2>Sur téléphone</h2>' +
+      '<p class="note">Le même panneau, replié en une barre au-dessus de la carte : − et + changent de niveau, un appui sur le niveau déplie la liste complète avec les vignettes et la recherche. Le choix la referme.' + (narrow ? '' : ' Ouvrez cette page sur votre téléphone pour le vrai rendu.') + '</p>' +
+      (narrow ? '<div id="mq-tel"></div>' : '<div class="mq-phone"><div class="mq-ph-in"><div id="mq-tel"></div></div></div>') +
+      '<p class="note" style="margin-top:28px">Dites-moi ce qui vous plaît, ce qui manque, ou ce qu\'il faut changer avant l\'intégration.</p>';
+    if (!narrow) mount(root.querySelector('#mq-pc'), 'pc', IDX);
+    mount(root.querySelector('#mq-tel'), 'tel', IDX);
   };
 })();
