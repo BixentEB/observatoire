@@ -53,7 +53,7 @@
       panel.className = 'mq-panel' + (open ? ' open' : '');
       if (mode === 'tel') {
         panel.innerHTML = '<div class="mq-bar"><button type="button" class="mq-zoom" data-z="-1" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>−</button>' +
-          '<button type="button" class="mq-cur mq-tog" aria-expanded="' + open + '"><canvas class="mq-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="mq-t"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / 8 · ' + esc(l.r) + '</small></span><span class="mq-chev" aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
+          '<button type="button" class="mq-cur mq-tog" aria-expanded="' + open + '"><canvas class="mq-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="mq-t"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / 8</small><small>' + esc(l.r) + '</small></span><span class="mq-chev" aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
           '<button type="button" class="mq-zoom" data-z="+1" aria-label="Échelle plus grande"' + (cur < LV.length - 1 ? '' : ' disabled') + '>+</button></div>' +
           (open ? '<div class="mq-drop">' + search() + '<div class="mq-res" hidden></div>' + steps(true) + '</div>' : '');
       } else {
@@ -70,7 +70,7 @@
       });
     }
     function drawStage() {
-      var l = LV[cur], here = '<p class="mq-here">Vous êtes ici : ' + LV.slice(0, cur + 1).map(function (x) { return esc(x.n); }).reverse().join(' ⊃ ') + '</p>';
+      var l = LV[cur], here = '';
       if (!l.ok) {
         stage.innerHTML = OBS.band(BAND[cur], esc(l.n), l.s, null) +
           '<p class="mq-cap">Niveau à venir : <b>' + esc(l.n) + '</b>, ' + esc(l.r) + '. Sa carte horizontale viendra ici, comme pour les quatre premiers.</p>' + here;
@@ -82,10 +82,10 @@
       try { OBS.pages.atlas(box, l.id, 'carte'); } catch (err) { box.innerHTML = '<p class="note">Carte indisponible ici.</p>'; }
       box.querySelectorAll('.p-kicker, h1, .tabs').forEach(function (x) { x.remove(); });
       if (mode === 'tel') {
-        // téléphone : la carte juste sous la barre, les indications (pastilles, tailles) en dessous
-        var flags = box.querySelector('.c-flags'), sc = box.querySelector('.atlas-scroll');
-        if (flags && sc) { sc.parentNode.insertBefore(flags, sc.nextSibling); }
-        if (sc) { pinch(sc); sc.insertAdjacentHTML('afterend', '<p class="mq-pinch">Pincer pour zoomer · toucher deux fois pour revenir</p>'); }
+        // téléphone : la carte juste sous la barre, les indications en dessous (ordre réglé en CSS) ;
+        // le bouton « Tailles » redessine la carte, on réarme donc le zoom sur chaque nouvelle carte
+        var arm = function () { var sc = box.querySelector('.atlas-scroll'); if (sc && !sc.dataset.pinch) { sc.dataset.pinch = 1; pinch(sc); } };
+        arm(); new MutationObserver(arm).observe(box, { childList: true, subtree: true });
       }
     }
     function go(i) { cur = Math.max(0, Math.min(LV.length - 1, i)); if (mode === 'tel') open = false; drawPanel(); drawStage(); }

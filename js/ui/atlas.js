@@ -194,13 +194,17 @@
     var svg = '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Carte à plat du système solaire">' +
       '<defs>' + defs.join('') + '</defs>' +
       '<line x1="0" y1="' + AXIS + '" x2="' + W + '" y2="' + AXIS + '" class="at-axis"/>' + back.join('') + front.join('') + labels.join('') + '</svg>';
+    // compact (maquette des échelles, à généraliser si validé) : la pastille « Tailles » disparaît, le bouton l'indique déjà,
+    // et le bouton devient « Tailles : Lisibles | Réelles » sur sa propre ligne
+    var compact = !!(root.closest && root.closest('.mq-nav'));
     root.innerHTML = '<div class="c-flags atlas-flags">' +
       '<span class="flag f-real" title="Réel — les objets sont rangés dans leur vrai ordre depuis le Soleil"><i>Ordre</i>réel</span>' +
       '<span class="flag f-adapt" title="Adapté — les écarts entre colonnes ne sont pas à l\'échelle ; la distance moyenne est indiquée en UA"><i>Distances</i>non à l\'échelle</span>' +
-      (sizeMode === 'reelles' ? '<span class="flag f-real" title="Réel — toutes les tailles sont à la même échelle (Jupiter = 72 px)"><i>Tailles</i>réelles</span>'
+      (compact ? '' : sizeMode === 'reelles' ? '<span class="flag f-real" title="Réel — toutes les tailles sont à la même échelle (Jupiter = 72 px)"><i>Tailles</i>réelles</span>'
         : '<span class="flag f-adapt" title="Adapté — les petits objets sont agrandis pour rester lisibles"><i>Tailles</i>lisibles</span>') +
       '<span class="flag f-sim" title="Simulé — vitesse de rotation indicative"><i>Rotation</i>indicative</span>' +
-      '<span class="atlas-toggle"><button type="button" data-s="lisibles" aria-pressed="' + (sizeMode === 'lisibles') + '">Tailles lisibles</button><button type="button" data-s="reelles" aria-pressed="' + (sizeMode === 'reelles') + '">Tailles réelles</button></span></div>' +
+      (compact ? '</div><div class="atlas-sizes"><span class="atlas-sizes-l">Tailles :</span><span class="atlas-toggle"><button type="button" data-s="lisibles" title="Adapté — les petits objets sont agrandis pour rester lisibles" aria-pressed="' + (sizeMode === 'lisibles') + '">Lisibles</button><button type="button" data-s="reelles" title="Réel — toutes les tailles à la même échelle (Jupiter = 72 px)" aria-pressed="' + (sizeMode === 'reelles') + '">Réelles</button></span></div>'
+        : '<span class="atlas-toggle"><button type="button" data-s="lisibles" aria-pressed="' + (sizeMode === 'lisibles') + '">Tailles lisibles</button><button type="button" data-s="reelles" aria-pressed="' + (sizeMode === 'reelles') + '">Tailles réelles</button></span></div>') +
       '<div class="atlas-scroll" tabindex="0" aria-label="Carte, défilement horizontal">' + svg + '</div>' +
       '<p class="note">Cliquez sur un objet pour le rejoindre dans l\'espace. ' + (sizeMode === 'reelles' ? 'À l\'échelle réelle, le Soleil est si grand qu\'on n\'en voit qu\'un bord, et les petites lunes ne sont plus que des points.' : 'Passez en « tailles réelles » pour voir les vraies proportions.') + '</p>';
     Array.prototype.forEach.call(root.querySelectorAll('[data-s]'), function (b) {
