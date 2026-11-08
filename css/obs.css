@@ -1016,3 +1016,12 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
 .mq-tel .mq-cat-band, .mq-tel .cat-band { margin-top: 4px; }
 .mq-phone { display: flex; justify-content: center; margin: 14px 0; }
 .mq-ph-in { width: 390px; max-width: 100%; max-height: 760px; overflow-y: auto; border: 1px solid var(--line2); border-radius: 28px; padding: 18px 12px 26px; background: #05060f; }
+/* téléphone : pastilles compactes sur une ligne, bascule des tailles sur la suivante */
+.mq-tel .atlas-scroll { overflow: auto; max-height: 62vh; height: 62vh; }
+.mq-tel .c-flags { gap: 4px; margin-top: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.mq-tel .c-flags::-webkit-scrollbar { display: none; }
+.mq-tel .c-flags .flag { flex: none; }
+.mq-tel .c-flags .flag { font-size: 9.5px; padding: 2px 6px; gap: 3px; white-space: nowrap; }
+.mq-tel .atlas-toggle { flex: none; margin: 0 0 0 6px; }
+.mq-tel .atlas-toggle button { font-size: 10.5px; padding: 5px 9px; }
+.mq-pinch { margin: 4px 2px 0; font: 10.5px var(--mono); color: var(--muted); }

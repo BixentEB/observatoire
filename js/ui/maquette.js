@@ -81,6 +81,12 @@
       var box = stage.querySelector('.mq-atlas');
       try { OBS.pages.atlas(box, l.id, 'carte'); } catch (err) { box.innerHTML = '<p class="note">Carte indisponible ici.</p>'; }
       box.querySelectorAll('.p-kicker, h1, .tabs').forEach(function (x) { x.remove(); });
+      if (mode === 'tel') {
+        // téléphone : la carte juste sous la barre, les indications (pastilles, tailles) en dessous
+        var flags = box.querySelector('.c-flags'), sc = box.querySelector('.atlas-scroll');
+        if (flags && sc) { sc.parentNode.insertBefore(flags, sc.nextSibling); }
+        if (sc) { pinch(sc); sc.insertAdjacentHTML('afterend', '<p class="mq-pinch">Pincer pour zoomer · toucher deux fois pour revenir</p>'); }
+      }
     }
     function go(i) { cur = Math.max(0, Math.min(LV.length - 1, i)); if (mode === 'tel') open = false; drawPanel(); drawStage(); }
     host.onclick = function (e) {
@@ -91,6 +97,39 @@
     };
     go(0);
   }
+
+  /* Zoom à deux doigts sur une carte de l'Atlas (svg avec viewBox) : on change sa taille affichée
+     en gardant sous les doigts le point qu'on pince ; deux touchers rapides reviennent à la taille d'origine.
+     Le plus petit zoom fait tenir toute la carte dans la largeur de l'écran. */
+  function pinch(sc) {
+    var svg = sc.querySelector('svg'); if (!svg) return;
+    var W = +svg.getAttribute('width'), H = +svg.getAttribute('height'), z = 1, g = null, lastTap = 0;
+    function zmin() { return Math.min(1, (sc.clientWidth - 2) / W); }
+    function set(nz, cx, cy) {
+      nz = Math.max(zmin(), Math.min(2.5, nz));
+      var r = sc.getBoundingClientRect(), px = cx - r.left, py = cy - r.top;
+      var fx = (sc.scrollLeft + px) / z, fy = (sc.scrollTop + py) / z;
+      z = nz; svg.setAttribute('width', (W * z).toFixed(0)); svg.setAttribute('height', (H * z).toFixed(0));
+      sc.scrollLeft = fx * z - px; sc.scrollTop = fy * z - py;
+    }
+    function d(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+    sc.style.touchAction = 'pan-x pan-y';
+    // d'entrée, une carte très haute (Groupe local) est réduite pour tenir dans la hauteur du cadre
+    var fit = Math.min(1, (sc.clientHeight - 4) / H);
+    if (fit < 1) { z = Math.max(zmin(), fit); svg.setAttribute('width', (W * z).toFixed(0)); svg.setAttribute('height', (H * z).toFixed(0)); }
+    var z0 = z;
+    sc.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) { g = { d: d(e.touches), z: z }; e.preventDefault(); return; }
+      var now = Date.now(); if (e.touches.length === 1 && now - lastTap < 300) { var t = e.touches[0]; set(Math.abs(z - z0) < .01 ? zmin() : z0, t.clientX, t.clientY); e.preventDefault(); }
+      lastTap = now;
+    }, { passive: false });
+    sc.addEventListener('touchmove', function (e) {
+      if (!g || e.touches.length !== 2) return; e.preventDefault();
+      var t = e.touches; set(g.z * d(t) / g.d, (t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2);
+    }, { passive: false });
+    sc.addEventListener('touchend', function (e) { if (e.touches.length < 2) g = null; });
+  }
+  OBS.mqPinch = pinch;
 
   OBS.pages.maquette = function (root) {
     var IDX = index(), narrow = window.innerWidth < 760;
