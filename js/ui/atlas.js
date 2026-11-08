@@ -25,6 +25,8 @@
   try { sizeMode = localStorage.getItem('obs.atlas.tailles') || 'lisibles'; } catch (e) {}
   var reduced = false; try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
+  OBS.ATLAS_SCOPES = SCOPES.map(function (x) { return x.id; });   // niveaux que l'Atlas sait afficher (lu par la règle des échelles)
+
   OBS.pages.atlas = function (root, scope, view) {
     if (!scope) scope = OBS.engine.level && OBS.engine.level.id === 'voisinage' ? 'voisinage' : 'systeme';   // l'atlas suit l'endroit où l'on est
     if (!SCOPES.some(function (s) { return s.id === scope; })) scope = 'systeme';

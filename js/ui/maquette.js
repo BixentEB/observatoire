@@ -28,6 +28,9 @@
     return L;
   }
   function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  // « à venir » n'est jamais écrit à la main : un niveau devient disponible dès que l'Atlas sait l'afficher
+  // (son id figure dans OBS.ATLAS_SCOPES), et la mention disparaît d'elle-même.
+  function avail() { var S = OBS.ATLAS_SCOPES || []; LV.forEach(function (l) { l.ok = S.indexOf(l.id) >= 0; l.href = '#/atlas/' + l.id; }); }
   var BAND = ['planete', 'etoile', 'galaxie', 'galaxie', 'nebuleuse', 'amas', 'bras', 'vide'];
 
   /* Un navigateur d'échelles autonome. mode 'pc' : panneau à gauche, carte à droite.
@@ -132,6 +135,7 @@
   OBS.mqPinch = pinch;
 
   OBS.pages.maquette = function (root) {
+    avail();
     var IDX = index(), narrow = window.innerWidth < 760;
     root.innerHTML = '<p class="p-kicker">Maquette · à valider</p><h1>Naviguer par échelles</h1>' +
       '<p class="lead">Huit crans, du Système solaire à l\'Univers observable, à la place de la rangée « Système solaire, Voisinage, Voie lactée, Groupe local ». Les quatre derniers niveaux n\'existent pas encore : ils sont grisés. Cette page n\'est reliée à aucun menu.</p>' +
