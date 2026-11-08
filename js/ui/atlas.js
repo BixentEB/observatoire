@@ -417,7 +417,7 @@
       var L = OBS.TYPES.filter(function (t) { return t.fam === f[0]; });
       var n = L.length, cnt = {}, order = [];
       L.forEach(function (t) { t.traits.forEach(function (x) { if (!cnt[x[0]]) { cnt[x[0]] = 0; order.push(x[0]); } cnt[x[0]]++; }); });
-      var cols = order.filter(function (k) { return cnt[k] >= Math.max(2, Math.ceil(n * .75)); }).slice(0, 3);   // colonnes seulement pour ce que (presque) tous partagent
+      var cols = (f[3] || []).filter(function (k) { return cnt[k]; });   // colonnes alignées : choisies par famille (OBS.TYPE_FAMILIES, 4e élément)
       var hasT = L.some(function (t) { return t.temp; }), hasR = L.some(function (t) { return t.rad; });
       var head = '<div class="tt-head"><span></span><span></span>' + cols.map(function (k) { return '<span class="' + infoCls(k) + '">' + esc(k) + '</span>'; }).join('') +
         (hasT ? '<span class="i-temp">Température de surface <small>300 K → 40 000 K</small></span>' : '') + (hasR ? '<span class="i-size">Taille <small>par rapport à la Terre</small></span>' : '') + '</div>';

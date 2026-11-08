@@ -1,0 +1,37 @@
+# Numéros de version des fichiers : après chaque modification d'un script ou d'une feuille de style,
+# met à jour les ?v=<empreinte> d'index.html (tools/stamp.py) pour que les visiteurs aient la dernière version.
+name: Numéros de version
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'css/**'
+      - 'fonts/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: versions
+  cancel-in-progress: false
+
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versionner
+        run: python3 tools/stamp.py
+      - name: Publier si quelque chose a changé
+        run: |
+          if git diff --quiet -- index.html; then echo "Déjà à jour."; exit 0; fi
+          git config user.name "observatoire-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Numéros de version des fichiers"
+          git pull --rebase --quiet || true
+          git push

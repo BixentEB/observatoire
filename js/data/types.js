@@ -9,8 +9,8 @@
   var OBS = window.OBS = window.OBS || {};
 
   OBS.TYPE_FAMILIES = [
-    ['etoiles', 'Étoiles', 'Des boules de gaz qui brillent par fusion nucléaire. Leur masse décide de presque tout : couleur, durée de vie, et la façon dont elles finissent.'],
-    ['compacts', 'Restes d\'étoiles', 'Ce qui reste quand une étoile a fini de brûler : plus elle était massive, plus son reste est dense.'],
+    ['etoiles', 'Étoiles', 'Des boules de gaz qui brillent par fusion nucléaire. Leur masse décide de presque tout : couleur, durée de vie, et la façon dont elles finissent.', ['Masse', 'Surface', 'Durée de vie']],
+    ['compacts', 'Restes d\'étoiles', 'Ce qui reste quand une étoile a fini de brûler : plus elle était massive, plus son reste est dense.', ['Taille', 'Masse']],
     ['planetes', 'Planètes', 'Des corps arrondis par leur propre gravité, qui tournent autour d\'une étoile.'],
     ['petits', 'Petits corps', 'Les débris de la formation des planètes : trop petits pour être des planètes, ils gardent la mémoire des débuts du système solaire.'],
     ['nuages', 'Nuages et amas', 'Le gaz et la poussière entre les étoiles, et les groupes d\'étoiles nées ensemble.'],

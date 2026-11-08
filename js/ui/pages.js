@@ -36,7 +36,7 @@
   };
 
   /* Méthode : un menu à onglets (Méthode, Crédits), d'autres pourront s'ajouter */
-  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences'], ['projet', 'Le projet']];
+  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences'], ['ressources', 'Ressources'], ['projet', 'Le projet']];
   function infoTabs(cur) {
     return '<div class="tabs" role="tablist" aria-label="Informations">' + INFO_TABS.map(function (t) {
       return '<a role="tab" class="tab" href="#/' + t[0] + '" aria-selected="' + (t[0] === cur) + '">' + t[1] + '</a>';
@@ -165,6 +165,52 @@
       '</ul>',
       '<p>L\'Observatoire est un projet de <a href="https://codexmental.com">Codex Mental</a>.</p>'
     ].join('');
+  };
+
+  /* Ressources : les sources de données utilisées, puis des sites de référence pour aller plus loin */
+  var SOURCES = [
+    ['Positions et trajectoires', [
+      ['JPL Horizons', 'https://ssd.jpl.nasa.gov/horizons/', 'NASA/JPL — éphémérides des planètes, des lunes, des petits corps et des engins spatiaux.'],
+      ['JPL Small-Body Database', 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html', 'Orbites des astéroïdes et des comètes.'],
+      ['CNEOS, rapprochements de la Terre', 'https://cneos.jpl.nasa.gov/ca/', 'Dates et distances des passages d\'astéroïdes près de la Terre.']]],
+    ['Étoiles, exoplanètes et galaxies', [
+      ['Gaia (ESA)', 'https://www.cosmos.esa.int/web/gaia', 'Positions et distances de près de 2 milliards d\'étoiles.'],
+      ['NASA Exoplanet Archive', 'https://exoplanetarchive.ipac.caltech.edu/', 'Catalogue des exoplanètes confirmées.'],
+      ['RECONS et SIMBAD', 'https://simbad.cds.unistra.fr/simbad/', 'Étoiles du voisinage solaire, base du CDS de Strasbourg.'],
+      ['Reid et al. (2019)', 'https://doi.org/10.3847/1538-4357/ab4a11', 'Bras spiraux de la Voie lactée mesurés par interférométrie radio.'],
+      ['McConnachie (2012)', 'https://doi.org/10.1088/0004-6256/144/1/4', 'Catalogue des galaxies du Groupe local.']]],
+    ['Cartes et images', [
+      ['USGS Astrogeology', 'https://astrogeology.usgs.gov/', 'Cartes et reliefs des planètes et des lunes.'],
+      ['NASA Scientific Visualization Studio', 'https://svs.gsfc.nasa.gov/', 'Carte et relief de la Lune.'],
+      ['Wikimedia Commons', 'https://commons.wikimedia.org/', 'Photographies libres, avec leurs auteurs et leurs licences.']]]
+  ];
+  var SITES = [
+    ['Agences spatiales', [
+      ['NASA', 'https://science.nasa.gov/', 'Missions, découvertes et images de l\'agence américaine.'],
+      ['ESA', 'https://www.esa.int/', 'Agence spatiale européenne, missions et actualités.'],
+      ['CNES', 'https://cnes.fr/', 'Agence spatiale française.']]],
+    ['Observer et explorer', [
+      ['Stellarium Web', 'https://stellarium-web.org/', 'Le ciel de chez soi, en direct dans le navigateur.'],
+      ['NASA Eyes on the Solar System', 'https://eyes.nasa.gov/apps/solar-system/', 'Le système solaire et les sondes en 3D, par la NASA.'],
+      ['IMCCE', 'https://www.imcce.fr/', 'Institut de mécanique céleste de l\'Observatoire de Paris : éphémérides et calendriers.']]],
+    ['Images et actualités', [
+      ['Astronomy Picture of the Day', 'https://apod.nasa.gov/apod/', 'Une image commentée par jour, depuis 1995.'],
+      ['ESA/Hubble et ESA/Webb', 'https://esahubble.org/', 'Les images des télescopes spatiaux Hubble et James Webb.'],
+      ['NASA Photojournal', 'https://photojournal.jpl.nasa.gov/', 'Les images des missions planétaires.']]]
+  ];
+  function resList(groups) {
+    return groups.map(function (g) {
+      return '<h3>' + esc(g[0]) + '</h3><div class="rows res-rows">' + g[1].map(function (x) {
+        return '<div class="row"><div class="row-h"><h3><a href="' + x[1] + '" target="_blank" rel="noopener">' + esc(x[0]) + ' ↗</a></h3></div><div class="row-b"><p>' + esc(x[2]) + '</p></div></div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+  pages.ressources = function (root) {
+    root.innerHTML = '<p class="p-kicker">Méthode</p><h1>Ressources</h1>' + infoTabs('ressources') +
+      '<p class="lead">Les sources des données de l\'Observatoire, puis des sites de référence pour aller plus loin. Les liens s\'ouvrent dans un nouvel onglet.</p>' +
+      '<h2>Sources des données</h2>' + resList(SOURCES) +
+      '<h2>Sites de référence</h2>' + resList(SITES) +
+      '<p class="note" style="margin-top:28px">Les crédits détaillés des images et des logiciels sont dans l\'onglet <a href="#/credits">Crédits et licences</a>.</p>';
   };
 
 })();
