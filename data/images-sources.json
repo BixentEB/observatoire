@@ -575,6 +575,221 @@
     "minor planet"
    ],
    "fallback": "asteroide"
+  },
+  {
+   "id": "hoba",
+   "label": "Météorite de Hoba",
+   "uses": [
+    "artefacts/hoba"
+   ],
+   "search": [
+    "Hoba meteorite"
+   ],
+   "expect": [
+    "meteorite"
+   ],
+   "fallback": "asteroide",
+   "alt": "Météorite de Hoba"
+  },
+  {
+   "id": "ensisheim",
+   "label": "Météorite d'Ensisheim",
+   "uses": [
+    "artefacts/ensisheim"
+   ],
+   "search": [
+    "Ensisheim meteorite"
+   ],
+   "expect": [
+    "meteorite"
+   ],
+   "fallback": "asteroide",
+   "alt": "Météorite d'Ensisheim"
+  },
+  {
+   "id": "allende",
+   "label": "Météorite d'Allende",
+   "uses": [
+    "artefacts/allende"
+   ],
+   "search": [
+    "Allende meteorite"
+   ],
+   "expect": [
+    "meteorite"
+   ],
+   "fallback": "asteroide",
+   "alt": "Météorite d'Allende"
+  },
+  {
+   "id": "murchison",
+   "label": "Météorite de Murchison",
+   "uses": [
+    "artefacts/murchison"
+   ],
+   "search": [
+    "Murchison meteorite"
+   ],
+   "expect": [
+    "meteorite"
+   ],
+   "fallback": "asteroide",
+   "alt": "Météorite de Murchison"
+  },
+  {
+   "id": "alh84001",
+   "label": "ALH 84001",
+   "uses": [
+    "artefacts/alh84001"
+   ],
+   "search": [
+    "Allan Hills 84001"
+   ],
+   "expect": [
+    "meteorite"
+   ],
+   "fallback": "asteroide",
+   "alt": "ALH 84001"
+  },
+  {
+   "id": "tcheliabinsk",
+   "label": "Superbolide de Tcheliabinsk",
+   "uses": [
+    "artefacts/tcheliabinsk"
+   ],
+   "search": [
+    "Chelyabinsk meteor"
+   ],
+   "expect": [
+    "meteor",
+    "bolide",
+    "airburst",
+    "impact",
+    "event",
+    "explosion"
+   ],
+   "fallback": "asteroide",
+   "alt": "Superbolide de Tcheliabinsk"
+  },
+  {
+   "id": "barringer",
+   "label": "Meteor Crater",
+   "uses": [
+    "artefacts/barringer"
+   ],
+   "search": [
+    "Meteor Crater"
+   ],
+   "expect": [
+    "crater"
+   ],
+   "fallback": "asteroide",
+   "alt": "Meteor Crater"
+  },
+  {
+   "id": "rochechouart",
+   "label": "Astroblème de Rochechouart",
+   "uses": [
+    "artefacts/rochechouart"
+   ],
+   "search": [
+    "Rochechouart impact structure"
+   ],
+   "expect": [
+    "crater",
+    "structure",
+    "astrobleme"
+   ],
+   "fallback": "asteroide",
+   "alt": "Astroblème de Rochechouart"
+  },
+  {
+   "id": "vredefort",
+   "label": "Cratère de Vredefort",
+   "uses": [
+    "artefacts/vredefort"
+   ],
+   "search": [
+    "Vredefort impact structure",
+    "Vredefort crater"
+   ],
+   "expect": [
+    "crater",
+    "structure"
+   ],
+   "fallback": "asteroide",
+   "alt": "Cratère de Vredefort"
+  },
+  {
+   "id": "itokawa",
+   "label": "Itokawa",
+   "uses": [
+    "artefacts/itokawa"
+   ],
+   "search": [
+    "25143 Itokawa"
+   ],
+   "expect": [
+    "asteroid",
+    "minor planet"
+   ],
+   "fallback": "asteroide",
+   "alt": "Itokawa"
+  },
+  {
+   "id": "ryugu",
+   "label": "Ryugu",
+   "uses": [
+    "artefacts/ryugu"
+   ],
+   "search": [
+    "162173 Ryugu"
+   ],
+   "expect": [
+    "asteroid",
+    "minor planet"
+   ],
+   "fallback": "asteroide",
+   "alt": "Ryugu"
+  },
+  {
+   "id": "plaque-pioneer",
+   "label": "Plaque de Pioneer",
+   "uses": [
+    "artefacts/plaque-pioneer"
+   ],
+   "search": [
+    "Pioneer plaque"
+   ],
+   "expect": [],
+   "fallback": "interstellaire",
+   "alt": "Plaque de Pioneer"
+  },
+  {
+   "id": "message-arecibo",
+   "label": "Message d'Arecibo",
+   "uses": [
+    "artefacts/message-arecibo"
+   ],
+   "search": [
+    "Arecibo message"
+   ],
+   "expect": [],
+   "fallback": "interstellaire",
+   "alt": "Message d'Arecibo"
+  },
+  {
+   "id": "disque-voyager",
+   "label": "Disque d'or de Voyager",
+   "uses": [
+    "artefacts/disque-voyager"
+   ],
+   "search": [
+    "Voyager Golden Record"
+   ],
+   "expect": [],
+   "fallback": "interstellaire",
+   "alt": "Disque d'or de Voyager"
   }
  ]
 }

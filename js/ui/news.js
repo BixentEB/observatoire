@@ -17,7 +17,8 @@
     { href: '#/ressources', date: '2026-11-08', menu: 'methode' },
     { href: '#/lunaisons', date: '2026-11-08', menu: 'outils' },
     { href: '#/comparateur', date: '2026-11-08', menu: 'outils' },
-    { href: '#/hypotheses/seuls', date: '2026-11-09', menu: 'hypotheses' }
+    { href: '#/hypotheses/seuls', date: '2026-11-09', menu: 'hypotheses' },
+    { href: '#/atlas/artefacts', date: '2026-11-09', menu: 'atlas' }
   ];
   var DAYS = 14;
   OBS.NEWS = NEWS;

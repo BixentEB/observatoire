@@ -1185,3 +1185,7 @@ body.gt-on .console { bottom: 220px; }
 .sq-src ul { padding-left: 18px; color: var(--soft); font-size: 14px; line-height: 1.8; }
 .sq-src a { color: var(--soft); }
 @media (max-width: 760px) { .dk-r { grid-template-columns: 1fr 80px; } .dk-r label { grid-column: 1 / -1; } .sq-when { margin-left: 0; width: 100%; } }
+/* Artefacts : nature des sons */
+.ar-k { display: inline-block; margin-bottom: 8px; font: 10.5px var(--mono); padding: 2px 8px; border-radius: 999px; border: 1px solid; }
+.ar-reel { color: #8fe0a8; border-color: rgba(143, 224, 168, .45); }
+.ar-sonif { color: #f4c77a; border-color: rgba(244, 199, 122, .45); }

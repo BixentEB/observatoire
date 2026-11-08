@@ -17,7 +17,8 @@
     { id: 'groupe-local', label: 'Groupe local' },
     { id: 'visiteurs', label: 'Visiteurs', theme: true, title: 'Les visiteurs du système solaire' },
     { id: 'types', label: 'Types d\'objets', theme: true, title: 'Les types d\'objets' },
-    { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' }
+    { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' },
+    { id: 'artefacts', label: 'Artefacts', theme: true, title: 'La bibliothèque du ciel' }
   ];
   function hex(c) { return '#' + ('000000' + (c >>> 0).toString(16)).slice(-6); }
   function colorOf(b) { return b.id === 'soleil' ? '#ffb23e' : b.look && b.look.c ? hex(b.look.c[1]) : '#8f96b8'; }
@@ -56,7 +57,7 @@
       h.push('<div id="atlas-body"></div>');
       root.innerHTML = h.join('');
       var tb = root.querySelector('#atlas-body');
-      if (scope === 'visiteurs') visiteurs(tb, sub); else if (scope === 'types') types(tb, sub); else echelles(tb);
+      if (scope === 'visiteurs') visiteurs(tb, sub); else if (scope === 'types') types(tb, sub); else if (scope === 'artefacts') OBS.atlasArtefacts(tb); else echelles(tb);
       OBS.armPinch(root); return;
     }
     lastLevel = scope;
