@@ -8,7 +8,7 @@ Pour chaque objet de data/images-sources.json :
   2. prend l'image principale de l'objet dans Wikidata (propriété P18) ou un fichier Commons imposé ;
   3. lit sur Commons la licence, l'auteur, le crédit, la description et les catégories ;
      refuse les licences non libres, repère les vues d'artiste (« illustration », jamais « photo ») ;
-  4. ne télécharge que si le fichier a changé (empreinte SHA-1 de Commons), convertit en WebP 480 et 1280 px ;
+  4. ne télécharge que si le fichier a changé (empreinte SHA-1 de Commons), convertit en WebP 480 et 1024 px ;
   5. écrit data/images.json (catalogue) et data/images-report.md (à relire) ;
   6. cherche aussi des candidats dans la photothèque de la NASA, proposés seulement (jamais retenus sans validation).
 
@@ -25,7 +25,7 @@ OUT = os.path.join(ROOT, 'data', 'images.json')
 REPORT = os.path.join(ROOT, 'data', 'images-report.md')
 IMGDIR = os.path.join(ROOT, 'assets', 'img')
 UA = 'ObservatoireCodexMental/1.0 (https://obs.codexmental.com ; https://github.com/BixentEB/observatoire)'
-SIZES = (480, 1280)
+SIZES = (480, 1024)
 QUALITY = 78
 FREE = re.compile(r'^(public domain|pd|cc0|cc[- ]by(?:[- ]sa)?(?:[- ][0-9.]+)?(?:[- ](?:igo|au|de|fr|es|it|nl|us))*)\b', re.I)
 NONFREE = re.compile(r'\b(nc|nd|non[- ]commercial|no[- ]derivatives|fair use|all rights reserved)\b', re.I)

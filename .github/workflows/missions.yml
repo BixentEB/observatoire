@@ -5,6 +5,13 @@ on:
   schedule:
     - cron: '17 4 * * *'      # chaque jour vers 4 h 17 UTC
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - 'tools/missions.py'
+      - 'tools/moons.py'
+      - 'tools/rovers.py'
+      - '.github/workflows/missions.yml'
 
 permissions:
   contents: write
@@ -24,11 +31,18 @@ jobs:
           python-version: '3.12'
       - name: Récupérer les trajectoires
         run: python3 tools/missions.py
+      - name: Position des lunes
+        continue-on-error: true
+        run: python3 tools/moons.py
+      - name: Position des rovers sur Mars
+        continue-on-error: true
+        run: python3 tools/rovers.py
       - name: Publier si quelque chose a changé
         run: |
-          if git diff --quiet -- data/missions.json; then echo "Rien de neuf."; exit 0; fi
+          git add data/missions.json data/moons.json data/rovers.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
           git config user.name "observatoire-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/missions.json
           git commit -m "Trajectoires des engins : mise à jour JPL Horizons du $(date -u +%F)"
+          git pull --rebase --quiet || true
           git push

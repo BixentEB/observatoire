@@ -1,10 +1,570 @@
 {
-  "_aide": "Objets à illustrer. id : identifiant canonique (une seule image par objet) ; uses : toutes les fiches qui la réutilisent (niveau/id) ; search : noms à chercher dans Wikidata ; expect : mot attendu dans la nature de l'objet (en anglais) ; designation : désignation officielle à retrouver (petits corps) ; wikidata / file : à fixer une fois validé ; status : validé, rejeté ou aucune ; fallback : visuel de remplacement (type d'objet) ; nasa : recherche de candidats dans la photothèque NASA. Test sur cinq objets avant de généraliser.",
-  "objets": [
-    { "id": "m31", "label": "Galaxie d'Andromède", "uses": ["groupe-local/m31", "lexique/galaxie-spirale"], "search": ["Andromeda Galaxy"], "expect": ["galaxy"], "fallback": "galaxie-spirale", "nasa": "Andromeda galaxy", "alt": "La galaxie d'Andromède, une grande spirale vue presque par la tranche" },
-    { "id": "crabe", "label": "Nébuleuse du Crabe", "uses": ["galaxie/crabe", "types/remanent"], "search": ["Crab Nebula"], "expect": ["nebula", "supernova remnant"], "fallback": "nebuleuse", "nasa": "Crab Nebula", "alt": "La nébuleuse du Crabe, reste de l'explosion d'une étoile" },
-    { "id": "halley", "label": "Comète de Halley", "uses": ["explorer/halley", "visiteurs/halley-v"], "search": ["Halley's Comet"], "expect": ["comet"], "designation": "1P", "fallback": "comete", "nasa": "Halley comet 1986", "alt": "La comète de Halley" },
-    { "id": "apophis", "label": "Apophis", "uses": ["visiteurs/apophis"], "search": ["99942 Apophis"], "expect": ["asteroid", "minor planet"], "designation": "99942", "fallback": "asteroide", "nasa": "Apophis asteroid", "alt": "L'astéroïde Apophis" },
-    { "id": "oumuamua", "label": "ʻOumuamua", "uses": ["visiteurs/oumuamua", "hypotheses/oumuamua-voile"], "search": ["ʻOumuamua", "Oumuamua"], "expect": ["interstellar", "asteroid", "comet", "minor planet"], "designation": "1I", "fallback": "interstellaire", "nasa": "Oumuamua", "alt": "ʻOumuamua" }
-  ]
+ "_aide": "Objets à illustrer. id : identifiant canonique (une seule image par objet) ; uses : toutes les fiches qui la réutilisent (niveau/id) ; search : noms à chercher dans Wikidata ; expect : mot attendu dans la nature de l'objet (en anglais) ; designation : désignation officielle à retrouver (petits corps) ; wikidata / file : à fixer une fois validé ; status : validé, rejeté ou aucune ; fallback : visuel de remplacement (type d'objet) ; nasa : recherche de candidats dans la photothèque NASA.",
+ "objets": [
+  {
+   "id": "m31",
+   "label": "Galaxie d'Andromède",
+   "uses": [
+    "groupe-local/m31",
+    "lexique/galaxie-spirale"
+   ],
+   "search": [
+    "Andromeda Galaxy"
+   ],
+   "expect": [
+    "galaxy"
+   ],
+   "fallback": "galaxie-spirale",
+   "nasa": "Andromeda galaxy",
+   "alt": "La galaxie d'Andromède, une grande spirale vue presque par la tranche"
+  },
+  {
+   "id": "crabe",
+   "label": "Nébuleuse du Crabe",
+   "uses": [
+    "galaxie/crabe",
+    "types/remanent"
+   ],
+   "search": [
+    "Crab Nebula"
+   ],
+   "expect": [
+    "nebula",
+    "supernova remnant"
+   ],
+   "fallback": "nebuleuse",
+   "nasa": "Crab Nebula",
+   "alt": "La nébuleuse du Crabe, reste de l'explosion d'une étoile"
+  },
+  {
+   "id": "halley",
+   "label": "Comète de Halley",
+   "uses": [
+    "explorer/halley",
+    "visiteurs/halley-v"
+   ],
+   "search": [
+    "Halley's Comet"
+   ],
+   "expect": [
+    "comet"
+   ],
+   "designation": "1P",
+   "fallback": "comete",
+   "nasa": "Halley comet 1986",
+   "alt": "La comète de Halley"
+  },
+  {
+   "id": "apophis",
+   "label": "Apophis",
+   "uses": [
+    "visiteurs/apophis"
+   ],
+   "search": [
+    "99942 Apophis"
+   ],
+   "expect": [
+    "asteroid",
+    "minor planet"
+   ],
+   "designation": "99942",
+   "fallback": "asteroide",
+   "nasa": "Apophis asteroid",
+   "alt": "L'astéroïde Apophis"
+  },
+  {
+   "id": "oumuamua",
+   "label": "ʻOumuamua",
+   "uses": [
+    "visiteurs/oumuamua",
+    "hypotheses/oumuamua-voile"
+   ],
+   "search": [
+    "ʻOumuamua",
+    "Oumuamua"
+   ],
+   "expect": [
+    "interstellar",
+    "asteroid",
+    "comet",
+    "minor planet"
+   ],
+   "designation": "1I",
+   "fallback": "interstellaire",
+   "nasa": "Oumuamua",
+   "alt": "ʻOumuamua"
+  },
+  {
+   "id": "soleil",
+   "label": "Soleil",
+   "uses": [
+    "explorer/soleil"
+   ],
+   "search": [
+    "Sun"
+   ],
+   "expect": [
+    "star"
+   ],
+   "fallback": "etoile"
+  },
+  {
+   "id": "mercure",
+   "label": "Mercure",
+   "uses": [
+    "explorer/mercure"
+   ],
+   "search": [
+    "Mercury (planet)"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "venus",
+   "label": "Vénus",
+   "uses": [
+    "explorer/venus"
+   ],
+   "search": [
+    "Venus"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "terre",
+   "label": "Terre",
+   "uses": [
+    "explorer/terre"
+   ],
+   "search": [
+    "Earth"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "lune",
+   "label": "Lune",
+   "uses": [
+    "explorer/lune"
+   ],
+   "search": [
+    "Moon"
+   ],
+   "expect": [
+    "satellite",
+    "moon"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "mars",
+   "label": "Mars",
+   "uses": [
+    "explorer/mars"
+   ],
+   "search": [
+    "Mars"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "jupiter",
+   "label": "Jupiter",
+   "uses": [
+    "explorer/jupiter"
+   ],
+   "search": [
+    "Jupiter"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "saturne",
+   "label": "Saturne",
+   "uses": [
+    "explorer/saturne"
+   ],
+   "search": [
+    "Saturn"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "uranus",
+   "label": "Uranus",
+   "uses": [
+    "explorer/uranus"
+   ],
+   "search": [
+    "Uranus"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "neptune",
+   "label": "Neptune",
+   "uses": [
+    "explorer/neptune"
+   ],
+   "search": [
+    "Neptune"
+   ],
+   "expect": [
+    "planet"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "pluton",
+   "label": "Pluton",
+   "uses": [
+    "explorer/pluton"
+   ],
+   "search": [
+    "Pluto"
+   ],
+   "expect": [
+    "dwarf planet",
+    "plutoid",
+    "trans-neptunian"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "ceres",
+   "label": "Cérès",
+   "uses": [
+    "explorer/ceres"
+   ],
+   "search": [
+    "Ceres (dwarf planet)",
+    "1 Ceres"
+   ],
+   "expect": [
+    "dwarf planet",
+    "asteroid"
+   ],
+   "fallback": "planete"
+  },
+  {
+   "id": "io",
+   "label": "Io",
+   "uses": [
+    "explorer/io"
+   ],
+   "search": [
+    "Io (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "europe",
+   "label": "Europe",
+   "uses": [
+    "explorer/europe"
+   ],
+   "search": [
+    "Europa (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "ganymede",
+   "label": "Ganymède",
+   "uses": [
+    "explorer/ganymede"
+   ],
+   "search": [
+    "Ganymede (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "callisto",
+   "label": "Callisto",
+   "uses": [
+    "explorer/callisto"
+   ],
+   "search": [
+    "Callisto (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "titan",
+   "label": "Titan",
+   "uses": [
+    "explorer/titan"
+   ],
+   "search": [
+    "Titan (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "encelade",
+   "label": "Encelade",
+   "uses": [
+    "explorer/encelade"
+   ],
+   "search": [
+    "Enceladus"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "triton",
+   "label": "Triton",
+   "uses": [
+    "explorer/triton"
+   ],
+   "search": [
+    "Triton (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "charon",
+   "label": "Charon",
+   "uses": [
+    "explorer/charon"
+   ],
+   "search": [
+    "Charon (moon)"
+   ],
+   "expect": [
+    "moon",
+    "satellite"
+   ],
+   "fallback": "lune"
+  },
+  {
+   "id": "arrokoth",
+   "label": "Arrokoth",
+   "uses": [
+    "explorer/arrokoth"
+   ],
+   "search": [
+    "486958 Arrokoth"
+   ],
+   "expect": [
+    "trans-neptunian",
+    "minor planet",
+    "asteroid",
+    "object"
+   ],
+   "fallback": "asteroide"
+  },
+  {
+   "id": "orion-m42",
+   "label": "Nébuleuse d'Orion",
+   "uses": [
+    "galaxie/orion-m42"
+   ],
+   "search": [
+    "Orion Nebula"
+   ],
+   "expect": [
+    "nebula",
+    "H II region"
+   ],
+   "fallback": "nebuleuse"
+  },
+  {
+   "id": "aigle",
+   "label": "Nébuleuse de l'Aigle",
+   "uses": [
+    "galaxie/aigle"
+   ],
+   "search": [
+    "Eagle Nebula"
+   ],
+   "expect": [
+    "nebula",
+    "H II region",
+    "cluster"
+   ],
+   "fallback": "nebuleuse"
+  },
+  {
+   "id": "pleiades",
+   "label": "Pléiades",
+   "uses": [
+    "galaxie/pleiades"
+   ],
+   "search": [
+    "Pleiades"
+   ],
+   "expect": [
+    "open cluster",
+    "cluster"
+   ],
+   "fallback": "amas"
+  },
+  {
+   "id": "omegacen",
+   "label": "Oméga du Centaure",
+   "uses": [
+    "galaxie/omegacen"
+   ],
+   "search": [
+    "Omega Centauri"
+   ],
+   "expect": [
+    "globular cluster",
+    "cluster"
+   ],
+   "fallback": "amas"
+  },
+  {
+   "id": "m33",
+   "label": "Galaxie du Triangle",
+   "uses": [
+    "groupe-local/m33"
+   ],
+   "search": [
+    "Triangulum Galaxy"
+   ],
+   "expect": [
+    "galaxy"
+   ],
+   "fallback": "galaxie"
+  },
+  {
+   "id": "lg-gnm",
+   "label": "Grand Nuage de Magellan",
+   "uses": [
+    "groupe-local/lg-gnm",
+    "galaxie/gnm"
+   ],
+   "search": [
+    "Large Magellanic Cloud"
+   ],
+   "expect": [
+    "galaxy"
+   ],
+   "fallback": "galaxie"
+  },
+  {
+   "id": "borisov",
+   "label": "Comète Borisov",
+   "uses": [
+    "visiteurs/borisov"
+   ],
+   "search": [
+    "2I/Borisov"
+   ],
+   "expect": [
+    "comet",
+    "interstellar"
+   ],
+   "fallback": "comete"
+  },
+  {
+   "id": "tchouri",
+   "label": "Tchourioumov-Guérassimenko",
+   "uses": [
+    "visiteurs/tchouri"
+   ],
+   "search": [
+    "67P/Churyumov–Gerasimenko"
+   ],
+   "expect": [
+    "comet"
+   ],
+   "fallback": "comete"
+  },
+  {
+   "id": "halebopp",
+   "label": "Hale-Bopp",
+   "uses": [
+    "visiteurs/halebopp"
+   ],
+   "search": [
+    "Comet Hale–Bopp"
+   ],
+   "expect": [
+    "comet"
+   ],
+   "fallback": "comete"
+  },
+  {
+   "id": "neowise",
+   "label": "NEOWISE",
+   "uses": [
+    "visiteurs/neowise"
+   ],
+   "search": [
+    "C/2020 F3 (NEOWISE)"
+   ],
+   "expect": [
+    "comet"
+   ],
+   "fallback": "comete"
+  },
+  {
+   "id": "bennu",
+   "label": "Bennu",
+   "uses": [
+    "visiteurs/bennu"
+   ],
+   "search": [
+    "101955 Bennu"
+   ],
+   "expect": [
+    "asteroid",
+    "minor planet"
+   ],
+   "fallback": "asteroide"
+  }
+ ]
 }
