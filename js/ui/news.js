@@ -14,7 +14,8 @@
     { href: '#/atlas/visiteurs', date: '2026-11-07', menu: 'atlas' },
     { href: '#/atlas/types', date: '2026-11-07', menu: 'atlas' },
     { href: '#/atlas/echelles', date: '2026-11-07', menu: 'atlas' },
-    { href: '#/ressources', date: '2026-11-08', menu: 'methode' }
+    { href: '#/ressources', date: '2026-11-08', menu: 'methode' },
+    { href: '#/lunaisons', date: '2026-11-08', menu: 'outils' }
   ];
   var DAYS = 14;
   OBS.NEWS = NEWS;

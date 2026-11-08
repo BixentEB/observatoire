@@ -32,7 +32,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, projet: 1 };
+  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, projet: 1, lunaisons: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -41,7 +41,7 @@
     return { name: name, param: h[1] || null, sub: h[2] || null };
   }
   var prevHash = '', returnTo = null;   // venu d'une page (Atlas…) : un bouton du fil d'Ariane permet d'y retourner
-  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', projet: 'Le projet' };
+  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', projet: 'Le projet', lunaisons: 'les Lunaisons' };
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();

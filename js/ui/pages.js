@@ -19,7 +19,7 @@
       { href: '#/lexique', t: 'Lexique', k: 'Disponible', d: 'Ce qui compose l\'Univers, les éléments, les étoiles (qu\'est-ce qu\'une naine ?), les planètes, les galaxies et les mots pour les mesurer : des définitions courtes, avec une recherche.' },
       { href: '#/simulateur', t: 'Simulateur d\'objets', k: 'Disponible', d: 'Modeler un corps céleste : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère, puis copier les réglages.' },
       { act: 'photo', t: 'Mode photo', k: 'Disponible', d: 'Choisir ce qui apparaît à l\'écran (noms, orbites, engins, ceintures, plan de l\'écliptique, signature) et enregistrer une image du ciel à la date affichée.' },
-      { soon: true, t: 'Simulateur de lunaisons', k: 'Prévu', d: 'La Lune au centre, ses phases à venir et un curseur de dates.' },
+      { href: '#/lunaisons', t: 'Lunaisons', k: 'Disponible', d: 'La Lune telle qu\'on la voit à n\'importe quelle date, ses prochaines phases, les super-lunes et un calendrier du mois, calculés à la minute près.' },
       { soon: true, t: 'Comparateur', k: 'Prévu', d: 'Deux astres côte à côte, à la même échelle : tailles, distances, durées du jour et de l\'année.' },
       { soon: true, t: 'Scénarios « et si… »', k: 'À l\'étude', d: 'Et si la Terre avait deux lunes ? Des expériences calculées quand un modèle simple le permet, toujours marquées comme simulées.' }
     ];

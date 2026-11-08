@@ -1039,3 +1039,50 @@ a.is-new::after { content: 'Nouveau'; display: inline-block; margin-left: 7px; p
 .az .az-pct { font: 11px var(--mono); min-width: 52px; }
 /* disques à taille réelle (Groupe local) : translucides pour voir les recouvrements */
 .atlas-map .at-disk { fill-opacity: .3; stroke-width: 1; stroke-opacity: .8; }
+
+/* ---------- Lunaisons (#/lunaisons) ---------- */
+.lu { display: grid; grid-template-columns: minmax(260px, 400px) minmax(0, 1fr); gap: 30px; align-items: center; margin: 18px 0 10px; }
+.lu-stage { text-align: center; }
+.lu-moon { width: 100%; max-width: 400px; aspect-ratio: 1; display: block; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle, rgba(120, 140, 200, .08), transparent 70%); transition: transform .4s; }
+.lu-moon.south, .lu-south .lu-ico { transform: rotate(180deg); }
+.lu-hemi { display: inline-flex; margin-top: 10px; border: 1px solid var(--line2); border-radius: 999px; overflow: hidden; }
+.lu-hemi button { border: 0; background: none; color: var(--muted); font: 11.5px var(--mono); padding: 6px 12px; cursor: pointer; }
+.lu-hemi button[aria-pressed="true"] { background: rgba(244, 199, 122, .12); color: var(--accent); }
+.lu-date { margin: 0; font: 12.5px var(--mono); color: var(--muted); text-transform: capitalize; }
+.lu-name { margin: 4px 0 14px; font: 600 32px var(--display); }
+.lu-kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 18px; }
+.lu-kv div { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(8, 12, 26, .5); }
+.lu-kv dt { font: 11px var(--mono); color: var(--muted); }
+.lu-kv dd { margin: 3px 0 0; font-size: 18px; }
+.lu-ctrl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.lu-ctrl button, .lu-cal-h button { border: 1px solid var(--line2); background: none; color: var(--soft); border-radius: 999px; padding: 6px 12px; font: 12px var(--mono); cursor: pointer; }
+.lu-ctrl button:hover, .lu-cal-h button:hover { border-color: var(--accent); color: var(--accent); }
+.lu-pick { background: rgba(8, 12, 26, .6); border: 1px solid var(--line2); border-radius: 999px; color: var(--fg); padding: 5px 10px; font: 12px var(--mono); color-scheme: dark; }
+.lu-range { width: 100%; margin: 16px 0 2px; accent-color: #f4c77a; }
+.lu-rl { display: flex; justify-content: space-between; margin: 0; font: 10.5px var(--mono); color: var(--muted); }
+.lu-h { margin-top: 34px; }
+.lu-next { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 18px; }
+.lu-ph { display: flex; align-items: center; gap: 12px; padding: 10px 6px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--fg); text-align: left; cursor: pointer; font: inherit; }
+.lu-ph:hover { background: rgba(255, 255, 255, .03); }
+.lu-ph b { display: block; font-weight: 600; font-size: 14.5px; }
+.lu-ph small { display: block; font: 11.5px var(--mono); color: var(--muted); margin-top: 2px; }
+.lu-sup { font: 10px var(--mono); font-style: normal; color: #f4c77a; border: 1px solid rgba(244, 199, 122, .5); border-radius: 999px; padding: 1px 6px; margin-left: 4px; vertical-align: 2px; }
+.lu-cal-h { display: flex; align-items: center; gap: 12px; }
+.lu-cal-h span { min-width: 190px; text-align: center; text-transform: capitalize; }
+.lu-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.lu-dh { text-align: center; font: 11px var(--mono); color: var(--muted); padding: 4px 0; }
+.lu-day { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 2px 6px; min-height: 74px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8, 12, 26, .45); color: var(--soft); cursor: pointer; font: inherit; }
+.lu-day:hover { border-color: var(--line2); }
+.lu-day.key { border-color: rgba(244, 199, 122, .35); }
+.lu-day.today .lu-dn { color: var(--accent); font-weight: 700; }
+.lu-day.on { border-color: var(--accent); background: rgba(244, 199, 122, .08); }
+.lu-dn { font: 11px var(--mono); }
+.lu-day small { font: 9.5px var(--mono); color: #f4c77a; line-height: 1.2; text-align: center; }
+@media (max-width: 760px) {
+  .lu { grid-template-columns: 1fr; gap: 16px; }
+  .lu-moon { max-width: 300px; }
+  .lu-name { font-size: 26px; }
+  .lu-day { min-height: 58px; padding: 6px 0 4px; }
+  .lu-day .lu-ico { width: 22px; height: 22px; }
+  .lu-day small { display: none; }
+}
