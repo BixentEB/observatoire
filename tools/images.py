@@ -202,6 +202,8 @@ def main():
                 info = commons_info(fname)
                 if not info: raise RuntimeError('fichier Commons introuvable : %s' % fname)
                 ok, why = license_ok(info)
+                if not ok and src.get('license_override'):            # licence vérifiée à la main (status validé)
+                    ok, why = True, src['license_override'] + ' (vérifié à la main)'; info['license'] = src['license_override']
                 kind = src.get('kind') or classify(info)
                 rep += ['- Fichier : [%s](%s) — %s × %s' % (fname, info['page'], info['width'], info['height']),
                         '- Licence : %s %s' % (why, '✔' if ok else '✘'), '- Auteur : %s' % (info['author'] or '?'), '- Crédit : %s' % (info['credit'] or '?'),

@@ -1,5 +1,5 @@
 {
- "_aide": "Objets à illustrer. id : identifiant canonique (une seule image par objet) ; uses : toutes les fiches qui la réutilisent (niveau/id) ; search : noms à chercher dans Wikidata ; expect : mot attendu dans la nature de l'objet (en anglais) ; designation : désignation officielle à retrouver (petits corps) ; wikidata / file : à fixer une fois validé ; status : validé, rejeté ou aucune ; fallback : visuel de remplacement (type d'objet) ; nasa : recherche de candidats dans la photothèque NASA.",
+ "_aide": "Objets à illustrer. id : identifiant canonique (une seule image par objet) ; uses : toutes les fiches qui la réutilisent (niveau/id) ; search : noms à chercher dans Wikidata ; expect : mot attendu dans la nature de l'objet (en anglais) ; designation : désignation officielle à retrouver (petits corps) ; wikidata / file : à fixer une fois validé ; status : validé, rejeté ou aucune ; fallback : visuel de remplacement (type d'objet) ; nasa : recherche de candidats dans la photothèque NASA. license_override : licence retenue après vérification humaine, quand Commons ne l'indique pas.",
  "objets": [
   {
    "id": "m31",
@@ -70,7 +70,9 @@
    "designation": "99942",
    "fallback": "asteroide",
    "nasa": "Apophis asteroid",
-   "alt": "L'astéroïde Apophis"
+   "alt": "L'astéroïde Apophis",
+   "license_override": "Domaine public en principe (œuvre de la NASA/JPL) ; licence non précisée sur Commons",
+   "status": "validé"
   },
   {
    "id": "oumuamua",
