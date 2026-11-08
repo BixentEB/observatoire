@@ -8,18 +8,19 @@
   'use strict';
   var OBS = window.OBS = window.OBS || {}, esc = OBS.esc;
   var MIN = -600, MAX = 300, SPEED = 25;          // millions d'années par seconde en lecture
+  // type : v = vie (vert), x = extinction (rouge), n = aujourd'hui (or), f = futur (bleu)
   var EVENTS = [
-    [-541, 'Explosion cambrienne : la vie animale se diversifie'],
-    [-444, 'Première grande extinction (fin de l\'Ordovicien)'],
-    [-375, 'Les premiers vertébrés sortent de l\'eau'],
-    [-252, 'Grande extinction du Permien : 9 espèces marines sur 10 disparaissent'],
-    [-230, 'Premiers dinosaures'],
-    [-201, 'Extinction de la fin du Trias'],
-    [-150, 'Archaeopteryx, l\'un des premiers oiseaux'],
-    [-66, 'Fin des dinosaures non aviens (astéroïde de Chicxulub)'],
-    [-7, 'Premiers ancêtres de la lignée humaine'],
-    [0, 'Aujourd\'hui'],
-    [250, 'Les continents pourraient s\'être rassemblés en un nouveau supercontinent (prévision)']
+    [-541, 'Explosion cambrienne : la vie animale se diversifie', 'v'],
+    [-444, 'Première grande extinction (fin de l\'Ordovicien)', 'x'],
+    [-375, 'Les premiers vertébrés sortent de l\'eau', 'v'],
+    [-252, 'Grande extinction du Permien : 9 espèces marines sur 10 disparaissent', 'x'],
+    [-230, 'Premiers dinosaures', 'v'],
+    [-201, 'Extinction de la fin du Trias', 'x'],
+    [-150, 'Archaeopteryx, l\'un des premiers oiseaux', 'v'],
+    [-66, 'Fin des dinosaures non aviens (astéroïde de Chicxulub)', 'x'],
+    [-7, 'Premiers ancêtres de la lignée humaine', 'v'],
+    [0, 'Aujourd\'hui', 'n'],
+    [250, 'Les continents pourraient s\'être rassemblés en un nouveau supercontinent (prévision)', 'f']
   ];
   var bar = null, t = 0, playing = false, last = 0, raf = 0;
   function nf(v, d) { return v.toLocaleString('fr-FR', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); }
@@ -28,11 +29,13 @@
 
   function build() {
     bar = document.createElement('div'); bar.className = 'gt'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Temps galactique');
-    var ticks = EVENTS.map(function (e) { return '<button type="button" class="gt-ev" data-t="' + e[0] + '" style="left:' + ((e[0] - MIN) / (MAX - MIN) * 100).toFixed(2) + '%" title="' + esc(when(e[0]) + ' : ' + e[1]) + '"></button>'; }).join('');
+    // deux repères trop proches : le second passe sous le curseur
+    var prev = -1e9, low = false;
+    var ticks = EVENTS.map(function (e) { low = e[0] - prev < 45 ? !low : false; prev = e[0]; return '<button type="button" class="gt-ev t-' + e[2] + (low ? ' low' : '') + '" data-t="' + e[0] + '" style="left:' + ((e[0] - MIN) / (MAX - MIN) * 100).toFixed(2) + '%" title="' + esc(when(e[0]) + ' : ' + e[1]) + '"></button>'; }).join('');
     bar.innerHTML = '<div class="gt-top"><p class="gt-k">Temps galactique</p><p class="gt-when"></p><button type="button" class="gt-x" aria-label="Quitter le temps galactique">✕</button></div>' +
       '<p class="gt-ev-t"></p>' +
       '<div class="gt-row"><button type="button" class="gt-play" aria-label="Lecture">▶</button><div class="gt-track"><input type="range" min="' + MIN + '" max="' + MAX + '" step="1" value="0" aria-label="Millions d\'années avant ou après aujourd\'hui">' + ticks + '</div><button type="button" class="gt-now">Aujourd\'hui</button></div>' +
-      '<div class="gt-info"><span class="gt-turns"></span><span class="gt-z"></span></div>' +
+      '<p class="gt-leg"><span class="t-v">vie</span><span class="t-x">extinction</span><span class="t-f">prévision</span></p><div class="gt-info"><span class="gt-turns"></span><span class="gt-z"></span></div>' +
       '<p class="gt-flags"><span class="flag f-real" title="Réel — distance au centre mesurée (GRAVITY 2019), sens de rotation réel"><i>Rayon</i>mesuré</span><span class="flag f-adapt" title="Adapté — période estimée entre 220 et 250 millions d\'années ; l\'orbite réelle n\'est pas un cercle parfait"><i>Orbite</i>≈ 230 Ma, simplifiée</span><span class="flag f-adapt" title="Adapté — dans ce mode, les bras et les étoiles voisines restent immobiles ; en réalité, eux aussi tournent, à des vitesses différentes"><i>Bras</i>immobiles</span></p>';
     document.body.appendChild(bar);
     var rng = bar.querySelector('input');

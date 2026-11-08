@@ -232,11 +232,18 @@
     cap.textContent = t || ''; cap.hidden = !t;
   }
 
-  var edge = $('edge'), edgeT = 0;
-  OBS.on('edge', function (k) {
-    var lv = OBS.engine.level && OBS.engine.level.id;
-    edge.textContent = 'Faites une courte pause, puis dézoomez encore pour sortir ' + (lv === 'voisinage' ? 'du voisinage stellaire' : lv === 'galaxie' ? 'de la Voie lactée' : 'du système solaire');
-    edge.hidden = false; clearTimeout(edgeT); edgeT = setTimeout(function () { edge.hidden = true; }, 1400); });
+  /* en butée de dézoom (molette ou pincement), un bouton propose de passer à l'échelle suivante : jamais de saut automatique */
+  var edge = $('edge'), NEXT = { systeme: ['voisinage', 'Passer au voisinage stellaire'], voisinage: ['galaxie', 'Passer à la Voie lactée'], galaxie: ['groupe-local', 'Passer au Groupe local'] };
+  edge.addEventListener('click', function () { var L = OBS.engine.level, n = L && NEXT[L.id]; if (n) { edge.hidden = true; OBS.engine.go(n[0], { from: L.id }); } });
+  setInterval(function () {
+    var L = OBS.engine.level, n = L && NEXT[L.id], show = false;
+    if (n && L.controls && L.camera && !document.body.classList.contains('page-open')) {
+      var sel = typeof L.selected === 'function' ? L.selected() : null;
+      show = !sel && L.camera.position.distanceTo(L.controls.target) >= L.controls.maxDistance * .96;
+    }
+    if (show) edge.textContent = n[1] + ' ›';
+    edge.hidden = !show;
+  }, 300);
   OBS.on('level:leaving', function () { edge.hidden = true; });
 
   /* ---------- temps ---------- */

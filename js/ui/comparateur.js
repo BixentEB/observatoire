@@ -51,7 +51,12 @@
       if (o.ring) { var ring = new T.Mesh(new T.RingGeometry(r * 1.24, r * 2.27, 96), new T.MeshBasicMaterial({ color: 0xcdbb94, transparent: true, opacity: .38, side: T.DoubleSide, depthWrite: false })); ring.rotation.x = Math.PI / 2 - .3; ring.rotation.z = .12; g.add(ring); }
       return g;
     }
-    var marks = [];
+    /* zoom : le centre de la vue glisse de l'ensemble (z = 1) vers le plus petit astre (z grand) */
+    var F = { x: 0, y: 0 }, z = 1, zmax = 1, objs = [];
+    function frame() {
+      var t = 1 - 1 / (z * z), cx = F.x * t, cy = F.y * t;            // le petit astre vient au centre dès qu'on zoome un peu
+      cam.left = cx - aspect / z; cam.right = cx + aspect / z; cam.top = cy + 1 / z; cam.bottom = cy - 1 / z; cam.updateProjectionMatrix();
+    }
     function set(a, b) {
       while (group.children.length) { var c = group.children.pop(); c.traverse(function (x) { if (x.geometry) x.geometry.dispose(); if (x.material) x.material.dispose(); }); }
       size();
@@ -63,14 +68,23 @@
       var base = -.9, xa = -(2 * wa + 2 * wb + gap) / 2 + wa, xb = xa + wa + gap + wb;
       var A = sphere(a, ra), B = sphere(b, rb);
       A.position.set(xa, base + ra, 0); B.position.set(xb, base + rb, 0); group.add(A, B);
-      var line = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-aspect, base, 0), new T.Vector3(aspect, base, 0)]), new T.LineBasicMaterial({ color: 0x3a4466 }));
+      var line = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-500, base, 0), new T.Vector3(500, base, 0)]), new T.LineBasicMaterial({ color: 0x3a4466 }));
       group.add(line);
-      marks = [[xa, base + ra, ra], [xb, base + rb, rb]];
-      draw();
-      return marks.map(function (m) { return { x: (m[0] + aspect) / (2 * aspect), y: (1 - m[1]) / 2, r: m[2] / 2 }; });
+      objs = [{ x: xa, y: base + ra, r: ra }, { x: xb, y: base + rb, r: rb }];
+      var small = ra <= rb ? objs[0] : objs[1], rs = small.r;
+      F = { x: small.x, y: small.y };
+      zmax = Math.max(1, .7 / rs);
+      z = Math.min(zmax, Math.max(1, .24 / rs));                       // d'entrée : le plus petit est bien visible
+      frame(); draw();
     }
+    function layout() {
+      var w = cam.right - cam.left, h = cam.top - cam.bottom;
+      return objs.map(function (o) { return { x: (o.x - cam.left) / w, y: (cam.top - o.y) / h, r: o.r / h, base: (cam.top - (o.y - o.r)) / h }; });
+    }
+    function zoomTo(nz) { z = Math.max(1, Math.min(zmax, nz)); frame(); draw(); }
     function draw() { ren.render(scene, cam); }
-    return { set: set, resize: function () { size(); draw(); }, dispose: function () { ren.dispose(); Object.keys(cache).forEach(function (k) { cache[k].dispose(); }); } };
+    return { set: set, layout: layout, zoom: function () { return z; }, zoomTo: zoomTo, zmax: function () { return zmax; },
+      resize: function () { size(); frame(); draw(); }, dispose: function () { ren.dispose(); Object.keys(cache).forEach(function (k) { cache[k].dispose(); }); } };
   }
 
   /* ---------- données face à face ---------- */
@@ -119,21 +133,42 @@
       '<div class="cp-stage"><canvas class="cp-cv" aria-label="Les deux astres à la même échelle"></canvas><div class="cp-lbls"></div></div>' +
       '<div class="cp-table"></div>';
     var cv = root.querySelector('.cp-cv'), V = view(cv), lbls = root.querySelector('.cp-lbls'), tbl = root.querySelector('.cp-table');
-    function upd() {
-      var pos = V ? V.set(a, b) : null;
-      var ratio = a.rKm / b.rKm, w = ratio >= 1 ? ratio : 1 / ratio;
+    var az = document.createElement('div'); az.className = 'az cp-az'; az.setAttribute('role', 'group'); az.setAttribute('aria-label', 'Zoom');
+    az.innerHTML = '<button type="button" data-a="out" aria-label="Dézoomer" title="Dézoomer">−</button><button type="button" data-a="fit" class="az-pct" title="Voir les deux en entier"></button><button type="button" data-a="in" aria-label="Zoomer" title="Zoomer">+</button><button type="button" data-a="all" aria-label="Voir les deux en entier" title="Voir les deux en entier">⤢</button>';
+    root.querySelector('.cp-stage').appendChild(az);
+    function place() {
+      if (!V) return;
+      var L = V.layout(), H = cv.clientHeight || 300, z = V.zoom();
+      az.querySelector('.az-pct').textContent = '× ' + (z < 10 ? nf(z, 1) : nf(z));
       lbls.innerHTML = [a, b].map(function (o, i) {
-        var p = pos ? pos[i] : { x: i ? .75 : .25, y: .5, r: .1 }, tiny = p.r * (cv.clientHeight || 300) < 4;
-        return '<a class="cp-lbl" href="' + o.href + '" style="left:' + (p.x * 100).toFixed(2) + '%"><b>' + esc(o.name) + '</b><small>' + nf(o.rKm * 2) + ' km</small></a>' +
-          (tiny ? '<span class="cp-tiny" style="left:' + (p.x * 100).toFixed(2) + '%;top:' + ((p.y) * 100).toFixed(2) + '%" title="' + esc(o.name) + ' : trop petit pour être vu à cette échelle"></span>' : '');
-      }).join('') + '<p class="cp-ratio">' + (w < 1.05 ? 'Presque la même taille' : esc(ratio >= 1 ? a.name : b.name) + ' est ' + (w >= 100 ? nf(w) : nf(w, 1)) + ' fois plus grand' + (ratio >= 1 ? '' : '') + (w > 150 ? ' : l\'autre n\'est presque plus qu\'un point' : '')) + '</p>';
+        var p = L[i], off = p.x < .02 ? -1 : p.x > .98 ? 1 : 0, x = Math.max(.08, Math.min(.92, p.x)), tiny = p.r * H < 3 && !off && p.y > 0 && p.y < 1;
+        return '<a class="cp-lbl' + (off ? ' off' : '') + '" href="' + o.href + '" style="left:' + (x * 100).toFixed(2) + '%"><b>' + (off < 0 ? '‹ ' : '') + esc(o.name) + (off > 0 ? ' ›' : '') + '</b><small>' + nf(o.rKm * 2) + ' km' + (off ? ' · hors champ' : '') + '</small></a>' +
+          (tiny ? '<span class="cp-tiny" style="left:' + (p.x * 100).toFixed(2) + '%;top:' + (p.y * H).toFixed(1) + 'px" title="' + esc(o.name) + ' : trop petit pour être vu à ce zoom"></span>' : '');
+      }).join('') + ratioTxt;
+    }
+    var ratioTxt = '';
+    function upd() {
+      if (V) V.set(a, b);
+      var ratio = a.rKm / b.rKm, w = ratio >= 1 ? ratio : 1 / ratio;
+      ratioTxt = '<p class="cp-ratio">' + (w < 1.05 ? 'Presque la même taille' : esc(ratio >= 1 ? a.name : b.name) + ' est ' + (w >= 100 ? nf(w) : nf(w, 1)) + ' fois plus grand') + (V && V.zmax() > 1.05 ? ' · zoomez ou dézoomez pour passer de l\'un à l\'autre' : '') + '</p>';
+      az.hidden = !V || V.zmax() <= 1.05;
+      place();
       tbl.innerHTML = '<div class="cp-row cp-head"><span class="cp-l"></span><span class="cp-a">' + esc(a.name) + '</span><span class="cp-b">' + esc(b.name) + '</span><span class="cp-r">Rapport</span></div>' + rows(a, b);
       try { history.replaceState(null, '', '#/comparateur/' + a.id + '/' + b.id); } catch (e) {}
     }
+    function zoom(f) { if (!V) return; V.zoomTo(V.zoom() * f); place(); }
+    az.addEventListener('click', function (e) { var t = e.target.closest('button'); if (!t) return; var k = t.getAttribute('data-a'); if (k === 'in') zoom(1.6); else if (k === 'out') zoom(1 / 1.6); else { V.zoomTo(1); place(); } });
+    cv.addEventListener('wheel', function (e) { if (!e.ctrlKey) return; e.preventDefault(); zoom(Math.exp(-Math.max(-40, Math.min(40, e.deltaY)) * .01)); }, { passive: false });
+    var pin = null;
+    function pd(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+    cv.style.touchAction = 'pan-y';
+    cv.addEventListener('touchstart', function (e) { if (e.touches.length === 2 && V) { pin = { d: pd(e.touches), z: V.zoom() }; e.preventDefault(); } }, { passive: false });
+    cv.addEventListener('touchmove', function (e) { if (pin && e.touches.length === 2) { e.preventDefault(); V.zoomTo(pin.z * pd(e.touches) / pin.d); place(); } }, { passive: false });
+    cv.addEventListener('touchend', function (e) { if (e.touches.length < 2) pin = null; });
     root.querySelector('.cp-a').addEventListener('change', function (e) { a = get(e.target.value); upd(); });
     root.querySelector('.cp-b').addEventListener('change', function (e) { b = get(e.target.value); upd(); });
     root.querySelector('.cp-swap').addEventListener('click', function () { var t = a; a = b; b = t; root.querySelector('.cp-a').value = a.id; root.querySelector('.cp-b').value = b.id; upd(); });
-    var onR = function () { if (!document.body.contains(cv)) { window.removeEventListener('resize', onR); if (V) V.dispose(); return; } upd(); };
+    var onR = function () { if (!document.body.contains(cv)) { window.removeEventListener('resize', onR); if (V) V.dispose(); return; } if (V) { V.resize(); place(); } };
     window.addEventListener('resize', onR);
     upd();
   };

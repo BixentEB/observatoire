@@ -269,14 +269,7 @@
     cv.addEventListener('wheel', function (e) {
       if (OBS.engine.level !== L || flight) return;
       // dézoom en butée, après une courte pause puis en insistant : on sort vers le Groupe local
-      if (e.deltaY > 0 && !selected) {
-        var t = performance.now(), gap = t - lastW; lastW = t;
-        if (camera.position.distanceTo(controls.target) < controls.maxDistance * .97) { atMax = 0; armed = false; out = 0; return; }
-        if (!atMax) { atMax = t; OBS.emit('edge', 0); return; }
-        if (!armed) { if (gap > 300 && t - atMax > 500) { armed = true; out = 0; } else { OBS.emit('edge', 0); return; } }
-        if (++out >= 5) { out = 0; armed = false; atMax = 0; OBS.engine.go('groupe-local', { from: 'galaxie' }); } else OBS.emit('edge', out / 5);
-        return;
-      }
+      if (e.deltaY > 0 && !selected) return;   // en butée : le bouton « Passer à … » apparaît (js/ui/app.js), plus de saut automatique
       if (e.deltaY >= 0) return;
       if (selected !== 'soleil-g' || camera.position.distanceTo(sunPos) > controls.minDistance * 1.8 + 1) return;
       var now = performance.now(); if (now - pushT > 900) push = 0; pushT = now;
