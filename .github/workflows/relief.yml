@@ -1,0 +1,43 @@
+# Relief réel des petits mondes (Mercure, Pluton, Charon, Cérès) : cartes de normales calculées depuis l'altimétrie USGS.
+# À la demande, ou quand on modifie le script. Télécharge environ 1,7 Go, ne publie que les cartes et le rapport.
+name: Relief des petits mondes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/relief.py'
+      - '.github/workflows/relief.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: relief
+  cancel-in-progress: false
+
+jobs:
+  relief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer rasterio, numpy, Pillow
+        run: pip install --quiet rasterio numpy pillow
+      - name: Calculer les cartes de relief
+        continue-on-error: true
+        run: python3 tools/relief.py
+      - name: Publier
+        if: always()
+        run: |
+          git add textures/*-relief-*.jpg data/relief-report.md 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
+          git config user.name "observatoire-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Relief des petits mondes : cartes de normales du $(date -u +%F)"
+          git pull --rebase --quiet || true
+          git push
