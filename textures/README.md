@@ -16,6 +16,7 @@ Chaque fichier est chargé en arrière-plan : tant qu'il n'est pas arrivé (ou s
 | `lune-altitude.bin` + `.json` | Lune, altitudes en mètres (720 × 360, entiers 16 bits) pour la console | Altimétrie LOLA réduite | Domaine public |
 | `mars.jpg`, `mars-4k.jpg` | Mars | Mosaïque Viking MDIM 2.1 (NASA/USGS), dominante bleue des régions sombres atténuée | Domaine public |
 | `mars-relief-4k.jpg`, `mars-relief-2k.jpg` | Mars, carte de pentes (est, nord, haut ; pentes réelles) | Altimètre MOLA (MEGDR 32 px/°), via le projet MIT « Rotating Mars » (F. Gourdeau) | Domaine public |
+| `mercure-`, `ceres-`, `pluton-`, `charon-relief-4k.jpg` et `-2k.jpg` | Mercure, Cérès, Pluton, Charon : cartes de pentes (est, nord, haut ; pentes réelles, forme générale retirée) | Altimétrie USGS Astrogeology : MESSENGER 665 m (Becker et al. 2016), Dawn DLR 60 px/° (Preusker et al. 2016), New Horizons 300 m (Schenk et al. 2018) ; calculées par `tools/relief.py` (tâche GitHub « Relief des petits mondes ») ; Pluton et Charon recalés de 180° (en-tête des fichiers trompeur) | Domaine public (« citer les auteurs ») |
 | `jupiter.jpg` | Jupiter | Solar System Scope, d'après Cassini et Hubble | CC BY 4.0 |
 | `saturne.jpg` | Saturne | Solar System Scope, d'après Cassini | CC BY 4.0 |
 | `saturne-anneaux.png` | Anneaux de Saturne (bande intérieur → extérieur, transparence = densité) | Solar System Scope | CC BY 4.0 |

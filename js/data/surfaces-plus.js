@@ -56,8 +56,8 @@
 
   /* ---------------- Mercure ---------------- */
   SF.mercure = {
-    hd: { map: 'mercure-4k.jpg' },
-    src: { aspect: 'mosaïque MESSENGER' }, siteLabel: 'Site d\'impact',
+    hd: { map: 'mercure-4k.jpg', relief: 'mercure-relief-4k.jpg', reliefEco: 'mercure-relief-2k.jpg' },
+    src: { relief: 'altimétrie MESSENGER (USGS)', aspect: 'mosaïque MESSENGER' }, siteLabel: 'Site d\'impact',
     res: 'Couleur : environ 2,7 km par pixel (mosaïque MESSENGER, couleurs ramenées vers le naturel). Relief non disponible pour l\'instant.',
     sites: [
       { id: 'caloris', type: 'bassin', name: 'Caloris Planitia', lat: 31.5, lon: 162.7, d: 1550, text: "Le plus grand bassin d'impact de Mercure. Le choc a été si violent qu'il a chamboulé le terrain exactement à l'opposé de la planète, un « terrain chaotique »." },
@@ -200,7 +200,8 @@
 
   /* ---------------- Pluton, Charon, Cérès ---------------- */
   SF.pluton = {
-    src: { aspect: 'carte New Horizons' }, siteLabel: 'Site',
+    hd: { relief: 'pluton-relief-4k.jpg', reliefEco: 'pluton-relief-2k.jpg' },
+    src: { relief: 'altimétrie New Horizons (USGS)', aspect: 'carte New Horizons' }, siteLabel: 'Site',
     res: 'Carte en couleurs de New Horizons, affichée en 2k. New Horizons n\'a vu de près qu\'un hémisphère : les zones grises n\'ont pas été photographiées.',
     sites: [
       { id: 'spoutnik', type: 'mer', name: 'Spoutnik Planitia', lat: 20, lon: 180, d: 1000, text: "Le lobe gauche du « cœur » de Pluton : un glacier d'azote d'environ 1 000 km, sans aucun cratère, découpé en cellules par la lente convection de la glace." },
@@ -213,7 +214,8 @@
     ]
   };
   SF.charon = {
-    src: { aspect: 'mosaïque New Horizons' }, siteLabel: 'Site',
+    hd: { relief: 'charon-relief-4k.jpg', reliefEco: 'charon-relief-2k.jpg' },
+    src: { relief: 'altimétrie New Horizons (USGS)', aspect: 'mosaïque New Horizons' }, siteLabel: 'Site',
     res: 'Mosaïque USGS en noir et blanc de New Horizons, affichée en 2k. Le sud non photographié est gris.',
     sites: [
       { id: 'mordor', type: 'region', name: 'Mordor Macula', lat: 85, lon: 0, d: 475, text: "La calotte rougeâtre du pôle Nord : du méthane échappé de Pluton, piégé dans le froid polaire et transformé par la lumière en composés organiques rouges (tholins)." }
@@ -223,7 +225,8 @@
     ]
   };
   SF.ceres = {
-    src: { aspect: 'mosaïque Dawn' }, siteLabel: 'Site',
+    hd: { relief: 'ceres-relief-4k.jpg', reliefEco: 'ceres-relief-2k.jpg' },
+    src: { relief: 'altimétrie Dawn (DLR, USGS)', aspect: 'mosaïque Dawn' }, siteLabel: 'Site',
     res: 'Mosaïque USGS en noir et blanc de la sonde Dawn (400 m par pixel à l\'origine), affichée en 2k.',
     sites: [
       { id: 'occator', type: 'cratere', name: 'Occator', lat: 19.82, lon: -120.67, d: 92, text: "Ses taches brillantes, Cerealia et Vinalia Faculae, sont des dépôts de carbonate de sodium laissés par une saumure remontée des profondeurs." },
