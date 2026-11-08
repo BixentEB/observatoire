@@ -24,6 +24,8 @@
    "license": "CC BY-SA 2.5",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
    "source": "Wikimedia Commons",
+   "description": "The Andromeda galaxy.",
+   "date": "2023-10-21 19:56:48",
    "qid": "Q2469",
    "sha1": "e10dc0895104b327d94a5a33dca73475c31d9641",
    "match": {
@@ -61,6 +63,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "To celebrate the 25th anniversary of its launch, NASA’s Chandra X-ray Observatory is releasing 25 never-before-seen views of a wide range of cosmic objects. These images, which all include data from Chandra, demonstrate how X-ray astronomy explores all corners of the universe. By combining X-rays fr",
+   "date": "Taken on 13 October 2016, 10:55:32",
    "qid": "Q10934",
    "sha1": "c2b8d0bf2a325c253a0498dace06a0d7501bc314",
    "match": {
@@ -98,6 +102,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Comet 1P/Halley as taken March 8, 1986 by W. Liller, Easter Island, part of the International Halley Watch (IHW) Large Scale Phenomena Network.",
+   "date": "1986-03-08",
    "qid": "Q23054",
    "sha1": "7436e6f22cdec877624d999ad092b8145f685863",
    "match": {
@@ -144,6 +150,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "1I/ʻOumuamua as shown here imaged with the 4.2 meter William Herschel Telescope on the Canary Islands is seen as a point of light in the centre of the image. Background stars appear linear because the telescope was centred on tracking the object through 5 minutes.[1] 1I/ʻOumuamua (Weryk 2017 [2]), i",
+   "date": "Taken on 28 October 2017",
    "qid": "Q42313338",
    "sha1": "3143913f332a2617aaaa62d923a465b16c780161",
    "match": {
@@ -181,6 +189,8 @@
    "license": "CC BY-SA 4.0",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
    "source": "Wikimedia Commons",
+   "description": "Our Sun. The image was captured in extremely short-wave UV light by the Solar Orbiter spacecraft, launched in 2020. In this wavelength range, the corona – the outer, much hotter layer of the solar atmosphere – becomes visible. Plasma from the Sun can be seen flowing along magnetic field lines and er",
+   "date": "2023-08-30 10:22:50",
    "qid": "Q525",
    "sha1": "f9830b73b8b364cf53fb99df88bf69c4f4039df1",
    "match": {
@@ -217,6 +227,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Full-color image of Mercury from first MESSENGER flyby.",
+   "date": "2008-01-30",
    "qid": "Q308",
    "sha1": "056744d89d4cfc888492e136d94a1810bdd11562",
    "match": {
@@ -253,6 +265,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "PIA23791: Venus from Mariner 10 https://photojournal.jpl.nasa.gov/catalog/PIA23791 Click here for the combined view for PIA23791 Click on an individual image below for the larger versions: Click here for Figure A/OLD for PIA23791 Click here for Figure B/NEW for PIA23791 As it sped away from Venus, N",
+   "date": "2020-06-08",
    "qid": "Q313",
    "sha1": "b7b1954e0c873780c4f77e75d6af6ffbfcb44fa4",
    "match": {
@@ -289,6 +303,8 @@
    "license": "No restrictions",
    "licenseUrl": "https://www.flickr.com/commons/usage/",
    "source": "Wikimedia Commons",
+   "description": "Description View of the Earth as seen by the Apollo 17 crew traveling toward the moon. This translunar coast photograph extends from the Mediterranean Sea area to the Antarctica south polar ice cap. This is the first time the Apollo trajectory made it possible to photograph the south polar ice cap. ",
+   "date": "1972-12-07 16:11",
    "qid": "Q2",
    "sha1": "bdfa88a45b4d781ccd1365860fbd1c926e4fcfc3",
    "match": {
@@ -325,6 +341,8 @@
    "license": "CC BY-SA 3.0",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
    "source": "Wikimedia Commons",
+   "description": "Full Moon photograph taken 10-22-2010 from Madison, Alabama, USA. Photographed with a Celestron 9.25 Schmidt-Cassegrain telescope. Acquired with a Canon EOS Rebel T1i (EOS 500D), 20 images stacked to reduce noise. 200 ISO 1/640 sec.",
+   "date": "2010-10-22",
    "qid": "Q405",
    "sha1": "dd85059c5657f3753827e84bb40f24301492a147",
    "match": {
@@ -361,6 +379,8 @@
    "license": "CC BY 2.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
    "source": "Wikimedia Commons",
+   "description": "Filters: f635, f546, f437 CU/LASP EMM/EXI ITF/Kevin M. Gill",
+   "date": "Taken on 3 January 2022, 13:23",
    "qid": "Q111",
    "sha1": "f3e909b3724ccc1ab7f447a7bb4a3f1f0c5ca5a0",
    "match": {
@@ -397,6 +417,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Jupiter in true color by Hubble's \"Outer Planet Atmospheres Legacy\" (OPAL) - January 5 2024",
+   "date": "2024-01-05",
    "qid": "Q319",
    "sha1": "5ea7409b2721b9fe890e1720ac1a718ba3a6903b",
    "match": {
@@ -433,6 +455,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "As Saturn advances in its orbit toward equinox and the sun gradually moves northward on the planet, the motion of Saturn's ring shadows and the changing colors of its atmosphere continue to transform the face of Saturn as seen by Cassini. This captivating natural color view was created from images c",
+   "date": "2008-12-30",
    "qid": "Q193",
    "sha1": "915657c6ba940f6d9e5ad8a67e64583a690a4486",
    "match": {
@@ -469,6 +493,8 @@
    "license": "CC0",
    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
    "source": "Wikimedia Commons",
+   "description": "Uranus on 1986-01-23, taken by NASA's Voyager 2 probe. This color image was composed of three frames, orange, green, and blue, taken by Voyager 2's imaging system. This color image has been calibrated to best represent Uranus's true color and appearance. Based on: (in English) Irwin, Patrick G J (20",
+   "date": "2024-01-07",
    "qid": "Q324",
    "sha1": "e320e68e31322cf50d0da0bc523cded6ed7a6de2",
    "match": {
@@ -505,6 +531,8 @@
    "license": "CC0",
    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
    "source": "Wikimedia Commons",
+   "description": "Neptune on 1989-08-17, taken by NASA's Voyager 2 probe. This color image was composed of three frames, orange, green, and blue, taken by Voyager 2's imaging system. This color image has been calibrated to best represent Neptune's true color and appearance. Based on: (in English) Irwin, Patrick G J (",
+   "date": "1989-08-172024-01-06",
    "qid": "Q332",
    "sha1": "c1d95965fa1bdc1a0b6f6be78cf1f8c9c4e601e6",
    "match": {
@@ -541,6 +569,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "A mosaic of Pluto images taken by the LORRI instruments aboard the New Horizons spacecraft, coloured by data from the Ralph instrument. ORIGINAL FILE DESCRIPTION: July 24, 2015 Global Mosaic of Pluto in True Color Pluto Four images from New Horizons’ Long Range Reconnaissance Imager (LORRI) were com",
+   "date": "2015-07-14",
    "qid": "Q339",
    "sha1": "7d663b20e688241627819f889a44f585326deada",
    "match": {
@@ -577,6 +607,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Approximate true-color image of Ceres, using the F7 ('red'), F2 ('green') and F8 ('blue') filters, projected onto a clear filter image. Images were acquired by Dawn at 04:13 UT May 4, 2015, at a distance of 13641 km. At the time, Dawn was over Ceres' northern hemisphere. The prominent, bright crater",
+   "date": "2015-05-04",
    "qid": "Q596",
    "sha1": "ae533616059c89558ef1eac95324929dd5ceffe4",
    "match": {
@@ -613,6 +645,8 @@
    "license": "CC BY-SA 3.0",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
    "source": "Wikimedia Commons",
+   "description": "Merged product of several images acquired by Juno JunoCam during a flyby of Io on December 30, 2023. This image shows portions of Io's north polar region and its northern trailing hemisphere.",
+   "date": "2023-12-30",
    "qid": "Q3123",
    "sha1": "13a10c8cef157d7d19c19973b5a4347b5ac46e17",
    "match": {
@@ -649,6 +683,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "This image shows a view of the trailing hemisphere of Jupiter's ice-covered satellite, Europa, in approximate natural color. Long, dark lines are fractures in the crust, some of which are more than 3,000 kilometers (1,850 miles) long. The bright feature containing a central dark spot in the lower th",
+   "date": "1996-09-07",
    "qid": "Q3143",
    "sha1": "2370f42e7d6da2bd3fd03d448e25ef3192e6109a",
    "match": {
@@ -685,6 +721,8 @@
    "license": "CC BY 2.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
    "source": "Wikimedia Commons",
+   "description": "Ganymede photographed by Juno in 2021, Projected from the perspective of '3.",
+   "date": "2022-07-24 14:29:43",
    "qid": "Q3169",
    "sha1": "3b1b10f70ae1bfe604c9c19d0ae131a13ba3447e",
    "match": {
@@ -721,6 +759,8 @@
    "license": "CC BY 2.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
    "source": "Wikimedia Commons",
+   "description": "Callisto processed using low resolution (wide angle) orange, green, and blue filtered images colorizing higher resolution (narrow angle) unfiltered images taken by Voyager 2 on July 8 1979. NASA/JPL-Caltech/Kevin M. Gill",
+   "date": "2018-01-21 15:03",
    "qid": "Q3134",
    "sha1": "aa0c788cea5fcf33c0eedbb2f996a3366d903e66",
    "match": {
@@ -757,6 +797,8 @@
    "license": "CC BY 2.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
    "source": "Wikimedia Commons",
+   "description": "I've taken a slightly larger image that is processed by Kevin M. Gill, with far less noise. Titan's color in this image also more closely match with its spectra color.",
+   "date": "2018-03-11 18:01:50",
    "qid": "Q2565",
    "sha1": "eb621d4df5c17286d7cdcf8242d256a826dcda15",
    "match": {
@@ -793,6 +835,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Original caption: NASA's Cassini spacecraft captured this view as it neared icy Enceladus for its closest-ever dive past the moon's active south polar region. The view shows heavily cratered northern latitudes at top, transitioning to fractured, wrinkled terrain in the middle and southern latitudes.",
+   "date": "2015-10-28",
    "qid": "Q3303",
    "sha1": "4765c12790da8eb90a6f5c9736edec7544cd346d",
    "match": {
@@ -829,6 +873,8 @@
    "license": "CC BY 4.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
    "source": "Wikimedia Commons",
+   "description": "Voyager 2 image of Triton showing the south polar region with dark streaks produced by geysers visible on the icy surface",
+   "date": "2020-06-02 00:58:51",
    "qid": "Q3359",
    "sha1": "052f777a48c5ea0ebded6ca3e2442e8a6f710a26",
    "match": {
@@ -865,6 +911,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Three years after NASA's New Horizons spacecraft gave humankind our first close-up views of Pluto and its largest moon, Charon, scientists are still revealing the wonders of these incredible worlds in the outer solar system. Marking the anniversary of New Horizons' historic flight through the Pluto ",
+   "date": "2015-07-14",
    "qid": "Q6604",
    "sha1": "af65acb96c75af91203f956357e9d5fa9b8ceb52",
    "match": {
@@ -901,6 +949,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "This composite image of the primordial contact binary Kuiper Belt Object 2014 MU69 (official designation: (486958) Arrokoth, nickname: Ultima Thule - the bigger part is Ultima, the smaller one Thule) – featured on the cover of the May 17 issue of the journal Science – was compiled from data obtained",
+   "date": "2019-05-16",
    "qid": "Q18325885",
    "sha1": "71b2af2f65302b20e65e207b54853a766676378f",
    "match": {
@@ -937,6 +987,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "In one of the most detailed astronomical images ever produced, NASA/ESA's Hubble Space Telescope captured an unprecedented look at the Orion Nebula. ... This extensive study took 105 Hubble orbits to complete. All imaging instruments aboard the telescope were used simultaneously to study Orion. The ",
+   "date": "2006-01-11",
    "qid": "Q13903",
    "sha1": "b4d829576efbbbfb39c722c177c4abc79a77442a",
    "match": {
@@ -973,6 +1025,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Star forming pillars in the Eagle Nebula, as seen by the Hubble Space Telescope's WFPC2. The picture is composed of 32 different images from four separate cameras in this instrument. The photograph was made with light emitted by different elements in the cloud and appears as a different colour in th",
+   "date": "circa 2003date QS:P,+2003-00-00T00:00:00",
    "qid": "Q11349",
    "sha1": "2eb0a6c1aa60b1ac7098411614d184a7d2ac8def",
    "match": {
@@ -1009,6 +1063,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "The Pleiades, an open cluster consisting of approximately 3,000 stars at a distance of 400 light-years (120 parsecs) from Earth in the constellation of Taurus. It is also known as ‘The Seven Sisters’, or the astronomical designations NGC 1432/35 and M45.",
+   "date": "2004-06-01",
    "qid": "Q13423",
    "sha1": "fc1bae25b3a914224cadb69b5333d20827bc0929",
    "match": {
@@ -1045,6 +1101,8 @@
    "license": "CC BY 4.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
    "source": "Wikimedia Commons",
+   "description": "The globular cluster Omega Centauri — with as many as ten million stars — is seen in all its splendour in this image captured with the WFI camera from ESO's La Silla Observatory. The image shows only the central part of the cluster — about the size of the full moon on the sky (half a degree). North ",
+   "date": "2008",
    "qid": "Q14275",
    "sha1": "8a7c7d409c524951b57ac08d9c921bedd8cf2b73",
    "match": {
@@ -1081,6 +1139,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "M33, the Triangulum Galaxy, is a perennial favorite of amateur and professional astronomers alike, due to its orientation and relative proximity to us. It is the second nearest spiral galaxy to our Milky Way (after M31, the Andromeda Galaxy) and a prominent member of the \"local group\" of galaxies. F",
+   "date": "2005-10-13",
    "qid": "Q13724",
    "sha1": "7ece4a065ada354ff9a772e36870fe9d7426d659",
    "match": {
@@ -1117,6 +1177,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Image of the Large Magellanic Cloud and Supernova 1987A taken by the Kuiper Airborne Observatory (NASA 714) during its New Zealand deployment in 1987.",
+   "date": "Taken on 23 June 1987",
    "qid": "Q49957",
    "sha1": "7db792291eae6d687b6fddfa1613d404038956a3",
    "match": {
@@ -1154,6 +1216,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "About This Image HUBBLE'S VIEW OF INTERSTELLAR COMET 2I/BORISOV https://hubblesite.org/contents/media/images/2019/53/4578-Image NASA's Hubble Space Telescope has given astronomers their best look yet at an interstellar visitor – comet 2I/Borisov – whose speed and trajectory indicate it has come from",
+   "date": "2019-10-16",
    "qid": "Q67328765",
    "sha1": "eef871638461569523be48b0cb21a48d19cf9744",
    "match": {
@@ -1190,6 +1254,8 @@
    "license": "CC BY 2.0",
    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
    "source": "Wikimedia Commons",
+   "description": "Approximate true color image of comet 67P taken by the Rosetta spacecraft's OSIRIS Narrow Angle Camera on March 17, 2015. This image is a four frame mosaic, with each color frame imaged through VIS_BLUE, VIS_GREEN, and VIS_RED filters. At the time this image was taken, Rosetta was located roughly 82",
+   "date": "2017-02-06 17:41",
    "qid": "Q844672",
    "sha1": "9c3064f1655abfc85c7c716812d3707c6b87038f",
    "match": {
@@ -1226,6 +1292,8 @@
    "license": "CC BY-SA 3.0",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
    "source": "Wikimedia Commons",
+   "description": "An image of comet C/1995 O1 (Hale-Bopp), taken on April 04, 1997 with a 225mm f/2.0 Schmidt Camera (focal length 450mm) on Kodak Panther 400 color slide film with an exposure time of 10 minutes; the field shown is about 6.5°x6.5°; at full resolution, the stars in the image appear slightly elongated,",
+   "date": "04-04-1997",
    "qid": "Q69854",
    "sha1": "29318ffc676879762afe404309fc84292853ed18",
    "match": {
@@ -1262,6 +1330,8 @@
    "license": "CC BY-SA 4.0",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
    "source": "Wikimedia Commons",
+   "description": "Comet C/2020 F3 (NEOWISE) captured from the Seine et Marne region in France, around 3 A.M. on the morning of July 13th 2020. 10 photos 30 seconds each, with a 300mm photo lens and full-frame DSLR.",
+   "date": "2020-07-13 03:30:00",
    "qid": "Q90776919",
    "sha1": "cfe062fa69de90bbcdbf5adb0f7d71eef529f575",
    "match": {
@@ -1298,6 +1368,8 @@
    "license": "Public domain",
    "licenseUrl": "",
    "source": "Wikimedia Commons",
+   "description": "Original description: This mosaic of Bennu was created using observations made by NASA’s OSIRIS-REx spacecraft that was in close proximity to the asteroid for over two years.",
+   "date": "27 February 2020, 00:38:40",
    "qid": "Q11558",
    "sha1": "071220a8827d35e93ff415752dcf16128ae540d8",
    "match": {

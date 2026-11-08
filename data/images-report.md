@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 17:36 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 17:51 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -106,7 +106,7 @@
 - Crédit : NASA/JPL
 - Nature détectée : **photo**
 - Description : Full-color image of Mercury from first MESSENGER flyby.
-- Téléchargé et converti : 480 px 11 Ko, 1024 px 40 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Vénus (`venus`)
 - Identification : **Q313** — recherche « Venus », confiance moyenne
@@ -132,7 +132,7 @@
 - Crédit : The Blue Marble
 - Nature détectée : **photo**
 - Description : Description View of the Earth as seen by the Apollo 17 crew traveling toward the moon. This translunar coast photograph extends from the Mediterranean Sea area to the Antarctica south polar ice cap. This is the first tim
-- Téléchargé et converti : 480 px 22 Ko, 1024 px 92 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Lune (`lune`)
 - Identification : **Q405** — recherche « Moon », confiance moyenne
@@ -271,7 +271,7 @@
 - Crédit : Ganymede - Perijove 34 Composite
 - Nature détectée : **photo**
 - Description : Ganymede photographed by Juno in 2021, Projected from the perspective of '3.
-- Téléchargé et converti : 480 px 18 Ko, 1024 px 127 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Callisto (`callisto`)
 - Identification : **Q3134** — recherche « Callisto », confiance moyenne
@@ -286,7 +286,7 @@
 - Crédit : Callisto - July 8 1979
 - Nature détectée : **photo**
 - Description : Callisto processed using low resolution (wide angle) orange, green, and blue filtered images colorizing higher resolution (narrow angle) unfiltered images taken by Voyager 2 on July 8 1979. NASA/JPL-Caltech/Kevin M. Gill
-- Téléchargé et converti : 480 px 27 Ko, 1024 px 170 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Titan (`titan`)
 - Identification : **Q2565** — recherche « Titan », confiance moyenne
@@ -301,7 +301,7 @@
 - Crédit : File:Titan - December 16 2011 (40047599334).jpg by [1]
 - Nature détectée : **photo**
 - Description : I've taken a slightly larger image that is processed by Kevin M. Gill, with far less noise. Titan's color in this image also more closely match with its spectra color.
-- Téléchargé et converti : 480 px 3 Ko, 1024 px 5 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Encelade (`encelade`)
 - Identification : **Q3303** — recherche « Enceladus », confiance moyenne
@@ -338,7 +338,7 @@
 - Crédit : http://pluto.jhuapl.edu/Galleries/Featured-Images/image.php?page=1&gallery_id=2&image_id=544
 - Nature détectée : **photo**
 - Description : Three years after NASA's New Horizons spacecraft gave humankind our first close-up views of Pluto and its largest moon, Charon, scientists are still revealing the wonders of these incredible worlds in the outer solar sys
-- Téléchargé et converti : 480 px 13 Ko, 1024 px 61 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Arrokoth (`arrokoth`)
 - Identification : **Q18325885** — recherche « 486958 Arrokoth », confiance moyenne
@@ -459,7 +459,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : An image of comet C/1995 O1 (Hale-Bopp), taken on April 04, 1997 with a 225mm f/2.0 Schmidt Camera (focal length 450mm) on Kodak Panther 400 color slide film with an exposure time of 10 minutes; the field shown is about 
-- Téléchargé et converti : 480 px 56 Ko, 1024 px 220 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## NEOWISE (`neowise`)
 - Identification : **Q90776919** — recherche « C/2020 F3 (NEOWISE) », confiance moyenne
@@ -486,4 +486,4 @@
 - Fichier inchangé : rien à télécharger.
 
 ---
-Téléchargements : 7. Poids total des images : 3611 Ko.
+Téléchargements : 0. Poids total des images : 3611 Ko.
