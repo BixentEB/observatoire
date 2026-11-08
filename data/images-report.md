@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 23:15 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 23:18 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -495,11 +495,19 @@
 - Crédit : Flickr: Hoba Meteorite site
 - Nature détectée : **photo**
 - Description : Hoba meteorite
-- Téléchargé et converti : 480 px 41 Ko, 1024 px 211 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Météorite d'Ensisheim (`ensisheim`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q1344365** — recherche « Ensisheim (meteorite) », confiance moyenne
+    candidat Q1344365 « Météorite d'Ensisheim » — nature : meteorite — retenu
+- Image principale Wikidata (P18) : Ensisheim meteorit donnerstein 1 vss2007.jpg
+- Fichier : [Ensisheim meteorit donnerstein 1 vss2007.jpg](https://commons.wikimedia.org/wiki/File:Ensisheim_meteorit_donnerstein_1_vss2007.jpg) — 640 × 450
+- Licence : CC BY-SA 2.0 de ✔
+- Auteur : Konrad Andrä
+- Crédit : Sternwarte Singen e.V.
+- Nature détectée : **photo**
+- Description : Mainmass of the Ensisheim meteorite.
+- Téléchargé et converti : 480 px 27 Ko, 1024 px 49 Ko
 
 ## Météorite d'Allende (`allende`)
 - Identification : **Q1930079** — recherche « Allende meteorite », confiance moyenne
@@ -511,7 +519,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : A 520g individual of the Allende meteorite shower. Allende is a carbonaceous chondrite (CV3) that fell on 1969 February 8 in Mexico. This specimen is approx. 8 centimeters wide. Note the patches of dull black fusion crus
-- Téléchargé et converti : 480 px 17 Ko, 1024 px 75 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Météorite de Murchison (`murchison`)
 - Identification : **Q1164183** — recherche « Murchison meteorite », confiance moyenne
@@ -523,7 +531,7 @@
 - Crédit : http://www.anl.gov/Media_Center/Image_Library/images/fermi-dust.jpg; en:Image:Murchison-meteorite-ANL.jpg
 - Nature détectée : **photo**
 - Description : Fragment of the Murchison meteorite (at right) and isolated individual particles (shown in the test tube).
-- Téléchargé et converti : 480 px 9 Ko, 1024 px 26 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## ALH 84001 (`alh84001`)
 - Identification : **Q47580** — recherche « Allan Hills 84001 », confiance moyenne
@@ -535,7 +543,7 @@
 - Crédit : NASA - JSC: http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm (https://web.archive.org/web/20051207152354/http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm mement in web archive 2005-12-07) http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/photos.htm http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/ALH84001,0.htm
 - Nature détectée : **photo**
 - Description : Fotografía del ALH84001
-- Téléchargé et converti : 480 px 21 Ko, 1024 px 95 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Superbolide de Tcheliabinsk (`tcheliabinsk`)
 - Identification : **Q4661508** — recherche « Chelyabinsk meteor », confiance moyenne
@@ -547,7 +555,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : Este es uno de los fragmentos del famoso meteorito de Chelyabinsk, caído el 15 de febrero de 2013. Estos fragmentos son condritas ordinarias y contienen cerca de un 10% de hierro. En esta muestra podemos observar perfect
-- Téléchargé et converti : 480 px 18 Ko, 1024 px 47 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Meteor Crater (`barringer`)
 - Identification : **Q431381** — recherche « Meteor Crater », confiance moyenne
@@ -559,7 +567,7 @@
 - Crédit : NASA Earth Observatory
 - Nature détectée : **photo**
 - Description : This image has a resolution of 2 meters per pixel, and illumination is from the right. Layers of exposed limestone and sandstone are visible just beneath the crater rim, as are large stone blocks excavated by the impact.
-- Téléchargé et converti : 480 px 27 Ko, 1024 px 150 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Astroblème de Rochechouart (`rochechouart`)
 - Identification : **Q1786795** — recherche « Rochechouart impact structure », confiance moyenne
@@ -583,7 +591,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : This is the view from the top of Assvoelkop in the heart of the Vredefort Crater with the Vaal River in the distance.
-- Téléchargé et converti : 480 px 56 Ko, 1024 px 282 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Itokawa (`itokawa`)
 - Identification : **Q149374** — recherche « 25143 Itokawa », confiance moyenne
@@ -595,7 +603,7 @@
 - Crédit : https://apod.nasa.gov/apod/ap051228.html
 - Nature détectée : **photo**
 - Description : Image of the asteroid Itokawa from the Hayabusa spacecraft.
-- Téléchargé et converti : 480 px 14 Ko, 1024 px 24 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Ryugu (`ryugu`)
 - Identification : **Q1385178** — recherche « 162173 Ryugu », confiance moyenne
@@ -607,7 +615,7 @@
 - Crédit : DARTS archive + Own work
 - Nature détectée : **photo**
 - Description : Rotation gif of 162173 Ryugu.Image Credit: JAXA Hayabusa 2 ONC-T v-filterDate observation: 2018-07-10
-- Téléchargé et converti : 480 px 7 Ko, 1024 px 7 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Plaque de Pioneer (`plaque-pioneer`)
 - Identification : **Q412** — recherche « Pioneer plaque », confiance moyenne
@@ -619,7 +627,7 @@
 - Crédit : http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-001621.html
 - Nature détectée : **photo**
 - Description : Pioneer plaque
-- Téléchargé et converti : 480 px 9 Ko, 1024 px 25 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Message d'Arecibo (`message-arecibo`)
 - Identification : **Q384071** — recherche « Arecibo message », confiance moyenne
@@ -631,7 +639,7 @@
 - Crédit : Own work drawing, 2005
 - Nature détectée : **radar**
 - Description : The Arecibo message as sent 1974 from the Arecibo Observatory.
-- Téléchargé et converti : 480 px 38 Ko, 1024 px 67 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Disque d'or de Voyager (`disque-voyager`)
 - Identification : **Q156315** — recherche « Voyager Golden Record », confiance moyenne
@@ -643,7 +651,7 @@
 - Crédit : The Sounds of Earth Record Cover
 - Nature détectée : **photo**
 - Description : Voyager Golden Record This gold aluminium cover was designed to protect the Voyager 1 and 2 "Sounds of Earth" gold-plated records from micrometeorite bombardment, but also serves a double purpose in providing the finder 
-- Téléchargé et converti : 480 px 35 Ko, 1024 px 158 Ko
+- Fichier inchangé : rien à télécharger.
 
 ---
-Téléchargements : 12. Poids total des images : 5183 Ko.
+Téléchargements : 1. Poids total des images : 5260 Ko.
