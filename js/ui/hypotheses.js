@@ -63,7 +63,8 @@
     return '<p class="p-kicker">Hypothèses</p><h1>Pistes et hypothèses</h1>' +
       '<div class="h-tabs" role="tablist">' +
       '<a role="tab" class="h-tab t-perso" href="#/hypotheses" aria-selected="' + !sci + '">Hypothèses personnelles</a>' +
-      '<a role="tab" class="h-tab t-sci" href="#/hypotheses/chercheurs" aria-selected="' + !!sci + '">Hypothèses de chercheurs</a></div>';
+      '<a role="tab" class="h-tab t-sci" href="#/hypotheses/chercheurs" aria-selected="' + (sci === true) + '">Hypothèses de chercheurs</a>' +
+      '<a role="tab" class="h-tab t-seuls" href="#/hypotheses/seuls" aria-selected="' + (sci === 'seuls') + '">Sommes-nous seuls ?</a></div>';
   }
   function failed(box) { box.innerHTML = '<p class="note">Les fiches n\'ont pas pu être chargées. Elles s\'affichent quand le site est servi par un serveur web (en ligne, ou en local avec <code>python3 -m http.server</code>).</p>'; }
 
@@ -71,6 +72,11 @@
     disposeViewer();
     if (param === 'atelier' || param === 'simulateur') { location.replace('#/simulateur'); return; }
     if (param === 'chercheurs') return sub ? ficheSci(root, sub) : listSciPage(root);
+    if (param === 'seuls') {
+      OBS.seulsPage(root, tabs('seuls'));
+      if (sub) { var el = document.getElementById('sq-' + sub); if (el) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); }
+      return;
+    }
     if (param) return fiche(root, param);
     root.innerHTML = tabs(false) +
       '<div class="h-intro"><b>Mes hypothèses personnelles.</b> Des idées sur l\'espace, pas assez développées pour être des théories, présentées par des textes et des animations 3D. Elles sont signalées par cette couleur et ne sont jamais mêlées aux données de l\'Observatoire : chacune dit ce qui pourrait l\'appuyer, ce qui la contredirait et comment on pourrait la tester.</div>' +
