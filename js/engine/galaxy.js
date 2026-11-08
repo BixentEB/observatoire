@@ -341,6 +341,43 @@
     uniforms.forEach(function (u) { u.uPR.value = PR; u.uScaleH.value = H / (2 * tanHalf); });
   };
 
+  /* ---------- temps galactique : le Soleil autour du centre ----------
+     Orbite simplifiée en cercle de rayon R0 dans le plan, période ≈ 230 millions d'années (estimations 220 à 250),
+     sens de rotation réel (horaire vu du pôle Nord galactique), oscillation verticale ≈ ± 280 al en ≈ 64 millions
+     d'années (montée actuelle). Les bras et les étoiles voisines ne bougent pas dans ce mode (eux aussi tournent). */
+  var GT = { P: 230, Pz: 64, Az: 280 }, gtObj = null;
+  function gtPos(t, out) {
+    var th = TAU * t / GT.P, ph = Math.asin(Math.min(1, GX.zSun / GT.Az));
+    var z = GT.Az * Math.sin(TAU * t / GT.Pz + ph);
+    return out.set(-R0 * Math.cos(th), z / U, -R0 * Math.sin(th));
+  }
+  L.galTime = function (on) {
+    if (on && !gtObj) {
+      var pts = []; for (var i = 0; i <= 256; i++) { var a = TAU * i / 256; pts.push(new T.Vector3(-R0 * Math.cos(a), 0, -R0 * Math.sin(a))); }
+      var ring = new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineDashedMaterial({ color: 0xffd27a, transparent: true, opacity: .35, dashSize: 6, gapSize: 5, depthWrite: false }));
+      ring.computeLineDistances();
+      var trail = new T.Line(new T.BufferGeometry(), new T.LineBasicMaterial({ color: 0xffd27a, transparent: true, opacity: .9, depthWrite: false }));
+      var c = document.createElement('canvas'); c.width = c.height = 64; var g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gr.addColorStop(0, 'rgba(255,240,200,1)'); gr.addColorStop(.25, 'rgba(255,210,122,.9)'); gr.addColorStop(1, 'rgba(255,180,80,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+      var mk = new T.Sprite(new T.SpriteMaterial({ map: new T.CanvasTexture(c), sizeAttenuation: false, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+      mk.scale.set(.032, .032, 1); mk.renderOrder = 6;
+      gtObj = new T.Group(); gtObj.add(ring, trail, mk); gtObj.userData = { trail: trail, mk: mk };
+      scene.add(gtObj);
+    }
+    if (gtObj) gtObj.visible = !!on;
+    L.gtOn = !!on;
+    if (on) { L.select(null); flight = null; startFlight(null, 1.6); L.gtSet(L.gtT || 0); }
+  };
+  L.gtSet = function (t) {
+    L.gtT = t; if (!gtObj) return null;
+    var p = gtPos(t, new T.Vector3()); gtObj.userData.mk.position.copy(p);
+    var n = Math.max(2, Math.min(400, Math.round(Math.abs(t) / 1.5))), pts = [];
+    for (var i = 0; i <= n; i++) pts.push(gtPos(t * i / n, new T.Vector3()));
+    gtObj.userData.trail.geometry.dispose(); gtObj.userData.trail.geometry = new T.BufferGeometry().setFromPoints(pts);
+    return { turns: t / GT.P, z: p.y * U, P: GT.P };
+  };
+  L.GT = GT;
+
   var TOP = 96;
   L.update = function (dt) {
     if (L._inward) { controls.target.lerp(sunPos, Math.min(1, dt * 4)); camera.position.lerp(sunPos, Math.min(1, dt * 2.4)); }

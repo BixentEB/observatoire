@@ -18,6 +18,7 @@
     var T = [
       { href: '#/lexique', t: 'Lexique', k: 'Disponible', d: 'Ce qui compose l\'Univers, les éléments, les étoiles (qu\'est-ce qu\'une naine ?), les planètes, les galaxies et les mots pour les mesurer : des définitions courtes, avec une recherche.' },
       { href: '#/simulateur', t: 'Simulateur d\'objets', k: 'Disponible', d: 'Modeler un corps céleste : partir d\'un objet réel ou d\'une page blanche, changer sa taille, ses couleurs, ses anneaux, son atmosphère, puis copier les réglages.' },
+      { act: 'galtime', t: 'Temps galactique', k: 'Disponible', d: 'Le Soleil fait le tour de la Voie lactée en environ 230 millions d\'années : remonter le temps jusqu\'à l\'explosion cambrienne, voir où nous étions à l\'époque des dinosaures.' },
       { act: 'photo', t: 'Mode photo', k: 'Disponible', d: 'Choisir ce qui apparaît à l\'écran (noms, orbites, engins, ceintures, plan de l\'écliptique, signature) et enregistrer une image du ciel à la date affichée.' },
       { href: '#/lunaisons', t: 'Lunaisons', k: 'Disponible', d: 'La Lune telle qu\'on la voit à n\'importe quelle date, ses prochaines phases, les super-lunes et un calendrier du mois, calculés à la minute près.' },
       { href: '#/comparateur', t: 'Comparateur', k: 'Disponible', d: 'Deux astres côte à côte, à la même échelle : la Terre et Jupiter, le Soleil et Sirius… puis leurs données face à face, avec le rapport entre les deux.' },
@@ -33,6 +34,8 @@
       }).join('') + '</div>';
     var ph = root.querySelector('[data-tool="photo"]');
     if (ph) ph.addEventListener('click', function () { location.hash = '#/'; setTimeout(function () { if (OBS.photo) OBS.photo.open(); }, 450); });
+    var gtb = root.querySelector('[data-tool="galtime"]');
+    if (gtb) gtb.addEventListener('click', function () { location.hash = '#/'; setTimeout(function () { if (OBS.galtime) OBS.galtime.open(); }, 450); });
   };
 
   /* Méthode : un menu à onglets (Méthode, Crédits), d'autres pourront s'ajouter */

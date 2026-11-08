@@ -366,7 +366,7 @@
         '<div><span>Distance au centre</span><b>' + nf(Math.round(inf.fromCenter / 100) * 100) + ' al</b><small>' + (inf.fromCenter > 60000 ? 'hors du disque' : 'dans le disque') + '</small></div></div></section>');
       h.push('<p class="c-text">' + esc(d.text || '') + '</p>');
       h.push(facts(d));
-      if (d.sun) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-down>Voir le voisinage du Soleil →</button></div></section>');
+      if (d.sun) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-down>Voir le voisinage du Soleil →</button><button class="chip chip-go" type="button" data-gt>Temps galactique : le Soleil autour de la galaxie →</button></div></section>');
     }
     h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Personne n\'a jamais vu la Voie lactée de l\'extérieur. Sa forme est reconstituée d\'après les mesures : bras spiraux tracés à partir des distances de masers, barre centrale, disque et bulbe. Les objets repères sont à leurs positions mesurées ; leur repère lumineux est symbolique.</p></section><div data-hypo></div></div>');
     el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
@@ -374,6 +374,7 @@
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var vs = el.querySelector('[data-visit]'); if (vs) vs.addEventListener('click', function () { OBS.engine.go('etoile', { star: d.id }); });
     var dn = el.querySelector('[data-down]'); if (dn) dn.addEventListener('click', function () { OBS.engine.go('voisinage', { from: 'galaxie' }); });
+    var gt = el.querySelector('[data-gt]'); if (gt) gt.addEventListener('click', function () { OBS.galtime.open(); });
     hypoBox(id);
   }
 
