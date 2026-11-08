@@ -598,10 +598,14 @@
     "artefacts/ensisheim"
    ],
    "search": [
-    "Ensisheim meteorite"
+    "Ensisheim meteorite",
+    "Ensisheim (meteorite)",
+    "Ensisheim",
+    "météorite d'Ensisheim"
    ],
    "expect": [
-    "meteorite"
+    "meteorite",
+    "chondrite"
    ],
    "fallback": "asteroide",
    "alt": "Météorite d'Ensisheim"
