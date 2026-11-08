@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 19:09 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 23:15 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -59,7 +59,7 @@
 - Crédit : https://photojournal.jpl.nasa.gov/figures/PIA24168_fig1.jpg
 - Nature détectée : **radar**
 - Description : PIA24168: Radar Observations of Asteroid 99942 Apophis https://photojournal.jpl.nasa.gov/catalog/PIA24168 These images represent radar observations of asteroid 99942 Apophis on March 8, 9, and 10, 2021, as it made its la
-- Téléchargé et converti : 480 px 27 Ko, 1024 px 74 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA23195 — « Asteroid Apophis » (JPL, 2019-04-29) https://images.nasa.gov/details/PIA23195
   - PIA24168 — « Radar Observations of Asteroid 99942 Apophis » (JPL, 2021-03-26) https://images.nasa.gov/details/PIA24168
@@ -485,5 +485,165 @@
 - Description : Original description: This mosaic of Bennu was created using observations made by NASA’s OSIRIS-REx spacecraft that was in close proximity to the asteroid for over two years.
 - Fichier inchangé : rien à télécharger.
 
+## Météorite de Hoba (`hoba`)
+- Identification : **Q216876** — recherche « Hoba meteorite », confiance moyenne
+    candidat Q216876 « Météorite d'Hoba » — nature : iron meteorite — retenu
+- Image principale Wikidata (P18) : Hoba Meteorite sire.jpg
+- Fichier : [Hoba Meteorite sire.jpg](https://commons.wikimedia.org/wiki/File:Hoba_Meteorite_sire.jpg) — 4209 × 3049
+- Licence : CC BY 2.0 ✔
+- Auteur : Eugen Zibiso
+- Crédit : Flickr: Hoba Meteorite site
+- Nature détectée : **photo**
+- Description : Hoba meteorite
+- Téléchargé et converti : 480 px 41 Ko, 1024 px 211 Ko
+
+## Météorite d'Ensisheim (`ensisheim`)
+- Identification : **—** — introuvable, confiance nulle
+- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+
+## Météorite d'Allende (`allende`)
+- Identification : **Q1930079** — recherche « Allende meteorite », confiance moyenne
+    candidat Q1930079 « Allende » — nature : stony meteorite, meteorite, cv chondrite — retenu
+- Image principale Wikidata (P18) : AllendeMeteorite.jpg
+- Fichier : [AllendeMeteorite.jpg](https://commons.wikimedia.org/wiki/File:AllendeMeteorite.jpg) — 1024 × 768
+- Licence : CC BY-SA 3.0 ✔
+- Auteur : H. Raab
+- Crédit : Own work
+- Nature détectée : **photo**
+- Description : A 520g individual of the Allende meteorite shower. Allende is a carbonaceous chondrite (CV3) that fell on 1969 February 8 in Mexico. This specimen is approx. 8 centimeters wide. Note the patches of dull black fusion crus
+- Téléchargé et converti : 480 px 17 Ko, 1024 px 75 Ko
+
+## Météorite de Murchison (`murchison`)
+- Identification : **Q1164183** — recherche « Murchison meteorite », confiance moyenne
+    candidat Q1164183 « Murchison » — nature : meteorite — retenu
+- Image principale Wikidata (P18) : Murchison-meteorite-ANL.jpg
+- Fichier : [Murchison-meteorite-ANL.jpg](https://commons.wikimedia.org/wiki/File:Murchison-meteorite-ANL.jpg) — 1200 × 800
+- Licence : Public domain ✔
+- Auteur : United States Department of Energy; uploaded en wikipedia by en:User:Carl Henderson.
+- Crédit : http://www.anl.gov/Media_Center/Image_Library/images/fermi-dust.jpg; en:Image:Murchison-meteorite-ANL.jpg
+- Nature détectée : **photo**
+- Description : Fragment of the Murchison meteorite (at right) and isolated individual particles (shown in the test tube).
+- Téléchargé et converti : 480 px 9 Ko, 1024 px 26 Ko
+
+## ALH 84001 (`alh84001`)
+- Identification : **Q47580** — recherche « Allan Hills 84001 », confiance moyenne
+    candidat Q47580 « ALH 84001 » — nature : martian meteorite — retenu
+- Image principale Wikidata (P18) : ALH84001.jpg
+- Fichier : [ALH84001.jpg](https://commons.wikimedia.org/wiki/File:ALH84001.jpg) — 4683 × 3056
+- Licence : Public domain ✔
+- Auteur : NASA
+- Crédit : NASA - JSC: http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm (https://web.archive.org/web/20051207152354/http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm mement in web archive 2005-12-07) http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/photos.htm http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/ALH84001,0.htm
+- Nature détectée : **photo**
+- Description : Fotografía del ALH84001
+- Téléchargé et converti : 480 px 21 Ko, 1024 px 95 Ko
+
+## Superbolide de Tcheliabinsk (`tcheliabinsk`)
+- Identification : **Q4661508** — recherche « Chelyabinsk meteor », confiance moyenne
+    candidat Q4661508 « superbolide de Tcheliabinsk » — nature : near-earth asteroid, meteor — retenu
+- Image principale Wikidata (P18) : RM1886-Meteorit-chelyabinsk.jpg
+- Fichier : [RM1886-Meteorit-chelyabinsk.jpg](https://commons.wikimedia.org/wiki/File:RM1886-Meteorit-chelyabinsk.jpg) — 872 × 1260
+- Licence : CC BY 4.0 ✔
+- Auteur : Joan Rosell, from rosellminerals.com
+- Crédit : Own work
+- Nature détectée : **photo**
+- Description : Este es uno de los fragmentos del famoso meteorito de Chelyabinsk, caído el 15 de febrero de 2013. Estos fragmentos son condritas ordinarias y contienen cerca de un 10% de hierro. En esta muestra podemos observar perfect
+- Téléchargé et converti : 480 px 18 Ko, 1024 px 47 Ko
+
+## Meteor Crater (`barringer`)
+- Identification : **Q431381** — recherche « Meteor Crater », confiance moyenne
+    candidat Q431381 « Meteor Crater » — nature : impact crater — retenu
+- Image principale Wikidata (P18) : Meteor Crater - Arizona.jpg
+- Fichier : [Meteor Crater - Arizona.jpg](https://commons.wikimedia.org/wiki/File:Meteor_Crater_-_Arizona.jpg) — 2880 × 1920
+- Licence : Public domain ✔
+- Auteur : National Map Seamless Server
+- Crédit : NASA Earth Observatory
+- Nature détectée : **photo**
+- Description : This image has a resolution of 2 meters per pixel, and illumination is from the right. Layers of exposed limestone and sandstone are visible just beneath the crater rim, as are large stone blocks excavated by the impact.
+- Téléchargé et converti : 480 px 27 Ko, 1024 px 150 Ko
+
+## Astroblème de Rochechouart (`rochechouart`)
+- Identification : **Q1786795** — recherche « Rochechouart impact structure », confiance moyenne
+    candidat Q1786795 « astroblème de Rochechouart-Chassenon » — nature : impact structure — retenu
+- Image principale Wikidata (P18) : Astrobleme-rochechouart.jpg
+- Fichier : [Astrobleme-rochechouart.jpg](https://commons.wikimedia.org/wiki/File:Astrobleme-rochechouart.jpg) — 511 × 383
+- Licence : licence non reconnue (FAL) ✘
+- Auteur : "Personal synthetic image of Frédéric Michaud"
+- Crédit : Transferred from fr.wikipedia to Commons.
+- Nature détectée : **illustration** (à afficher comme illustration, jamais comme photographie)
+- Description : Rochechouart impact structure, or Rochechouart astrobleme, an impact structure in France whose formation dates back approximately 214 million years. Computer-generated image produced with Terragen showing the shape of th
+- → non retenue, visuel de remplacement.
+
+## Cratère de Vredefort (`vredefort`)
+- Identification : **Q330095** — recherche « Vredefort impact structure », confiance moyenne
+    candidat Q330095 « dôme de Vredefort » — nature : impact crater, hill — retenu
+- Image principale Wikidata (P18) : Aasvoelkop.jpg
+- Fichier : [Aasvoelkop.jpg](https://commons.wikimedia.org/wiki/File:Aasvoelkop.jpg) — 4032 × 3024
+- Licence : CC BY-SA 4.0 ✔
+- Auteur : Tadpolefarm
+- Crédit : Own work
+- Nature détectée : **photo**
+- Description : This is the view from the top of Assvoelkop in the heart of the Vredefort Crater with the Vaal River in the distance.
+- Téléchargé et converti : 480 px 56 Ko, 1024 px 282 Ko
+
+## Itokawa (`itokawa`)
+- Identification : **Q149374** — recherche « 25143 Itokawa », confiance moyenne
+    candidat Q149374 « (25143) Itokawa » — nature : potentially hazardous asteroid, near-earth object, near-earth asteroid — retenu
+- Image principale Wikidata (P18) : Itokawa06 hayabusa.jpg
+- Fichier : [Itokawa06 hayabusa.jpg](https://commons.wikimedia.org/wiki/File:Itokawa06_hayabusa.jpg) — 800 × 477
+- Licence : CC BY 4.0 ✔
+- Auteur : ISAS, JAXA
+- Crédit : https://apod.nasa.gov/apod/ap051228.html
+- Nature détectée : **photo**
+- Description : Image of the asteroid Itokawa from the Hayabusa spacecraft.
+- Téléchargé et converti : 480 px 14 Ko, 1024 px 24 Ko
+
+## Ryugu (`ryugu`)
+- Identification : **Q1385178** — recherche « 162173 Ryugu », confiance moyenne
+    candidat Q1385178 « (162173) Ryugu » — nature : potentially hazardous asteroid, near-earth asteroid — retenu
+- Image principale Wikidata (P18) : Ryugu rotation.gif
+- Fichier : [Ryugu rotation.gif](https://commons.wikimedia.org/wiki/File:Ryugu_rotation.gif) — 250 × 246
+- Licence : CC BY 4.0 ✔
+- Auteur : Meli thev
+- Crédit : DARTS archive + Own work
+- Nature détectée : **photo**
+- Description : Rotation gif of 162173 Ryugu.Image Credit: JAXA Hayabusa 2 ONC-T v-filterDate observation: 2018-07-10
+- Téléchargé et converti : 480 px 7 Ko, 1024 px 7 Ko
+
+## Plaque de Pioneer (`plaque-pioneer`)
+- Identification : **Q412** — recherche « Pioneer plaque », confiance moyenne
+    candidat Q412 « plaque de Pioneer » — nature : recording medium, active seti, plaque, engraving — retenu
+- Image principale Wikidata (P18) : GPN-2000-001621-x.jpg
+- Fichier : [GPN-2000-001621-x.jpg](https://commons.wikimedia.org/wiki/File:GPN-2000-001621-x.jpg) — 960 × 591
+- Licence : Public domain ✔
+- Auteur : NASA/HQ
+- Crédit : http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-001621.html
+- Nature détectée : **photo**
+- Description : Pioneer plaque
+- Téléchargé et converti : 480 px 9 Ko, 1024 px 25 Ko
+
+## Message d'Arecibo (`message-arecibo`)
+- Identification : **Q384071** — recherche « Arecibo message », confiance moyenne
+    candidat Q384071 « message d'Arecibo » — nature : active seti, project — retenu
+- Image principale Wikidata (P18) : Arecibo message.svg
+- Fichier : [Arecibo message.svg](https://commons.wikimedia.org/wiki/File:Arecibo_message.svg) — 512 × 1536
+- Licence : CC BY-SA 3.0 ✔
+- Auteur : Arne Nordmann (norro)
+- Crédit : Own work drawing, 2005
+- Nature détectée : **radar**
+- Description : The Arecibo message as sent 1974 from the Arecibo Observatory.
+- Téléchargé et converti : 480 px 38 Ko, 1024 px 67 Ko
+
+## Disque d'or de Voyager (`disque-voyager`)
+- Identification : **Q156315** — recherche « Voyager Golden Record », confiance moyenne
+    candidat Q156315 « Voyager Golden Record » — nature : active seti, phonograph record, time capsule, archives — retenu
+- Image principale Wikidata (P18) : The Sounds of Earth Record Cover - GPN-2000-001978.jpg
+- Fichier : [The Sounds of Earth Record Cover - GPN-2000-001978.jpg](https://commons.wikimedia.org/wiki/File:The_Sounds_of_Earth_Record_Cover_-_GPN-2000-001978.jpg) — 2215 × 2215
+- Licence : Public domain ✔
+- Auteur : NASA/JPL
+- Crédit : The Sounds of Earth Record Cover
+- Nature détectée : **photo**
+- Description : Voyager Golden Record This gold aluminium cover was designed to protect the Voyager 1 and 2 "Sounds of Earth" gold-plated records from micrometeorite bombardment, but also serves a double purpose in providing the finder 
+- Téléchargé et converti : 480 px 35 Ko, 1024 px 158 Ko
+
 ---
-Téléchargements : 1. Poids total des images : 3713 Ko.
+Téléchargements : 12. Poids total des images : 5183 Ko.

@@ -1411,6 +1411,480 @@
     "visiteurs/bennu"
    ],
    "alt": "Bennu"
+  },
+  "hoba": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/hoba-480.webp",
+     "w": 480,
+     "h": 348,
+     "bytes": 42452
+    },
+    "1024": {
+     "src": "assets/img/hoba-1024.webp",
+     "w": 1024,
+     "h": 742,
+     "bytes": 216636
+    }
+   },
+   "title": "Hoba Meteorite sire.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Hoba_Meteorite_sire.jpg",
+   "author": "Eugen Zibiso",
+   "credit": "Flickr: Hoba Meteorite site",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "description": "Hoba meteorite",
+   "date": "2013-02-15 15:30:14",
+   "qid": "Q216876",
+   "sha1": "8b66c2d8ed873954948e3fb2b0b38b32cb4d3956",
+   "match": {
+    "method": "recherche « Hoba meteorite »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/hoba"
+   ],
+   "alt": "Météorite de Hoba"
+  },
+  "ensisheim": {
+   "kind": "aucune",
+   "fallback": "asteroide",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "artefacts/ensisheim"
+   ]
+  },
+  "allende": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/allende-480.webp",
+     "w": 480,
+     "h": 360,
+     "bytes": 18002
+    },
+    "1024": {
+     "src": "assets/img/allende-1024.webp",
+     "w": 1024,
+     "h": 768,
+     "bytes": 76852
+    }
+   },
+   "title": "AllendeMeteorite.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:AllendeMeteorite.jpg",
+   "author": "H. Raab",
+   "credit": "Own work",
+   "license": "CC BY-SA 3.0",
+   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+   "source": "Wikimedia Commons",
+   "description": "A 520g individual of the Allende meteorite shower. Allende is a carbonaceous chondrite (CV3) that fell on 1969 February 8 in Mexico. This specimen is approx. 8 centimeters wide. Note the patches of dull black fusion crust. Severals condrules and CAIs can be seen embedded in the gray matrix.",
+   "date": "2005-12",
+   "qid": "Q1930079",
+   "sha1": "9a4354b9f009254aa5762884e051ddf0f380e0f0",
+   "match": {
+    "method": "recherche « Allende meteorite »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/allende"
+   ],
+   "alt": "Météorite d'Allende"
+  },
+  "murchison": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/murchison-480.webp",
+     "w": 480,
+     "h": 320,
+     "bytes": 10184
+    },
+    "1024": {
+     "src": "assets/img/murchison-1024.webp",
+     "w": 1024,
+     "h": 683,
+     "bytes": 27440
+    }
+   },
+   "title": "Murchison-meteorite-ANL.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Murchison-meteorite-ANL.jpg",
+   "author": "United States Department of Energy; uploaded en wikipedia by en:User:Carl Henderson.",
+   "credit": "http://www.anl.gov/Media_Center/Image_Library/images/fermi-dust.jpg; en:Image:Murchison-meteorite-ANL.jpg",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "Fragment of the Murchison meteorite (at right) and isolated individual particles (shown in the test tube).",
+   "date": "Uploaded en wikipedia at 18:02, 24 June ",
+   "qid": "Q1164183",
+   "sha1": "d011f11e97e1b7a45d2d0fa730ac865658d07b50",
+   "match": {
+    "method": "recherche « Murchison meteorite »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/murchison"
+   ],
+   "alt": "Météorite de Murchison"
+  },
+  "alh84001": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/alh84001-480.webp",
+     "w": 480,
+     "h": 313,
+     "bytes": 22258
+    },
+    "1024": {
+     "src": "assets/img/alh84001-1024.webp",
+     "w": 1024,
+     "h": 668,
+     "bytes": 97888
+    }
+   },
+   "title": "ALH84001.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:ALH84001.jpg",
+   "author": "NASA",
+   "credit": "NASA - JSC: http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm (https://web.archive.org/web/20051207152354/http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/posslife.htm mement in web archive 2005-12-07) http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/photos.htm http://www-curator.jsc.nasa.gov/curator/antmet/marsmets/alh84001/ALH84001,0.htm",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "Fotografía del ALH84001",
+   "date": "",
+   "qid": "Q47580",
+   "sha1": "dee58f1e448cf296ad2367e4c369c785fe7cbc7a",
+   "match": {
+    "method": "recherche « Allan Hills 84001 »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/alh84001"
+   ],
+   "alt": "ALH 84001"
+  },
+  "tcheliabinsk": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/tcheliabinsk-480.webp",
+     "w": 480,
+     "h": 694,
+     "bytes": 19422
+    },
+    "1024": {
+     "src": "assets/img/tcheliabinsk-1024.webp",
+     "w": 872,
+     "h": 1260,
+     "bytes": 48268
+    }
+   },
+   "title": "RM1886-Meteorit-chelyabinsk.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:RM1886-Meteorit-chelyabinsk.jpg",
+   "author": "Joan Rosell, from rosellminerals.com",
+   "credit": "Own work",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+   "source": "Wikimedia Commons",
+   "description": "Este es uno de los fragmentos del famoso meteorito de Chelyabinsk, caído el 15 de febrero de 2013. Estos fragmentos son condritas ordinarias y contienen cerca de un 10% de hierro. En esta muestra podemos observar perfectamente los cóndrulos y la corteza de fusión resquebrajada por el enfriamiento. E",
+   "date": "2024-07-01",
+   "qid": "Q4661508",
+   "sha1": "3bfc72cb19ff16eb4dd89e105276404f1631984e",
+   "match": {
+    "method": "recherche « Chelyabinsk meteor »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/tcheliabinsk"
+   ],
+   "alt": "Superbolide de Tcheliabinsk"
+  },
+  "barringer": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/barringer-480.webp",
+     "w": 480,
+     "h": 320,
+     "bytes": 28616
+    },
+    "1024": {
+     "src": "assets/img/barringer-1024.webp",
+     "w": 1024,
+     "h": 682,
+     "bytes": 153808
+    }
+   },
+   "title": "Meteor Crater - Arizona.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Meteor_Crater_-_Arizona.jpg",
+   "author": "National Map Seamless Server",
+   "credit": "NASA Earth Observatory",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "This image has a resolution of 2 meters per pixel, and illumination is from the right. Layers of exposed limestone and sandstone are visible just beneath the crater rim, as are large stone blocks excavated by the impact.",
+   "date": "2009-08-13",
+   "qid": "Q431381",
+   "sha1": "e7969eb9e91f9773518104eaea6e10c4164b2ba2",
+   "match": {
+    "method": "recherche « Meteor Crater »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/barringer"
+   ],
+   "alt": "Meteor Crater"
+  },
+  "rochechouart": {
+   "kind": "aucune",
+   "fallback": "asteroide",
+   "status": "licence",
+   "qid": "Q1786795",
+   "uses": [
+    "artefacts/rochechouart"
+   ]
+  },
+  "vredefort": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/vredefort-480.webp",
+     "w": 480,
+     "h": 360,
+     "bytes": 57446
+    },
+    "1024": {
+     "src": "assets/img/vredefort-1024.webp",
+     "w": 1024,
+     "h": 768,
+     "bytes": 289020
+    }
+   },
+   "title": "Aasvoelkop.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Aasvoelkop.jpg",
+   "author": "Tadpolefarm",
+   "credit": "Own work",
+   "license": "CC BY-SA 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source": "Wikimedia Commons",
+   "description": "This is the view from the top of Assvoelkop in the heart of the Vredefort Crater with the Vaal River in the distance.",
+   "date": "2019-04-13 17:39:01",
+   "qid": "Q330095",
+   "sha1": "cfbdf9049469e7c898fefa066f730c49fd80cbd0",
+   "match": {
+    "method": "recherche « Vredefort impact structure »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/vredefort"
+   ],
+   "alt": "Cratère de Vredefort"
+  },
+  "itokawa": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/itokawa-480.webp",
+     "w": 480,
+     "h": 286,
+     "bytes": 14544
+    },
+    "1024": {
+     "src": "assets/img/itokawa-1024.webp",
+     "w": 800,
+     "h": 477,
+     "bytes": 24674
+    }
+   },
+   "title": "Itokawa06 hayabusa.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Itokawa06_hayabusa.jpg",
+   "author": "ISAS, JAXA",
+   "credit": "https://apod.nasa.gov/apod/ap051228.html",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+   "source": "Wikimedia Commons",
+   "description": "Image of the asteroid Itokawa from the Hayabusa spacecraft.",
+   "date": "2005-12-28",
+   "qid": "Q149374",
+   "sha1": "a2e98126a79f0dca34fa661a192a1fd90742a7c0",
+   "match": {
+    "method": "recherche « 25143 Itokawa »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/itokawa"
+   ],
+   "alt": "Itokawa"
+  },
+  "ryugu": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/ryugu-480.webp",
+     "w": 250,
+     "h": 246,
+     "bytes": 7196
+    },
+    "1024": {
+     "src": "assets/img/ryugu-1024.webp",
+     "w": 250,
+     "h": 246,
+     "bytes": 7196
+    }
+   },
+   "title": "Ryugu rotation.gif",
+   "page": "https://commons.wikimedia.org/wiki/File:Ryugu_rotation.gif",
+   "author": "Meli thev",
+   "credit": "DARTS archive + Own work",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+   "source": "Wikimedia Commons",
+   "description": "Rotation gif of 162173 Ryugu.Image Credit: JAXA Hayabusa 2 ONC-T v-filterDate observation: 2018-07-10",
+   "date": "2020-03-08",
+   "qid": "Q1385178",
+   "sha1": "2070d74a9837fffcd280a5995707ba7722971f69",
+   "match": {
+    "method": "recherche « 162173 Ryugu »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/ryugu"
+   ],
+   "alt": "Ryugu"
+  },
+  "plaque-pioneer": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/plaque-pioneer-480.webp",
+     "w": 480,
+     "h": 296,
+     "bytes": 9706
+    },
+    "1024": {
+     "src": "assets/img/plaque-pioneer-1024.webp",
+     "w": 960,
+     "h": 591,
+     "bytes": 25746
+    }
+   },
+   "title": "GPN-2000-001621-x.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:GPN-2000-001621-x.jpg",
+   "author": "NASA/HQ",
+   "credit": "http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-001621.html",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "Pioneer plaque",
+   "date": "1972-02-25",
+   "qid": "Q412",
+   "sha1": "35dc83c8c9b484c6212e3443f8fbbaaff7b1f7c9",
+   "match": {
+    "method": "recherche « Pioneer plaque »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/plaque-pioneer"
+   ],
+   "alt": "Plaque de Pioneer"
+  },
+  "message-arecibo": {
+   "kind": "radar",
+   "files": {
+    "480": {
+     "src": "assets/img/message-arecibo-480.webp",
+     "w": 480,
+     "h": 1440,
+     "bytes": 39868
+    },
+    "1024": {
+     "src": "assets/img/message-arecibo-1024.webp",
+     "w": 1024,
+     "h": 3072,
+     "bytes": 69616
+    }
+   },
+   "title": "Arecibo message.svg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arecibo_message.svg",
+   "author": "Arne Nordmann (norro)",
+   "credit": "Own work drawing, 2005",
+   "license": "CC BY-SA 3.0",
+   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+   "source": "Wikimedia Commons",
+   "description": "The Arecibo message as sent 1974 from the Arecibo Observatory.",
+   "date": "2005-10-11",
+   "qid": "Q384071",
+   "sha1": "85ff4c7b9c079a0aebe585ccbdbe69e8345a80d7",
+   "match": {
+    "method": "recherche « Arecibo message »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/message-arecibo"
+   ],
+   "alt": "Message d'Arecibo"
+  },
+  "disque-voyager": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/disque-voyager-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 36528
+    },
+    "1024": {
+     "src": "assets/img/disque-voyager-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 162208
+    }
+   },
+   "title": "The Sounds of Earth Record Cover - GPN-2000-001978.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:The_Sounds_of_Earth_Record_Cover_-_GPN-2000-001978.jpg",
+   "author": "NASA/JPL",
+   "credit": "The Sounds of Earth Record Cover",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "Voyager Golden Record This gold aluminium cover was designed to protect the Voyager 1 and 2 \"Sounds of Earth\" gold-plated records from micrometeorite bombardment, but also serves a double purpose in providing the finder a key to playing the record. The explanatory diagram appears on both the inner a",
+   "date": "1977-09-04",
+   "qid": "Q156315",
+   "sha1": "98b11f7bbea27975679415a7232c1136e5048d02",
+   "match": {
+    "method": "recherche « Voyager Golden Record »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "artefacts/disque-voyager"
+   ],
+   "alt": "Disque d'or de Voyager"
   }
  }
 }
