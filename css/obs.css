@@ -793,8 +793,9 @@ body.page-open .keys, .demo .keys, body.page-open .corner, .demo .corner, body.p
 .ld-t h3 { margin: 0 0 4px; font: 600 19px var(--display); }
 .ld-t p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--soft); max-width: 70ch; }
 .ld-t a { color: var(--accent); text-decoration: none; white-space: nowrap; }
-.ld-jump { position: absolute; left: 160px; top: -8px; font: 10.5px var(--mono); color: var(--muted); background: var(--bg, #05060f); padding: 0 6px; }
-@media (max-width: 640px) { .ladder::before { left: 92px; } .ladder li { grid-template-columns: 80px 26px minmax(0, 1fr); } .ld-v { font-size: 12px; } .ld-jump { left: 100px; } }
+.ld-step { display: block; padding: 4px 0; }
+.ld-step span { display: inline-block; margin-left: 124px; min-width: 54px; text-align: center; font: 11px var(--mono); color: var(--soft); background: #070912; border: 1px solid var(--line2); border-radius: 999px; padding: 2px 8px; position: relative; z-index: 1; }
+@media (max-width: 640px) { .ladder::before { left: 92px; } .ladder li { grid-template-columns: 80px 26px minmax(0, 1fr); } .ld-v { font-size: 12px; } .ld-step span { margin-left: 66px; } }
 
 /* ---------- couleurs par nature d'information (fond léger + étiquette teintée) ---------- */
 .i-mass { --ic: 180, 156, 255; } .i-temp { --ic: 255, 150, 90; } .i-time { --ic: 120, 220, 160; } .i-size { --ic: 120, 180, 255; }

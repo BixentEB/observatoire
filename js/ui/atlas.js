@@ -525,8 +525,9 @@
       '<p class="note">L\'être humain est à peu près au milieu : il y a autant de puissances de dix entre un atome et nous qu\'entre nous et une étoile géante.</p>' +
       '<h2 class="ld-h">L\'échelle, pas à pas</h2><ol class="ladder">' + S.map(function (x, i) {
         var jump = '';
-        if (i) { var r = x.m / S[i - 1].m; if (r >= 1.5) jump = '<span class="ld-jump">× ' + (r >= 1000 ? '10' + String(Math.round(Math.log10(r))).split('').map(function (c) { return SUP[c]; }).join('') : nf(Math.round(r))) + '</span>'; }
-        return '<li style="--c:' + items[i].color + '">' + jump + '<span class="ld-v">' + sizeTxt(x.m) + '</span><span class="ld-dot"></span><div class="ld-t"><h3>' + esc(x.name) + '</h3><p>' + esc(x.d) + (x.go ? ' <a href="' + x.go[0] + '">' + esc(x.go[1]) + ' ›</a>' : '') + '</p></div></li>';
+        // le facteur entre deux paliers, sur sa propre ligne, posé sur le trait entre les deux
+        if (i) { var r = x.m / S[i - 1].m; if (r >= 1.5) jump = '<li class="ld-step" aria-label="' + esc(x.name) + ' est ' + nf(Math.round(r)) + ' fois plus grand que ' + esc(S[i - 1].name) + '"><span title="' + esc(S[i - 1].name + ' → ' + x.name) + '">× ' + (r >= 1000 ? '10' + String(Math.round(Math.log10(r))).split('').map(function (c) { return SUP[c]; }).join('') : nf(Math.round(r))) + '</span></li>'; }
+        return jump + '<li style="--c:' + items[i].color + '"><span class="ld-v">' + sizeTxt(x.m) + '</span><span class="ld-dot"></span><div class="ld-t"><h3>' + esc(x.name) + '</h3><p>' + esc(x.d) + (x.go ? ' <a href="' + x.go[0] + '">' + esc(x.go[1]) + ' ›</a>' : '') + '</p></div></li>';
       }).join('') + '</ol>';
   }
 })();
