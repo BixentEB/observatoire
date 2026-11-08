@@ -1,6 +1,7 @@
 /* ======================================================================
    OBSERVATOIRE — Atlas
-   L'atlas suit l'endroit où l'on se trouve : système solaire, voisinage stellaire (puis galaxie).
+   L'atlas suit l'endroit où l'on se trouve. Les lieux se choisissent sur la règle des échelles (js/ui/scalenav.js,
+   8 niveaux du Système solaire à l'Univers observable) ; Visiteurs, Types d'objets et Échelles restent en onglets.
    Deux vues pour chaque portée :
    - carte : une carte à plat (à la manière des planches astronomiques), cliquable ;
    - liste : tous les objets, par familles.
@@ -29,30 +30,42 @@
 
   OBS.pages.atlas = function (root, scope, view) {
     if (!scope) scope = OBS.engine.level && OBS.engine.level.id === 'voisinage' ? 'voisinage' : 'systeme';   // l'atlas suit l'endroit où l'on est
-    if (!SCOPES.some(function (s) { return s.id === scope; })) scope = 'systeme';
-    var S = SCOPES.filter(function (s) { return s.id === scope; })[0], sub = view;
+    var LVL = OBS.scaleLevel(scope), soon = LVL && !OBS.scaleAvail(LVL);          // niveau prévu sur la règle, pas encore construit
+    if (!soon && !SCOPES.some(function (s) { return s.id === scope; })) scope = 'systeme';
+    var S = soon ? { id: scope, label: LVL.n } : SCOPES.filter(function (s) { return s.id === scope; })[0], sub = view;
     view = view === 'liste' || view === 'unites' ? view : 'carte';
-    var h = [];
+    var h = [], themes = SCOPES.filter(function (s) { return s.theme; });
     h.push('<p class="p-kicker">Atlas</p><h1>' + esc(S.title || S.label) + '</h1>');
-    var tab = function (s) { return '<a role="tab" class="tab' + (s.theme ? ' tab-theme' : '') + '" href="#/atlas/' + s.id + (s.theme ? '' : '/' + view) + '" aria-selected="' + (s.id === scope) + '">' + esc(s.label) + '</a>'; };
-    h.push('<div class="tabs" role="tablist" aria-label="Portée">' + SCOPES.filter(function (s) { return !s.theme; }).map(tab).join('') +
-      '<span class="tabs-gap"></span>' + SCOPES.filter(function (s) { return s.theme; }).map(tab).join('') +
-      (S.theme ? '' : '<span class="tabs-sep"></span>' +
-      '<a class="tab tab-view" href="#/atlas/' + scope + '/carte" aria-selected="' + (view === 'carte') + '">Carte</a>' +
-      '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a>' +
-      '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a>') + '</div>');
-    h.push('<div id="atlas-body"></div>');
+    // les lieux sont sur la règle des échelles ; restent en onglets « Lieux » (retour à la règle) et les thèmes
+    h.push('<div class="tabs" role="tablist" aria-label="Rubriques">' +
+      '<a role="tab" class="tab" href="#/atlas/' + (S.theme ? lastLevel : scope) + '" aria-selected="' + !S.theme + '">Lieux</a><span class="tabs-gap"></span>' +
+      themes.map(function (s) { return '<a role="tab" class="tab tab-theme" href="#/atlas/' + s.id + '" aria-selected="' + (s.id === scope) + '">' + esc(s.label) + '</a>'; }).join('') + '</div>');
+    if (S.theme) {
+      h.push('<div id="atlas-body"></div>');
+      root.innerHTML = h.join('');
+      var tb = root.querySelector('#atlas-body');
+      if (scope === 'visiteurs') visiteurs(tb, sub); else if (scope === 'types') types(tb, sub); else echelles(tb);
+      OBS.armPinch(root); return;
+    }
+    lastLevel = scope;
+    h.push('<div class="atlas-wrap"><nav class="sn" aria-label="Échelles"></nav><div class="atlas-main">' +
+      (soon ? '' : '<div class="tabs tabs-view" role="tablist" aria-label="Vue">' +
+        '<a class="tab tab-view" href="#/atlas/' + scope + '/carte" aria-selected="' + (view === 'carte') + '">Carte</a>' +
+        '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a>' +
+        '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a></div>') +
+      '<div id="atlas-body"></div></div></div>');
     root.innerHTML = h.join('');
+    OBS.scaleNav(root.querySelector('.sn'), scope, soon ? null : view);
     var body = root.querySelector('#atlas-body');
-    if (scope === 'visiteurs') return visiteurs(body, sub);
-    if (scope === 'types') return types(body, sub);
-    if (scope === 'echelles') return echelles(body);
-    if (view === 'unites') return unites(body);
-    if (scope === 'galaxie') return view === 'liste' ? galaxie(body) : carteGalaxie(body);
-    if (scope === 'groupe-local') return view === 'liste' ? groupeLocal(body) : carteGroupeLocal(body);
-    if (view === 'liste') return scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
-    return scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
+    if (soon) body.innerHTML = OBS.band(LVL.band, esc(LVL.n), LVL.s, null) + '<p class="note">Ce niveau est en préparation : sa carte viendra ici, à partir de catalogues publiés (distances mesurées des galaxies). En attendant, les quatre premiers niveaux sont sur la règle.</p>';
+    else if (view === 'unites') unites(body);
+    else if (scope === 'galaxie') view === 'liste' ? galaxie(body) : carteGalaxie(body);
+    else if (scope === 'groupe-local') view === 'liste' ? groupeLocal(body) : carteGroupeLocal(body);
+    else if (view === 'liste') scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
+    else scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
+    OBS.armPinch(root);
   };
+  var lastLevel = 'systeme';
 
   /* ---------------- listes ---------------- */
   function card(href, color, name, sub) {
@@ -196,9 +209,8 @@
     var svg = '<svg class="atlas-map" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Carte à plat du système solaire">' +
       '<defs>' + defs.join('') + '</defs>' +
       '<line x1="0" y1="' + AXIS + '" x2="' + W + '" y2="' + AXIS + '" class="at-axis"/>' + back.join('') + front.join('') + labels.join('') + '</svg>';
-    // compact (maquette des échelles, à généraliser si validé) : la pastille « Tailles » disparaît, le bouton l'indique déjà,
-    // et le bouton devient « Tailles : Lisibles | Réelles » sur sa propre ligne
-    var compact = !!(root.closest && root.closest('.mq-nav'));
+    // pas de pastille « Tailles » : le bouton « Tailles : Lisibles | Réelles », sur sa propre ligne, l'indique déjà
+    var compact = true;
     root.innerHTML = '<div class="c-flags atlas-flags">' +
       '<span class="flag f-real" title="Réel — les objets sont rangés dans leur vrai ordre depuis le Soleil"><i>Ordre</i>réel</span>' +
       '<span class="flag f-adapt" title="Adapté — les écarts entre colonnes ne sont pas à l\'échelle ; la distance moyenne est indiquée en UA"><i>Distances</i>non à l\'échelle</span>' +
@@ -210,7 +222,7 @@
       '<div class="atlas-scroll" tabindex="0" aria-label="Carte, défilement horizontal">' + svg + '</div>' +
       '<p class="note">Cliquez sur un objet pour le rejoindre dans l\'espace. ' + (sizeMode === 'reelles' ? 'À l\'échelle réelle, le Soleil est si grand qu\'on n\'en voit qu\'un bord, et les petites lunes ne sont plus que des points.' : 'Passez en « tailles réelles » pour voir les vraies proportions.') + '</p>';
     Array.prototype.forEach.call(root.querySelectorAll('[data-s]'), function (b) {
-      b.addEventListener('click', function () { sizeMode = b.getAttribute('data-s'); try { localStorage.setItem('obs.atlas.tailles', sizeMode); } catch (e) {} carteSysteme(root); });
+      b.addEventListener('click', function () { sizeMode = b.getAttribute('data-s'); try { localStorage.setItem('obs.atlas.tailles', sizeMode); } catch (e) {} carteSysteme(root); OBS.armPinch(root); });
     });
   }
 

@@ -32,7 +32,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, projet: 1, maquette: 1 };
+  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, projet: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);

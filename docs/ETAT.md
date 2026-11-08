@@ -130,3 +130,12 @@
 - Héliosphère (choc terminal ≈ 90 UA, héliopause ≈ 120 UA, forme schématique orientée vers le vent interstellaire) dans le système solaire ; nuage d'Oort (0,03 à 1,6 al, « déduit, jamais observé ») autour du Soleil dans le voisinage.
 - Photos dans les consoles et les fiches Visiteurs (`js/ui/images.js`, `data/images.json`) : 37 objets demandés, crédits et licence sous chaque image ; taille maximale 1024 px.
 - Retours sur le lot 2 : agrandissement des photos dans une fenêtre (image, description, auteur, date, crédit, licence, liens ; croix, clic à côté, Échap), panneau latéral de définition pour les liens vers le Lexique depuis les autres pages (renvois « Voir aussi », « Ouvrir dans le Lexique »), Ressources en boutons arrondis, pastille « Nouveau » réservée aux onglets et boutons. Images manquantes récupérées (Mercure, Ganymède, Callisto, Titan, Charon, Hale-Bopp, Terre) ; seule Apophis attend une validation.
+
+## Atlas : règle des échelles (8 novembre 2026)
+- Les lieux de l'Atlas se choisissent sur une règle de 8 niveaux (`js/ui/scalenav.js`, `OBS.SCALE_LEVELS`) : Système solaire, Voisinage stellaire, Voie lactée, Groupe local, puis Volume local, Superamas local, Laniakea, Univers observable. Validée sur maquette (#/maquette, retirée depuis).
+- Ordinateur : panneau à gauche de la carte, ouvert par défaut (vignettes animées, étendue, recherche d'objet), repliable en fine règle numérotée (état mémorisé, `obs.atlas.panneau`) ; + et − changent de niveau.
+- Téléphone (≤ 760 px) : barre « − niveau + » (nom, n / 8, étendue sur trois lignes) collée au-dessus de la carte ; un appui déplie la liste complète. Sous la carte : aide au zoom, pastilles compactes, bouton des tailles.
+- « à venir » est calculé : un niveau est disponible dès que son id figure dans `OBS.ATLAS_SCOPES` (portées de `js/ui/atlas.js`). Les niveaux 5 à 8 affichent pour l'instant leur bandeau et « en préparation » (`#/atlas/volume-local`, `superamas`, `laniakea`, `univers`).
+- Onglets restants : « Lieux » (retour au dernier niveau), Visiteurs, Types d'objets, Échelles ; Carte / Liste / Unités au-dessus de la carte.
+- Zoom des cartes (`OBS.armPinch`) : pincement à deux doigts, double toucher pour revenir, Ctrl + molette ou pincement du pavé tactile sur ordinateur ; le zoom minimal fait tenir la carte dans la largeur.
+- Système solaire : pastille « Tailles » retirée, bouton « Tailles : Lisibles | Réelles » sur sa propre ligne (choix actif en jaune adapté ou vert réel).
