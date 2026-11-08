@@ -195,13 +195,40 @@
    "alt": "Soleil"
   },
   "mercure": {
-   "kind": "aucune",
-   "fallback": "planete",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/mercure-480.webp",
+     "w": 480,
+     "h": 476,
+     "bytes": 11804
+    },
+    "1024": {
+     "src": "assets/img/mercure-1024.webp",
+     "w": 1024,
+     "h": 1015,
+     "bytes": 41566
+    }
+   },
+   "title": "Mercury in color - Prockter07 centered.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Mercury_in_color_-_Prockter07_centered.jpg",
+   "author": "NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington. Edited version of Image:Mercury in color - Prockter07.jpg by Papa Lima Whiskey.",
+   "credit": "NASA/JPL",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q308",
+   "sha1": "056744d89d4cfc888492e136d94a1810bdd11562",
+   "match": {
+    "method": "recherche « Mercury »",
+    "confidence": "moyenne"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/mercure"
-   ]
+   ],
+   "alt": "Mercure"
   },
   "venus": {
    "kind": "photo",
@@ -240,13 +267,40 @@
    "alt": "Vénus"
   },
   "terre": {
-   "kind": "aucune",
-   "fallback": "planete",
-   "status": "licence",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/terre-480.webp",
+     "w": 480,
+     "h": 360,
+     "bytes": 22776
+    },
+    "1024": {
+     "src": "assets/img/terre-1024.webp",
+     "w": 1024,
+     "h": 768,
+     "bytes": 95096
+    }
+   },
+   "title": "The Blue Marble (5052124705).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:The_Blue_Marble_(5052124705).jpg",
+   "author": "NASA on The Commons",
+   "credit": "The Blue Marble",
+   "license": "No restrictions",
+   "licenseUrl": "https://www.flickr.com/commons/usage/",
+   "source": "Wikimedia Commons",
    "qid": "Q2",
+   "sha1": "bdfa88a45b4d781ccd1365860fbd1c926e4fcfc3",
+   "match": {
+    "method": "recherche « Earth »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/terre"
-   ]
+   ],
+   "alt": "Terre"
   },
   "lune": {
    "kind": "photo",
@@ -609,31 +663,112 @@
    "alt": "Europe"
   },
   "ganymede": {
-   "kind": "aucune",
-   "fallback": "lune",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/ganymede-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 19392
+    },
+    "1024": {
+     "src": "assets/img/ganymede-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 130366
+    }
+   },
+   "title": "Ganymede - Perijove 34 Composite.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Ganymede_-_Perijove_34_Composite.jpg",
+   "author": "NASA/JPL-Caltech/SwRI/MSSS/Kevin M. Gill",
+   "credit": "Ganymede - Perijove 34 Composite",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q3169",
+   "sha1": "3b1b10f70ae1bfe604c9c19d0ae131a13ba3447e",
+   "match": {
+    "method": "recherche « Ganymede »",
+    "confidence": "moyenne"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/ganymede"
-   ]
+   ],
+   "alt": "Ganymède"
   },
   "callisto": {
-   "kind": "aucune",
-   "fallback": "lune",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/callisto-480.webp",
+     "w": 480,
+     "h": 496,
+     "bytes": 28312
+    },
+    "1024": {
+     "src": "assets/img/callisto-1024.webp",
+     "w": 1024,
+     "h": 1058,
+     "bytes": 174916
+    }
+   },
+   "title": "Callisto - July 8 1979 (38926064465).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Callisto_-_July_8_1979_(38926064465).jpg",
+   "author": "Kevin Gill from Los Angeles, CA, United States",
+   "credit": "Callisto - July 8 1979",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q3134",
+   "sha1": "aa0c788cea5fcf33c0eedbb2f996a3366d903e66",
+   "match": {
+    "method": "recherche « Callisto »",
+    "confidence": "moyenne"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/callisto"
-   ]
+   ],
+   "alt": "Callisto"
   },
   "titan": {
-   "kind": "aucune",
-   "fallback": "lune",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/titan-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 3286
+    },
+    "1024": {
+     "src": "assets/img/titan-1024.webp",
+     "w": 750,
+     "h": 750,
+     "bytes": 5892
+    }
+   },
+   "title": "Titan in true color by Kevin M. Gill.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Titan_in_true_color_by_Kevin_M._Gill.jpg",
+   "author": "NASA/JPL-Caltech/SSI/Kevin M. Gill",
+   "credit": "File:Titan - December 16 2011 (40047599334).jpg by [1]",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q2565",
+   "sha1": "eb621d4df5c17286d7cdcf8242d256a826dcda15",
+   "match": {
+    "method": "recherche « Titan »",
+    "confidence": "moyenne"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/titan"
-   ]
+   ],
+   "alt": "Titan"
   },
   "encelade": {
    "kind": "photo",
@@ -708,13 +843,40 @@
    "alt": "Triton"
   },
   "charon": {
-   "kind": "aucune",
-   "fallback": "lune",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/charon-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 13324
+    },
+    "1024": {
+     "src": "assets/img/charon-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 63254
+    }
+   },
+   "title": "Charon in True Color - High-Res.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Charon_in_True_Color_-_High-Res.jpg",
+   "author": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Alex Parker",
+   "credit": "http://pluto.jhuapl.edu/Galleries/Featured-Images/image.php?page=1&gallery_id=2&image_id=544",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q6604",
+   "sha1": "af65acb96c75af91203f956357e9d5fa9b8ceb52",
+   "match": {
+    "method": "recherche « Charon »",
+    "confidence": "moyenne"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/charon"
-   ]
+   ],
+   "alt": "Charon"
   },
   "arrokoth": {
    "kind": "photo",
@@ -1042,13 +1204,40 @@
    "alt": "Tchourioumov-Guérassimenko"
   },
   "halebopp": {
-   "kind": "aucune",
-   "fallback": "comete",
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/halebopp-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 58360
+    },
+    "1024": {
+     "src": "assets/img/halebopp-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 225942
+    }
+   },
+   "title": "Comet Hale-Bopp 1995O1.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Comet_Hale-Bopp_1995O1.jpg",
+   "author": "E. Kolmhofer, H. Raab; Johannes-Kepler-Observatory, Linz, Austria (https://sternwarte.at)",
+   "credit": "Own work",
+   "license": "CC BY-SA 3.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q69854",
+   "sha1": "29318ffc676879762afe404309fc84292853ed18",
+   "match": {
+    "method": "recherche « C/1995 O1 »",
+    "confidence": "haute"
+   },
    "status": "auto",
-   "qid": null,
+   "fetched": "2026-11-08",
    "uses": [
     "visiteurs/halebopp"
-   ]
+   ],
+   "alt": "Hale-Bopp"
   },
   "neowise": {
    "kind": "photo",

@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 17:30 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 17:36 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -10,7 +10,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : The Andromeda galaxy.
-- Téléchargé et converti : 480 px 19 Ko, 1024 px 113 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA04921 — « Andromeda Galaxy » (JPL, 2003-12-10) https://images.nasa.gov/details/PIA04921
   - PIA25163 — « Andromeda Galaxy Imaged by Herschel, Planck, IRAS, COBE » (JPL, 2022-06-16) https://images.nasa.gov/details/PIA25163
@@ -26,7 +26,7 @@
 - Crédit : 25 Images to Celebrate NASA’s Chandra 25th Anniversary: Crab Nebula
 - Nature détectée : **photo**
 - Description : To celebrate the 25th anniversary of its launch, NASA’s Chandra X-ray Observatory is releasing 25 never-before-seen views of a wide range of cosmic objects. These images, which all include data from Chandra, demonstrate 
-- Téléchargé et converti : 480 px 24 Ko, 1024 px 113 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA03606 — « Most Detailed Image of the Crab Nebula » (JPL, 2005-12-01) https://images.nasa.gov/details/PIA03606
   - GSFC_20171208_Archive_e000053 — « Observatories Combine to Crack Open the Crab Nebula » (GSFC, 2017-12-08) https://images.nasa.gov/details/GSFC_20171208_Archive_e000053
@@ -43,7 +43,7 @@
 - Crédit : NSSDC's Photo Gallery (NASA): http://nssdc.gsfc.nasa.gov/photo_gallery/photogallery-comets.html http://nssdc.gsfc.nasa.gov/image/planetary/comet/lspn_comet_halley1.jpg
 - Nature détectée : **photo**
 - Description : Comet 1P/Halley as taken March 8, 1986 by W. Liller, Easter Island, part of the International Halley Watch (IHW) Large Scale Phenomena Network.
-- Téléchargé et converti : 480 px 34 Ko, 1024 px 216 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA17485 — « Comet Halley » (JPL, 1986-03-14) https://images.nasa.gov/details/PIA17485
   - 61c-05-026 — « Astronaut George Nelson working on Comet Halley Active monitoring program » (JSC, 1986-01-14) https://images.nasa.gov/details/61c-05-026
@@ -75,7 +75,7 @@
 - Crédit : https://apod.nasa.gov/apod/ap171103.html (https://apod.nasa.gov/ : NASA : Government of the United States)
 - Nature détectée : **photo**
 - Description : 1I/ʻOumuamua as shown here imaged with the 4.2 meter William Herschel Telescope on the Canary Islands is seen as a point of light in the centre of the image. Background stars appear linear because the telescope was centr
-- Téléchargé et converti : 480 px 14 Ko, 1024 px 42 Ko
+- Fichier inchangé : rien à télécharger.
 - Candidats NASA (à valider, non utilisés) :
   - PIA22357 — « 'Oumuamua Races Toward Outskirts of Solar System (Artist's Concept) » (JPL, 2018-06-28) https://images.nasa.gov/details/PIA22357
 
@@ -91,11 +91,22 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : Our Sun. The image was captured in extremely short-wave UV light by the Solar Orbiter spacecraft, launched in 2020. In this wavelength range, the corona – the outer, much hotter layer of the solar atmosphere – becomes vi
-- Téléchargé et converti : 480 px 26 Ko, 1024 px 91 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Mercure (`mercure`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q308** — recherche « Mercury », confiance moyenne
+    candidat Q165745 « Mercury Records » — nature : record label — écarté (nature)
+    candidat Q613883 « Mercury » — nature : car brand, trademark, division — écarté (nature)
+    candidat Q1231263 « Mercury » — nature : commune of france — écarté (nature)
+    candidat Q308 « Mercure » — nature : inner planet of the solar system, inferior planet — retenu
+- Image principale Wikidata (P18) : Mercury in color - Prockter07 centered.jpg
+- Fichier : [Mercury in color - Prockter07 centered.jpg](https://commons.wikimedia.org/wiki/File:Mercury_in_color_-_Prockter07_centered.jpg) — 1991 × 1974
+- Licence : Public domain ✔
+- Auteur : NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington. Edited version of Image:Mercury in color - Prockter07.jpg by Papa Lima Whiskey.
+- Crédit : NASA/JPL
+- Nature détectée : **photo**
+- Description : Full-color image of Mercury from first MESSENGER flyby.
+- Téléchargé et converti : 480 px 11 Ko, 1024 px 40 Ko
 
 ## Vénus (`venus`)
 - Identification : **Q313** — recherche « Venus », confiance moyenne
@@ -109,19 +120,19 @@
 - Crédit : https://photojournal.jpl.nasa.gov/jpeg/PIA23791.jpg
 - Nature détectée : **photo**
 - Description : PIA23791: Venus from Mariner 10 https://photojournal.jpl.nasa.gov/catalog/PIA23791 Click here for the combined view for PIA23791 Click on an individual image below for the larger versions: Click here for Figure A/OLD for
-- Téléchargé et converti : 480 px 3 Ko, 1024 px 10 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Terre (`terre`)
 - Identification : **Q2** — recherche « Earth », confiance moyenne
     candidat Q2 « Terre » — nature : inner planet of the solar system, geographic location, region — retenu
 - Image principale Wikidata (P18) : The Blue Marble (5052124705).jpg
 - Fichier : [The Blue Marble (5052124705).jpg](https://commons.wikimedia.org/wiki/File:The_Blue_Marble_(5052124705).jpg) — 1536 × 1152
-- Licence : licence non reconnue (No restrictions) ✘
+- Licence : No restrictions ✔
 - Auteur : NASA on The Commons
 - Crédit : The Blue Marble
 - Nature détectée : **photo**
 - Description : Description View of the Earth as seen by the Apollo 17 crew traveling toward the moon. This translunar coast photograph extends from the Mediterranean Sea area to the Antarctica south polar ice cap. This is the first tim
-- → non retenue, visuel de remplacement.
+- Téléchargé et converti : 480 px 22 Ko, 1024 px 92 Ko
 
 ## Lune (`lune`)
 - Identification : **Q405** — recherche « Moon », confiance moyenne
@@ -134,7 +145,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : Full Moon photograph taken 10-22-2010 from Madison, Alabama, USA. Photographed with a Celestron 9.25 Schmidt-Cassegrain telescope. Acquired with a Canon EOS Rebel T1i (EOS 500D), 20 images stacked to reduce noise. 200 IS
-- Téléchargé et converti : 480 px 22 Ko, 1024 px 142 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Mars (`mars`)
 - Identification : **Q111** — recherche « Mars », confiance moyenne
@@ -146,7 +157,7 @@
 - Crédit : Mars - August 30 2021
 - Nature détectée : **photo**
 - Description : Filters: f635, f546, f437 CU/LASP EMM/EXI ITF/Kevin M. Gill
-- Téléchargé et converti : 480 px 6 Ko, 1024 px 20 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Jupiter (`jupiter`)
 - Identification : **Q319** — recherche « Jupiter », confiance moyenne
@@ -162,7 +173,7 @@
 - Crédit : https://hubblesite.org/contents/media/images/2024/009/01HPMN3ZGXFN1E0M1W5Y8AVCAM?news=true
 - Nature détectée : **photo**
 - Description : Jupiter in true color by Hubble's "Outer Planet Atmospheres Legacy" (OPAL) - January 5 2024
-- Téléchargé et converti : 480 px 9 Ko, 1024 px 27 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Saturne (`saturne`)
 - Identification : **Q193** — recherche « Saturn », confiance moyenne
@@ -175,7 +186,7 @@
 - Crédit : http://photojournal.jpl.nasa.gov/catalog/PIA11141
 - Nature détectée : **photo**
 - Description : As Saturn advances in its orbit toward equinox and the sun gradually moves northward on the planet, the motion of Saturn's ring shadows and the changing colors of its atmosphere continue to transform the face of Saturn a
-- Téléchargé et converti : 480 px 2 Ko, 1024 px 6 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Uranus (`uranus`)
 - Identification : **Q324** — recherche « Uranus », confiance moyenne
@@ -187,7 +198,7 @@
 - Crédit : Own workalso published on Flickr: https://www.flickr.com/photos/197038812@N04/53449450202/
 - Nature détectée : **photo**
 - Description : Uranus on 1986-01-23, taken by NASA's Voyager 2 probe. This color image was composed of three frames, orange, green, and blue, taken by Voyager 2's imaging system. This color image has been calibrated to best represent U
-- Téléchargé et converti : 480 px 2 Ko, 1024 px 5 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Neptune (`neptune`)
 - Identification : **Q332** — recherche « Neptune », confiance moyenne
@@ -200,7 +211,7 @@
 - Crédit : Own workalso published on Flickr: https://www.flickr.com/photos/197038812@N04/53446862462/
 - Nature détectée : **photo**
 - Description : Neptune on 1989-08-17, taken by NASA's Voyager 2 probe. This color image was composed of three frames, orange, green, and blue, taken by Voyager 2's imaging system. This color image has been calibrated to best represent 
-- Téléchargé et converti : 480 px 3 Ko, 1024 px 8 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Pluton (`pluton`)
 - Identification : **Q339** — recherche « Pluto », confiance moyenne
@@ -212,7 +223,7 @@
 - Crédit : http://www.nasa.gov/image-feature/global-mosaic-of-pluto-in-true-color
 - Nature détectée : **photo**
 - Description : A mosaic of Pluto images taken by the LORRI instruments aboard the New Horizons spacecraft, coloured by data from the Ralph instrument. ORIGINAL FILE DESCRIPTION: July 24, 2015 Global Mosaic of Pluto in True Color Pluto 
-- Téléchargé et converti : 480 px 31 Ko, 1024 px 82 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Cérès (`ceres`)
 - Identification : **Q596** — recherche « Ceres (dwarf planet) », confiance moyenne
@@ -224,7 +235,7 @@
 - Crédit : Ceres - RC3 - Haulani Crater
 - Nature détectée : **photo**
 - Description : Approximate true-color image of Ceres, using the F7 ('red'), F2 ('green') and F8 ('blue') filters, projected onto a clear filter image. Images were acquired by Dawn at 04:13 UT May 4, 2015, at a distance of 13641 km. At 
-- Téléchargé et converti : 480 px 13 Ko, 1024 px 32 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Io (`io`)
 - Identification : **Q3123** — recherche « Io (moon) », confiance moyenne
@@ -236,7 +247,7 @@
 - Crédit : https://www.missionjuno.swri.edu/junocam/processing?phases%5B%5D=PERIJOVE+57&source=public&perpage=16&p=9
 - Nature détectée : **photo**
 - Description : Merged product of several images acquired by Juno JunoCam during a flyby of Io on December 30, 2023. This image shows portions of Io's north polar region and its northern trailing hemisphere.
-- Téléchargé et converti : 480 px 9 Ko, 1024 px 28 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Europe (`europe`)
 - Identification : **Q3143** — recherche « Europa (moon) », confiance moyenne
@@ -248,19 +259,49 @@
 - Crédit : http://photojournal.jpl.nasa.gov/catalog/PIA00502 (TIFF image link)
 - Nature détectée : **photo**
 - Description : This image shows a view of the trailing hemisphere of Jupiter's ice-covered satellite, Europa, in approximate natural color. Long, dark lines are fractures in the crust, some of which are more than 3,000 kilometers (1,85
-- Téléchargé et converti : 480 px 29 Ko, 1024 px 84 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Ganymède (`ganymede`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q3169** — recherche « Ganymede », confiance moyenne
+    candidat Q3169 « Ganymède » — nature : moon of jupiter, planetary-mass moon, regular moon — retenu
+- Image principale Wikidata (P18) : Ganymede - Perijove 34 Composite.jpg
+- Fichier : [Ganymede - Perijove 34 Composite.jpg](https://commons.wikimedia.org/wiki/File:Ganymede_-_Perijove_34_Composite.jpg) — 3445 × 3445
+- Licence : CC BY 2.0 ✔
+- Auteur : NASA/JPL-Caltech/SwRI/MSSS/Kevin M. Gill
+- Crédit : Ganymede - Perijove 34 Composite
+- Nature détectée : **photo**
+- Description : Ganymede photographed by Juno in 2021, Projected from the perspective of '3.
+- Téléchargé et converti : 480 px 18 Ko, 1024 px 127 Ko
 
 ## Callisto (`callisto`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q3134** — recherche « Callisto », confiance moyenne
+    candidat Q25937107 « Callisto » — nature : male given name — écarté (nature)
+    candidat Q5022802 « Callisto » — nature : taxon — écarté (nature)
+    candidat Q87904727 « Callisto » — nature : unisex given name — écarté (nature)
+    candidat Q3134 « Callisto » — nature : moon of jupiter, regular moon — retenu
+- Image principale Wikidata (P18) : Callisto - July 8 1979 (38926064465).jpg
+- Fichier : [Callisto - July 8 1979 (38926064465).jpg](https://commons.wikimedia.org/wiki/File:Callisto_-_July_8_1979_(38926064465).jpg) — 1602 × 1655
+- Licence : CC BY 2.0 ✔
+- Auteur : Kevin Gill from Los Angeles, CA, United States
+- Crédit : Callisto - July 8 1979
+- Nature détectée : **photo**
+- Description : Callisto processed using low resolution (wide angle) orange, green, and blue filtered images colorizing higher resolution (narrow angle) unfiltered images taken by Voyager 2 on July 8 1979. NASA/JPL-Caltech/Kevin M. Gill
+- Téléchargé et converti : 480 px 27 Ko, 1024 px 170 Ko
 
 ## Titan (`titan`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q2565** — recherche « Titan », confiance moyenne
+    candidat Q716 « titane » — nature : chemical element, simple substance, lithophile element — écarté (nature)
+    candidat Q59801025 « Titan » — nature : online database, biological database — écarté (nature)
+    candidat Q7809721 « Titan » — nature : video game — écarté (nature)
+    candidat Q2565 « Titan » — nature : moon of saturn — retenu
+- Image principale Wikidata (P18) : Titan in true color by Kevin M. Gill.jpg
+- Fichier : [Titan in true color by Kevin M. Gill.jpg](https://commons.wikimedia.org/wiki/File:Titan_in_true_color_by_Kevin_M._Gill.jpg) — 750 × 750
+- Licence : CC BY 2.0 ✔
+- Auteur : NASA/JPL-Caltech/SSI/Kevin M. Gill
+- Crédit : File:Titan - December 16 2011 (40047599334).jpg by [1]
+- Nature détectée : **photo**
+- Description : I've taken a slightly larger image that is processed by Kevin M. Gill, with far less noise. Titan's color in this image also more closely match with its spectra color.
+- Téléchargé et converti : 480 px 3 Ko, 1024 px 5 Ko
 
 ## Encelade (`encelade`)
 - Identification : **Q3303** — recherche « Enceladus », confiance moyenne
@@ -273,7 +314,7 @@
 - Crédit : PIA17202 from the NASA/JPL Photojournal
 - Nature détectée : **photo**
 - Description : Original caption: NASA's Cassini spacecraft captured this view as it neared icy Enceladus for its closest-ever dive past the moon's active south polar region. The view shows heavily cratered northern latitudes at top, tr
-- Téléchargé et converti : 480 px 16 Ko, 1024 px 58 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Triton (`triton`)
 - Identification : **Q3359** — recherche « Triton (moon) », confiance moyenne
@@ -285,11 +326,19 @@
 - Crédit : Crop of File:Neptune’s Moon Triton Fosters Rare Icy Union (gemini1903a).tiff
 - Nature détectée : **photo**
 - Description : Voyager 2 image of Triton showing the south polar region with dark streaks produced by geysers visible on the icy surface
-- Téléchargé et converti : 480 px 17 Ko, 1024 px 30 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Charon (`charon`)
-- Identification : **—** — introuvable, confiance nulle
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q6604** — recherche « Charon », confiance moyenne
+    candidat Q6604 « Charon » — nature : moon of pluto — retenu
+- Image principale Wikidata (P18) : Charon in True Color - High-Res.jpg
+- Fichier : [Charon in True Color - High-Res.jpg](https://commons.wikimedia.org/wiki/File:Charon_in_True_Color_-_High-Res.jpg) — 2000 × 2000
+- Licence : Public domain ✔
+- Auteur : NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Alex Parker
+- Crédit : http://pluto.jhuapl.edu/Galleries/Featured-Images/image.php?page=1&gallery_id=2&image_id=544
+- Nature détectée : **photo**
+- Description : Three years after NASA's New Horizons spacecraft gave humankind our first close-up views of Pluto and its largest moon, Charon, scientists are still revealing the wonders of these incredible worlds in the outer solar sys
+- Téléchargé et converti : 480 px 13 Ko, 1024 px 61 Ko
 
 ## Arrokoth (`arrokoth`)
 - Identification : **Q18325885** — recherche « 486958 Arrokoth », confiance moyenne
@@ -301,7 +350,7 @@
 - Crédit : Image provided from two sources: https://www.nasa.gov/feature/nasa-s-new-horizons-team-publishes-first-kuiper-belt-flyby-science-results andhttp://pluto.jhuapl.edu/News-Center/News-Article.php?page=20190516Direct image: http://pluto.jhuapl.edu/Galleries/Featured-Images/image.php?gallery_id=2&image_id=606
 - Nature détectée : **photo**
 - Description : This composite image of the primordial contact binary Kuiper Belt Object 2014 MU69 (official designation: (486958) Arrokoth, nickname: Ultima Thule - the bigger part is Ultima, the smaller one Thule) – featured on the co
-- Téléchargé et converti : 480 px 7 Ko, 1024 px 29 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Nébuleuse d'Orion (`orion-m42`)
 - Identification : **Q13903** — recherche « Orion Nebula », confiance moyenne
@@ -313,7 +362,7 @@
 - Crédit : http://hubblesite.org/newscenter/newsdesk/archive/releases/2006/01/ https://www.spacetelescope.org/news/heic0601/
 - Nature détectée : **photo**
 - Description : In one of the most detailed astronomical images ever produced, NASA/ESA's Hubble Space Telescope captured an unprecedented look at the Orion Nebula. ... This extensive study took 105 Hubble orbits to complete. All imagin
-- Téléchargé et converti : 480 px 13 Ko, 1024 px 46 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Nébuleuse de l'Aigle (`aigle`)
 - Identification : **Q11349** — recherche « Eagle Nebula », confiance moyenne
@@ -325,7 +374,7 @@
 - Crédit : http://hubblesite.org/newscenter/newsdesk/archive/releases/2003/34/image/a
 - Nature détectée : **photo**
 - Description : Star forming pillars in the Eagle Nebula, as seen by the Hubble Space Telescope's WFPC2. The picture is composed of 32 different images from four separate cameras in this instrument. The photograph was made with light em
-- Téléchargé et converti : 480 px 13 Ko, 1024 px 58 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Pléiades (`pleiades`)
 - Identification : **Q13423** — recherche « Pleiades », confiance moyenne
@@ -338,7 +387,7 @@
 - Crédit : https://hubblesite.org/contents/media/images/2004/20/1562-Image.html?Topic=104-stars-and-nebulas&keyword=pleiades (TIF image link)
 - Nature détectée : **photo**
 - Description : The Pleiades, an open cluster consisting of approximately 3,000 stars at a distance of 400 light-years (120 parsecs) from Earth in the constellation of Taurus. It is also known as ‘The Seven Sisters’, or the astronomical
-- Téléchargé et converti : 480 px 13 Ko, 1024 px 62 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Oméga du Centaure (`omegacen`)
 - Identification : **Q14275** — recherche « Omega Centauri », confiance moyenne
@@ -350,7 +399,7 @@
 - Crédit : https://www.eso.org/public/images/eso0844a/
 - Nature détectée : **photo**
 - Description : The globular cluster Omega Centauri — with as many as ten million stars — is seen in all its splendour in this image captured with the WFI camera from ESO's La Silla Observatory. The image shows only the central part of 
-- Téléchargé et converti : 480 px 71 Ko, 1024 px 377 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Galaxie du Triangle (`m33`)
 - Identification : **Q13724** — recherche « Triangulum Galaxy », confiance moyenne
@@ -362,7 +411,7 @@
 - Crédit : http://photojournal.jpl.nasa.gov/gallery/universe?subselect=Target:M33
 - Nature détectée : **photo**
 - Description : M33, the Triangulum Galaxy, is a perennial favorite of amateur and professional astronomers alike, due to its orientation and relative proximity to us. It is the second nearest spiral galaxy to our Milky Way (after M31, 
-- Téléchargé et converti : 480 px 27 Ko, 1024 px 115 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Grand Nuage de Magellan (`lg-gnm`)
 - Identification : **Q49957** — recherche « Large Magellanic Cloud », confiance moyenne
@@ -374,7 +423,7 @@
 - Crédit : https://web.archive.org/web/20070327105953/http://ails.arc.nasa.gov/Images/Astrobiology/AC87-0459.html
 - Nature détectée : **photo**
 - Description : Image of the Large Magellanic Cloud and Supernova 1987A taken by the Kuiper Airborne Observatory (NASA 714) during its New Zealand deployment in 1987.
-- Téléchargé et converti : 480 px 28 Ko, 1024 px 60 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Comète Borisov (`borisov`)
 - Identification : **Q67328765** — recherche « 2I/Borisov », confiance moyenne
@@ -386,7 +435,7 @@
 - Crédit : https://imgsrc.hubblesite.org/hvi/uploads/image_file/image_attachment/31897/STSCI-H-p1953a-f-1106x1106.png
 - Nature détectée : **photo**
 - Description : About This Image HUBBLE'S VIEW OF INTERSTELLAR COMET 2I/BORISOV https://hubblesite.org/contents/media/images/2019/53/4578-Image NASA's Hubble Space Telescope has given astronomers their best look yet at an interstellar v
-- Téléchargé et converti : 480 px 12 Ko, 1024 px 46 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Tchourioumov-Guérassimenko (`tchouri`)
 - Identification : **Q844672** — recherche « 67P/Churyumov–Gerasimenko », confiance moyenne
@@ -398,12 +447,19 @@
 - Crédit : 67P/Churyumov-Gerasimenko - Rosetta
 - Nature détectée : **photo**
 - Description : Approximate true color image of comet 67P taken by the Rosetta spacecraft's OSIRIS Narrow Angle Camera on March 17, 2015. This image is a four frame mosaic, with each color frame imaged through VIS_BLUE, VIS_GREEN, and V
-- Téléchargé et converti : 480 px 28 Ko, 1024 px 99 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Hale-Bopp (`halebopp`)
-- Identification : **—** — introuvable, confiance nulle
-    candidat Q56041056 « Comet Hale–Bopp in outburst: Imaging the dynamics of icy particles with HST/NICMOS » — nature : scholarly article — écarté (nature)
-- ⚠ Pas d'image trouvée : visuel de remplacement en attendant une validation.
+- Identification : **Q69854** — recherche « C/1995 O1 », confiance haute
+    candidat Q69854 « comète Hale-Bopp » — nature : non-periodic comet — retenu
+- Image principale Wikidata (P18) : Comet Hale-Bopp 1995O1.jpg
+- Fichier : [Comet Hale-Bopp 1995O1.jpg](https://commons.wikimedia.org/wiki/File:Comet_Hale-Bopp_1995O1.jpg) — 1500 × 1500
+- Licence : CC BY-SA 3.0 ✔
+- Auteur : E. Kolmhofer, H. Raab; Johannes-Kepler-Observatory, Linz, Austria (https://sternwarte.at)
+- Crédit : Own work
+- Nature détectée : **photo**
+- Description : An image of comet C/1995 O1 (Hale-Bopp), taken on April 04, 1997 with a 225mm f/2.0 Schmidt Camera (focal length 450mm) on Kodak Panther 400 color slide film with an exposure time of 10 minutes; the field shown is about 
+- Téléchargé et converti : 480 px 56 Ko, 1024 px 220 Ko
 
 ## NEOWISE (`neowise`)
 - Identification : **Q90776919** — recherche « C/2020 F3 (NEOWISE) », confiance moyenne
@@ -415,7 +471,7 @@
 - Crédit : Own work
 - Nature détectée : **photo**
 - Description : Comet C/2020 F3 (NEOWISE) captured from the Seine et Marne region in France, around 3 A.M. on the morning of July 13th 2020. 10 photos 30 seconds each, with a 300mm photo lens and full-frame DSLR.
-- Téléchargé et converti : 480 px 4 Ko, 1024 px 34 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Bennu (`bennu`)
 - Identification : **Q11558** — recherche « 101955 Bennu », confiance moyenne
@@ -427,7 +483,7 @@
 - Crédit : File:Bennu mosaic OSIRIS-REx.jpg from https://www.nasa.gov/press-release/nasa-spacecraft-provides-insight-into-asteroid-bennu-s-future-orbit
 - Nature détectée : **photo**
 - Description : Original description: This mosaic of Bennu was created using observations made by NASA’s OSIRIS-REx spacecraft that was in close proximity to the asteroid for over two years.
-- Téléchargé et converti : 480 px 34 Ko, 1024 px 146 Ko
+- Fichier inchangé : rien à télécharger.
 
 ---
-Téléchargements : 29. Poids total des images : 2737 Ko.
+Téléchargements : 7. Poids total des images : 3611 Ko.
