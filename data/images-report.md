@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 23:18 UTC
+# Bibliothèque d'images — rapport du 2026-11-08 23:26 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -507,7 +507,7 @@
 - Crédit : Sternwarte Singen e.V.
 - Nature détectée : **photo**
 - Description : Mainmass of the Ensisheim meteorite.
-- Téléchargé et converti : 480 px 27 Ko, 1024 px 49 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Météorite d'Allende (`allende`)
 - Identification : **Q1930079** — recherche « Allende meteorite », confiance moyenne
@@ -574,12 +574,12 @@
     candidat Q1786795 « astroblème de Rochechouart-Chassenon » — nature : impact structure — retenu
 - Image principale Wikidata (P18) : Astrobleme-rochechouart.jpg
 - Fichier : [Astrobleme-rochechouart.jpg](https://commons.wikimedia.org/wiki/File:Astrobleme-rochechouart.jpg) — 511 × 383
-- Licence : licence non reconnue (FAL) ✘
+- Licence : FAL ✔
 - Auteur : "Personal synthetic image of Frédéric Michaud"
 - Crédit : Transferred from fr.wikipedia to Commons.
 - Nature détectée : **illustration** (à afficher comme illustration, jamais comme photographie)
 - Description : Rochechouart impact structure, or Rochechouart astrobleme, an impact structure in France whose formation dates back approximately 214 million years. Computer-generated image produced with Terragen showing the shape of th
-- → non retenue, visuel de remplacement.
+- Téléchargé et converti : 480 px 24 Ko, 1024 px 31 Ko
 
 ## Cratère de Vredefort (`vredefort`)
 - Identification : **Q330095** — recherche « Vredefort impact structure », confiance moyenne
@@ -654,4 +654,4 @@
 - Fichier inchangé : rien à télécharger.
 
 ---
-Téléchargements : 1. Poids total des images : 5260 Ko.
+Téléchargements : 1. Poids total des images : 5316 Ko.

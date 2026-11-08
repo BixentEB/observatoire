@@ -1679,13 +1679,42 @@
    "alt": "Meteor Crater"
   },
   "rochechouart": {
-   "kind": "aucune",
-   "fallback": "asteroide",
-   "status": "licence",
+   "kind": "illustration",
+   "files": {
+    "480": {
+     "src": "assets/img/rochechouart-480.webp",
+     "w": 480,
+     "h": 360,
+     "bytes": 25096
+    },
+    "1024": {
+     "src": "assets/img/rochechouart-1024.webp",
+     "w": 511,
+     "h": 383,
+     "bytes": 31748
+    }
+   },
+   "title": "Astrobleme-rochechouart.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Astrobleme-rochechouart.jpg",
+   "author": "\"Personal synthetic image of Frédéric Michaud\"",
+   "credit": "Transferred from fr.wikipedia to Commons.",
+   "license": "FAL",
+   "licenseUrl": "http://artlibre.org/licence/lal/en",
+   "source": "Wikimedia Commons",
+   "description": "Rochechouart impact structure, or Rochechouart astrobleme, an impact structure in France whose formation dates back approximately 214 million years. Computer-generated image produced with Terragen showing the shape of the Rochechouart impact structure a few years after impact. Nature begins to take ",
+   "date": "18 May 2006 (original upload date)",
    "qid": "Q1786795",
+   "sha1": "1bdde47cecd8c05d12859862ef1261581398917f",
+   "match": {
+    "method": "recherche « Rochechouart impact structure »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
    "uses": [
     "artefacts/rochechouart"
-   ]
+   ],
+   "alt": "Vue de synthèse de l'astroblème de Rochechouart peu après l'impact (image calculée, pas une photo)"
   },
   "vredefort": {
    "kind": "photo",
