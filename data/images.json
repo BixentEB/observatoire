@@ -10,11 +10,11 @@
      "h": 317,
      "bytes": 20162
     },
-    "1280": {
-     "src": "assets/img/m31-1280.webp",
-     "w": 1280,
-     "h": 846,
-     "bytes": 203088
+    "1024": {
+     "src": "assets/img/m31-1024.webp",
+     "w": 1024,
+     "h": 677,
+     "bytes": 116634
     }
    },
    "title": "M31-Andromede-16-09-2023-Hamois.jpg",
@@ -31,7 +31,7 @@
     "confidence": "moyenne"
    },
    "status": "auto",
-   "fetched": "2026-11-07",
+   "fetched": "2026-11-08",
    "uses": [
     "groupe-local/m31",
     "lexique/galaxie-spirale"
@@ -47,11 +47,11 @@
      "h": 433,
      "bytes": 25240
     },
-    "1280": {
-     "src": "assets/img/crabe-1280.webp",
-     "w": 1280,
-     "h": 1154,
-     "bytes": 191618
+    "1024": {
+     "src": "assets/img/crabe-1024.webp",
+     "w": 1024,
+     "h": 923,
+     "bytes": 115818
     }
    },
    "title": "25 Images to Celebrate NASA’s Chandra 25th Anniversary- Crab Nebula (53893798390).jpg",
@@ -68,7 +68,7 @@
     "confidence": "moyenne"
    },
    "status": "auto",
-   "fetched": "2026-11-07",
+   "fetched": "2026-11-08",
    "uses": [
     "galaxie/crabe",
     "types/remanent"
@@ -84,11 +84,11 @@
      "h": 333,
      "bytes": 35560
     },
-    "1280": {
-     "src": "assets/img/halley-1280.webp",
-     "w": 1280,
-     "h": 889,
-     "bytes": 393896
+    "1024": {
+     "src": "assets/img/halley-1024.webp",
+     "w": 1024,
+     "h": 711,
+     "bytes": 221808
     }
    },
    "title": "Lspn comet halley.jpg",
@@ -105,7 +105,7 @@
     "confidence": "haute"
    },
    "status": "auto",
-   "fetched": "2026-11-07",
+   "fetched": "2026-11-08",
    "uses": [
     "explorer/halley",
     "visiteurs/halley-v"
@@ -130,11 +130,11 @@
      "h": 297,
      "bytes": 14446
     },
-    "1280": {
-     "src": "assets/img/oumuamua-1280.webp",
-     "w": 1280,
-     "h": 792,
-     "bytes": 59364
+    "1024": {
+     "src": "assets/img/oumuamua-1024.webp",
+     "w": 1024,
+     "h": 634,
+     "bytes": 43878
     }
    },
    "title": "A2017U1 5gsmoothWHT enhanced.jpg",
@@ -151,12 +151,976 @@
     "confidence": "haute"
    },
    "status": "auto",
-   "fetched": "2026-11-07",
+   "fetched": "2026-11-08",
    "uses": [
     "visiteurs/oumuamua",
     "hypotheses/oumuamua-voile"
    ],
    "alt": "ʻOumuamua"
+  },
+  "soleil": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/soleil-480.webp",
+     "w": 480,
+     "h": 416,
+     "bytes": 26862
+    },
+    "1024": {
+     "src": "assets/img/soleil-1024.webp",
+     "w": 1024,
+     "h": 886,
+     "bytes": 93934
+    }
+   },
+   "title": "Our Sun at a distance of 150 Mio. km.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Our_Sun_at_a_distance_of_150_Mio._km.jpg",
+   "author": "Burkhard Mücke",
+   "credit": "Own work",
+   "license": "CC BY-SA 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q525",
+   "sha1": "f9830b73b8b364cf53fb99df88bf69c4f4039df1",
+   "match": {
+    "method": "recherche « Sun »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/soleil"
+   ],
+   "alt": "Soleil"
+  },
+  "mercure": {
+   "kind": "aucune",
+   "fallback": "planete",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "explorer/mercure"
+   ]
+  },
+  "venus": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/venus-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 3842
+    },
+    "1024": {
+     "src": "assets/img/venus-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 10746
+    }
+   },
+   "title": "PIA23791-Venus-RealAndEnhancedContrastViews-20200608 (cropped).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:PIA23791-Venus-RealAndEnhancedContrastViews-20200608_(cropped).jpg",
+   "author": "NASA/JPL-Caltech",
+   "credit": "https://photojournal.jpl.nasa.gov/jpeg/PIA23791.jpg",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q313",
+   "sha1": "b7b1954e0c873780c4f77e75d6af6ffbfcb44fa4",
+   "match": {
+    "method": "recherche « Venus »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/venus"
+   ],
+   "alt": "Vénus"
+  },
+  "terre": {
+   "kind": "aucune",
+   "fallback": "planete",
+   "status": "licence",
+   "qid": "Q2",
+   "uses": [
+    "explorer/terre"
+   ]
+  },
+  "lune": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/lune-480.webp",
+     "w": 480,
+     "h": 456,
+     "bytes": 22792
+    },
+    "1024": {
+     "src": "assets/img/lune-1024.webp",
+     "w": 1024,
+     "h": 973,
+     "bytes": 146152
+    }
+   },
+   "title": "FullMoon2010.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg",
+   "author": "Gregory H. Revera",
+   "credit": "Own work",
+   "license": "CC BY-SA 3.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q405",
+   "sha1": "dd85059c5657f3753827e84bb40f24301492a147",
+   "match": {
+    "method": "recherche « Moon »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/lune"
+   ],
+   "alt": "Lune"
+  },
+  "mars": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/mars-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 6480
+    },
+    "1024": {
+     "src": "assets/img/mars-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 20556
+    }
+   },
+   "title": "Mars - August 30 2021 - Flickr - Kevin M. Gill.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png",
+   "author": "Kevin Gill from Los Angeles, CA, United States",
+   "credit": "Mars - August 30 2021",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q111",
+   "sha1": "f3e909b3724ccc1ab7f447a7bb4a3f1f0c5ca5a0",
+   "match": {
+    "method": "recherche « Mars »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/mars"
+   ],
+   "alt": "Mars"
+  },
+  "jupiter": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/jupiter-480.webp",
+     "w": 480,
+     "h": 435,
+     "bytes": 9226
+    },
+    "1024": {
+     "src": "assets/img/jupiter-1024.webp",
+     "w": 1024,
+     "h": 927,
+     "bytes": 27792
+    }
+   },
+   "title": "Jupiter OPAL 2024.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png",
+   "author": "NASA/STSCI (S.T.A.R.S)",
+   "credit": "https://hubblesite.org/contents/media/images/2024/009/01HPMN3ZGXFN1E0M1W5Y8AVCAM?news=true",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q319",
+   "sha1": "5ea7409b2721b9fe890e1720ac1a718ba3a6903b",
+   "match": {
+    "method": "recherche « Jupiter »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/jupiter"
+   ],
+   "alt": "Jupiter"
+  },
+  "saturne": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/saturne-480.webp",
+     "w": 480,
+     "h": 232,
+     "bytes": 2488
+    },
+    "1024": {
+     "src": "assets/img/saturne-1024.webp",
+     "w": 1024,
+     "h": 496,
+     "bytes": 7118
+    }
+   },
+   "title": "Saturn, Four Years On, by ISS.tif",
+   "page": "https://commons.wikimedia.org/wiki/File:Saturn,_Four_Years_On,_by_ISS.tif",
+   "author": "NASA",
+   "credit": "http://photojournal.jpl.nasa.gov/catalog/PIA11141",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q193",
+   "sha1": "915657c6ba940f6d9e5ad8a67e64583a690a4486",
+   "match": {
+    "method": "recherche « Saturn »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/saturne"
+   ],
+   "alt": "Saturne"
+  },
+  "uranus": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/uranus-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 2776
+    },
+    "1024": {
+     "src": "assets/img/uranus-1024.webp",
+     "w": 830,
+     "h": 830,
+     "bytes": 5800
+    }
+   },
+   "title": "Uranus Voyager2 color calibrated.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png",
+   "author": "Ardenau4",
+   "credit": "Own workalso published on Flickr: https://www.flickr.com/photos/197038812@N04/53449450202/",
+   "license": "CC0",
+   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source": "Wikimedia Commons",
+   "qid": "Q324",
+   "sha1": "e320e68e31322cf50d0da0bc523cded6ed7a6de2",
+   "match": {
+    "method": "recherche « Uranus »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/uranus"
+   ],
+   "alt": "Uranus"
+  },
+  "neptune": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/neptune-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 3276
+    },
+    "1024": {
+     "src": "assets/img/neptune-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 8808
+    }
+   },
+   "title": "Neptune Voyager2 color calibrated.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png",
+   "author": "NASA / Voyager 2 / PDS / OPUS / Ardenau4",
+   "credit": "Own workalso published on Flickr: https://www.flickr.com/photos/197038812@N04/53446862462/",
+   "license": "CC0",
+   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source": "Wikimedia Commons",
+   "qid": "Q332",
+   "sha1": "c1d95965fa1bdc1a0b6f6be78cf1f8c9c4e601e6",
+   "match": {
+    "method": "recherche « Neptune »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/neptune"
+   ],
+   "alt": "Neptune"
+  },
+  "pluton": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/pluton-480.webp",
+     "w": 480,
+     "h": 479,
+     "bytes": 32352
+    },
+    "1024": {
+     "src": "assets/img/pluton-1024.webp",
+     "w": 883,
+     "h": 882,
+     "bytes": 84850
+    }
+   },
+   "title": "Global LORRI mosaic of Pluto in true colour.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Global_LORRI_mosaic_of_Pluto_in_true_colour.jpg",
+   "author": "NASA/JHUAPL/SwRI",
+   "credit": "http://www.nasa.gov/image-feature/global-mosaic-of-pluto-in-true-color",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q339",
+   "sha1": "7d663b20e688241627819f889a44f585326deada",
+   "match": {
+    "method": "recherche « Pluto »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/pluton"
+   ],
+   "alt": "Pluton"
+  },
+  "ceres": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/ceres-480.webp",
+     "w": 480,
+     "h": 471,
+     "bytes": 14284
+    },
+    "1024": {
+     "src": "assets/img/ceres-1024.webp",
+     "w": 852,
+     "h": 836,
+     "bytes": 33610
+    }
+   },
+   "title": "Ceres - RC3 - Haulani Crater (22381131691) (cropped).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Ceres_-_RC3_-_Haulani_Crater_(22381131691)_(cropped).jpg",
+   "author": "Justin Cowart",
+   "credit": "Ceres - RC3 - Haulani Crater",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q596",
+   "sha1": "ae533616059c89558ef1eac95324929dd5ceffe4",
+   "match": {
+    "method": "recherche « Ceres (dwarf planet) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/ceres"
+   ],
+   "alt": "Cérès"
+  },
+  "io": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/io-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 9706
+    },
+    "1024": {
+     "src": "assets/img/io-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 29564
+    }
+   },
+   "title": "Image of Io from Juno JunoCam from December 2023.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Image_of_Io_from_Juno_JunoCam_from_December_2023.png",
+   "author": "NASA / SWRI / MSSS / Jason Perry",
+   "credit": "https://www.missionjuno.swri.edu/junocam/processing?phases%5B%5D=PERIJOVE+57&source=public&perpage=16&p=9",
+   "license": "CC BY-SA 3.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q3123",
+   "sha1": "13a10c8cef157d7d19c19973b5a4347b5ac46e17",
+   "match": {
+    "method": "recherche « Io (moon) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/io"
+   ],
+   "alt": "Io"
+  },
+  "europe": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/europe-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 29806
+    },
+    "1024": {
+     "src": "assets/img/europe-1024.webp",
+     "w": 913,
+     "h": 913,
+     "bytes": 86256
+    }
+   },
+   "title": "Europa-moon.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Europa-moon.jpg",
+   "author": "NASA/JPL/DLR",
+   "credit": "http://photojournal.jpl.nasa.gov/catalog/PIA00502 (TIFF image link)",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q3143",
+   "sha1": "2370f42e7d6da2bd3fd03d448e25ef3192e6109a",
+   "match": {
+    "method": "recherche « Europa (moon) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/europe"
+   ],
+   "alt": "Europe"
+  },
+  "ganymede": {
+   "kind": "aucune",
+   "fallback": "lune",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "explorer/ganymede"
+   ]
+  },
+  "callisto": {
+   "kind": "aucune",
+   "fallback": "lune",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "explorer/callisto"
+   ]
+  },
+  "titan": {
+   "kind": "aucune",
+   "fallback": "lune",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "explorer/titan"
+   ]
+  },
+  "encelade": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/encelade-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 16930
+    },
+    "1024": {
+     "src": "assets/img/encelade-1024.webp",
+     "w": 1020,
+     "h": 1020,
+     "bytes": 59624
+    }
+   },
+   "title": "PIA17202 - Approaching Enceladus.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:PIA17202_-_Approaching_Enceladus.jpg",
+   "author": "National Aeronautics and Space Administration (NASA) / Jet Propulsion Laboratory (JPL)",
+   "credit": "PIA17202 from the NASA/JPL Photojournal",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q3303",
+   "sha1": "4765c12790da8eb90a6f5c9736edec7544cd346d",
+   "match": {
+    "method": "recherche « Enceladus »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/encelade"
+   ],
+   "alt": "Encelade"
+  },
+  "triton": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/triton-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 17490
+    },
+    "1024": {
+     "src": "assets/img/triton-1024.webp",
+     "w": 755,
+     "h": 755,
+     "bytes": 31250
+    }
+   },
+   "title": "Neptune’s Moon Triton Fosters Rare Icy Union (gemini1903a) square.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Neptune%E2%80%99s_Moon_Triton_Fosters_Rare_Icy_Union_(gemini1903a)_square.jpg",
+   "author": "NASA/JPL",
+   "credit": "Crop of File:Neptune’s Moon Triton Fosters Rare Icy Union (gemini1903a).tiff",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q3359",
+   "sha1": "052f777a48c5ea0ebded6ca3e2442e8a6f710a26",
+   "match": {
+    "method": "recherche « Triton (moon) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/triton"
+   ],
+   "alt": "Triton"
+  },
+  "charon": {
+   "kind": "aucune",
+   "fallback": "lune",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "explorer/charon"
+   ]
+  },
+  "arrokoth": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/arrokoth-480.webp",
+     "w": 480,
+     "h": 336,
+     "bytes": 7392
+    },
+    "1024": {
+     "src": "assets/img/arrokoth-1024.webp",
+     "w": 1024,
+     "h": 717,
+     "bytes": 30532
+    }
+   },
+   "title": "UltimaThule CA06 color 20190516.png",
+   "page": "https://commons.wikimedia.org/wiki/File:UltimaThule_CA06_color_20190516.png",
+   "author": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Roman Tkachenko.",
+   "credit": "Image provided from two sources: https://www.nasa.gov/feature/nasa-s-new-horizons-team-publishes-first-kuiper-belt-flyby-science-results andhttp://pluto.jhuapl.edu/News-Center/News-Article.php?page=20190516Direct image: http://pluto.jhuapl.edu/Galleries/Featured-Images/image.php?gallery_id=2&image_id=606",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q18325885",
+   "sha1": "71b2af2f65302b20e65e207b54853a766676378f",
+   "match": {
+    "method": "recherche « 486958 Arrokoth »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "explorer/arrokoth"
+   ],
+   "alt": "Arrokoth"
+  },
+  "orion-m42": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/orion-m42-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 13944
+    },
+    "1024": {
+     "src": "assets/img/orion-m42-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 47476
+    }
+   },
+   "title": "Orion Nebula - Hubble 2006 mosaic 18000.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg",
+   "author": "NASA, ESA, M. Robberto (Space Telescope Science Institute/ESA) and the Hubble Space Telescope Orion Treasury Project Team",
+   "credit": "http://hubblesite.org/newscenter/newsdesk/archive/releases/2006/01/ https://www.spacetelescope.org/news/heic0601/",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q13903",
+   "sha1": "b4d829576efbbbfb39c722c177c4abc79a77442a",
+   "match": {
+    "method": "recherche « Orion Nebula »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "galaxie/orion-m42"
+   ],
+   "alt": "Nébuleuse d'Orion"
+  },
+  "aigle": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/aigle-480.webp",
+     "w": 480,
+     "h": 473,
+     "bytes": 13906
+    },
+    "1024": {
+     "src": "assets/img/aigle-1024.webp",
+     "w": 1024,
+     "h": 1010,
+     "bytes": 60164
+    }
+   },
+   "title": "Eagle nebula pillars.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Eagle_nebula_pillars.jpg",
+   "author": "Credit: NASA, Jeff Hester, and Paul Scowen (Arizona State University)",
+   "credit": "http://hubblesite.org/newscenter/newsdesk/archive/releases/2003/34/image/a",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q11349",
+   "sha1": "2eb0a6c1aa60b1ac7098411614d184a7d2ac8def",
+   "match": {
+    "method": "recherche « Eagle Nebula »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "galaxie/aigle"
+   ],
+   "alt": "Nébuleuse de l'Aigle"
+  },
+  "pleiades": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/pleiades-480.webp",
+     "w": 480,
+     "h": 346,
+     "bytes": 13830
+    },
+    "1024": {
+     "src": "assets/img/pleiades-1024.webp",
+     "w": 1024,
+     "h": 738,
+     "bytes": 64200
+    }
+   },
+   "title": "Pleiades large.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Pleiades_large.jpg",
+   "author": "NASA, ESA, AURA/Caltech, Palomar Observatory The science team consists of: D. Soderblom and E. Nelan (STScI), F. Benedict and B. Arthur (U. Texas), and B. Jones (Lick Obs.)",
+   "credit": "https://hubblesite.org/contents/media/images/2004/20/1562-Image.html?Topic=104-stars-and-nebulas&keyword=pleiades (TIF image link)",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q13423",
+   "sha1": "fc1bae25b3a914224cadb69b5333d20827bc0929",
+   "match": {
+    "method": "recherche « Pleiades »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "galaxie/pleiades"
+   ],
+   "alt": "Pléiades"
+  },
+  "omegacen": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/omegacen-480.webp",
+     "w": 480,
+     "h": 452,
+     "bytes": 73482
+    },
+    "1024": {
+     "src": "assets/img/omegacen-1024.webp",
+     "w": 1024,
+     "h": 963,
+     "bytes": 386744
+    }
+   },
+   "title": "Omega Centauri by ESO.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Omega_Centauri_by_ESO.jpg",
+   "author": "ESO",
+   "credit": "https://www.eso.org/public/images/eso0844a/",
+   "license": "CC BY 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q14275",
+   "sha1": "8a7c7d409c524951b57ac08d9c921bedd8cf2b73",
+   "match": {
+    "method": "recherche « Omega Centauri »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "galaxie/omegacen"
+   ],
+   "alt": "Oméga du Centaure"
+  },
+  "m33": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/m33-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 28132
+    },
+    "1024": {
+     "src": "assets/img/m33-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 118492
+    }
+   },
+   "title": "M33.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:M33.jpg",
+   "author": "NASA/JPL-Caltech",
+   "credit": "http://photojournal.jpl.nasa.gov/gallery/universe?subselect=Target:M33",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q13724",
+   "sha1": "7ece4a065ada354ff9a772e36870fe9d7426d659",
+   "match": {
+    "method": "recherche « Triangulum Galaxy »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "groupe-local/m33"
+   ],
+   "alt": "Galaxie du Triangle"
+  },
+  "lg-gnm": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/lg-gnm-480.webp",
+     "w": 480,
+     "h": 320,
+     "bytes": 29264
+    },
+    "1024": {
+     "src": "assets/img/lg-gnm-1024.webp",
+     "w": 768,
+     "h": 512,
+     "bytes": 62414
+    }
+   },
+   "title": "Large.mc.arp.750pix.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Large.mc.arp.750pix.jpg",
+   "author": "NASA/Ames Research Center",
+   "credit": "https://web.archive.org/web/20070327105953/http://ails.arc.nasa.gov/Images/Astrobiology/AC87-0459.html",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q49957",
+   "sha1": "7db792291eae6d687b6fddfa1613d404038956a3",
+   "match": {
+    "method": "recherche « Large Magellanic Cloud »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "groupe-local/lg-gnm",
+    "galaxie/gnm"
+   ],
+   "alt": "Grand Nuage de Magellan"
+  },
+  "borisov": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/borisov-480.webp",
+     "w": 480,
+     "h": 360,
+     "bytes": 12342
+    },
+    "1024": {
+     "src": "assets/img/borisov-1024.webp",
+     "w": 803,
+     "h": 602,
+     "bytes": 47204
+    }
+   },
+   "title": "Comet-2IBorisov-HubbleST-20191016 (cropped).png",
+   "page": "https://commons.wikimedia.org/wiki/File:Comet-2IBorisov-HubbleST-20191016_(cropped).png",
+   "author": "NASA, ESA, and D. Jewitt (UCLA)",
+   "credit": "https://imgsrc.hubblesite.org/hvi/uploads/image_file/image_attachment/31897/STSCI-H-p1953a-f-1106x1106.png",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q67328765",
+   "sha1": "eef871638461569523be48b0cb21a48d19cf9744",
+   "match": {
+    "method": "recherche « 2I/Borisov »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "visiteurs/borisov"
+   ],
+   "alt": "Comète Borisov"
+  },
+  "tchouri": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/tchouri-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 28942
+    },
+    "1024": {
+     "src": "assets/img/tchouri-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 102032
+    }
+   },
+   "title": "67P Churyumov-Gerasimenko - Rosetta (32755885495).png",
+   "page": "https://commons.wikimedia.org/wiki/File:67P_Churyumov-Gerasimenko_-_Rosetta_(32755885495).png",
+   "author": "Justin Cowart",
+   "credit": "67P/Churyumov-Gerasimenko - Rosetta",
+   "license": "CC BY 2.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q844672",
+   "sha1": "9c3064f1655abfc85c7c716812d3707c6b87038f",
+   "match": {
+    "method": "recherche « 67P/Churyumov–Gerasimenko »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "visiteurs/tchouri"
+   ],
+   "alt": "Tchourioumov-Guérassimenko"
+  },
+  "halebopp": {
+   "kind": "aucune",
+   "fallback": "comete",
+   "status": "auto",
+   "qid": null,
+   "uses": [
+    "visiteurs/halebopp"
+   ]
+  },
+  "neowise": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/neowise-480.webp",
+     "w": 480,
+     "h": 320,
+     "bytes": 5114
+    },
+    "1024": {
+     "src": "assets/img/neowise-1024.webp",
+     "w": 1024,
+     "h": 682,
+     "bytes": 34816
+    }
+   },
+   "title": "2020-07-13 02-3x-xx-smx 30x30s 300mm f4 2048px.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:2020-07-13_02-3x-xx-smx_30x30s_300mm_f4_2048px.jpg",
+   "author": "Maxime Storn",
+   "credit": "Own work",
+   "license": "CC BY-SA 4.0",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source": "Wikimedia Commons",
+   "qid": "Q90776919",
+   "sha1": "cfe062fa69de90bbcdbf5adb0f7d71eef529f575",
+   "match": {
+    "method": "recherche « C/2020 F3 (NEOWISE) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "visiteurs/neowise"
+   ],
+   "alt": "NEOWISE"
+  },
+  "bennu": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/bennu-480.webp",
+     "w": 480,
+     "h": 480,
+     "bytes": 35054
+    },
+    "1024": {
+     "src": "assets/img/bennu-1024.webp",
+     "w": 1024,
+     "h": 1024,
+     "bytes": 150218
+    }
+   },
+   "title": "Bennu mosaic OSIRIS-REx (square).png",
+   "page": "https://commons.wikimedia.org/wiki/File:Bennu_mosaic_OSIRIS-REx_(square).png",
+   "author": "NASA/Goddard/University of Arizona",
+   "credit": "File:Bennu mosaic OSIRIS-REx.jpg from https://www.nasa.gov/press-release/nasa-spacecraft-provides-insight-into-asteroid-bennu-s-future-orbit",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "qid": "Q11558",
+   "sha1": "071220a8827d35e93ff415752dcf16128ae540d8",
+   "match": {
+    "method": "recherche « 101955 Bennu »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-08",
+   "uses": [
+    "visiteurs/bennu"
+   ],
+   "alt": "Bennu"
   }
  }
 }

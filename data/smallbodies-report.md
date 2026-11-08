@@ -1,4 +1,4 @@
-# Petits corps — rapport du 2026-11-07 20:06 UTC
+# Petits corps — rapport du 2026-11-08 17:32 UTC
 
 Écart = distance entre la position d'une orbite de Kepler simple (calculable dans le navigateur) et la position JPL Horizons (calcul complet). Angle = cet écart vu depuis le Soleil.
 
