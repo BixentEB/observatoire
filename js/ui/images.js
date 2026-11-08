@@ -42,8 +42,8 @@
   }
   /* agrandissement dans une fenêtre : image, puis qui, quoi, quand, d'où ; croix, clic à côté ou Échap pour fermer */
   var box = null;
-  function closeBox() { if (box) { box.remove(); box = null; document.removeEventListener('keydown', onKey); } }
-  function onKey(e) { if (e.key === 'Escape') closeBox(); }
+  function closeBox() { if (box) { box.remove(); box = null; window.removeEventListener('keydown', onKey, true); } }
+  function onKey(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeBox(); } }
   function openBox(o) {
     closeBox();
     var f = o.files, b = f['1024'] || f['1280'] || f['480'];
@@ -57,7 +57,7 @@
       '<p class="lb-links"><a href="' + esc(o.page) + '" target="_blank" rel="noopener">Voir la source sur Wikimedia Commons</a>' + (o.licenseUrl ? '<a href="' + esc(o.licenseUrl) + '" target="_blank" rel="noopener">Texte de la licence</a>' : '') + '</p></div></div>';
     document.body.appendChild(box);
     box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('.lb-x')) closeBox(); });
-    document.addEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
     box.querySelector('.lb-x').focus();
   }
   document.addEventListener('click', function (e) {

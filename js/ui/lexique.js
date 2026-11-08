@@ -38,8 +38,8 @@
      sur le côté, sans quitter la page : la définition, ses renvois, et un lien pour ouvrir le Lexique complet.
      Fermeture : croix, clic à côté, Échap. */
   var drawer = null;
-  function closeDef() { if (!drawer) return; drawer.classList.remove('on'); var d = drawer; drawer = null; setTimeout(function () { d.remove(); }, 250); document.removeEventListener('keydown', escDef); }
-  function escDef(e) { if (e.key === 'Escape') closeDef(); }
+  function closeDef() { if (!drawer) return; drawer.classList.remove('on'); var d = drawer; drawer = null; setTimeout(function () { d.remove(); }, 250); window.removeEventListener('keydown', escDef, true); }
+  function escDef(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeDef(); } }
   function openDef(e) {
     index(); closeDef();
     var see = (e.voir || []).filter(function (v) { return byNorm[norm(v)]; }).map(function (v) { return byNorm[norm(v)]; });
@@ -58,7 +58,7 @@
       var b = t.closest('[data-dfx]'); if (b) { var x = find(b.getAttribute('data-dfx')); if (x) openDef(x); return; }
       if (t.closest('[data-dfx-close]')) closeDef();
     });
-    document.addEventListener('keydown', escDef);
+    window.addEventListener('keydown', escDef, true);
     drawer.querySelector('.dfx-x').focus();
   }
   function find(path) { index(); var sl = path.split('/')[1]; return (OBS.LEXIQUE || []).filter(function (x) { return (x.slug || slug(x.t)) === sl; })[0]; }
