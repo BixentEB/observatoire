@@ -7,7 +7,8 @@
      déplie la même liste.
    « à venir » n'est jamais écrit à la main : un niveau est disponible dès que l'Atlas sait l'afficher
    (son id figure dans OBS.ATLAS_SCOPES), la mention disparaît alors d'elle-même.
-   OBS.armPinch(root) : zoom à deux doigts (et Ctrl + molette / pincement du pavé tactile) sur les cartes .atlas-scroll.
+   OBS.armPinch(root) : zoom des cartes .atlas-scroll : boutons − % + ⤢ en coin (clic sur % = taille normale),
+   pincement à deux doigts, double toucher, Ctrl + molette ou pincement du pavé tactile.
    ====================================================================== */
 (function () {
   'use strict';
@@ -101,8 +102,22 @@
       nz = Math.max(zmin(), Math.min(2.5, nz)); if (Math.abs(nz - z) < 1e-4) return;
       var r = sc.getBoundingClientRect(), px = cx - r.left, py = cy - r.top;
       var fx = (sc.scrollLeft + px) / z, fy = (sc.scrollTop + py) / z;
-      z = nz; apply(); sc.scrollLeft = fx * z - px; sc.scrollTop = fy * z - py;
+      z = nz; apply(); sc.scrollLeft = fx * z - px; sc.scrollTop = fy * z - py; label();
     }
+    function mid(nz) { var r = sc.getBoundingClientRect(); set(nz, r.left + r.width / 2, r.top + r.height / 2); }
+    // commandes visibles : − / pourcentage (clic = taille normale) / + / carte entière
+    var wrap = document.createElement('div'); wrap.className = 'az-wrap';
+    sc.parentNode.insertBefore(wrap, sc); wrap.appendChild(sc);
+    var ui = document.createElement('div'); ui.className = 'az'; ui.setAttribute('role', 'group'); ui.setAttribute('aria-label', 'Zoom de la carte');
+    ui.innerHTML = '<button type="button" data-a="out" aria-label="Dézoomer" title="Dézoomer">−</button><button type="button" data-a="reset" class="az-pct" title="Taille normale"></button>' +
+      '<button type="button" data-a="in" aria-label="Zoomer" title="Zoomer">+</button><button type="button" data-a="fit" aria-label="Voir toute la carte" title="Voir toute la carte">⤢</button>';
+    wrap.appendChild(ui);
+    function label() { var b = ui.querySelector('.az-pct'); if (b) b.textContent = Math.round(z * 100) + ' %'; }
+    ui.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return; var a = b.getAttribute('data-a');
+      if (a === 'in') mid(z * 1.25); else if (a === 'out') mid(z / 1.25); else if (a === 'fit') mid(zmin()); else { mid(z0); }
+    });
+    label();
     function d(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
     sc.style.touchAction = 'pan-x pan-y';
     sc.addEventListener('touchstart', function (e) {
@@ -116,7 +131,7 @@
       var t = e.touches; set(g.z * d(t) / g.d, (t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2);
     }, { passive: false });
     sc.addEventListener('touchend', function (e) { if (e.touches.length < 2) g = null; });
-    sc.addEventListener('wheel', function (e) { if (!e.ctrlKey) return; e.preventDefault(); set(z * Math.exp(-e.deltaY * .01), e.clientX, e.clientY); }, { passive: false });
+    sc.addEventListener('wheel', function (e) { if (!e.ctrlKey) return; e.preventDefault(); var dy = Math.max(-40, Math.min(40, e.deltaY)); set(z * Math.exp(-dy * .006), e.clientX, e.clientY); }, { passive: false });
   }
   OBS.armPinch = function (root) { Array.prototype.forEach.call((root || document).querySelectorAll('.atlas-scroll'), pinch); };
 })();

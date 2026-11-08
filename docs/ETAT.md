@@ -139,3 +139,4 @@
 - Onglets restants : « Lieux » (retour au dernier niveau), Visiteurs, Types d'objets, Échelles ; Carte / Liste / Unités au-dessus de la carte.
 - Zoom des cartes (`OBS.armPinch`) : pincement à deux doigts, double toucher pour revenir, Ctrl + molette ou pincement du pavé tactile sur ordinateur ; le zoom minimal fait tenir la carte dans la largeur.
 - Système solaire : pastille « Tailles » retirée, bouton « Tailles : Lisibles | Réelles » sur sa propre ligne (choix actif en jaune adapté ou vert réel).
+- Retouches (8 novembre 2026, soir) : bouton « Tailles » à droite, sur la ligne des pastilles, dans sa propre capsule (sous les pastilles sur téléphone) ; commandes de zoom en coin de chaque carte (− / pourcentage, clic = taille normale / + / ⤢ carte entière), Ctrl + molette adouci.
