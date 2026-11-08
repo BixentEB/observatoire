@@ -33,7 +33,7 @@
     var live = NEWS.filter(active), hrefs = {};
     live.forEach(function (n) { hrefs[n.href] = 1; });
     Array.prototype.forEach.call(document.querySelectorAll('a[href^="#/"]'), function (a) {
-      var on = !!hrefs[a.getAttribute('href')] && !a.closest('#menu, .menu');
+      var on = !!hrefs[a.getAttribute('href')] && !a.closest('#menu, .menu') && a.matches('.tab, .tool, .chip, .h-tab');
       if (on !== a.classList.contains('is-new')) a.classList.toggle('is-new', on);
     });
     var menus = {}; live.forEach(function (n) { menus[n.menu] = 1; });

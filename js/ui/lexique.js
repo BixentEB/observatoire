@@ -32,6 +32,46 @@
     '<span class="c-om" style="width:5%"><b>5 %</b></span></div>' +
     '<figcaption><i class="c-om"></i>5 % de matière ordinaire : toutes les étoiles, les planètes, le gaz et nous. Le reste est invisible. <span>Satellite Planck, 2018 (valeurs arrondies).</span></figcaption></figure>';
 
+
+  /* ---------- panneau latéral de définition ----------
+     Un lien vers une définition (#/lexique/<thème>/<terme>) cliqué ailleurs que dans le Lexique ouvre un panneau
+     sur le côté, sans quitter la page : la définition, ses renvois, et un lien pour ouvrir le Lexique complet.
+     Fermeture : croix, clic à côté, Échap. */
+  var drawer = null;
+  function closeDef() { if (!drawer) return; drawer.classList.remove('on'); var d = drawer; drawer = null; setTimeout(function () { d.remove(); }, 250); document.removeEventListener('keydown', escDef); }
+  function escDef(e) { if (e.key === 'Escape') closeDef(); }
+  function openDef(e) {
+    index(); closeDef();
+    var see = (e.voir || []).filter(function (v) { return byNorm[norm(v)]; }).map(function (v) { return byNorm[norm(v)]; });
+    var tabName = (OBS.LEXIQUE_TABS.filter(function (t) { return t[0] === e.tab; })[0] || [])[1];
+    drawer = document.createElement('div'); drawer.className = 'dfx';
+    drawer.innerHTML = '<aside class="dfx-p" role="dialog" aria-label="Définition : ' + esc(e.t) + '"><button class="dfx-x" type="button" aria-label="Fermer">✕</button>' +
+      '<p class="dfx-k">Lexique · ' + esc(tabName || '') + '</p><h2>' + esc(e.t) + '</h2><p class="dfx-d">' + esc(e.d) + '</p>' +
+      (e.obs ? '<p class="dfx-go"><a href="' + e.obs[0] + '" data-dfx-close>' + esc(e.obs[1]) + ' ›</a></p>' : '') +
+      (see.length ? '<p class="dfx-h">Voir aussi</p><div class="dfx-see">' + see.map(function (x) { return '<button type="button" data-dfx="' + x.tab + '/' + x.slug + '">' + esc(x.t) + '</button>'; }).join('') + '</div>' : '') +
+      '<p class="dfx-all"><a href="#/lexique/' + e.tab + '/' + e.slug + '" data-dfx-close>Ouvrir dans le Lexique</a></p></aside>';
+    document.body.appendChild(drawer);
+    requestAnimationFrame(function () { if (drawer) drawer.classList.add('on'); });
+    drawer.addEventListener('click', function (ev) {
+      var t = ev.target;
+      if (t === drawer || t.closest('.dfx-x')) { closeDef(); return; }
+      var b = t.closest('[data-dfx]'); if (b) { var x = find(b.getAttribute('data-dfx')); if (x) openDef(x); return; }
+      if (t.closest('[data-dfx-close]')) closeDef();
+    });
+    document.addEventListener('keydown', escDef);
+    drawer.querySelector('.dfx-x').focus();
+  }
+  function find(path) { index(); var sl = path.split('/')[1]; return (OBS.LEXIQUE || []).filter(function (x) { return (x.slug || slug(x.t)) === sl; })[0]; }
+  window.addEventListener('hashchange', function () { closeDef(); });
+  OBS.lexDef = function (path) { var x = find(path); if (x) openDef(x); };
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest && ev.target.closest('a[href^="#/lexique/"]'); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
+    if (/^#\/lexique/.test(location.hash) || a.closest('.dfx')) return;
+    var parts = a.getAttribute('href').replace('#/lexique/', '').split('/'); if (parts.length < 2) return;
+    var x = find(parts.join('/')); if (!x) return;
+    ev.preventDefault(); openDef(x);
+  });
+
   OBS.pages.lexique = function (root, param, sub) {
     index();
     var tabs = OBS.LEXIQUE_TABS, cur = tabs.some(function (t) { return t[0] === param; }) ? param : tabs[0][0];

@@ -219,7 +219,7 @@ def main():
                         files = make_webp(raw, oid)
                         rep.append('- Téléchargé et converti : %s' % ', '.join('%s px %d Ko' % (k, v['bytes'] // 1024) for k, v in files.items()))
                     objs[oid] = {'kind': kind, 'files': files, 'title': fname, 'page': info['page'], 'author': info['author'], 'credit': info['credit'],
-                                 'license': info['license'], 'licenseUrl': info['licenseUrl'], 'source': 'Wikimedia Commons', 'qid': qid, 'sha1': info['sha1'],
+                                 'license': info['license'], 'licenseUrl': info['licenseUrl'], 'source': 'Wikimedia Commons', 'description': info['description'][:300], 'date': info['date'], 'qid': qid, 'sha1': info['sha1'],
                                  'match': {'method': how, 'confidence': conf}, 'status': src.get('status', 'auto'), 'fetched': entry.get('fetched') if same else datetime.date.today().isoformat(),
                                  'uses': src.get('uses', [oid]), 'alt': src.get('alt', src.get('label', oid))}
             if src.get('nasa'):

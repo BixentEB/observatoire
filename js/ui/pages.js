@@ -200,14 +200,14 @@
   ];
   function resList(groups) {
     return groups.map(function (g) {
-      return '<h3>' + esc(g[0]) + '</h3><div class="rows res-rows">' + g[1].map(function (x) {
-        return '<div class="row"><div class="row-h"><h3><a href="' + x[1] + '" target="_blank" rel="noopener">' + esc(x[0]) + ' ↗</a></h3></div><div class="row-b"><p>' + esc(x[2]) + '</p></div></div>';
-      }).join('') + '</div>';
+      return '<section class="res-g"><h3>' + esc(g[0]) + '</h3><div class="res-pills">' + g[1].map(function (x) {
+        return '<a class="res-pill" href="' + x[1] + '" target="_blank" rel="noopener"><b>' + esc(x[0]) + '</b><span>' + esc(x[2]) + '</span></a>';
+      }).join('') + '</div></section>';
     }).join('');
   }
   pages.ressources = function (root) {
     root.innerHTML = '<p class="p-kicker">Méthode</p><h1>Ressources</h1>' + infoTabs('ressources') +
-      '<p class="lead">Les sources des données de l\'Observatoire, puis des sites de référence pour aller plus loin. Les liens s\'ouvrent dans un nouvel onglet.</p>' +
+      '<p class="lead">Les sources des données de l\'Observatoire, puis des sites de référence pour aller plus loin. Chaque bouton ouvre le site dans un nouvel onglet.</p>' +
       '<h2>Sources des données</h2>' + resList(SOURCES) +
       '<h2>Sites de référence</h2>' + resList(SITES) +
       '<p class="note" style="margin-top:28px">Les crédits détaillés des images et des logiciels sont dans l\'onglet <a href="#/credits">Crédits et licences</a>.</p>';
