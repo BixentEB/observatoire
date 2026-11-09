@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'tools/volume.py'
+      - 'tools/superamas.py'
       - '.github/workflows/catalogues.yml'
   workflow_dispatch: {}
 
@@ -29,10 +30,13 @@ jobs:
       - name: Volume local (catalogue de Karachentsev)
         continue-on-error: true
         run: python3 tools/volume.py
+      - name: Superamas local (groupes de Kourkchi et Tully)
+        continue-on-error: true
+        run: python3 tools/superamas.py
       - name: Publier
         if: always()
         run: |
-          git add data/volume-local.json data/volume-local-report.md 2>/dev/null || true
+          git add data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md 2>/dev/null || true
           if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
           git config user.name "observatoire-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
