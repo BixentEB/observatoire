@@ -77,18 +77,31 @@ def sg_from_eq(ra, dec, d):
     g = [sum(EQ2GAL[i][j] * e[j] for j in range(3)) for i in range(3)]
     return [round(d * sum(g[k] * V[k] for k in range(3)), 3) for V in (SX, SY, SZ)]
 
-readme = get('ReadMe')
-if not readme:
-    log.append('ReadMe introuvable'); open(os.path.join(ROOT, 'data', 'superamas-report.md'), 'w').write('\n'.join(log) + '\n'); print('\n'.join(log)); sys.exit(0)
-desc = parse_readme(readme.decode('latin-1'))
-print('ReadMe :', len(readme), 'octets ; fichiers décrits :', list(desc.keys()), flush=True)
+MIRRORS = ['https://vizier.cds.unistra.fr', 'https://vizier.cfa.harvard.edu', 'https://vizier.nao.ac.jp', 'https://vizier.iucaa.in']
+def vizier(table):
+    import urllib.parse
+    q = urllib.parse.urlencode({'-source': 'J/ApJ/843/16/' + table, '-out.max': 'unlimited', '-out.all': '', '-out.add': '_RAJ,_DEJ', '-oc.form': 'd'})
+    for m in MIRRORS:
+        try:
+            with urllib.request.urlopen(urllib.request.Request(m + '/viz-bin/asu-tsv?' + q, headers=UA), timeout=120) as r:
+                txt = r.read().decode('utf-8', 'replace')
+            lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
+            if len(lines) < 4: log.append('%s %s : réponse vide' % (m, table)); continue
+            head = [h.strip() for h in lines[0].split('\t')]
+            units = [u.strip() for u in lines[1].split('\t')]
+            rows = [dict(zip(head, [x.strip() for x in l.split('\t')])) for l in lines[3:] if '\t' in l]
+            cols = [(0, 0, h, units[i] if i < len(units) else '', '') for i, h in enumerate(head)]
+            log.append('%s %s : %d lignes' % (m, table, len(rows))); print(log[-1], flush=True)
+            return cols, rows
+        except Exception as ex:
+            log.append('échec %s %s : %r' % (m, table, ex)); print(log[-1], flush=True)
+    return None
 tables = {}
-for f, cols in desc.items():
-    raw = get(f) or get(f + '.gz')
-    if raw is None: continue
-    rows = read_table(raw, cols)
-    tables[f] = (cols, rows)
-    log.append('**%s** : %d lignes ; colonnes : %s' % (f, len(rows), ', '.join('%s (%s : %s)' % (c[2], c[3], c[4][:50]) for c in cols)))
+for t in ['table2', 'table3', 'table4']:
+    r = vizier(t)
+    if r:
+        tables[t] = r
+        log.append('**%s** : colonnes %s' % (t, ', '.join('%s (%s)' % (c[2], c[3]) for c in r[0])))
 
 # table des groupes : celle qui a une colonne de nombre de membres et le moins de lignes
 cand = []
@@ -101,7 +114,7 @@ if cand:
     n, f, ncol = cand[0] if cand[0][0] > 200 else (cand[-1] if cand else cand[0])
     cols, rows = tables[f]
     c_sgl, c_sgb = find(cols, r'SGL(deg)?', r'SGLon'), find(cols, r'SGB(deg)?', r'SGLat')
-    c_ra, c_de = find(cols, r'RA(deg|J2000)?', r'_RA'), find(cols, r'DE(deg|J2000)?', r'_DE')
+    c_ra, c_de = find(cols, r'_RAJ2000', r'RAJ2000', r'RA(deg)?', r'_RA'), find(cols, r'_DEJ2000', r'DEJ2000', r'DE(deg)?', r'_DE')
     c_d = find(cols, r'Dist', r'D', r'Dg', r'Dgr', r'Dmean', r'Dav')
     c_dm = find(cols, r'DM', r'DMg', r'mu')
     c_v = find(cols, r'Vls', r'VLS', r'Vmod', r'Vgsr', r'VLG', r'Vh', r'HRV', r'cz', r'V')
