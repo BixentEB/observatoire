@@ -134,6 +134,7 @@
       root.innerHTML = '<p><a href="#/hypotheses" class="chip">← Toutes les hypothèses</a></p>' +
         '<p class="h-badge">Hypothèse personnelle' + (h.exemple ? ' · fiche d\'exemple' : '') + '</p><h1>' + esc(h.titre) + '</h1>' + meta(h) +
         (h.resume ? '<p class="lead" style="margin-top:14px">' + esc(h.resume) + '</p>' : '') +
+        (h.lien && h.lien.url ? '<p style="margin-top:18px"><a class="btn" href="' + esc(h.lien.url) + '" target="_blank" rel="noopener">' + esc(h.lien.label || 'Lire l\'article complet') + ' →</a></p>' : '') +
         (objs.length ? '<div class="h-objs">' + objs.map(function (o) { return '<a class="btn" href="#/explorer/' + o + '">Voir ' + esc(OBS.byId[o].name) + ' dans l\'espace</a>'; }).join('') + '</div>' : '') +
         (h.avertissement ? '<div class="h-warn" role="note"><b>Avant de lire</b><p>' + esc(h.avertissement) + '</p></div>' : '') +
         (h.anim && OBS.HYPO_ANIM && OBS.HYPO_ANIM[h.anim] ? '<div id="h-anim"></div>' : h.modele ? '<div id="h-viewer"></div>' : '') +

@@ -1,55 +1,25 @@
-*Réseau modulaire d'assistance propulsive interplanétaire — hypothèse de transport spatial*
+*Réseau modulaire d'assistance propulsive interplanétaire*
 
 **Statut : en cours de réflexion** · Domaine : mécanique orbitale, propulsion, transport spatial · Concept personnel, faisabilité non démontrée · Version 0.1, novembre 2026
 
-## 1. L'idée
+### 1. L'idée
 
-Et si une partie de l'effort nécessaire aux déplacements interplanétaires pouvait être assurée par des **stations orbitales indépendantes**, réparties à différents emplacements, plutôt que de reposer uniquement sur les véhicules eux-mêmes ?
+Et si une partie de l'effort nécessaire aux déplacements interplanétaires pouvait venir d'infrastructures extérieures aux véhicules ? L'hypothèse consiste à répartir des stations orbitales indépendantes, chacune capable d'apporter une assistance ponctuelle et facultative : une accélération, une correction de trajectoire ou un freinage. Un voyage entre la Terre et Mars prend aujourd'hui plusieurs mois. Mises bout à bout, plusieurs interventions modestes pourraient modifier progressivement la vitesse ou la trajectoire d'un engin.
 
-Un voyage entre la Terre et Mars prend généralement plusieurs mois avec les méthodes conventionnelles. Chaque station apporterait une assistance ponctuelle et facultative : accélération, correction de trajectoire ou décélération. Plusieurs interventions modestes pourraient, mises bout à bout, modifier progressivement la vitesse ou la trajectoire d'un véhicule.
+### 2. D'où elle vient
 
-## 2. Principes
+L'idée part d'une question simple sur la répartition de l'effort : faut-il que chaque vaisseau porte toute sa propulsion, ou peut-on imaginer qu'une partie de cette tâche soit confiée à l'espace lui-même ? Le concept ne suppose aucune nouvelle force physique. Il cherche seulement à voir si certaines technologies connues pourraient fournir une assistance depuis l'extérieur d'un véhicule.
 
-- **Autonomie réciproque.** Un véhicule ne dépend pas obligatoirement d'une station. Il garde sa propre propulsion et sa navigation. La coopération ne doit jamais devenir une dépendance.
-- **Stations indépendantes.** Elles ne sont pas reliées physiquement entre elles. Leurs orbites sont choisies pour leur intérêt, sans chercher à suivre les véhicules en permanence.
-- **Capsules standardisées.** Une famille de véhicules aux dimensions communes (cargo, scientifiques, logistiques, habités) simplifierait les interfaces avec les stations.
-- **Itinéraire choisi.** Le véhicule sélectionne les stations utiles à sa mission. Le plus court chemin géométrique n'est pas forcément le meilleur.
+### 3. Ce qui le rendrait possible
 
-## 3. Technologies envisagées
+Plusieurs pistes sont examinées, sans qu'aucune ne soit retenue. Des champs électromagnétiques pourraient, sous conditions, pousser un équipement embarqué. Un faisceau laser pourrait transmettre de l'énergie, notamment par pression de radiation sur une voile. Des câbles en rotation pourraient transmettre une impulsion par contact mécanique. Les moteurs électriques embarqués, déjà utilisés en exploration, seraient plutôt utiles pour les corrections de trajectoire. Les principes physiques de ces pistes sont connus ; leur application à de grandes structures orbitales reste à démontrer.
 
-Le concept ne suppose pas de nouvelle force physique. Il examine des technologies connues ou étudiées :
+### 4. Ce qui pourrait le contredire
 
-- **Accélération électromagnétique** : une force sur un équipement embarqué. Les principes sont établis, mais leur application à de grandes structures orbitales reste à démontrer.
-- **Transmission d'énergie par laser** : pression de radiation sur une voile, ou conversion à bord. Difficultés : puissance, pointage, divergence du faisceau.
-- **Faisceaux de particules** : transfert de quantité de mouvement. Concepts à l'étude, mais guidage et rendement posent problème.
-- **Câbles rotatifs** : impulsion par interaction mécanique. Contraintes de rendez-vous et de capture importantes.
-- **Propulsion électrique embarquée** (ioniques, effet Hall) : utile pour les corrections de trajectoire, pas comme porte accélératrice.
+La principale limite est énergétique : il faudrait transmettre assez d'énergie pour que le gain de vitesse soit réellement utile. Un véhicule qui traverse rapidement une station ne reçoit qu'une impulsion brève, ce qui impose une zone d'action étendue. La station subit aussi l'impulsion inverse et doit la compenser. Enfin, accélérer ne suffit pas : il faut pouvoir arriver à destination, se mettre en orbite ou se poser. Et l'ensemble ne se justifie que si la construction et l'alimentation des stations coûtent moins que la propulsion autonome qu'elles remplacent.
 
-## 4. Ce qui pourrait le contredire ou le limiter
+### 5. Comment on pourrait le tester
 
-- **L'énergie** : quelle quantité transmettre pour un gain de vitesse réellement utile ?
-- **La durée d'interaction** : un véhicule qui passe vite ne reçoit qu'une impulsion brève.
-- **La quantité de mouvement** : la station reçoit l'impulsion inverse et doit la compenser.
-- **La navigation** : gravitation solaire, mouvements planétaires, fenêtres de rencontre.
-- **Le freinage** : accélérer ne suffit pas, il faut aussi pouvoir arriver et se mettre en orbite.
-- **La rentabilité** : construire et alimenter les stations doit coûter moins que la propulsion autonome qu'elles remplacent.
-
-## 5. Comment on pourrait le tester
-
-Une première étape, purement numérique, comparerait cinq cas :
-
-1. un transfert Terre–Mars conventionnel ;
-2. un transfert assisté par une station ;
-3. un transfert assisté par plusieurs stations ;
-4. un transfert avec capsules standardisées ;
-5. des trajectoires alternatives lorsque certaines stations sont indisponibles.
-
-Les simulations devraient intégrer les positions orbitales, les besoins énergétiques, les gains de vitesse, les contraintes de freinage et la durée totale du voyage. Elles diraient dans quelles conditions une infrastructure extérieure améliore réellement les performances.
-
-## 6. Pour aller plus loin
-
-Le texte complet, avec son encadré méthodologique, est publié sur le Codex Mental : *Réseau modulaire d'assistance propulsive interplanétaire*, dans la rubrique Atelier / exploration (codexmental.com/articles/atelier/explo/reseau/).
-
----
+Une première étape purement numérique comparerait un transfert Terre–Mars conventionnel à des transferts assistés par une, puis plusieurs stations, à des transferts utilisant des capsules standardisées, et à des trajectoires de secours lorsque certaines stations sont indisponibles. Les simulations devraient intégrer les positions orbitales, les besoins énergétiques, les gains de vitesse, les contraintes de freinage et la durée totale du voyage. Elles montreraient dans quelles conditions une infrastructure extérieure améliore réellement les performances.
 
 *Concept personnel, sans validation scientifique ou expérimentale à ce stade. Je n'ai pas de formation en astronautique ; l'hypothèse sera corrigée à mesure qu'elle sera confrontée aux connaissances établies.*
