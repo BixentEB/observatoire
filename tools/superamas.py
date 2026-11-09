@@ -24,7 +24,7 @@ def get(name):
                 raw = r.read()
             return gzip.decompress(raw) if name.endswith('.gz') else raw
         except Exception as ex:
-            log.append('échec %s%s : %r' % (b, name, ex))
+            log.append('échec %s%s : %r' % (b, name, ex)); print(log[-1], flush=True)
     return None
 
 def parse_readme(txt):
@@ -78,8 +78,10 @@ def sg_from_eq(ra, dec, d):
     return [round(d * sum(g[k] * V[k] for k in range(3)), 3) for V in (SX, SY, SZ)]
 
 readme = get('ReadMe')
-if not readme: log.append('ReadMe introuvable'); open(os.path.join(ROOT, 'data', 'superamas-report.md'), 'w').write('\n'.join(log)); sys.exit(0)
+if not readme:
+    log.append('ReadMe introuvable'); open(os.path.join(ROOT, 'data', 'superamas-report.md'), 'w').write('\n'.join(log) + '\n'); print('\n'.join(log)); sys.exit(0)
 desc = parse_readme(readme.decode('latin-1'))
+print('ReadMe :', len(readme), 'octets ; fichiers décrits :', list(desc.keys()), flush=True)
 tables = {}
 for f, cols in desc.items():
     raw = get(f) or get(f + '.gz')
