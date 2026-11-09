@@ -29,6 +29,16 @@
         "inclinaison": 26.7
       },
       "brouillon": true
+    },
+    {
+      "id": "reseau-propulsion",
+      "titre": "Réseau d'assistance propulsive interplanétaire",
+      "resume": "Et si des stations orbitales indépendantes pouvaient aider les vaisseaux à accélérer, corriger leur trajectoire ou freiner, sans les rendre dépendants ? Un concept de transport spatial à étudier par la simulation.",
+      "statut": "reflexion",
+      "date": "2026-11-09",
+      "objets": [],
+      "fichier": "reseau-propulsion.md",
+      "avertissement": "Un concept personnel, en cours de réflexion : aucune simulation ni expérience ne l'a encore validé, et les technologies évoquées restent à démontrer. Je n'ai pas de formation en astronautique ; l'idée sera confrontée aux connaissances établies et corrigée à mesure."
     }
   ]
 }
