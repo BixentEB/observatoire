@@ -1943,6 +1943,44 @@
     "artefacts/disque-voyager"
    ],
    "alt": "Disque d'or de Voyager"
+  },
+  "orgueil": {
+   "kind": "photo",
+   "files": {
+    "480": {
+     "src": "assets/img/orgueil-480.webp",
+     "w": 281,
+     "h": 270,
+     "bytes": 23230
+    },
+    "1024": {
+     "src": "assets/img/orgueil-1024.webp",
+     "w": 281,
+     "h": 270,
+     "bytes": 23230
+    }
+   },
+   "title": "Orgueil meteorite old.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Orgueil_meteorite_old.jpg",
+   "author": "G.A. Daubrée",
+   "credit": "http://www.cosmovisions.com/meteoritesChrono.htm",
+   "license": "Public domain",
+   "licenseUrl": "",
+   "source": "Wikimedia Commons",
+   "description": "Orgueil meteorite individual",
+   "date": "1864",
+   "qid": "Q3131804",
+   "sha1": "1c147e9ec3117d96076af744610c6fab64c93974",
+   "match": {
+    "method": "recherche « Orgueil (meteorite) »",
+    "confidence": "moyenne"
+   },
+   "status": "auto",
+   "fetched": "2026-11-09",
+   "uses": [
+    "artefacts/orgueil"
+   ],
+   "alt": "La météorite d'Orgueil au Muséum national d'histoire naturelle"
   }
  }
 }

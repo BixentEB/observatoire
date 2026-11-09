@@ -1,4 +1,4 @@
-# Bibliothèque d'images — rapport du 2026-11-08 23:26 UTC
+# Bibliothèque d'images — rapport du 2026-11-09 00:21 UTC
 
 ## Galaxie d'Andromède (`m31`)
 - Identification : **Q2469** — recherche « Andromeda Galaxy », confiance moyenne
@@ -579,7 +579,7 @@
 - Crédit : Transferred from fr.wikipedia to Commons.
 - Nature détectée : **illustration** (à afficher comme illustration, jamais comme photographie)
 - Description : Rochechouart impact structure, or Rochechouart astrobleme, an impact structure in France whose formation dates back approximately 214 million years. Computer-generated image produced with Terragen showing the shape of th
-- Téléchargé et converti : 480 px 24 Ko, 1024 px 31 Ko
+- Fichier inchangé : rien à télécharger.
 
 ## Cratère de Vredefort (`vredefort`)
 - Identification : **Q330095** — recherche « Vredefort impact structure », confiance moyenne
@@ -606,16 +606,7 @@
 - Fichier inchangé : rien à télécharger.
 
 ## Ryugu (`ryugu`)
-- Identification : **Q1385178** — recherche « 162173 Ryugu », confiance moyenne
-    candidat Q1385178 « (162173) Ryugu » — nature : potentially hazardous asteroid, near-earth asteroid — retenu
-- Image principale Wikidata (P18) : Ryugu rotation.gif
-- Fichier : [Ryugu rotation.gif](https://commons.wikimedia.org/wiki/File:Ryugu_rotation.gif) — 250 × 246
-- Licence : CC BY 4.0 ✔
-- Auteur : Meli thev
-- Crédit : DARTS archive + Own work
-- Nature détectée : **photo**
-- Description : Rotation gif of 162173 Ryugu.Image Credit: JAXA Hayabusa 2 ONC-T v-filterDate observation: 2018-07-10
-- Fichier inchangé : rien à télécharger.
+- ✘ Erreur : HTTP Error 429: Too Many Requests
 
 ## Plaque de Pioneer (`plaque-pioneer`)
 - Identification : **Q412** — recherche « Pioneer plaque », confiance moyenne
@@ -653,5 +644,19 @@
 - Description : Voyager Golden Record This gold aluminium cover was designed to protect the Voyager 1 and 2 "Sounds of Earth" gold-plated records from micrometeorite bombardment, but also serves a double purpose in providing the finder 
 - Fichier inchangé : rien à télécharger.
 
+## Météorite d'Orgueil (`orgueil`)
+- Identification : **Q3131804** — recherche « Orgueil (meteorite) », confiance moyenne
+    candidat Q58962786 « Orgueil Meteorite » — nature : scholarly article — écarté (nature)
+    candidat Q81113973 « Orgueil Meteorite: Organic Nitrogen Contents » — nature : scholarly article — écarté (nature)
+    candidat Q3131804 « Météorite d'Orgueil » — nature : stony meteorite — retenu
+- Image principale Wikidata (P18) : Orgueil meteorite old.jpg
+- Fichier : [Orgueil meteorite old.jpg](https://commons.wikimedia.org/wiki/File:Orgueil_meteorite_old.jpg) — 281 × 270
+- Licence : Public domain ✔
+- Auteur : G.A. Daubrée
+- Crédit : http://www.cosmovisions.com/meteoritesChrono.htm
+- Nature détectée : **photo**
+- Description : Orgueil meteorite individual
+- Téléchargé et converti : 480 px 22 Ko, 1024 px 22 Ko
+
 ---
-Téléchargements : 1. Poids total des images : 5316 Ko.
+Téléchargements : 1. Poids total des images : 5361 Ko.

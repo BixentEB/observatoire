@@ -1,6 +1,6 @@
 {
  "_aide": "Généré par tools/smallbodies.py (JPL SBDB + Horizons). Éléments : écliptique J2000, héliocentriques, angles en degrés, q en UA, tp et epoch en JD TDB.",
- "genere": "2026-11-08",
+ "genere": "2026-11-09",
  "objets": {
   "halley": {
    "label": "Comète de Halley",
