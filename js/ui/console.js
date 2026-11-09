@@ -153,6 +153,7 @@
     if (level === 'systeme' && OBS.byId[id] && OBS.byId[id].craft) return renderCraft(id);
     if (level === 'galaxie') return renderGalaxy(id);
     if (level === 'groupe-local') return renderLG(id);
+    if (level === 'volume-local') return renderVL(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -303,6 +304,30 @@
       if (w) w.innerHTML = n2 && OBS.time.jd > n2 + 1 && !def.fin ? flag('adapt', 'Date', 'à venir', 'trajectoire prévue : elle peut encore changer avec les manœuvres') : '';
     }
     live(); liveTimer = setInterval(live, 500);
+  }
+
+  /* Volume local : une galaxie du catalogue de Karachentsev */
+  function renderVL(id) {
+    var it = OBS.volumelocal.get(id); if (!it) return;
+    var g = it.def, V = OBS.VL, gi = it.group, h = [];
+    current = { level: 'volume-local', id: id }; clearInterval(liveTimer);
+    var col = V.col(gi), T = g.t === undefined ? null : g.t;
+    var kind = it.home ? 'Notre groupe de galaxies' : T === null ? 'Galaxie' : T >= 9 ? 'Galaxie irrégulière' : T >= 1 ? 'Galaxie spirale' : T >= -1 ? 'Galaxie lenticulaire' : g.dw === 'Sph' || g.dw === 'dE-red' ? 'Galaxie naine sphéroïdale' : 'Galaxie elliptique';
+    var gname = gi >= 0 ? V.groups[gi][1] : gi === -2 ? 'un petit groupe' : 'isolée';
+    h.push('<div class="c-head"><p class="c-kind">' + esc(kind) + (it.name !== g.n && !it.home && !/^MESSIER/.test(g.n) ? ' · ' + esc(g.n) : '') + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(it.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div class="c-flags">' + flag('real', 'Position', 'mesurée', 'direction et distance du catalogue (Karachentsev et al. 2013)') + flag('adapt', 'Aspect', 'un point', 'à cette échelle, chaque galaxie est un point ; sa taille dépend de son éclat') + '<a class="flag-help" href="#/methode">?</a></div>');
+    if (it.home) h.push('<p class="c-text">La Voie lactée, Andromède, le Triangle et une centaine de galaxies naines, liées par la gravité, sur environ 10 millions d\'années-lumière. Vu d\'ici, tout le Groupe local tient dans ce petit halo doré.</p><section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans le Groupe local →</button></div></section>');
+    else {
+      h.push('<section class="c-sec"><div class="c-live"><div><span>Distance</span><b>' + V.dTxt(g.d) + '</b><small>sa lumière est partie il y a ' + V.dTxt(g.d).replace(' M al', ' millions d\'années') + '</small></div>' +
+        (g.a ? '<div><span>Diamètre</span><b>' + nf(Math.round(g.a * 3262 / 100) * 100) + ' al</b><small>' + (g.a * 3262 >= 100000 ? 'plus grande que la Voie lactée' : 'environ ' + nf(Math.max(1, Math.round(g.a * 3.262))) + ' % de la Voie lactée') + '</small></div>' : '') + '</div></section>');
+      h.push('<table class="c-facts"><tr><th>Groupe</th><td>' + esc(gname) + '</td></tr>' + (g.md && gi !== -1 ? '<tr><th>Voisine dominante</th><td>' + esc(V.nm(g.md)) + '</td></tr>' : '') + (g.lk ? '<tr><th>Luminosité (infrarouge)</th><td>' + nf(Math.pow(10, g.lk - 9), g.lk > 10 ? 0 : 2) + ' milliard' + (g.lk >= 9.3 ? 's' : '') + ' de Soleils</td></tr>' : '') + '</table>');
+    }
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Les 869 galaxies du catalogue de Karachentsev, Makarov et Kaisina (2013), à leurs distances et directions mesurées. Le plan horizontal est celui de la Feuille locale, la nappe de galaxies où nous vivons. Une unité vaut 100 000 années-lumière. <a href="#/atlas/volume-local">Carte et liste dans l\'Atlas</a></p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.volumelocal.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); });
   }
 
   /* Groupe local : une galaxie */

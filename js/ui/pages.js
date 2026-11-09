@@ -164,7 +164,7 @@
       '</ul>',
       '<h3>Logiciel</h3><ul class="credits-list">',
       '<li><b>three.js</b> r128 — licence MIT.</li>',
-      '<li>Moteur graphique issu du thème <b>Héliosphère</b> de Codex Mental (shaders des planètes, du Soleil, des anneaux et du ciel).</li>',
+      '<li>Moteur graphique propre à l\'Observatoire : il est parti des premiers essais du thème <b>Héliosphère</b> de Codex Mental, puis a été entièrement développé pour ce site (niveaux, données réelles, shaders des planètes, du Soleil, des anneaux et du ciel).</li>',
       '<li>Polices <b>Syne</b>, <b>DM Sans</b> et <b>IBM Plex Mono</b> — licence SIL Open Font, hébergées sur le site.</li>',
       '</ul>',
       '<p>L\'Observatoire est un projet de <a href="https://codexmental.com">Codex Mental</a>.</p>'

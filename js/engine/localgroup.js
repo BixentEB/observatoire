@@ -185,6 +185,7 @@
   L.enter = function (opts) {
     L._inward = 0; controls.enabled = true; selected = null;
     if (opts.from === 'galaxie') { controls.target.set(0, 0, 0); camera.position.set(0, 6, 9); startFlight(null, 3); }
+    else if (opts.from === 'volume-local') { homeCam(camera.position).multiplyScalar(3.5); homeTarget(controls.target); startFlight(null, 2.6); }
     else { homeCam(camera.position); homeTarget(controls.target); }
     if (opts.focus) L.select(opts.focus);
     OBS.emit('select', { level: 'groupe-local', id: selected });

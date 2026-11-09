@@ -54,7 +54,7 @@
     var labSet = {}; lab.forEach(function (g) { labSet[g.n] = 1; });
     Gx.slice().sort(function (a, b) { return (a.lk || 0) - (b.lk || 0); }).forEach(function (g) {
       var p = P(g), gi = grp(g), cl = col(gi), r = g.lk ? Math.max(1.2, Math.min(7, (g.lk - 6) * 1.25)) : 1.2;
-      h.push('<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + cl + '" class="vl-g' + (gi === -1 ? ' f' : '') + '"><title>' + esc(nm(g.n) + (nm(g.n) !== g.n ? ' (' + g.n + ')' : '') + ' — ' + dTxt(g.d) + (gi >= 0 ? ' — ' + G[gi][1] : '')) + '</title></circle>');
+      h.push('<a href="#/volume-local/' + slug(g.n) + '" class="ab"><circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + cl + '" class="vl-g' + (gi === -1 ? ' f' : '') + '"><title>' + esc(nm(g.n) + (nm(g.n) !== g.n ? ' (' + g.n + ')' : '') + ' — ' + dTxt(g.d) + (gi >= 0 ? ' — ' + G[gi][1] : '')) + '</title></circle></a>');
     });
     var boxes = [[C - 40, C - 12, C + 40, C + 22]];
     lab.forEach(function (g) {
@@ -68,7 +68,7 @@
     root.innerHTML = '<div class="atlas-head">' + flags(side) + '<div class="atlas-sizes"><span class="atlas-sizes-l">Vue :</span><span class="atlas-toggle"><button type="button" data-v="top" aria-pressed="' + !side + '">Dessus</button><button type="button" data-v="side" aria-pressed="' + side + '">Côté</button></span></div></div>' +
       '<div class="atlas-scroll" tabindex="0"><svg class="atlas-map vl-map" viewBox="0 0 ' + S + ' ' + S + '" width="' + S + '" height="' + S + '" role="img" aria-label="Carte du Volume local">' + h.join('') + '</svg></div>' +
       '<p class="note vl-leg">' + legend + '</p>' +
-      '<p class="note">' + (side ? 'Vue de côté : presque toutes les galaxies proches tiennent dans une nappe épaisse d\'un ou deux millions d\'années-lumière, la Feuille locale. Au-dessus s\'étend le Vide local, une immense région presque vide.' : 'Vue de dessus, dans le plan de la Feuille locale : ' + nf(Gx.length) + ' galaxies à moins d\'environ 38 millions d\'années-lumière. La plupart sont des naines ; les grandes se regroupent autour de M81, de Centaurus A, de M83 ou le long du filament du Sculpteur.') + ' Survolez un point pour son nom et sa distance.</p>';
+      '<p class="note">' + (side ? 'Vue de côté : presque toutes les galaxies proches tiennent dans une nappe épaisse d\'un ou deux millions d\'années-lumière, la Feuille locale. Au-dessus s\'étend le Vide local, une immense région presque vide.' : 'Vue de dessus, dans le plan de la Feuille locale : ' + nf(Gx.length) + ' galaxies à moins d\'environ 38 millions d\'années-lumière. La plupart sont des naines ; les grandes se regroupent autour de M81, de Centaurus A, de M83 ou le long du filament du Sculpteur.') + ' Survolez un point pour son nom et sa distance, cliquez pour le rejoindre dans l\'espace.</p>';
     root.querySelectorAll('[data-v]').forEach(function (b) { b.addEventListener('click', function () { side = b.getAttribute('data-v') === 'side'; map(root, J); OBS.armPinch(root); }); });
     OBS.armPinch(root);
   }
@@ -88,6 +88,9 @@
       '<article class="row"><div class="row-h"><h3><span class="vl-sw" style="background:#6c7290"></span>Galaxies isolées</h3><p class="row-kind">' + field.length + ' galaxies</p></div><div class="row-b"><p>Des galaxies sans grande voisine dominante, dispersées dans la Feuille locale. Les plus brillantes : ' + FB.slice(0, 6).map(function (x) { return esc(nm(x.n)) + ' <span class="vl-d">' + dTxt(x.d) + '</span>'; }).join(', ') + '.</p></div></article></div>' +
       '<p class="note">Source : ' + esc(J.meta.source) + '.</p>';
   }
+  function slug(n) { return key(n).toLowerCase(); }
+  // partagé avec la vue 3D (js/engine/volumelocal.js)
+  OBS.VL = { load: load, grp: grp, col: col, nm: nm, slug: slug, groups: G, dTxt: dTxt };
   OBS.atlasVolume = function (root, view) {
     root.innerHTML = '<p class="note">Chargement du catalogue…</p>';
     load().then(function (J) {

@@ -794,6 +794,23 @@
    "expect": [],
    "fallback": "interstellaire",
    "alt": "Disque d'or de Voyager"
+  },
+  {
+   "id": "orgueil",
+   "label": "Météorite d'Orgueil",
+   "uses": [
+    "artefacts/orgueil"
+   ],
+   "search": [
+    "Orgueil meteorite",
+    "Orgueil (meteorite)"
+   ],
+   "expect": [
+    "meteorite",
+    "chondrite"
+   ],
+   "fallback": "asteroide",
+   "alt": "La météorite d'Orgueil au Muséum national d'histoire naturelle"
   }
  ]
 }
