@@ -1,6 +1,6 @@
 {
  "source": "NASA/JPL, cartes de suivi des rovers (MMGIS)",
- "gen": "2026-11-09",
+ "gen": "2026-11-10",
  "rovers": {
   "perseverance": {
    "lon": 77.23322,
@@ -12,11 +12,11 @@
    "src": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints_current.json"
   },
   "curiosity": {
-   "lon": 137.38761,
-   "lat": -4.82466,
-   "sol": 5045,
+   "lon": 137.38893,
+   "lat": -4.82526,
+   "sol": 5069,
    "site": 125,
-   "drive": 1326,
+   "drive": 2082,
    "date": null,
    "src": "https://mars.nasa.gov/mmgis-maps/MSL/Layers/json/MSL_waypoints_current.json"
   }
