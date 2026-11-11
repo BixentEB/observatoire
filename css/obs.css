@@ -279,7 +279,7 @@ button { font: inherit; color: inherit; }
 .t-speed { font: 10.5px var(--mono); color: var(--accent); letter-spacing: .04em; }
 
 /* ---------- réglages ---------- */
-.settings { position: fixed; z-index: 16; bottom: 78px; left: 50%; transform: translateX(-50%); width: min(360px, calc(100% - 2 * var(--gut)));
+.settings { position: fixed; z-index: 16; bottom: 78px; left: 50%; transform: translateX(-50%); width: min(360px, calc(100% - 2 * var(--gut))); max-height: calc(100dvh - 200px); overflow: auto;
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .settings h2 { margin: 0 0 8px; font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .settings .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; font-size: 14px; }
@@ -1218,3 +1218,9 @@ body.gt-on .console { bottom: 220px; }
 .vl-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .vl-sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 2px; }
 .vl-d { font: 11.5px var(--mono); color: var(--muted); }
+
+/* ⚙ Réglages : au bout de la rangée des niveaux, au même endroit sur chaque carte ; le panneau s'ouvre juste dessous */
+.crumbs .c-set { margin-left: 6px; width: 30px; height: 30px; padding: 0; display: grid; place-items: center; border-radius: 8px; }
+.crumbs .c-set[aria-expanded="true"] { color: var(--accent); border-color: rgba(244, 199, 122, .45); }
+#settings:not(.photo-panel) { top: calc(var(--top) + env(safe-area-inset-top) + 48px); bottom: auto; left: var(--gut); transform: none; }
+.settings .row[hidden] { display: none; }

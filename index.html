@@ -29,7 +29,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/fonts.css?v=745be8bc">
-<link rel="stylesheet" href="css/obs.css?v=328598ec">
+<link rel="stylesheet" href="css/obs.css?v=09bf0e92">
 </head>
 <body>
 <noscript><p><a href="decouvrir/">Découvrir l'Observatoire et ses hypothèses, version texte</a></p></noscript>
@@ -66,6 +66,7 @@
 </div>
 
 <nav id="crumbs" class="crumbs" aria-label="Où suis-je"></nav>
+<button id="settings-btn" class="c-set" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 
 <aside id="console" class="console" aria-live="polite" hidden></aside>
 
@@ -117,27 +118,26 @@
   <div class="t-read"><span id="t-date" class="t-date"></span><span id="t-speed" class="t-speed"></span></div>
   <button id="t-now" class="tb tb-text tb-live" type="button" title="Passer en direct : date et heure actuelles, en temps réel"><span class="live-dot" aria-hidden="true"></span><span class="live-txt">En direct</span></button>
   <button id="photo-btn" class="tb" type="button" aria-label="Mode photo" title="Mode photo : choisir ce qui apparaît, puis capturer l'image"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13.3" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></button>
-  <button id="settings-btn" class="tb" type="button" aria-controls="settings" aria-expanded="false" aria-label="Réglages" title="Réglages">⚙</button>
 </div>
 
 <section id="settings" class="settings" hidden aria-label="Réglages">
   <h2>Réglages</h2>
-  <label class="row"><span>Distances</span>
+  <label class="row" data-lv="systeme"><span>Distances</span>
     <select id="s-scale"><option value="adaptee">Échelle adaptée</option><option value="reelle">Distances réelles</option></select></label>
-  <label class="row"><span>Orbites</span><input id="s-orbits" type="checkbox" checked></label>
-  <label class="row"><span>Engins spatiaux</span><input id="s-craft" type="checkbox" checked></label>
-  <label class="row"><span>Plan de l'écliptique</span><input id="s-ecl" type="checkbox"></label>
-  <label class="row"><span>Inclinaison des orbites</span>
+  <label class="row" data-lv="systeme"><span>Orbites</span><input id="s-orbits" type="checkbox" checked></label>
+  <label class="row" data-lv="systeme"><span>Engins spatiaux</span><input id="s-craft" type="checkbox" checked></label>
+  <label class="row" data-lv="systeme"><span>Plan de l'écliptique</span><input id="s-ecl" type="checkbox"></label>
+  <label class="row" data-lv="systeme"><span>Inclinaison des orbites</span>
     <select id="s-incl"><option value="off">Masquée</option><option value="sel">Objet choisi</option><option value="all">Toutes les orbites</option></select></label>
-  <label class="row"><span>Objets hypothétiques</span><input id="s-theo" type="checkbox" checked></label>
-  <label class="row"><span>Légende</span><input id="s-legend" type="checkbox" checked></label>
+  <label class="row" data-lv="systeme"><span>Objets hypothétiques</span><input id="s-theo" type="checkbox" checked></label>
+  <label class="row" data-lv="systeme"><span>Légende</span><input id="s-legend" type="checkbox" checked></label>
   <label class="row"><span>Clic droit : vue précédente</span><input id="s-back" type="checkbox" checked></label>
   <label class="row"><span>Aide des commandes</span><input id="s-keys" type="checkbox" checked></label>
   <label class="row"><span>Le saviez-vous ?</span><input id="s-facts" type="checkbox" checked></label>
-  <label class="row"><span>Noms du Système solaire</span>
+  <label class="row" data-lv="systeme"><span>Noms affichés</span>
     <select id="s-labels"><option value="all">Tous</option><option value="planetes">Planètes et lunes</option><option value="none">Aucun</option></select></label>
-  <label class="row"><span>Noms des autres niveaux</span>
-    <select id="s-names"><option value="all">Tous</option><option value="hover">Au survol</option></select></label>
+  <label class="row" data-lv="autres"><span>Noms affichés</span>
+    <select id="s-names"><option value="all">Tous</option><option value="hover">Au survol seulement</option></select></label>
   <label class="row"><span>Qualité</span>
     <select id="s-quality"><option value="auto">Automatique</option><option value="high">Élevée</option><option value="std">Standard</option><option value="eco">Économe</option></select></label>
   <p id="s-quality-note" class="note"></p>
@@ -212,7 +212,7 @@
 <script src="js/data/compare.js?v=d03ac92d"></script>
 <script src="js/ui/comparateur.js?v=61b9a1a8"></script>
 <script src="js/ui/galtime.js?v=f7d9e11a"></script>
-<script src="js/ui/app.js?v=a0d0b3a5"></script>
+<script src="js/ui/app.js?v=13d34ebf"></script>
 <script src="js/ui/photo.js?v=682097a8"></script>
 <script src="js/ui/news.js?v=c9980c20"></script>
 <script src="js/ui/images.js?v=2cb38dc3"></script>

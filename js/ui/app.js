@@ -129,7 +129,9 @@
 
   /* ---------- fil d'Ariane ---------- */
   var crumbs = $('crumbs');
+  var GEAR = $('settings-btn');   // gardé à part : la rangée est vidée à chaque rendu
   function renderCrumbs() {
+    if (GEAR && GEAR.parentNode === crumbs) crumbs.removeChild(GEAR);
     var L = OBS.engine.level; if (!L) return;
     var items = [];
     // niveaux au-dessus du niveau actuel (on peut y remonter d'un clic)
@@ -207,6 +209,7 @@
       if (c.goto) { b.className = 'c-goto'; b.addEventListener('click', function () { openGoto(b); }); }
       crumbs.appendChild(b);
     });
+    if (GEAR) crumbs.appendChild(GEAR);   // ⚙ toujours au même endroit : au bout de la rangée des niveaux
   }
   OBS.on('crumbs', renderCrumbs); OBS.on('level', function () { setTimeout(renderCrumbs, 0); });
 
@@ -220,6 +223,7 @@
     if (false) $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
     $('size-badge').title = L.id === 'galaxie' ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur : forme reconstituée d\'après les mesures (voir Méthode). Les objets repères sont à leurs positions mesurées.' : '';
     toggleSettings(false);
+    Array.prototype.forEach.call($('settings').querySelectorAll('[data-lv]'), function (r) { r.hidden = r.getAttribute('data-lv') === 'systeme' ? L.id !== 'systeme' : L.id === 'systeme'; });
     if (firstLevel) { firstLevel = false; return; }
     if (L.id === 'etoile') { var st = OBS.starsystem.star(); title.innerHTML = '<b>' + OBS.esc(st ? st.name : '') + '</b><span>' + (st && st.sys ? st.sys.length + (st.sys.length > 1 ? ' planètes confirmées' : ' planète confirmée') : 'Aucune planète confirmée') + ' · à ' + (st ? st.ly.toLocaleString('fr-FR') : '') + ' années-lumière</span>'; title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2400); return; }
     var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : L.id === 'galaxie' ? 'Une reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre' : L.id === 'groupe-local' ? 'Andromède, le Triangle et les principales galaxies naines · plus de 80 galaxies connues' : L.id === 'volume-local' ? '869 galaxies à leurs positions mesurées · 36 millions d\'années-lumière autour de nous' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -279,10 +283,10 @@
   setInterval(renderTime, 250); renderTime();
 
   /* ---------- réglages et repères d'échelle ---------- */
-  var settings = $('settings'), sBtn = $('settings-btn');
-  function toggleSettings(open) { settings.hidden = !open; sBtn.setAttribute('aria-expanded', String(open)); sBtn.classList.toggle('on', open); }
+  var settings = $('settings'), sBtn = GEAR;
+  function toggleSettings(open) { if (open) settings.style.top = Math.round(crumbs.getBoundingClientRect().bottom + 8) + 'px'; settings.hidden = !open; sBtn.setAttribute('aria-expanded', String(open)); sBtn.classList.toggle('on', open); }
   sBtn.addEventListener('click', function () { toggleSettings(settings.hidden); });
-  document.addEventListener('pointerdown', function (e) { if (!settings.hidden && !settings.contains(e.target) && e.target !== sBtn) toggleSettings(false); });
+  document.addEventListener('pointerdown', function (e) { if (!settings.hidden && !settings.contains(e.target) && !sBtn.contains(e.target)) toggleSettings(false); });
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
