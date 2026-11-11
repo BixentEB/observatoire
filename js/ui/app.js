@@ -312,6 +312,11 @@
     keysView();
     sLabels.value = get('obs.labels') || 'all'; OBS.system.setLabels(sLabels.value);
     sLabels.addEventListener('change', function () { OBS.system.setLabels(sLabels.value); set('obs.labels', sLabels.value); });
+    /* noms des autres niveaux (Voisinage, Voie lactée, Groupe local, Volume local, systèmes d'étoiles) : tous, ou seulement au survol */
+    var sNames = $('s-names');
+    function namesView() { ['voisinage', 'galaxie', 'groupe-local', 'volume-local', 'etoile'].forEach(function (k) { var el = $('labels-' + k); if (el) el.classList.toggle('names-hover', sNames.value === 'hover'); }); }
+    sNames.value = get('obs.names') || 'all'; namesView();
+    sNames.addEventListener('change', function () { set('obs.names', sNames.value); namesView(); });
 
     /* plan de l'écliptique, inclinaison des orbites */
     var sEcl = $('s-ecl'), sIncl = $('s-incl');

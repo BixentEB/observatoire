@@ -65,6 +65,10 @@ button { font: inherit; color: inherit; }
 .lbl.s-h .nm { left: 0; transform: translate(-50%, calc(-100% - var(--off, 10px))); }
 .lbl.s-b .nm { left: 0; transform: translate(-50%, var(--off, 10px)); }
 .lbl.is-minor .nm { font-size: 10.5px; color: var(--muted); }
+/* réglage « Noms des autres niveaux : au survol » : on ne voit que les objets, le nom apparaît au survol ou quand l'objet est choisi */
+.labels.names-hover .lbl:not(.active):not(.hov):not(:hover):not(:focus-visible) .nm { opacity: 0; }
+.labels.names-hover .lbl .nm { transition: opacity .2s; }
+.labels.names-hover .ring-tag { opacity: 0; }
 /* objet théorique (Planète 9) : couleur des hypothèses de chercheurs, contour pointillé */
 .lbl.is-theo .nm { font-size: 11px; font-style: normal; color: var(--sci); background: rgba(8, 22, 40, .4); border: 1px dashed var(--sci-line); transition: opacity .22s; }
 .lbl.is-theo .nm.swap { opacity: 0; }
