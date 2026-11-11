@@ -1224,3 +1224,6 @@ body.gt-on .console { bottom: 220px; }
 .crumbs .c-set[aria-expanded="true"] { color: var(--accent); border-color: rgba(244, 199, 122, .45); }
 #settings:not(.photo-panel) { top: calc(var(--top) + env(safe-area-inset-top) + 48px); bottom: auto; left: var(--gut); transform: none; }
 .settings .row[hidden] { display: none; }
+
+/* nom d'un groupe de galaxies sous son halo (Volume local) */
+.ring-tag.gh-tag { font-style: normal; font-size: 10.5px; letter-spacing: .04em; transition: opacity .3s; }

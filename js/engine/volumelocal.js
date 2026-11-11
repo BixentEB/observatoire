@@ -16,7 +16,7 @@
   var scene = L.scene = new T.Scene();
   var camera = L.camera = new T.PerspectiveCamera(45, 1, 0.5, 20000);
   var controls, W = 800, H = 600, PR = 1, tanHalf = Math.tan(22.5 * D2R);
-  var items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
+  var GH = [], groupMode = 'halos', items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), v3 = new T.Vector3(), camSpace = new T.Vector3();
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR; varying vec3 vC;',
@@ -55,12 +55,26 @@
       }
       items.push(it); byId[id] = it;
     });
+    /* halos des groupes : reconstitution — la zone occupée par les membres mesurés de chaque groupe (galaxies liées
+       à une même grande galaxie dans le catalogue), pas un nuage visible dans le ciel. Rayon : 80 % des membres, un peu élargi. */
+    V.groups.forEach(function (gd, gi) {
+      if (gi === 0) return;                              // le Groupe local a déjà son halo doré
+      var m = items.filter(function (it) { return it.group === gi; }); if (m.length < 3) return;
+      var c = new T.Vector3(); m.forEach(function (it) { c.add(it.pos); }); c.multiplyScalar(1 / m.length);
+      var d = m.map(function (it) { return it.pos.distanceTo(c); }).sort(function (a, b) { return a - b; });
+      var r = Math.max(5, d[Math.floor(d.length * .8)] * 1.25);
+      var mesh = OBS.system.glowMesh([[0, .5], [.45, .26], [.8, .08], [1, 0]], gd[2], 0); mesh.scale.setScalar(r * 2); mesh.position.copy(c); mesh.renderOrder = -1; scene.add(mesh);
+      var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag gh-tag'; tag.textContent = gd[1] + ' · ' + m.length + ' galaxies'; tag.style.color = gd[2];
+      L.labelsEl.appendChild(tag); var ti = { tag: true, el: tag, pos: c.clone().add(new T.Vector3(0, -r * .75, 0)) }; items.push(ti);
+      GH.push({ gi: gi, mesh: mesh, tag: tag, op: 0 });
+    });
     // le Groupe local en halo doré, repérable de loin
     var gl = OBS.system.glowMesh([[0, .9], [.3, .25], [1, 0]], 0xffd27a, .6); gl.scale.setScalar(50);            // ≈ 5 millions d'al : l'étendue du Groupe local scene.add(gl);
     built = true;
     if (pending) { var p = pending; pending = null; L.select(p); }
   }
 
+  L.setGroups = function (m) { groupMode = m; };
   L.build = function (renderer, labelsContainer) {
     L.labelsEl = labelsContainer;
     // repères : 10, 20 et 30 millions d'années-lumière dans le plan de la Feuille locale
@@ -159,6 +173,13 @@
     }
     controls.update(); camera.updateMatrixWorld();
     var occ = [], sel = selected && byId[selected], hov = hover && byId[hover];
+    // halos des groupes : tous (réglage « Halos »), seulement celui de la galaxie survolée ou choisie (« Au survol »), ou aucun
+    var act = (hov && hov.group >= 0 && hov.group) || (sel && sel.group >= 0 && sel.group) || null;
+    GH.forEach(function (h) {
+      var on = groupMode === 'halos' ? (act === h.gi ? .6 : .3) : groupMode === 'survol' ? (act === h.gi ? .5 : 0) : 0;
+      h.op += (on - h.op) * Math.min(1, dt * 5); h.mesh.material.uniforms.uOpacity.value = h.op; h.mesh.visible = h.op > .005;
+      h.tag.style.opacity = act === h.gi && groupMode !== 'couleurs' ? '1' : '0';   // le nom du groupe : seulement pour celui qu'on survole
+    });
     // l'astre choisi ou survolé reçoit une étiquette même s'il n'en a pas en permanence
     [sel, hov].forEach(function (it) {
       if (it && !it.el) { var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl is-moon'; el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(it.name) + '</span>'; L.labelsEl.appendChild(el); it.el = el; it.tmp = true; }

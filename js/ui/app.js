@@ -223,7 +223,7 @@
     if (false) $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
     $('size-badge').title = L.id === 'galaxie' ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur : forme reconstituée d\'après les mesures (voir Méthode). Les objets repères sont à leurs positions mesurées.' : '';
     toggleSettings(false);
-    Array.prototype.forEach.call($('settings').querySelectorAll('[data-lv]'), function (r) { r.hidden = r.getAttribute('data-lv') === 'systeme' ? L.id !== 'systeme' : L.id === 'systeme'; });
+    Array.prototype.forEach.call($('settings').querySelectorAll('[data-lv]'), function (r) { var lv = r.getAttribute('data-lv'); r.hidden = lv === 'systeme' ? L.id !== 'systeme' : lv === 'autres' ? L.id === 'systeme' : L.id !== lv; });
     if (firstLevel) { firstLevel = false; return; }
     if (L.id === 'etoile') { var st = OBS.starsystem.star(); title.innerHTML = '<b>' + OBS.esc(st ? st.name : '') + '</b><span>' + (st && st.sys ? st.sys.length + (st.sys.length > 1 ? ' planètes confirmées' : ' planète confirmée') : 'Aucune planète confirmée') + ' · à ' + (st ? st.ly.toLocaleString('fr-FR') : '') + ' années-lumière</span>'; title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2400); return; }
     var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : L.id === 'galaxie' ? 'Une reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre' : L.id === 'groupe-local' ? 'Andromède, le Triangle et les principales galaxies naines · plus de 80 galaxies connues' : L.id === 'volume-local' ? '869 galaxies à leurs positions mesurées · 36 millions d\'années-lumière autour de nous' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -321,6 +321,10 @@
     function namesView() { ['voisinage', 'galaxie', 'groupe-local', 'volume-local', 'etoile'].forEach(function (k) { var el = $('labels-' + k); if (el) el.classList.toggle('names-hover', sNames.value === 'hover'); }); }
     sNames.value = get('obs.names') || 'all'; namesView();
     sNames.addEventListener('change', function () { set('obs.names', sNames.value); namesView(); });
+    /* Volume local : halos des groupes de galaxies (reconstitution de leur étendue) */
+    var sGroups = $('s-groups');
+    sGroups.value = get('obs.groups') || 'halos'; if (OBS.volumelocal && OBS.volumelocal.setGroups) OBS.volumelocal.setGroups(sGroups.value);
+    sGroups.addEventListener('change', function () { set('obs.groups', sGroups.value); OBS.volumelocal.setGroups(sGroups.value); });
 
     /* plan de l'écliptique, inclinaison des orbites */
     var sEcl = $('s-ecl'), sIncl = $('s-incl');
