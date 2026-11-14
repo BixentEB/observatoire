@@ -1,6 +1,6 @@
 /* ======================================================================
    OBSERVATOIRE — règle des échelles de l'Atlas + zoom des cartes
-   8 niveaux, du Système solaire à l'Univers observable.
+   9 crans, du Système solaire à l'Univers observable, puis « Au-delà » (hypothèses, en pointillé).
    - Ordinateur : panneau à gauche de la carte, ouvert par défaut (vignettes, étendue, recherche),
      repliable en fine règle numérotée ; + et − changent de niveau. L'état replié est mémorisé.
    - Téléphone (≤ 760 px) : barre « − niveau + » collée au-dessus de la carte ; un appui sur le niveau
@@ -21,7 +21,8 @@
     { id: 'volume-local', n: 'Volume local', r: '40 millions d\'al', s: 'Les groupes de galaxies voisins : M81, Sculpteur, Centaurus A.', mini: 'irregular', band: 'nebuleuse' },
     { id: 'superamas', n: 'Superamas local', r: '150 millions d\'al', s: 'L\'amas de la Vierge et les groupes qui l\'entourent.', mini: 'globular', band: 'amas' },
     { id: 'laniakea', n: 'Laniakea', r: '≈ 520 millions d\'al', s: 'Environ 100 000 galaxies qui s\'écoulent vers le Grand Attracteur.', mini: 'arm', band: 'bras' },
-    { id: 'univers', n: 'Univers observable', r: '93 milliards d\'al', s: 'La toile cosmique, jusqu\'au rayonnement fossile.', mini: 'void', band: 'vide' }
+    { id: 'univers', n: 'Univers observable', r: '93 milliards d\'al', s: 'La toile cosmique, jusqu\'au rayonnement fossile.', mini: 'void', band: 'vide' },
+    { id: 'au-dela', n: 'Au-delà', r: 'hypothèses', s: 'Ce qui pourrait exister au-delà de ce que l\'on peut voir : des hypothèses de chercheurs, jamais mêlées aux données.', mini: 'void', band: 'vide', hypo: true }
   ];
   function ok(l) { return (OBS.ATLAS_SCOPES || []).indexOf(l.id) >= 0; }
   OBS.scaleLevel = function (id) { return LV.filter(function (l) { return l.id === id; })[0]; };
@@ -49,7 +50,7 @@
     function steps(full) {
       return '<ol class="sn-steps">' + LV.slice().reverse().map(function (l) {
         var i = LV.indexOf(l), avail = ok(l);
-        return '<li class="' + (i === cur ? 'on ' : '') + (avail ? '' : 'soon') + '"><a href="' + link(i) + '" data-i="' + i + '" title="' + esc(l.n + ' · ' + l.r) + '"' + (i === cur ? ' aria-current="page"' : '') + '>' +
+        return '<li class="' + (i === cur ? 'on ' : '') + (avail ? '' : 'soon') + (l.hypo ? ' hypo' : '') + '"><a href="' + link(i) + '" data-i="' + i + '" title="' + esc(l.n + ' · ' + l.r) + '"' + (i === cur ? ' aria-current="page"' : '') + '>' +
           '<span class="sn-dot"></span>' + (full ? '<canvas class="sn-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="sn-t"><b>' + esc(l.n) + '</b><small>' + esc(l.r) + (avail ? '' : ' · à venir') + '</small></span>' : '<span class="sn-lbl">' + (i + 1) + '</span>') +
           '</a></li>';
       }).join('') + '</ol>';

@@ -19,6 +19,7 @@
     { id: 'superamas', label: 'Superamas local' },
     { id: 'laniakea', label: 'Laniakea' },
     { id: 'univers', label: 'Univers observable' },
+    { id: 'au-dela', label: 'Au-delà', title: 'Au-delà : les hypothèses' },
     { id: 'visiteurs', label: 'Visiteurs', theme: true, title: 'Les visiteurs du système solaire' },
     { id: 'types', label: 'Types d\'objets', theme: true, title: 'Les types d\'objets' },
     { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' },
@@ -67,7 +68,7 @@
     }
     lastLevel = scope;
     h.push('<div class="atlas-wrap"><nav class="sn" aria-label="Échelles"></nav><div class="atlas-main">' +
-      (soon ? '' : '<div class="tabs tabs-view" role="tablist" aria-label="Vue">' +
+      (soon || scope === 'au-dela' ? '' : '<div class="tabs tabs-view" role="tablist" aria-label="Vue">' +
         '<a class="tab tab-view" href="#/atlas/' + scope + '/carte" aria-selected="' + (view === 'carte') + '">Carte</a>' +
         '<a class="tab tab-view" href="#/atlas/' + scope + '/liste" aria-selected="' + (view === 'liste') + '">Liste</a>' +
         '<a class="tab tab-view" href="#/atlas/' + scope + '/unites" aria-selected="' + (view === 'unites') + '">Unités</a></div>') +
@@ -83,6 +84,7 @@
     else if (scope === 'superamas') OBS.atlasSuperamas(body, view);
     else if (scope === 'laniakea') OBS.atlasLaniakea(body, view);
     else if (scope === 'univers') OBS.atlasUnivers(body, view);
+    else if (scope === 'au-dela') OBS.atlasAuDela(body);
     else if (view === 'liste') scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     else scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
     OBS.armPinch(root);

@@ -122,6 +122,7 @@
   L.enter = function (opts) {
     L._inward = 0; controls.enabled = true; selected = null;
     if (opts.from === 'laniakea') { controls.target.set(0, 0, 0); camera.position.set(0, 50, 90); startFlight(null, 3.4); }
+    else if (opts.from === 'au-dela') { controls.target.set(0, 0, 0); homeCam(camera.position).multiplyScalar(1.8); startFlight(null, 2.8); }
     else { homeCam(camera.position); controls.target.set(0, 0, 0); }
     if (opts.focus) L.select(opts.focus);
     OBS.emit('select', { level: 'univers', id: selected });

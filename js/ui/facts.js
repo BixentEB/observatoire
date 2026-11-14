@@ -43,6 +43,12 @@
       "Le noir n'est pas le vide. La brume bleutée autour de la Voie lactée et d'Andromède figure leurs halos : du gaz chaud, trop ténu pour briller, et surtout de la matière noire, qui ne brille pas du tout mais pèse environ cinq fois plus que toute la matière ordinaire.",
       "Entre les galaxies, il ne reste que quelques atomes par mètre cube. Dans un seul centimètre cube d'air, il y en a environ 25 milliards de milliards."
     ],
+    'au-dela': [
+      "La partie de l'Univers que l'on peut voir grandit un peu chaque jour : de la lumière partie de plus loin finit par nous atteindre.",
+      "Certaines galaxies que l'on voit aujourd'hui ne nous enverront plus jamais de nouvelles : leur lumière d'aujourd'hui ne nous rattrapera pas, à cause de l'accélération de l'expansion.",
+      "Les mesures du satellite Planck montrent un espace presque parfaitement plat à notre échelle : l'Univers entier est très probablement bien plus grand que ce que l'on en voit.",
+      "Rien de ce qui est dessiné en bleu ici n'a été observé : ce sont des hypothèses de chercheurs, de la plus admise à la plus spéculative."
+    ],
     univers: [
       "L'Univers observable mesure environ 93 milliards d'années-lumière de diamètre, alors qu'il n'a que 13,8 milliards d'années : l'espace lui-même s'est étiré pendant que la lumière voyageait.",
       "Le rayonnement fossile est la plus vieille lumière que l'on puisse voir : émise 380 000 ans après le Big Bang, quand l'Univers est devenu transparent.",

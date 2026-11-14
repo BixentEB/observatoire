@@ -157,6 +157,7 @@
     if (level === 'superamas') return renderSC(id);
     if (level === 'laniakea') return renderLK(id);
     if (level === 'univers') return renderUN(id);
+    if (level === 'au-dela') return renderAD(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -331,6 +332,32 @@
     el.querySelector('.c-close').addEventListener('click', function () { OBS.volumelocal.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); });
+  }
+
+  /* Au-delà : faits du modèle standard ou hypothèses de chercheurs (fiches de hypotheses/chercheurs.json) */
+  var AD_FACTS = {
+    nous: ['Notre Univers observable', 'Ce que l\'on peut voir', 'Tout ce dont la lumière a pu nous parvenir depuis le Big Bang : une sphère d\'environ 46 milliards d\'années-lumière de rayon, centrée sur nous. Elle grandit un peu chaque jour : on voit de plus en plus loin.'],
+    evenements: ['Horizon des événements', 'Résultat du modèle standard', 'Environ 16 milliards d\'années-lumière. À cause de l\'accélération de l\'expansion, la lumière émise aujourd\'hui par une galaxie plus lointaine ne nous parviendra jamais. On voit encore ces galaxies telles qu\'elles étaient, mais jamais leur avenir.'],
+    horizons: ['Horizon d\'un autre observateur', 'Résultat du modèle standard', 'Un observateur dans une galaxie lointaine a sa propre sphère observable, centrée sur lui, qui chevauche la nôtre en partie. Il voit des régions que nous ne verrons jamais, et inversement : même Univers, autres horizons.']
+  };
+  function renderAD(id) {
+    var it = OBS.audela.get(id); if (!it) return;
+    current = { level: 'au-dela', id: id }; clearInterval(liveTimer);
+    function draw(title, kind, text, hyp) {
+      var h = ['<div class="c-head"><p class="c-kind">' + esc(kind) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + (hyp ? '#8fc2ff' : '#ff9f8a') + ';color:' + (hyp ? '#8fc2ff' : '#ff9f8a') + '"></span>' + esc(title) + '</h2>' +
+        '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">'];
+      h.push('<div class="c-flags">' + (hyp ? flag('sim', 'Contenu', 'hypothèse', 'hypothèse de chercheurs, avec son état ; rien n\'est observé') : flag('real', 'Contenu', 'modèle standard', 'conséquence du modèle cosmologique standard, calculée')) + flag('adapt', 'Vue', 'schéma', 'sphères placées sans échelle exacte au-delà de la nôtre') + '<a class="flag-help" href="#/methode">?</a></div>');
+      h.push('<p class="c-text">' + esc(text) + '</p>');
+      if (hyp) h.push('<section class="c-sec"><p><span class="h-status e-' + esc(hyp.etat) + '">' + esc(OBS.AD.ETAT[hyp.etat] || hyp.etat) + '</span> ' + esc(hyp.auteurs) + ', ' + hyp.annee + '</p><div class="c-chips"><a class="chip chip-go" href="#/hypotheses/chercheurs/' + encodeURIComponent(hyp.id) + '">Lire la fiche →</a></div></section>');
+      if (it.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Revenir à l\'Univers observable →</button></div></section>');
+      h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Un schéma, pas une carte : notre Univers observable, l\'horizon des événements, les horizons d\'observateurs lointains, puis des hypothèses de chercheurs en bleu. <a href="#/atlas/au-dela">Toutes les hypothèses dans l\'Atlas</a></p></section></div>');
+      el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+      el.querySelector('.c-close').addEventListener('click', function () { OBS.audela.select(null); });
+      el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+      var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('univers', { from: 'au-dela' }); });
+    }
+    if (AD_FACTS[id]) { var f = AD_FACTS[id]; draw(f[0], f[1], f[2], null); return; }
+    OBS.AD.load().then(function (H) { var hyp = H.filter(function (x) { return x.id === id; })[0]; if (hyp && current && current.id === id) draw(hyp.titre, 'Hypothèse de chercheurs', hyp.resume, hyp); });
   }
 
   /* Univers observable : un repère de distance */

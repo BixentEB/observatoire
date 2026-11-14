@@ -505,6 +505,7 @@ body.page-open .labels, body.page-open .timebar, body.page-open .hud, body.page-
 .h-by span { color: var(--muted); }
 .h-status.e-debat { color: #ffd38a; border-color: rgba(255, 211, 138, .45); }
 .h-status.e-admise { color: #9fe3b0; border-color: rgba(159, 227, 176, .45); }
+.h-status.e-speculative { color: #7fe0e0; border-color: rgba(127, 224, 224, .45); }
 .h-status.e-ecartee { color: #ff9f9f; border-color: rgba(255, 159, 159, .45); }
 .h-status.e-historique { color: #c9cfdf; border-color: var(--line2); }
 .h-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 14px 0 0; font-size: 12.5px; color: var(--muted); }
@@ -1283,3 +1284,16 @@ body.gt-on .console { bottom: 220px; }
 .lk-map .lk-nb rect { opacity: .08; }
 .lk-map .lk-natt circle { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 2 3; }
 .lk-map .lk-natt text { fill: currentColor; font: 11px var(--mono); }
+/* 9e cran « Au-delà » (hypothèses, lot 11) */
+.sn-steps li.hypo .sn-dot, .sr-steps li.hypo .sn-dot { background: none; border: 1.5px dashed #8fc2ff; box-sizing: border-box; }
+.sn-steps li.hypo a, .sr-steps li.hypo button { color: #8fc2ff; font-style: italic; }
+.sr-steps li.hypo.on .sn-dot { background: rgba(143, 194, 255, .4); box-shadow: 0 0 0 3px rgba(8, 12, 26, .9), 0 0 12px #8fc2ff; }
+.lbl.is-hypo .nm { color: #8fc2ff; border-style: dashed; }
+.ad-know { margin: 18px 0; padding: 14px 18px; border-left: 2px solid #ff9f8a; background: rgba(255, 159, 138, .05); border-radius: 0 10px 10px 0; }
+.ad-know h3 { margin: 0 0 8px; font-size: 15px; color: #ff9f8a; }
+.ad-know li { margin: 6px 0; color: var(--soft); }
+.ad-map .ad-other { fill: rgba(216, 220, 240, .03); stroke: rgba(216, 220, 240, .35); stroke-dasharray: 4 4; }
+.ad-map .ad-ours { fill: rgba(143, 194, 255, .03); stroke: rgba(143, 194, 255, .4); }
+.ad-map .ad-bubble { fill: rgba(143, 194, 255, .05); stroke: #8fc2ff; stroke-dasharray: 3 5; }
+.ad-map .ad-t { font: 11.5px var(--mono); fill: var(--muted); }
+.ad-map .ad-sci { fill: #8fc2ff; }

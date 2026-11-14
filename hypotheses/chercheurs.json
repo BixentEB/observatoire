@@ -1,5 +1,5 @@
 {
-  "_aide": "Hypothèses proposées par des chercheurs. etat : debat (toujours discutée), admise (largement acceptée, débattue dans le détail), ecartee (réfutée par les observations), historique (abandonnée, importante dans l'histoire des idées). objets : identifiants dans le système solaire (js/data/bodies.js) ; galaxie : identifiant d'un repère de la Voie lactée (js/data/galaxy.js). texte : Markdown.",
+  "_aide": "Hypothèses proposées par des chercheurs. etat : debat (toujours discutée), admise (largement acceptée, débattue dans le détail), ecartee (réfutée par les observations), historique (abandonnée, importante dans l'histoire des idées), speculative (cohérente mais non testée à ce jour). niveau : « au-dela » pour les hypothèses du 9e cran de la règle des échelles. objets : identifiants dans le système solaire (js/data/bodies.js) ; galaxie : identifiant d'un repère de la Voie lactée (js/data/galaxy.js). texte : Markdown.",
   "hypotheses": [
     {
       "id": "planete-9",
@@ -8,9 +8,16 @@
       "annee": 2016,
       "etat": "debat",
       "resume": "Une planète de 5 à 10 fois la masse de la Terre, très loin au-delà de Neptune, qui expliquerait l'étrange alignement des orbites de certains objets lointains.",
-      "objets": ["planete9"],
+      "objets": [
+        "planete9"
+      ],
       "texte": "### L'idée\n\nUne poignée d'objets de la ceinture de Kuiper, sur des orbites très allongées, ont des orbites curieusement alignées dans la même direction. Pour Batygin et Brown, une planète encore inconnue les « rangerait » ainsi par sa gravité : environ 7 fois la masse de la Terre, à 500 UA du Soleil en moyenne, un tour en 5 000 à 10 000 ans.\n\n### Ce qui l'appuie\n\nL'alignement d'une quinzaine d'objets transneptuniens extrêmes, et l'inclinaison de leurs orbites. Les recherches ont déjà exclu une bonne partie des zones où elle pourrait se trouver, sans l'éliminer.\n\n### Ce qui la contredit\n\nAucune détection à ce jour. Plusieurs équipes pensent que l'alignement pourrait venir d'un biais d'observation : on découvre plus facilement les objets dans certaines directions du ciel. D'autres explications existent (anneau de matière, rencontre ancienne avec une autre étoile).\n\n### Où en est-on\n\nL'observatoire Vera Rubin, en service depuis 2025, balaie tout le ciel austral : s'il ne la trouve pas dans ses premières années, l'hypothèse sera très affaiblie.",
-      "sources": [["Live Science (2024), où en est la recherche", "https://www.livescience.com/space/planets/planet-nine-is-the-search-for-this-elusive-world-nearly-over"]]
+      "sources": [
+        [
+          "Live Science (2024), où en est la recherche",
+          "https://www.livescience.com/space/planets/planet-nine-is-the-search-for-this-elusive-world-nearly-over"
+        ]
+      ]
     },
     {
       "id": "theia",
@@ -19,9 +26,17 @@
       "annee": 1975,
       "etat": "admise",
       "resume": "La Lune serait née d'une collision entre la jeune Terre et un corps de la taille de Mars, baptisé Théia, il y a environ 4,5 milliards d'années.",
-      "objets": ["lune", "terre"],
+      "objets": [
+        "lune",
+        "terre"
+      ],
       "texte": "### L'idée\n\nPeu après la formation de la Terre, un corps de la taille de Mars l'aurait percutée. Les débris projetés en orbite se seraient rassemblés pour former la Lune. Le nom de Théia, la mère de Séléné (la Lune) dans la mythologie grecque, a été donné plus tard.\n\n### Ce qui l'appuie\n\nLes roches rapportées par Apollo, le petit noyau de fer de la Lune, sa composition proche de celle du manteau terrestre, et la rotation rapide du système Terre-Lune s'expliquent bien par un tel choc. En 2023, une équipe (Qian Yuan et ses collègues, revue Nature) a proposé que deux immenses masses enfouies au fond du manteau terrestre, sous l'Afrique et le Pacifique, soient des restes de Théia.\n\n### Ce qui reste débattu\n\nLa Terre et la Lune sont presque identiques chimiquement, plus que ne le prévoit un impact simple : variantes avec un choc plus violent, plusieurs impacts, ou un nuage de roche vaporisée. L'origine des masses du manteau, elle, est encore discutée.\n\n### Où en est-on\n\nC'est l'explication la plus admise de l'origine de la Lune ; ses détails restent ouverts. De futurs échantillons lunaires, notamment du bassin Pôle Sud–Aitken, pourraient trancher.",
-      "sources": [["Sky & Telescope (2023), des restes de Théia dans le manteau ?", "https://skyandtelescope.org/astronomy-news/bits-of-theia-might-be-in-earths-mantle/"]]
+      "sources": [
+        [
+          "Sky & Telescope (2023), des restes de Théia dans le manteau ?",
+          "https://skyandtelescope.org/astronomy-news/bits-of-theia-might-be-in-earths-mantle/"
+        ]
+      ]
     },
     {
       "id": "nemesis",
@@ -30,9 +45,16 @@
       "annee": 1984,
       "etat": "ecartee",
       "resume": "Une petite étoile compagne du Soleil qui, tous les 26 millions d'années, enverrait une pluie de comètes vers la Terre et provoquerait des extinctions de masse.",
-      "objets": ["soleil"],
+      "objets": [
+        "soleil"
+      ],
       "texte": "### L'idée\n\nEn 1984, les paléontologues David Raup et Jack Sepkoski pensent voir un rythme dans les extinctions de masse : environ une tous les 26 millions d'années. Deux équipes proposent la même année, dans la revue Nature, une explication : une petite étoile (naine rouge ou brune) tournerait autour du Soleil sur une orbite très large et, à chaque passage, bousculerait le nuage d'Oort, envoyant des comètes vers la Terre.\n\n### Ce qui l'appuie\n\nLe rythme des extinctions, s'il est réel, et le fait que beaucoup d'étoiles vivent en couple.\n\n### Ce qui la contredit\n\nAucun des grands relevés du ciel en infrarouge (IRAS dans les années 1980, 2MASS, puis WISE en 2014) n'a trouvé une telle étoile proche. Une orbite aussi large serait instable, et la régularité des extinctions est elle-même contestée.\n\n### Où en est-on\n\nL'hypothèse est considérée comme écartée, même si les relevés ne couvrent pas toutes les distances proposées.",
-      "sources": [["Wikipédia (anglais), Nemesis (hypothetical star)", "https://en.wikipedia.org/wiki/Nemesis_(hypothetical_star)"]]
+      "sources": [
+        [
+          "Wikipédia (anglais), Nemesis (hypothetical star)",
+          "https://en.wikipedia.org/wiki/Nemesis_(hypothetical_star)"
+        ]
+      ]
     },
     {
       "id": "vulcain",
@@ -41,9 +63,16 @@
       "annee": 1859,
       "etat": "historique",
       "resume": "Une planète cachée entre Mercure et le Soleil, imaginée pour expliquer une anomalie de l'orbite de Mercure… que la relativité générale a résolue en 1915.",
-      "objets": ["mercure"],
+      "objets": [
+        "mercure"
+      ],
       "texte": "### L'idée\n\nL'orbite de Mercure tourne lentement sur elle-même, un peu plus vite que ne le prévoient les calculs de Newton : 43 secondes d'arc par siècle de trop. Le Verrier, qui avait prédit Neptune avec succès en 1846, propose en 1859 la même solution : une planète inconnue, très proche du Soleil, qu'il baptise Vulcain.\n\n### Ce qui l'a appuyée\n\nLe succès de Neptune, et quelques observations d'astronomes amateurs ou professionnels qui crurent voir un petit point passer devant le Soleil.\n\n### Ce qui l'a réfutée\n\nAucune observation n'a jamais été confirmée, y compris lors des éclipses totales. En 1915, la relativité générale d'Albert Einstein explique exactement les 43 secondes d'arc : il n'y avait rien à chercher.\n\n### Où en est-on\n\nUne histoire célèbre de la science : la même méthode a découvert Neptune et inventé Vulcain. On cherche encore, sans succès, de petits astéroïdes dans cette région, les « vulcanoïdes ».",
-      "sources": [["Brian Koberlein, The planet that never was", "https://briankoberlein.com/post/planet-that-never-was/"]]
+      "sources": [
+        [
+          "Brian Koberlein, The planet that never was",
+          "https://briankoberlein.com/post/planet-that-never-was/"
+        ]
+      ]
     },
     {
       "id": "oumuamua-voile",
@@ -54,7 +83,12 @@
       "resume": "Le premier objet venu d'une autre étoile accélérait sans montrer de queue de comète : et s'il s'agissait d'une voile solaire construite par une civilisation ?",
       "objets": [],
       "texte": "### L'idée\n\nʻOumuamua, découvert en 2017, est le premier objet observé venant d'au-delà du système solaire. En s'éloignant du Soleil, il a légèrement accéléré, comme une comète qui dégaze, mais sans aucune queue visible. Bialy et Loeb ont proposé qu'il soit très mince et très léger, poussé par la lumière du Soleil : une voile solaire, peut-être artificielle.\n\n### Ce qui l'appuie\n\nL'accélération inexpliquée sans dégazage visible, et sa forme probablement très allongée ou aplatie.\n\n### Ce qui la contredit\n\nDes explications naturelles ont été publiées : un fragment de glace d'azote (Jackson et Desch, 2021), ou de l'hydrogène piégé dans la glace par les rayons cosmiques, libéré en se réchauffant (Bergner et Seligman, Nature, 2023), un mécanisme sans doute courant chez les comètes.\n\n### Où en est-on\n\nToujours défendue par Loeb, l'hypothèse artificielle reste très minoritaire. ʻOumuamua est parti trop loin pour être observé de nouveau.",
-      "sources": [["Université de Chicago (2023), une explication simple", "https://news.uchicago.edu/story/surprisingly-simple-explanation-interstellar-visitor-oumuamuas-weird-orbit"]]
+      "sources": [
+        [
+          "Université de Chicago (2023), une explication simple",
+          "https://news.uchicago.edu/story/surprisingly-simple-explanation-interstellar-visitor-oumuamuas-weird-orbit"
+        ]
+      ]
     },
     {
       "id": "etoile-tabby",
@@ -65,7 +99,12 @@
       "resume": "Une étoile dont la lumière baissait parfois de 20 %, de façon irrégulière : on a envisagé une gigantesque structure construite autour d'elle.",
       "galaxie": "tabby",
       "texte": "### L'idée\n\nKIC 8462852, à environ 1 470 années-lumière, a été repérée par des volontaires du projet Planet Hunters dans les données du télescope Kepler. Sa lumière baissait parfois de plus de 20 %, sans régularité, ce qu'aucune planète ne peut faire. Parmi les explications envisagées, l'astronome Jason Wright a évoqué, en dernier recours, des structures géantes construites par une civilisation pour capter l'énergie de l'étoile.\n\n### Ce qui l'a appuyée\n\nDes baisses de lumière profondes, irrégulières, que les explications habituelles peinaient à reproduire.\n\n### Ce qui l'a réfutée\n\nEn 2018, une campagne d'observation menée avec plus de 200 coauteurs a montré que la lumière baisse davantage dans le bleu que dans le rouge : c'est la signature de la poussière. Un objet solide et opaque bloquerait toutes les couleurs de la même façon.\n\n### Où en est-on\n\nL'hypothèse artificielle est écartée ; l'origine exacte de la poussière (comètes, débris d'une collision…) reste discutée.",
-      "sources": [["Penn State (2018), pas de mégastructure", "https://www.psu.edu/news/research/story/alien-megastructure-not-cause-behind-most-mysterious-star-universe"]]
+      "sources": [
+        [
+          "Penn State (2018), pas de mégastructure",
+          "https://www.psu.edu/news/research/story/alien-megastructure-not-cause-behind-most-mysterious-star-universe"
+        ]
+      ]
     },
     {
       "id": "panspermie",
@@ -74,9 +113,82 @@
       "annee": 1903,
       "etat": "debat",
       "resume": "La vie, ou ses briques, aurait voyagé d'un monde à l'autre, portée par des météorites ou des comètes, plutôt que d'apparaître sur Terre.",
-      "objets": ["terre", "mars"],
+      "objets": [
+        "terre",
+        "mars"
+      ],
       "texte": "### L'idée\n\nL'idée remonte à l'Antiquité ; le chimiste Svante Arrhenius lui donne une forme scientifique au début du XXe siècle, puis Fred Hoyle et Chandra Wickramasinghe la défendent à partir des années 1970. La vie, ou au moins ses ingrédients, se serait formée ailleurs, puis aurait été transportée jusqu'à la Terre par des roches ou des comètes.\n\n### Ce qui l'appuie\n\nDes météorites venues de Mars sont tombées sur Terre : des roches voyagent bien entre les planètes. Certaines bactéries et les tardigrades survivent un temps dans l'espace. Des acides aminés et d'autres molécules de la vie ont été trouvés dans des météorites et dans les échantillons des astéroïdes Ryugu et Bennu.\n\n### Ce qui la contredit\n\nAucun être vivant venu de l'espace n'a jamais été identifié. Trouver des briques de la vie n'est pas trouver la vie. Et l'hypothèse ne fait que déplacer la question : où et comment la vie est-elle apparue la première fois ?\n\n### Où en est-on\n\nLa version « les ingrédients viennent de l'espace » est largement acceptée ; la version « la vie elle-même a voyagé » reste une hypothèse ouverte, que l'exploration de Mars ou des lunes glacées pourrait éclairer.",
       "sources": []
+    },
+    {
+      "id": "univers-plus-grand",
+      "titre": "Un Univers bien plus grand que ce que l'on voit",
+      "auteurs": "Conséquence des mesures de la courbure (missions WMAP et Planck)",
+      "annee": 2018,
+      "etat": "admise",
+      "niveau": "au-dela",
+      "resume": "L'Univers observable n'est que la partie dont la lumière a eu le temps de nous parvenir. Les mesures indiquent que l'Univers entier est bien plus vaste, peut-être infini.",
+      "texte": "### L'idée\n\nNous ne voyons que ce dont la lumière a eu le temps d'arriver depuis le Big Bang : une sphère d'environ 46 milliards d'années-lumière de rayon. Rien n'indique que l'Univers s'arrête à cette limite, qui dépend seulement de notre position et de son âge.\n\n### Ce qui l'appuie\n\nLa courbure de l'espace, mesurée par le satellite Planck (2018), est compatible avec zéro à mieux qu'un pour cent près. Un Univers aussi « plat » à notre échelle doit être beaucoup plus grand que la partie observable, sans qu'on puisse dire s'il est fini ou infini.\n\n### Ce qui la limite\n\nPar définition, on ne pourra jamais observer directement ce qui est au-delà de l'horizon. Et avec l'accélération de l'expansion, certaines régions resteront à jamais hors de portée : leur lumière ne nous atteindra jamais.\n\n### Pour aller plus loin\n\nChaque observateur a son propre Univers observable, centré sur lui. Un observateur dans une galaxie très lointaine voit une sphère différente de la nôtre, qui la chevauche en partie : même Univers, autre horizon."
+    },
+    {
+      "id": "inflation",
+      "titre": "L'inflation cosmique",
+      "auteurs": "Alan Guth ; puis Andreï Linde, Andreas Albrecht et Paul Steinhardt",
+      "annee": 1981,
+      "etat": "admise",
+      "niveau": "au-dela",
+      "resume": "Une expansion fulgurante dans la toute première fraction de seconde, qui expliquerait pourquoi l'Univers est si uniforme et si plat.",
+      "texte": "### L'idée\n\nJuste après le Big Bang, l'espace aurait grandi d'un facteur gigantesque en une infime fraction de seconde. De minuscules fluctuations quantiques, étirées à l'échelle cosmique, seraient devenues les germes des galaxies.\n\n### Ce qui l'appuie\n\nElle explique pourquoi le rayonnement fossile a presque la même température dans toutes les directions, pourquoi l'espace est si plat, et elle prédit la forme des petites variations du rayonnement fossile, que les satellites WMAP et Planck ont confirmée.\n\n### Ce qui reste en suspens\n\nSa signature la plus directe, des ondes gravitationnelles primordiales, n'a pas été détectée : l'annonce de l'expérience BICEP2 en 2014 s'est révélée due à la poussière de notre galaxie. Certains physiciens, dont Paul Steinhardt lui-même, critiquent aujourd'hui l'idée et proposent d'autres scénarios."
+    },
+    {
+      "id": "inflation-eternelle",
+      "titre": "L'inflation éternelle et le multivers de bulles",
+      "auteurs": "Alexander Vilenkin ; Andreï Linde",
+      "annee": 1983,
+      "etat": "speculative",
+      "niveau": "au-dela",
+      "resume": "Si l'inflation ne s'arrête jamais partout à la fois, notre Univers serait une bulle parmi une infinité d'autres, peut-être avec d'autres lois physiques.",
+      "texte": "### L'idée\n\nDans beaucoup de modèles, l'inflation s'arrête par endroits mais continue ailleurs, sans fin. Chaque région où elle s'arrête devient une « bulle », un univers comme le nôtre. Notre Univers observable serait une petite partie d'une seule de ces bulles.\n\n### Ce qui l'appuie\n\nC'est une conséquence assez naturelle de nombreux modèles d'inflation, et, combinée au « paysage » de la théorie des cordes, elle pourrait expliquer pourquoi les constantes de notre Univers semblent réglées pour permettre la vie : dans d'autres bulles, elles seraient différentes.\n\n### Ce qui la contredit ou la limite\n\nLes autres bulles sont, par construction, hors d'atteinte. Certains chercheurs ont proposé de chercher les traces d'une collision entre bulles dans le rayonnement fossile : rien de concluant à ce jour. Beaucoup jugent l'idée impossible à tester, donc à la limite de la science."
+    },
+    {
+      "id": "univers-fini",
+      "titre": "Un Univers fini, refermé sur lui-même",
+      "auteurs": "Jean-Pierre Luminet et ses collègues (modèle dodécaédrique de Poincaré)",
+      "annee": 2003,
+      "etat": "debat",
+      "niveau": "au-dela",
+      "resume": "L'espace pourrait être fini sans avoir de bord, comme la surface d'une sphère ou un jeu vidéo où l'on ressort d'un côté en sortant de l'autre.",
+      "texte": "### L'idée\n\nUn espace peut être fini sans bord : en allant toujours tout droit, on finirait par revenir à son point de départ. Si l'Univers était assez petit, on verrait plusieurs images des mêmes galaxies, et des cercles identiques dans le rayonnement fossile.\n\n### Ce qui l'appuie\n\nEn 2003, l'équipe de Jean-Pierre Luminet a proposé un espace en forme de dodécaèdre « recollé » sur lui-même pour expliquer une faiblesse des grandes variations du rayonnement fossile.\n\n### Ce qui la contredit\n\nLes recherches de cercles appariés dans les cartes des satellites WMAP et Planck n'ont rien trouvé : un Univers refermé plus petit que la partie observable est très défavorisé. Un Univers fini mais plus grand que notre horizon reste possible, et indétectable."
+    },
+    {
+      "id": "multivers-quantique",
+      "titre": "Le multivers quantique",
+      "auteurs": "Hugh Everett",
+      "annee": 1957,
+      "etat": "speculative",
+      "niveau": "au-dela",
+      "resume": "Une lecture de la physique quantique où chaque possibilité se réalise dans une branche de réalité séparée.",
+      "texte": "### L'idée\n\nEn physique quantique, une particule peut être dans plusieurs états à la fois jusqu'à ce qu'on la mesure. Pour Hugh Everett, la mesure ne choisit pas un résultat : toutes les possibilités se réalisent, chacune dans une branche de l'Univers qui ne communique plus avec les autres.\n\n### Ce qui l'appuie\n\nElle ne demande rien de plus que les équations de la physique quantique, sans règle supplémentaire pour la mesure. C'est l'une des interprétations sérieusement défendues par des physiciens.\n\n### Ce qui la limite\n\nC'est une interprétation, pas une prédiction différente : aucune expérience ne permet aujourd'hui de la départager des autres lectures de la physique quantique. Ce multivers n'est pas « ailleurs » dans l'espace, contrairement à celui des bulles."
+    },
+    {
+      "id": "cosmologie-cyclique",
+      "titre": "La cosmologie cyclique conforme",
+      "auteurs": "Roger Penrose (avec Vahe Gurzadyan pour les observations)",
+      "annee": 2010,
+      "etat": "speculative",
+      "niveau": "au-dela",
+      "resume": "Notre Big Bang ne serait que le début d'un « éon » parmi une suite infinie, chaque univers mourant donnant naissance au suivant.",
+      "texte": "### L'idée\n\nDans un très lointain avenir, quand il ne restera que de la lumière et des particules sans masse, l'Univers « oublierait » sa taille : son état final pourrait se raccorder au Big Bang d'un nouvel éon. Avant notre Big Bang, il y aurait eu un autre univers.\n\n### Ce qui l'appuie\n\nPenrose et ses collègues ont annoncé avoir trouvé dans le rayonnement fossile des cercles concentriques, puis des « points de Hawking », traces possibles de trous noirs de l'éon précédent.\n\n### Ce qui la contredit\n\nD'autres équipes, en analysant les mêmes cartes, n'ont pas retrouvé ces signaux au-delà de ce que le hasard produit. L'idée demande aussi des hypothèses fortes sur la disparition de toute masse dans l'avenir lointain."
+    },
+    {
+      "id": "univers-trous-noirs",
+      "titre": "Des univers nés dans les trous noirs",
+      "auteurs": "Lee Smolin (sélection naturelle cosmologique)",
+      "annee": 1992,
+      "etat": "speculative",
+      "niveau": "au-dela",
+      "resume": "Chaque trou noir donnerait naissance à un nouvel univers aux lois légèrement différentes ; les univers qui font beaucoup de trous noirs se « reproduiraient » davantage.",
+      "texte": "### L'idée\n\nPour Lee Smolin, l'effondrement au cœur d'un trou noir rebondirait en un nouvel univers, avec des constantes physiques un peu modifiées. Comme en biologie, les univers les plus « féconds », ceux qui forment beaucoup de trous noirs, seraient les plus nombreux.\n\n### Ce qui l'appuie\n\nElle donne une raison au réglage des constantes physiques sans faire appel à des observateurs, et elle fait des prédictions : par exemple, que les étoiles à neutrons ne devraient pas dépasser une certaine masse.\n\n### Ce qui la contredit ou la limite\n\nRien ne montre qu'un trou noir puisse engendrer un univers ; il faudrait une théorie de la gravité quantique pour le dire. Certaines de ses prédictions sont discutées à la lumière des étoiles à neutrons très massives découvertes depuis."
     }
   ]
 }

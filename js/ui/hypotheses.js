@@ -38,7 +38,7 @@
   };
 
   var STATUS = { piste: 'Piste', reflexion: 'En réflexion', developpement: 'En développement', abandonnee: 'Abandonnée', exemple: 'Exemple' };
-  var ETAT = { debat: 'En débat', admise: 'Admise, débattue dans le détail', ecartee: 'Écartée', historique: 'Historique' };
+  var ETAT = { debat: 'En débat', admise: 'Admise, débattue dans le détail', ecartee: 'Écartée', historique: 'Historique', speculative: 'Spéculative' };
   function dateFr(s) { if (!s) return ''; var d = new Date(s + 'T12:00:00'); return isNaN(d) ? esc(s) : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
   function objNames(h) {
     var n = (h.objets || []).filter(function (o) { return OBS.byId[o]; }).map(function (o) { return OBS.byId[o].name; });
@@ -94,7 +94,7 @@
   function listSciPage(root) {
     root.innerHTML = tabs(true) +
       '<div class="h-intro sci"><b>Hypothèses de chercheurs.</b> Des idées proposées par des astronomes et des scientifiques, publiées dans des revues : certaines sont encore débattues, d\'autres ont été écartées par les observations, quelques-unes sont devenues des chapitres de l\'histoire des sciences. Chaque fiche donne les auteurs, l\'année, ce qui appuie l\'idée, ce qui la contredit et où en est la recherche.</div>' +
-      '<div class="h-legend">' + [['debat', 'En débat', 'encore discutée'], ['admise', 'Admise', 'largement acceptée'], ['ecartee', 'Écartée', 'réfutée par les observations'], ['historique', 'Historique', 'abandonnée depuis longtemps']].map(function (e) {
+      '<div class="h-legend">' + [['debat', 'En débat', 'encore discutée'], ['admise', 'Admise', 'largement acceptée'], ['ecartee', 'Écartée', 'réfutée par les observations'], ['historique', 'Historique', 'abandonnée depuis longtemps'], ['speculative', 'Spéculative', 'cohérente, mais non testée à ce jour']].map(function (e) {
         return '<span class="h-lg"><span class="h-status e-' + e[0] + '">' + e[1] + '</span>' + e[2] + '</span>'; }).join('') + '</div>' +
       '<div class="h-list" id="h-list"><p class="note">Chargement…</p></div>';
     listSci().then(function (l) {
