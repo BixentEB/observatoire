@@ -11,7 +11,7 @@ Sources (projet CosmicFlows, https://projets.ip2i.in2p3.fr/cosmicflows/) :
 Unités : les grilles sont en Mpc/h. Une distance en Mpc/h vaut cz / 100 km/s ; l'Observatoire place les galaxies du
 relevé 2MRS à cz / 70 (H0 = 70). Pour que tout coïncide, on multiplie les positions des grilles par 100 / 70.
 
-Contrôles écrits dans le rapport : notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
+Contrôles écrits dans le rapport : orientation de la grille choisie pour placer correctement 7 amas connus (dedans / dehors) ; notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
 Laniakea doit valoir ≈ 2 × 10⁶ (Mpc/h)³ ; l'ordre des composantes de vitesse est choisi comme celui pour lequel les lignes
 d'écoulement partant de Laniakea y restent (un bassin d'attraction est, par définition, ce qui s'écoule vers son attracteur).
 
@@ -66,11 +66,41 @@ if raw:
         if d is None: continue
         lab = np.rint(d).astype(int); log.append('**Grille retenue : %s**' % n); break
 
+# ---------- orientation de la grille : contrôle par des amas connus ----------
+# dans Laniakea (Tully et al. 2014, Dupuy & Courtois 2023) : Vierge, Centaure, Hydre, Règle ; hors de Laniakea : Persée, Coma, Shapley.
+# positions supergalactiques (Mpc/h ≈ cz / 100) tirées des vitesses publiées, comme dans tools/laniakea.py
+TEST = [('Vierge', (-2.4, 10.7, -0.4), 1), ('Centaure', (-30.7, 13.4, -6.8), 1), ('Hydre', (-22.8, 19.5, -23.0), 1), ('Règle', (-47.9, -6.9, 6.0), 1),
+        ('Persée', (50.8, -10.9, -13.2), 0), ('Coma', (0.5, 68.5, 10.0), 0), ('Shapley', (-124.1, 74.9, -3.4), 0)]
+ORIENT = None
+if lab is not None:
+    N = lab.shape[0]; cell = 1000.0 / N; c = N / 2.0
+    def idx(q): return int(min(N - 1, max(0, np.floor(q / cell + c))))
+    best = None
+    for perm in itertools.permutations(range(3)):          # quel axe de la grille porte SGX, SGY, SGZ
+        for flip in itertools.product((1, -1), repeat=3):
+            sc = 0
+            for nm, p, inside in TEST:
+                ii = [None] * 3
+                for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
+                sc += int((lab[ii[0], ii[1], ii[2]] == 1) == bool(inside))
+            if best is None or sc > best[0]: best = (sc, perm, flip)
+    ORIENT = best
+    log.append('**Orientation : SGX, SGY, SGZ sur les axes %s de la grille, signes %s : %d / %d amas bien placés**' % (best[1], best[2], best[0], len(TEST)))
+
 out = {}
+if lab is not None and ORIENT:
+    perm, flip = ORIENT[1], ORIENT[2]
+    # on remet la grille dans l'ordre (SGZ, SGY, SGX) : axe de la grille portant SGZ d'abord, puis SGY, puis SGX
+    lab = np.transpose(lab, (perm[2], perm[1], perm[0]))
+    for k, ax in ((2, 0), (1, 1), (0, 2)):
+        if flip[k] < 0: lab = np.flip(lab, axis=ax)
 if lab is not None:
     N = lab.shape[0]; cell = 1000.0 / N; c = N / 2.0          # observateur au centre de la grille
     me = lab[N // 2, N // 2, N // 2]
     vox = (lab == 1)
+    for nm, p, inside in TEST:
+        ii = [int(min(N - 1, max(0, np.floor(q / cell + c)))) for q in p]
+        log.append('%s : bassin %d (attendu %s)' % (nm, lab[ii[2], ii[1], ii[0]], 'Laniakea' if inside else 'autre'))
     log.append('Notre voxel est dans le bassin %d (attendu : 1) ; Laniakea = %d voxels, %.2e (Mpc/h)³ (attendu ≈ 2e6)' % (me, vox.sum(), vox.sum() * cell ** 3))
     def pos(iz, iy, ix):   # indices (SGZ, SGY, SGX) → position en Mpc de l'Observatoire
         return ((ix + .5 - c) * cell * K, (iy + .5 - c) * cell * K, (iz + .5 - c) * cell * K)
@@ -98,6 +128,11 @@ if lab is not None:
                 if V is None and u.data.ndim == 4: V = np.asarray(u.data, dtype=float) * 52.0
         if V is not None:
             if V.shape[0] != 3: V = np.moveaxis(V, -1, 0)
+            if ORIENT:   # même orientation que la grille des bassins (même équipe, même convention)
+                perm, flip = ORIENT[1], ORIENT[2]
+                V = np.transpose(V, (0, perm[2] + 1, perm[1] + 1, perm[0] + 1))
+                for k, ax in ((2, 1), (1, 2), (0, 3)):
+                    if flip[k] < 0: V = np.flip(V, axis=ax)
             M = V.shape[1]; vcell = 1000.0 / M; vc = M / 2.0
             def vel(p, perm, sgn):      # p = (sgx, sgy, sgz) en Mpc/h ; interpolation au plus proche voisin
                 ix, iy, iz = [int(min(M - 1, max(0, np.floor(q / vcell + vc)))) for q in p]
@@ -120,7 +155,7 @@ if lab is not None:
                 return line
             best = None
             for perm in itertools.permutations(range(3)):
-                for sgn in ((1, 1, 1),):
+                for sgn in set([(1, 1, 1), tuple(ORIENT[2]) if ORIENT else (1, 1, 1)]):
                     ok = 0
                     for p in seeds[:60]:
                         L = stream(p, perm, sgn, steps=60)
