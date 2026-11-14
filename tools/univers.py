@@ -90,6 +90,23 @@ if not rows or len(rows) < 20000:
     except Exception as ex:
         log.append('échec GAVO : %r' % ex)
 
+# quasars lointains (z de 3 à 7,6) sur tout le ciel couvert par le SDSS : ils peuplent la sphère des quasars
+QSO = []
+for rel in ('dr17', 'dr16'):
+    try:
+        sql = "SELECT ra, dec, z FROM SpecObj WHERE class = 'QSO' AND zWarning = 0 AND z BETWEEN 3 AND 7.6"
+        txt = fetch('https://skyserver.sdss.org/%s/SkyServerWS/SearchTools/SqlSearch?' % rel + urllib.parse.urlencode({'cmd': sql, 'format': 'csv'}), timeout=400)
+        lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
+        got = []
+        for l in lines[1:]:
+            p_ = l.split(',')
+            try: got.append((float(p_[0]), float(p_[1]), float(p_[2])))
+            except Exception: pass
+        log.append('SkyServer %s : %d quasars de z = 3 à 7,6' % (rel, len(got)))
+        if len(got) > 1000: QSO = got; break
+    except Exception as ex:
+        log.append('échec quasars %s : %r' % (rel, ex))
+
 # table de distances comobiles (interpolation)
 ZT = [i * ZMAX / 500 for i in range(501)]; DT = [dcom(z) for z in ZT]
 def dist(z):
@@ -99,6 +116,12 @@ out = [[round(ra * 100), round(dist(z) * 10)] for ra, z in (rows or []) if 0.003
 meta = {'source': 'Sloan Digital Sky Survey (SkyServer DR17, ou DR16 / DR12 en secours), galaxies à spectre, déclinaison −2,5° à +2,5°, z ≤ 0,25',
         'genere': time.strftime('%Y-%m-%d', time.gmtime()), 'n': len(out), 'H0': H0, 'Om': OM, 'zmax': ZMAX, 'dmax': round(dcom(ZMAX), 1),
         'unites': 'g = [ascension droite × 100 (degrés), distance comobile × 10 (Mpc)], univers plat H0 = 70, Ωm = 0,3'}
+if QSO:
+    ZQ = [3 + i * 4.6 / 400 for i in range(401)]; DQ = [dcom(z, 400) for z in ZQ]
+    def dq(z): i = min(399, int((z - 3) / 4.6 * 400)); t = (z - ZQ[i]) / (ZQ[i + 1] - ZQ[i]); return DQ[i] + (DQ[i + 1] - DQ[i]) * t
+    json.dump({'meta': {'source': 'SDSS (SkyServer), objets de classe QSO, z de 3 à 7,6', 'n': len(QSO), 'unites': 'q = [ascension droite × 100, déclinaison × 100, distance comobile × 10 (Mpc), z × 1000]'},
+               'q': [[round(r * 100), round(d * 100), round(dq(z) * 10), round(z * 1000)] for r, d, z in QSO]},
+              open(os.path.join(ROOT, 'data', 'quasars.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
 if len(out) > 5000:
     json.dump({'meta': meta, 'g': out}, open(os.path.join(ROOT, 'data', 'univers.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
 open(os.path.join(ROOT, 'data', 'univers-report.md'), 'w').write('# Univers observable (SDSS)\n\n' + '\n'.join('- ' + l for l in log) + '\n\n%d galaxies retenues ; distance comobile à z = %.2f : %.0f Mpc.\n' % (len(out), ZMAX, dcom(ZMAX)))

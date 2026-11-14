@@ -11,6 +11,7 @@ on:
       - 'tools/laniakea.py'
       - 'tools/laniakea_bassin.py'
       - 'tools/univers.py'
+      - 'tools/fond_diffus.py'
       - '.github/workflows/catalogues.yml'
   workflow_dispatch: {}
 
@@ -48,10 +49,15 @@ jobs:
         continue-on-error: true
         timeout-minutes: 12
         run: python3 tools/univers.py
+      - name: Fond diffus cosmologique (carte de Planck)
+        continue-on-error: true
+        run: |
+          pip install --quiet numpy pillow
+          python3 tools/fond_diffus.py
       - name: Publier
         if: always()
         run: |
-          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md data/laniakea.json data/laniakea-report.md data/laniakea-bassin.json data/laniakea-bassin-report.md data/univers.json data/univers-report.md; do [ -f "$f" ] && git add "$f"; done; true
+          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md data/laniakea.json data/laniakea-report.md data/laniakea-bassin.json data/laniakea-bassin-report.md data/univers.json data/univers-report.md data/quasars.json data/fond-diffus.json data/fond-diffus-report.md assets/img/fond-diffus.webp; do [ -f "$f" ] && git add "$f"; done; true
           if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
           git config user.name "observatoire-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
