@@ -154,6 +154,7 @@
     if (level === 'galaxie') return renderGalaxy(id);
     if (level === 'groupe-local') return renderLG(id);
     if (level === 'volume-local') return renderVL(id);
+    if (level === 'superamas') return renderSC(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -328,6 +329,27 @@
     el.querySelector('.c-close').addEventListener('click', function () { OBS.volumelocal.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); });
+  }
+
+  /* Superamas local : un groupe du catalogue de Kourkchi et Tully */
+  function renderSC(id) {
+    var it = OBS.superamas.get(id); if (!it) return;
+    var g = it.def, S = OBS.SC, t = S.tier(g.k), col = S.TIERS[t][0], info = S.NAMES[g.n], h = [];
+    current = { level: 'superamas', id: id }; clearInterval(liveTimer);
+    var kind = it.home ? 'Notre groupe de galaxies' : t === 0 ? 'Amas de galaxies' : t === 1 ? 'Groupe riche de galaxies' : 'Groupe de galaxies';
+    h.push('<div class="c-head"><p class="c-kind">' + esc(kind) + (info ? '' : ' · galaxie principale PGC ' + esc(g.n)) + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + col + ';color:' + col + '"></span>' + esc(it.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div class="c-flags">' + flag('real', 'Position', 'mesurée', 'direction du catalogue de Kourkchi et Tully 2017') + (g.dv ? flag('adapt', 'Distance', 'par la vitesse', 'sans distance mesurée, elle est tirée de la vitesse d\'éloignement (loi de Hubble, H0 = 75 km/s/Mpc)') : flag('real', 'Distance', 'mesurée', 'distance mesurée par les auteurs du catalogue')) + flag('adapt', 'Aspect', 'un point', 'à cette échelle, un groupe entier est un point ; sa taille dépend du nombre de galaxies') + '<a class="flag-help" href="#/methode">?</a></div>');
+    if (info) h.push('<p class="c-text">' + esc(info[1].charAt(0).toUpperCase() + info[1].slice(1)) + '.</p>');
+    if (it.home) h.push('<p class="c-text">Vu d\'ici, tout le Groupe local et ses voisins du Volume local tiennent dans la petite bulle dorée.</p><section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans le Volume local →</button></div></section>');
+    else h.push('<section class="c-sec"><div class="c-live"><div><span>Distance</span><b>' + S.dTxt(g.d) + '</b><small>sa lumière est partie il y a ' + S.dTxt(g.d).replace(' M al', ' millions d\'années') + '</small></div>' +
+      '<div><span>Galaxies</span><b>' + S.nf(g.k) + '</b><small>recensées dans le catalogue</small></div></div></section>');
+    h.push('<table class="c-facts"><tr><th>Masse estimée</th><td>≈ ' + S.mass(g.m) + '<br><small>d\'après l\'éclat infrarouge de ses galaxies</small></td></tr></table>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Les 8 779 groupes et galaxies isolées du catalogue de Kourkchi et Tully (2017), jusqu\'à près de 200 millions d\'années-lumière. Le plan horizontal est le plan supergalactique. Une unité vaut environ 326 000 années-lumière. <a href="#/atlas/superamas">Carte et liste dans l\'Atlas</a></p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.superamas.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('volume-local', { from: 'superamas' }); });
   }
 
   /* Groupe local : une galaxie */

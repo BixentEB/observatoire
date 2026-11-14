@@ -44,7 +44,8 @@
     if (side) h.push('<text x="' + C + '" y="36" class="vl-dir" text-anchor="middle">Vue de côté : les groupes se serrent autour du plan supergalactique</text>');
     Gx.slice().sort(function (a, b) { return a.k - b.k; }).forEach(function (g) {
       var p = P(g), t = tier(g.k), r = g.k === 1 ? .9 : Math.min(15, 1.2 + Math.sqrt(g.k) * .55);
-      h.push('<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + TIERS[t][0] + '" class="sc-g t' + t + '"><title>' + esc(name(g) + ' — ' + g.k + ' galaxie' + (g.k > 1 ? 's' : '') + ' — ' + dTxt(g.d) + (g.dv ? ' (distance tirée de la vitesse)' : '')) + '</title></circle>');
+      var c = '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + TIERS[t][0] + '" class="sc-g t' + t + '"><title>' + esc(name(g) + ' — ' + g.k + ' galaxie' + (g.k > 1 ? 's' : '') + ' — ' + dTxt(g.d) + (g.dv ? ' (distance tirée de la vitesse)' : '')) + '</title></circle>';
+      h.push(g.k >= 5 || NAMES[g.n] ? '<a href="#/superamas/pgc' + g.n + '" class="ab">' + c + '</a>' : c);   // les groupes d'au moins 5 galaxies se rejoignent dans l'espace
     });
     var lab = Gx.filter(function (g) { return NAMES[g.n] || g.k >= 60; }).sort(function (a, b) { return b.k - a.k; });
     var boxes = [[C - 60, C - 10, C + 60, C + 26]];
@@ -61,7 +62,7 @@
     root.innerHTML = '<div class="atlas-head">' + flags(side) + '<div class="atlas-sizes"><span class="atlas-sizes-l">Vue :</span><span class="atlas-toggle"><button type="button" data-v="top" aria-pressed="' + !side + '">Dessus</button><button type="button" data-v="side" aria-pressed="' + side + '">Côté</button></span></div></div>' +
       '<div class="atlas-scroll" tabindex="0"><svg class="atlas-map vl-map sc-map" viewBox="0 0 ' + S + ' ' + S + '" width="' + S + '" height="' + S + '" role="img" aria-label="Carte du Superamas local">' + h.join('') + '</svg></div>' +
       '<p class="note vl-leg">' + legend + '</p>' +
-      '<p class="note">' + (side ? 'Vue de côté : la plupart des groupes se tiennent près du plan supergalactique, la grande nappe qui passe par l\'amas de la Vierge et par notre Groupe local.' : 'Vue de dessus, dans le plan supergalactique : ' + nf(J.groupes.length) + ' groupes et galaxies isolées jusqu\'à près de 200 millions d\'années-lumière, dont ' + amas + ' amas de 50 galaxies ou plus. L\'amas de la Vierge, à 51 millions d\'années-lumière, en est le centre de gravité : le Groupe local, à sa périphérie, tombe lentement vers lui.') + ' Survolez un point pour son nom, son nombre de galaxies et sa distance.</p>';
+      '<p class="note">' + (side ? 'Vue de côté : la plupart des groupes se tiennent près du plan supergalactique, la grande nappe qui passe par l\'amas de la Vierge et par notre Groupe local.' : 'Vue de dessus, dans le plan supergalactique : ' + nf(J.groupes.length) + ' groupes et galaxies isolées jusqu\'à près de 200 millions d\'années-lumière, dont ' + amas + ' amas de 50 galaxies ou plus. L\'amas de la Vierge, à 51 millions d\'années-lumière, en est le centre de gravité : le Groupe local, à sa périphérie, tombe lentement vers lui.') + ' Survolez un point pour son nom, son nombre de galaxies et sa distance ; cliquez sur un groupe pour le rejoindre dans l\'espace.</p>';
     root.querySelectorAll('[data-v]').forEach(function (b) { b.addEventListener('click', function () { side = b.getAttribute('data-v') === 'side'; map(root, J); OBS.armPinch(root); }); });
     OBS.armPinch(root);
   }
@@ -76,6 +77,8 @@
     root.innerHTML = '<p>Les groupes et amas les plus riches du Superamas local, du plus peuplé au plus modeste. Sur ' + nf(J.groupes.length) + ' entrées du catalogue : ' + counts[0] + ' amas, ' + nf(counts[1]) + ' groupes riches, ' + nf(counts[2]) + ' petits groupes et ' + nf(counts[3]) + ' galaxies isolées.</p><div class="rows">' + rows + '</div>' +
       '<p class="note">Source : ' + esc(J.meta.source) + '. Distances mesurées quand le catalogue en donne, sinon tirées de la vitesse (H0 = ' + nf(J.meta.H0) + ' km/s/Mpc, valeur des auteurs). Les groupes sans nom d\'usage portent le numéro PGC de leur galaxie principale.</p>';
   }
+  // partagé avec la vue 3D (js/engine/superamas.js) et la console
+  OBS.SC = { load: load, name: name, tier: tier, TIERS: TIERS, NAMES: NAMES, dTxt: dTxt, mass: mass, nf: nf };
   OBS.atlasSuperamas = function (root, view) {
     root.innerHTML = '<p class="note">Chargement du catalogue…</p>';
     load().then(function (J) {

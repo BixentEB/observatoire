@@ -43,6 +43,13 @@
       "Le noir n'est pas le vide. La brume bleutée autour de la Voie lactée et d'Andromède figure leurs halos : du gaz chaud, trop ténu pour briller, et surtout de la matière noire, qui ne brille pas du tout mais pèse environ cinq fois plus que toute la matière ordinaire.",
       "Entre les galaxies, il ne reste que quelques atomes par mètre cube. Dans un seul centimètre cube d'air, il y en a environ 25 milliards de milliards."
     ],
+    superamas: [
+      "À cette échelle, chaque point est un groupe de galaxies entier : le Groupe local, avec la Voie lactée, Andromède et leurs dizaines de naines, n'est qu'un seul de ces points.",
+      "L'amas de la Vierge compte plus d'un millier de galaxies. L'une d'elles, M87, abrite le premier trou noir jamais photographié, par l'Event Horizon Telescope en 2019.",
+      "La lumière de l'amas de la Vierge est partie il y a environ 50 millions d'années, quelque 15 millions d'années après la disparition des dinosaures.",
+      "Le Groupe local est attiré par la masse de l'amas de la Vierge, mais l'expansion de l'Univers l'emporte encore : la distance qui nous en sépare continue d'augmenter.",
+      "La plupart des points sont des galaxies isolées ou de petits groupes. Les grands amas, en doré, sont rares : moins d'une dizaine dans tout ce volume."
+    ],
     etoile: [
       "Plus de 6 000 exoplanètes sont confirmées aujourd'hui, et des milliers d'autres attendent confirmation.",
       "La plupart des exoplanètes n'ont jamais été vues : on les détecte par la petite baisse de lumière quand elles passent devant leur étoile, ou par le léger balancement qu'elles impriment à l'étoile.",

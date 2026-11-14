@@ -151,6 +151,7 @@
   L.enter = function (opts) {
     L._inward = 0; controls.enabled = true; selected = null;
     if (opts.from === 'groupe-local') { controls.target.set(0, 0, 0); camera.position.set(0, 10, 16); startFlight(null, 3); }
+    else if (opts.from === 'superamas') { controls.target.set(0, 0, 0); homeCam(camera.position).multiplyScalar(2.6); startFlight(null, 2.6); }   // on plonge depuis le Superamas local
     else { homeCam(camera.position); controls.target.set(0, 0, 0); }
     if (opts.focus) L.select(opts.focus);
     OBS.emit('select', { level: 'volume-local', id: selected });

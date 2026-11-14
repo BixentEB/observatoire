@@ -1,7 +1,7 @@
 /* ======================================================================
    OBSERVATOIRE — règle des échelles de l'Explorer (lot 6, 14 novembre 2026)
    Version raccourcie de la règle de l'Atlas (OBS.SCALE_LEVELS) : seulement les niveaux
-   qu'on peut visiter en 3D, du Système solaire au Volume local.
+   qu'on peut visiter en 3D, du Système solaire au Superamas local.
    - Ordinateur : colonne fine à gauche de la scène, ∞ (plus loin, vers l'infiniment grand) en haut, ⊕ (plus près, vers nous) en bas.
    - Téléphone (≤ 760 px) : pastille « ⊕ niveau ∞ » au début du fil d'Ariane ; un appui déplie la liste.
    Un clic sur le niveau affiché ramène à sa vue d'ensemble.
@@ -10,7 +10,7 @@
 (function () {
   'use strict';
   var OBS = window.OBS = window.OBS || {}, esc = OBS.esc;
-  var IDS = ['systeme', 'voisinage', 'galaxie', 'groupe-local', 'volume-local'];   // du plus près au plus loin
+  var IDS = ['systeme', 'voisinage', 'galaxie', 'groupe-local', 'volume-local', 'superamas'];   // du plus près au plus loin
   var narrowMQ = window.matchMedia ? matchMedia('(max-width: 760px)') : { matches: false };
   var host = null, open = false;
 
