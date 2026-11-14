@@ -16,6 +16,7 @@
     { id: 'galaxie', label: 'Voie lactée' },
     { id: 'groupe-local', label: 'Groupe local' },
     { id: 'volume-local', label: 'Volume local' },
+    { id: 'superamas', label: 'Superamas local' },
     { id: 'visiteurs', label: 'Visiteurs', theme: true, title: 'Les visiteurs du système solaire' },
     { id: 'types', label: 'Types d\'objets', theme: true, title: 'Les types d\'objets' },
     { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' },
@@ -71,11 +72,12 @@
     root.innerHTML = h.join('');
     OBS.scaleNav(root.querySelector('.sn'), scope, soon ? null : view);
     var body = root.querySelector('#atlas-body');
-    if (soon) body.innerHTML = OBS.band(LVL.band, esc(LVL.n), LVL.s, null) + '<p class="note">Ce niveau est en préparation : sa carte viendra ici, à partir de catalogues publiés (distances mesurées des galaxies). En attendant, les quatre premiers niveaux sont sur la règle.</p>';
+    if (soon) body.innerHTML = OBS.band(LVL.band, esc(LVL.n), LVL.s, null) + '<p class="note">Ce niveau est en préparation : sa carte viendra ici, à partir de catalogues publiés (distances mesurées des galaxies). En attendant, les niveaux précédents sont sur la règle.</p>';
     else if (view === 'unites') unites(body);
     else if (scope === 'galaxie') view === 'liste' ? galaxie(body) : carteGalaxie(body);
     else if (scope === 'groupe-local') view === 'liste' ? groupeLocal(body) : carteGroupeLocal(body);
     else if (scope === 'volume-local') OBS.atlasVolume(body, view);
+    else if (scope === 'superamas') OBS.atlasSuperamas(body, view);
     else if (view === 'liste') scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     else scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
     OBS.armPinch(root);

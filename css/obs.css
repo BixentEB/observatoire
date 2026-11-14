@@ -1227,3 +1227,32 @@ body.gt-on .console { bottom: 220px; }
 
 /* nom d'un groupe de galaxies sous son halo (Volume local) */
 .ring-tag.gh-tag { font-style: normal; font-size: 10.5px; letter-spacing: .04em; transition: opacity .3s; }
+
+/* règle des échelles de l'Explorer (js/ui/scenerule.js, lot 6) */
+.sr { position: fixed; z-index: 12; left: var(--gut); border: 0; box-shadow: none; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 8px; border-radius: 16px; background: linear-gradient(180deg, rgba(6, 9, 20, .55), rgba(6, 9, 20, .3)); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.sr[hidden], body.page-open .sr, body.photo .sr, .demo .sr { display: none; }
+.sr > .sn-zoom { margin-left: 2px; width: 30px; height: 26px; font-size: 15px; }
+.sr-steps { list-style: none; margin: 2px 0; padding: 0; display: flex; flex-direction: column; gap: 1px; position: relative; }
+.sr-steps::before { content: ''; position: absolute; left: 17px; top: 12px; bottom: 12px; width: 2px; margin-left: -1px; background: linear-gradient(180deg, #c9b8ff, #bfe0ff 50%, #f4c77a); opacity: .35; }
+.sr-steps button { position: relative; display: flex; align-items: center; gap: 9px; width: 100%; padding: 5px 10px 5px 0; border: 0; border-radius: 10px; background: none; color: var(--soft); cursor: pointer; text-align: left; font: 12px var(--mono); letter-spacing: .02em; }
+.sr-steps button:hover { background: rgba(255, 255, 255, .05); color: var(--fg); }
+.sr-steps .sn-dot { margin: 0 0 0 12px; }
+.sr-steps li.on .sn-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(8, 12, 26, .9), 0 0 12px var(--accent); }
+.sr-steps li.on button { color: var(--accent); }
+.sr-n small { display: block; font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.sr-here { margin-left: auto; padding-left: 6px; color: var(--muted); font-size: 13px; }
+.sr-pill { position: relative; display: flex; align-items: center; gap: 2px; margin-right: 6px; }
+.crumbs .sr-pill button.sr-z { width: 30px; padding: 5px 0; text-align: center; font-size: 15px; line-height: 1; }
+.crumbs .sr-pill button.sr-z:disabled { opacity: .3; cursor: default; }
+.crumbs .sr-pill button.sr-cur { display: flex; align-items: baseline; gap: 6px; color: var(--accent); border-color: rgba(244, 199, 122, .35); }
+.sr-cur small { font: 10px var(--mono); color: var(--muted); }
+.sr-cur span { font-size: 10px; color: var(--muted); }
+.sr-drop { position: absolute; left: 0; top: calc(100% + 6px); z-index: 31; min-width: 250px; padding: 8px; border: 1px solid var(--line2); border-radius: 14px; background: var(--panel-solid); box-shadow: 0 18px 40px rgba(0, 0, 0, .55); }
+.crumbs .sr-drop button { border: 0; background: none; }
+.sr-drop .sr-steps button { font-size: 13px; padding: 7px 10px 7px 0; }
+@media (max-width: 420px) { .sr-cur small { display: none; } .crumbs .sr-pill button.sr-z { width: 26px; } }
+/* Atlas › Superamas local (js/ui/superamas.js, lot 6) */
+.sc-map .sc-g { fill-opacity: .85; }
+.sc-map .sc-g.t3 { fill-opacity: .45; }
+.sc-map .sc-g.t2 { fill-opacity: .7; }
+.sc-map .vl-n.sc-named { fill: var(--fg); font-weight: 600; }

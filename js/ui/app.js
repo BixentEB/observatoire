@@ -133,53 +133,46 @@
   function renderCrumbs() {
     if (GEAR && GEAR.parentNode === crumbs) crumbs.removeChild(GEAR);
     var L = OBS.engine.level; if (!L) return;
-    var items = [];
-    // niveaux au-dessus du niveau actuel (on peut y remonter d'un clic)
-    if (L === OBS.volumelocal) {
-      items = L.crumbs();
-      if (L.selected() === 'milkyway') items.push({ label: '↓ Entrer dans le Groupe local', down: true, act: function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); } });
-      render(items); return;
+    // les niveaux eux-mêmes se choisissent sur la règle des échelles (js/ui/scenerule.js) ; le fil ne garde que le niveau affiché et l'objet choisi
+    var items = L.crumbs();
+    if (OBS.sceneRuleNarrow && OBS.sceneRuleNarrow()) {
+      var names = ['Système solaire', 'Voisinage stellaire', 'Voie lactée', 'Groupe local', 'Volume local'];
+      items = items.filter(function (c) { return names.indexOf(c.label) < 0; });   // déjà écrit dans la pastille de la règle
     }
-    items.push({ label: 'Volume local', act: function () { OBS.engine.go('volume-local', {}); } });
-    if (L === OBS.localgroup) {
-      items = items.concat(L.crumbs());
-      if (L.selected() === 'voielactee') items.push({ label: '↓ Entrer dans la Voie lactée', down: true, act: function () { OBS.engine.go('galaxie', { from: 'groupe-local' }); } });
-      render(items); return;
+    if (L === OBS.volumelocal && L.selected() === 'milkyway') items.push({ label: '↓ Entrer dans le Groupe local', down: true, act: function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); } });
+    if (L === OBS.localgroup && L.selected() === 'voielactee') items.push({ label: '↓ Entrer dans la Voie lactée', down: true, act: function () { OBS.engine.go('galaxie', { from: 'groupe-local' }); } });
+    if (L === OBS.galaxy && L.selected() === 'soleil-g') items.push({ label: '↓ Voisinage stellaire', down: true, act: function () { OBS.engine.go('voisinage', { from: 'galaxie' }); } });
+    if (L === OBS.neighborhood) {
+      var sid = L.selected();
+      if (sid && sid !== 'soleil-v') items.push({ label: '↓ Visiter ce système', down: true, act: function () { OBS.engine.go('etoile', { star: sid }); } });
+      items.push({ label: sid && sid !== 'soleil-v' ? '↓ Système solaire' : '↓ Entrer dans le système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
     }
-    items.push({ label: 'Groupe local', act: function () { OBS.engine.go('groupe-local', {}); } });
-    if (L === OBS.galaxy) {
-      items = items.concat(L.crumbs());
-      if (L.selected() === 'soleil-g') items.push({ label: '↓ Voisinage stellaire', down: true, act: function () { OBS.engine.go('voisinage', { from: 'galaxie' }); } });
-      render(items); return;
-    }
-    var exoSt = L === OBS.starsystem && OBS.starsystem.star() && OBS.starsystem.star().exo;
-    items.push({ label: 'Voie lactée', act: function () { OBS.engine.go('galaxie', exoSt ? { focus: exoSt ? OBS.starsystem.star().id : undefined } : { from: L === OBS.neighborhood ? 'voisinage' : 'haut' }); } });
-    if (L === OBS.system) items.push({ label: 'Voisinage stellaire', act: function () { OBS.engine.go('voisinage', { from: 'systeme' }); } });
-    if (L === OBS.neighborhood && L.selected()) {
-      var sid = L.selected(); items = items.concat(L.crumbs());
-      if (sid !== 'soleil-v') items.push({ label: '↓ Visiter ce système', down: true, act: function () { OBS.engine.go('etoile', { star: sid }); } });
-      items.push({ label: sid === 'soleil-v' ? '↓ Entrer dans le système solaire' : '↓ Système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
-      render(items); return;
-    }
-    items = items.concat(L.crumbs());
-    if (L === OBS.neighborhood) items.push({ label: '↓ Entrer dans le système solaire', down: true, act: function () { OBS.engine.go('systeme', { from: 'voisinage' }); } });
     render(items);
   }
   /* menu « Aller vers… » : tous les niveaux, et quelques destinations du niveau actuel */
   var gotoEl = $('goto');
   function gotoItems() {
-    var L = OBS.engine.level, out = [];
-    var levels = [['volume-local', 'Volume local', '869 galaxies à moins de 36 millions d\'al'], ['groupe-local', 'Groupe local', 'Andromède, le Triangle, les galaxies naines'], ['galaxie', 'Voie lactée', 'Notre galaxie, reconstituée'], ['voisinage', 'Voisinage stellaire', 'Les étoiles à moins de 12 al'], ['systeme', 'Système solaire', 'Le Soleil, les planètes, les sondes']];
-    out.push({ h: 'Niveaux' });
-    levels.forEach(function (l) { out.push({ label: l[1], sub: l[2], cur: L && L.id === l[0], act: function () { location.hash = l[0] === 'systeme' ? '#/' : '#/' + l[0]; } }); });
-    var here = [];
-    if (L === OBS.galaxy) { here = [['sgra', 'Centre galactique'], ['soleil-g', 'Le Soleil']].concat((OBS.EXOSYS || []).slice(0, 6).map(function (x) { return [x.id, x.name, 'exoplanètes · ' + x.ly.toLocaleString('fr-FR') + ' al']; })); here = here.map(function (x) { return { label: x[1], sub: x[2], act: function () { location.hash = '#/galaxie/' + x[0]; } }; }); }
-    else if (L === OBS.volumelocal) here = [['m81', 'M81'], ['ngc5128', 'Centaurus A'], ['ngc253', 'Galaxie du Sculpteur'], ['m101', 'M101'], ['ngc4594', 'Sombrero']].map(function (x) { return { label: x[1], act: function () { location.hash = '#/volume-local/' + x[0]; } }; });
-    else if (L === OBS.localgroup) here = ['m31', 'm33', 'lg-gnm', 'm32'].map(function (id) { return { label: OBS.localgroup.get(id).def.name, act: function () { location.hash = '#/groupe-local/' + id; } }; });
-    else if (L === OBS.neighborhood) here = OBS.STARS.slice(0, 6).map(function (s) { return { label: s.name, sub: s.ly.toLocaleString('fr-FR') + ' al', act: function () { location.hash = '#/voisinage/' + s.id; } }; });
-    else if (L === OBS.system) here = ['terre', 'lune', 'mars', 'jupiter', 'saturne'].map(function (id) { return { label: OBS.byId[id].name, act: function () { location.hash = '#/explorer/' + id; } }; });
-    if (here.length) { out.push({ h: 'Dans ce niveau' }); out = out.concat(here); }
-    out.push({ label: 'Tout l\'Atlas →', act: function () { location.hash = '#/atlas'; } });
+    var L = OBS.engine.level, z = OBS.sceneZone ? OBS.sceneZone() : (L && L.id), out = [], here = [];
+    var lvl = OBS.scaleLevel && OBS.scaleLevel(z);
+    function sys(id, sub) { var d = OBS.byId[id]; return d && { label: d.name, sub: sub, act: function () { location.hash = '#/explorer/' + id; } }; }
+    if (z === 'galaxie') {
+      here = (OBS.GALAXY_OBJECTS || []).map(function (o) { return { label: o.sun ? 'Le Soleil' : o.name, sub: o.sun ? 'vous êtes ici' : (o.ly ? o.ly.toLocaleString('fr-FR') + ' al' : ''), act: function () { location.hash = '#/galaxie/' + o.id; } }; });
+      var ex = (OBS.EXOSYS || []).map(function (x) { return { label: x.name, sub: 'exoplanètes · ' + x.ly.toLocaleString('fr-FR') + ' al', act: function () { location.hash = '#/galaxie/' + x.id; } }; });
+      if (ex.length) here = here.concat([{ h: 'Systèmes à exoplanètes' }]).concat(ex);
+    }
+    else if (z === 'volume-local') here = [['milkyway', 'Groupe local', 'vous êtes ici'], ['m81', 'M81'], ['ngc5128', 'Centaurus A'], ['m83', 'M83'], ['ngc253', 'Galaxie du Sculpteur'], ['m101', 'M101'], ['ngc4594', 'Sombrero'], ['m51', 'Galaxie du Tourbillon']].filter(function (x) { return OBS.volumelocal.get ? !!OBS.volumelocal.get(x[0]) : true; }).map(function (x) { return { label: x[1], sub: x[2], act: function () { location.hash = '#/volume-local/' + x[0]; } }; });
+    else if (z === 'groupe-local') here = (OBS.LOCALGROUP || []).filter(function (g) { return OBS.localgroup.get(g.id); }).slice(0, 14).map(function (g) { return { label: g.name, sub: g.home ? 'vous êtes ici' : (g.ly ? (g.ly / 1e6).toLocaleString('fr-FR', { maximumFractionDigits: 2 }) + ' M al' : ''), act: function () { location.hash = '#/groupe-local/' + g.id; } }; });
+    else if (z === 'voisinage') here = OBS.STARS.map(function (s) { return { label: s.name, sub: s.ly.toLocaleString('fr-FR') + ' al', act: function () { location.hash = '#/voisinage/' + s.id; } }; });
+    else {
+      here = ['soleil', 'mercure', 'venus', 'terre', 'lune', 'mars', 'ceres', 'jupiter', 'saturne', 'uranus', 'neptune', 'pluton'].map(function (id) { return sys(id); }).filter(Boolean);
+      if (L === OBS.system && L.selected() && OBS.childrenOf) {
+        var p = OBS.byId[L.selected()], host = p && p.moon ? p.parent : L.selected(), moons = OBS.childrenOf(host);
+        if (moons.length) here = [{ h: 'Lunes de ' + OBS.byId[host].name }].concat(moons.map(function (m) { return sys(m.id); })).concat([{ h: 'Planètes' }]).concat(here);
+      }
+    }
+    out.push({ h: lvl ? lvl.n : 'Dans ce niveau' });
+    out = out.concat(here);
+    out.push({ label: 'Tout l\'Atlas de ce niveau →', act: function () { location.hash = '#/atlas/' + (z || 'systeme'); } });
     return out;
   }
   function openGoto(btn) {
@@ -198,6 +191,7 @@
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });
     crumbs.innerHTML = '';
+    if (OBS.sceneRuleNarrow && OBS.sceneRuleNarrow()) crumbs.appendChild(OBS.sceneRulePill());
     items.forEach(function (c, i) {
       if (i && !c.down && !c.goto && !items[i - 1].back) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
       var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
@@ -210,7 +204,11 @@
       crumbs.appendChild(b);
     });
     if (GEAR) crumbs.appendChild(GEAR);   // ⚙ toujours au même endroit : au bout de la rangée des niveaux
+    placeCap();
   }
+  /* la légende du niveau se place sous le fil d'Ariane, même quand il passe sur deux lignes (téléphone) */
+  function placeCap() { var c = $('level-cap'); if (!c) return; var r = crumbs.getBoundingClientRect(); c.style.top = r.height ? Math.round(r.bottom + 8) + 'px' : ''; }
+  window.addEventListener('resize', placeCap);
   OBS.on('crumbs', renderCrumbs); OBS.on('level', function () { setTimeout(renderCrumbs, 0); });
 
   /* titre du niveau, au changement */
