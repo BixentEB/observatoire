@@ -83,6 +83,7 @@ if lab is not None:
                 ii = [None] * 3
                 for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
                 sc += int((lab[ii[0], ii[1], ii[2]] == 1) == bool(inside))
+            if sc == len(TEST): log.append('orientation possible : axes %s, signes %s' % (perm, flip))
             if best is None or sc > best[0]: best = (sc, perm, flip)
     ORIENT = best
     log.append('**Orientation : SGX, SGY, SGZ sur les axes %s de la grille, signes %s : %d / %d amas bien placés**' % (best[1], best[2], best[0], len(TEST)))
@@ -141,8 +142,8 @@ if lab is not None:
                 ix, iy, iz = [int(min(N - 1, max(0, np.floor(q / cell + c)))) for q in p]
                 return vox[iz, iy, ix]
             rng = np.random.default_rng(1)
-            seeds_i = rng.choice(len(bx), size=min(160, len(bx)), replace=False)
-            seeds = [np.array([(bx[s] + .5 - c) * cell, (by[s] + .5 - c) * cell, (bz[s] + .5 - c) * cell]) for s in seeds_i]
+            seeds_i = rng.choice(len(xx), size=min(160, len(xx)), replace=False)            # départs répartis dans tout Laniakea
+            seeds = [np.array([(xx[s] + .5 - c) * cell, (yy[s] + .5 - c) * cell, (zz[s] + .5 - c) * cell]) for s in seeds_i]
             def stream(p, perm, sgn, steps=120, h=3.0):
                 line = [p.copy()]
                 for _ in range(steps):
@@ -160,7 +161,7 @@ if lab is not None:
                     for p in seeds[:60]:
                         L = stream(p, perm, sgn, steps=60)
                         if inbasin(L[-1]): ok += 1
-                    log.append('composantes %s : %d / 60 lignes restent dans Laniakea' % (perm, ok))
+                    log.append('composantes %s, signes %s : %d / 60 lignes restent dans Laniakea' % (perm, sgn, ok))
                     if best is None or ok > best[0]: best = (ok, perm, sgn)
             log.append('**Ordre retenu : %s (%d / 60)**' % (best[1], best[0]))
             flux = []
