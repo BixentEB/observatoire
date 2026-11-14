@@ -1260,5 +1260,5 @@ body.gt-on .console { bottom: 220px; }
 .sn-zoom, .crumbs .sr-pill button.sr-z { font-family: var(--body); font-size: 18px; line-height: 1; }
 .sn-zoom[data-z="-1"], .crumbs .sr-pill button.sr-z[data-z="-1"] { font-size: 14px; }
 .c-text.c-point { color: var(--fg); border-left: 2px solid var(--accent); padding-left: 10px; }
-#size-badge.badge-quiet { font-size: 11px; padding: 5px 10px; opacity: .8; cursor: help; }
-#size-badge.badge-quiet:hover { opacity: 1; }
+#size-badge.badge-quiet { font-size: 10px; letter-spacing: .02em; padding: 3px 8px; border: 0; border-radius: 6px; background: rgba(5, 8, 18, .78); color: var(--muted); cursor: help; }
+#size-badge.badge-quiet:hover { color: var(--soft); }

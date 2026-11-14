@@ -237,7 +237,7 @@
   function sizeBadgeView(L) {
     var b = $('size-badge'), gal = L && L.id === 'galaxie';
     b.classList.toggle('badge-quiet', !gal); b.classList.toggle('on', gal && !!OBS.galaxy.unc);
-    b.textContent = !L ? '' : L.id === 'voisinage' ? '1 point = 1 étoile' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? '1 forme = 1 galaxie' : L.id === 'volume-local' ? '1 point = 1 galaxie' : L.id === 'superamas' ? '1 point = 1 groupe' : 'Tailles agrandies';
+    b.textContent = !L ? '' : L.id === 'voisinage' ? '1 point = 1 étoile ou un système d\'étoiles · tailles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? '1 forme = 1 galaxie · positions mesurées, aspect reconstitué' : L.id === 'volume-local' ? '1 point = 1 galaxie · des millions à des centaines de milliards d\'étoiles' : L.id === 'superamas' ? '1 point = 1 groupe de galaxies · jusqu\'à 714 dans l\'amas de la Vierge' : 'Tailles agrandies';
     b.title = gal ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur. Cliquer pour distinguer les portions de bras mesurées (masers) de celles qui sont prolongées.' : !L ? '' : ({
       voisinage: 'Un point = une étoile, ou un système de deux ou trois étoiles. Tailles symboliques : agrandies pour être visibles.',
       'groupe-local': 'Chaque forme est une galaxie entière. Positions mesurées ; aspect reconstitué d\'après les observations.',
