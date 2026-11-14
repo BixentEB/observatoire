@@ -1,4 +1,4 @@
-# Catalogues de galaxies pour les niveaux 5 à 8 de la règle des échelles (Volume local pour commencer).
+# Catalogues de galaxies pour les niveaux 5 à 8 de la règle des échelles (Volume local, Superamas local, Laniakea).
 # À la demande, ou quand on modifie les scripts. Ne publie que les fichiers de données et les rapports.
 name: Catalogues de galaxies
 
@@ -8,6 +8,7 @@ on:
     paths:
       - 'tools/volume.py'
       - 'tools/superamas.py'
+      - 'tools/laniakea.py'
       - '.github/workflows/catalogues.yml'
   workflow_dispatch: {}
 
@@ -33,13 +34,16 @@ jobs:
       - name: Superamas local (groupes de Kourkchi et Tully)
         continue-on-error: true
         run: python3 tools/superamas.py
+      - name: Laniakea (relevé 2MRS)
+        continue-on-error: true
+        run: python3 tools/laniakea.py
       - name: Publier
         if: always()
         run: |
-          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md; do [ -f "$f" ] && git add "$f"; done; true
+          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md data/laniakea.json data/laniakea-report.md; do [ -f "$f" ] && git add "$f"; done; true
           if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
           git config user.name "observatoire-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Catalogues de galaxies : Volume local du $(date -u +%F)"
+          git commit -m "Catalogues de galaxies du $(date -u +%F)"
           git pull --rebase --quiet || true
           git push
