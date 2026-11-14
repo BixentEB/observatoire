@@ -11,7 +11,7 @@ Sources (projet CosmicFlows, https://projets.ip2i.in2p3.fr/cosmicflows/) :
 Unités : les grilles sont en Mpc/h. Une distance en Mpc/h vaut cz / 100 km/s ; l'Observatoire place les galaxies du
 relevé 2MRS à cz / 70 (H0 = 70). Pour que tout coïncide, on multiplie les positions des grilles par 100 / 70.
 
-Contrôles écrits dans le rapport : orientation de la grille choisie pour placer correctement 7 amas connus (dedans / dehors) ; notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
+Contrôles écrits dans le rapport : orientation des grilles choisie pour placer correctement 7 amas connus (dedans / dehors), puis, entre les orientations possibles, celle où les lignes d'écoulement parties de Laniakea y restent ; notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
 Laniakea doit valoir ≈ 2 × 10⁶ (Mpc/h)³ ; l'ordre des composantes de vitesse est choisi comme celui pour lequel les lignes
 d'écoulement partant de Laniakea y restent (un bassin d'attraction est, par définition, ce qui s'écoule vers son attracteur).
 
@@ -72,6 +72,7 @@ if raw:
 TEST = [('Vierge', (-2.4, 10.7, -0.4), 1), ('Centaure', (-30.7, 13.4, -6.8), 1), ('Hydre', (-22.8, 19.5, -23.0), 1), ('Règle', (-47.9, -6.9, 6.0), 1),
         ('Persée', (50.8, -10.9, -13.2), 0), ('Coma', (0.5, 68.5, 10.0), 0), ('Shapley', (-124.1, 74.9, -3.4), 0)]
 ORIENT = None
+CANDS = []
 if lab is not None:
     N = lab.shape[0]; cell = 1000.0 / N; c = N / 2.0
     def idx(q): return int(min(N - 1, max(0, np.floor(q / cell + c))))
@@ -83,9 +84,46 @@ if lab is not None:
                 ii = [None] * 3
                 for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
                 sc += int((lab[ii[0], ii[1], ii[2]] == 1) == bool(inside))
-            if sc == len(TEST): log.append('orientation possible : axes %s, signes %s' % (perm, flip))
+            if sc == len(TEST): log.append('orientation possible : axes %s, signes %s' % (perm, flip)); CANDS.append((perm, flip))
             if best is None or sc > best[0]: best = (sc, perm, flip)
     ORIENT = best
+    # plusieurs orientations placent bien les 7 amas : on départage par le champ de vitesses (même orientation pour ses
+    # axes et ses composantes) — un bassin d'attraction est ce qui s'écoule vers son attracteur, les lignes parties de
+    # Laniakea doivent donc y rester
+    RAWV = get('CF4_new_64-z008_velocity.fits')
+    V0 = None
+    if RAWV:
+        for u in fits.open(io.BytesIO(RAWV)):
+            if u.data is not None and u.data.ndim == 4: V0 = np.asarray(u.data, dtype=float) * 52.0; break
+        if V0 is not None and V0.shape[0] != 3: V0 = np.moveaxis(V0, -1, 0)
+    if V0 is not None and len(CANDS) > 1:
+        M0 = V0.shape[1]; vc0 = 1000.0 / M0
+        zi, yi, xi = np.nonzero(lab == 1)
+        rng0 = np.random.default_rng(7); pick0 = rng0.choice(len(xi), size=min(50, len(xi)), replace=False)
+        def score_flow(perm, flip):
+            # positions supergalactiques des voxels de Laniakea pour cette orientation, puis 50 lignes d'écoulement
+            def sgpos(i3):
+                return [flip[k] * ((i3[perm[k]] + .5 - c) * cell) for k in range(3)]
+            def inb(p):
+                ii = [None] * 3
+                for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
+                return lab[ii[0], ii[1], ii[2]] == 1
+            def vel(p):
+                ii = [None] * 3
+                for k in range(3): ii[perm[k]] = int(min(M0 - 1, max(0, np.floor(flip[k] * p[k] / vc0 + M0 / 2.0))))
+                w = V0[:, ii[0], ii[1], ii[2]]; return np.array([flip[k] * w[perm[k]] for k in range(3)])
+            ok = 0
+            for s_ in pick0:
+                p = np.array(sgpos((zi[s_], yi[s_], xi[s_])), dtype=float)
+                for _ in range(60):
+                    v = vel(p); n_ = np.linalg.norm(v)
+                    if n_ < 1e-6: break
+                    p = p + v / n_ * 3.0
+                ok += int(inb(p))
+            return ok
+        sc2 = [(score_flow(pf[0], pf[1]), pf) for pf in CANDS]
+        for v_, pf in sc2: log.append('écoulement, axes %s signes %s : %d / %d lignes restent dans Laniakea' % (pf[0], pf[1], v_, len(pick0)))
+        v_, pf = max(sc2, key=lambda t: t[0]); ORIENT = (len(TEST), pf[0], pf[1])
     log.append('**Orientation : SGX, SGY, SGZ sur les axes %s de la grille, signes %s : %d / %d amas bien placés**' % (best[1], best[2], best[0], len(TEST)))
 
 out = {}
@@ -119,7 +157,7 @@ if lab is not None:
     log.append('Bord : %d voxels ; coupes : %d (dessus), %d (côté)' % (len(out['bord']), len(out['coupe']['dessus']), len(out['coupe']['cote'])))
 
     # ---------- vitesses et lignes d'écoulement ----------
-    rawv = get('CF4_new_64-z008_velocity.fits')
+    rawv = RAWV
     if rawv:
         hv = fits.open(io.BytesIO(rawv))
         V = None
@@ -154,8 +192,8 @@ if lab is not None:
                     p = p + v2 / s2 * h; line.append(p.copy())
                     if np.max(np.abs(p)) > 480: break
                 return line
-            best = None
-            for perm in itertools.permutations(range(3)):
+            best = (0, ORIENT[1], ORIENT[2]) if ORIENT else None   # composante SG k = signe × composante stockée n° perm[k], comme les axes
+            for perm in [] if ORIENT else itertools.permutations(range(3)):
                 for sgn in set([(1, 1, 1), tuple(ORIENT[2]) if ORIENT else (1, 1, 1)]):
                     ok = 0
                     for p in seeds[:60]:
@@ -163,7 +201,7 @@ if lab is not None:
                         if inbasin(L[-1]): ok += 1
                     log.append('composantes %s, signes %s : %d / 60 lignes restent dans Laniakea' % (perm, sgn, ok))
                     if best is None or ok > best[0]: best = (ok, perm, sgn)
-            log.append('**Ordre retenu : %s (%d / 60)**' % (best[1], best[0]))
+            log.append('**Composantes : %s, signes %s**' % (best[1], best[2]))
             flux = []
             for p in seeds:
                 L = stream(p, best[1], best[2])
