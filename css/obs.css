@@ -1260,3 +1260,5 @@ body.gt-on .console { bottom: 220px; }
 .sn-zoom, .crumbs .sr-pill button.sr-z { font-family: var(--body); font-size: 18px; line-height: 1; }
 .sn-zoom[data-z="-1"], .crumbs .sr-pill button.sr-z[data-z="-1"] { font-size: 14px; }
 .c-text.c-point { color: var(--fg); border-left: 2px solid var(--accent); padding-left: 10px; }
+#size-badge.badge-quiet { font-size: 11px; padding: 5px 10px; opacity: .8; cursor: help; }
+#size-badge.badge-quiet:hover { opacity: 1; }
