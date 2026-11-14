@@ -15,7 +15,8 @@ Contrôles écrits dans le rapport : orientation des grilles choisie pour placer
 Laniakea doit valoir ≈ 2 × 10⁶ (Mpc/h)³ ; l'ordre des composantes de vitesse est choisi comme celui pour lequel les lignes
 d'écoulement partant de Laniakea y restent (un bassin d'attraction est, par définition, ce qui s'écoule vers son attracteur).
 
-Sortie : data/laniakea-bassin.json = {meta, bord: [[x, y, z]…], coupe: {dessus: [[x, y]…], cote: [[x, z]…]}, flux: [[[x, y, z]…]…]}
+Sortie : data/laniakea-bassin.json = {meta, bord: [[x, y, z]…], coupe: {dessus: [[x, y]…], cote: [[x, z]…]}, flux: [[[x, y, z]…]…],
+  attracteur, voisins: [{id, n, volume, attracteur, bord, dessus, cote}…] (Apus, Hercule, Lepus, Persée-Poissons, Shapley)}
   positions supergalactiques en dixièmes de Mpc (H0 = 70), entiers.
 Rapport : data/laniakea-bassin-report.md. Exécuté par la tâche GitHub « Catalogues de galaxies » (numpy et astropy).
 """
@@ -140,6 +141,24 @@ if lab is not None:
                     'cote': [[round(pos(a, m, b_)[0] * 10), round(pos(a, m, b_)[2] * 10)] for a, b_ in zip(*np.nonzero(vox[:, m, :]))],
                     'cellule': round(cell * K * 10)}
     out['attracteur'] = [round(-62 * K * 10), round(-8 * K * 10), round(39 * K * 10)]   # Dupuy & Courtois 2023 : (-62, -8, 39) Mpc/h, direction du Grand Attracteur
+    # bassins voisins (Dupuy & Courtois 2023, table A.1) : bord sous-échantillonné, coupes, attracteur publié
+    VOIS = [(2, 'apus', 'Apus', (-125, -23, -31)), (3, 'hercule', 'Hercule', (-39, 70, 78)), (4, 'lepus', 'Lepus', (-62, -39, -109)),
+            (5, 'persee-poissons', 'Persée-Poissons', (47, -23, -31)), (6, 'shapley', 'Shapley', (-141, 62, -16))]
+    out['voisins'] = []
+    rngv = np.random.default_rng(3)
+    for n_, vid, nom, att in VOIS:
+        vb = (lab == n_)
+        if not vb.any(): continue
+        pv = np.pad(vb, 1)
+        inn = pv[1:-1, 1:-1, 1:-1] & pv[:-2, 1:-1, 1:-1] & pv[2:, 1:-1, 1:-1] & pv[1:-1, :-2, 1:-1] & pv[1:-1, 2:, 1:-1] & pv[1:-1, 1:-1, :-2] & pv[1:-1, 1:-1, 2:]
+        cz_, cy_, cx_ = np.nonzero(vb & ~inn)
+        keep = rngv.choice(len(cx_), size=min(1500, len(cx_)), replace=False) if len(cx_) else []
+        out['voisins'].append({'id': vid, 'n': nom, 'num': n_, 'voxels': int(vb.sum()), 'volume': round(float(vb.sum() * cell ** 3 / 1e6), 2),
+            'attracteur': [round(att[0] * K * 10), round(att[1] * K * 10), round(att[2] * K * 10)],
+            'bord': [[round(v * 10) for v in pos(cz_[i], cy_[i], cx_[i])] for i in keep],
+            'dessus': [[round(pos(m, a_, b_)[0] * 10), round(pos(m, a_, b_)[1] * 10)] for a_, b_ in zip(*np.nonzero(vb[m]))],
+            'cote': [[round(pos(a_, m, b_)[0] * 10), round(pos(a_, m, b_)[2] * 10)] for a_, b_ in zip(*np.nonzero(vb[:, m, :]))]})
+        log.append('Bassin voisin %s : %d voxels (%.1f × 10⁶ (Mpc/h)³), bord gardé %d points' % (nom, vb.sum(), vb.sum() * cell ** 3 / 1e6, len(keep)))
     log.append('Bord : %d voxels ; coupes : %d (dessus), %d (côté)' % (len(out['bord']), len(out['coupe']['dessus']), len(out['coupe']['cote'])))
 
     # ---------- vitesses et lignes d'écoulement ----------
