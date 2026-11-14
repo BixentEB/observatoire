@@ -23,18 +23,19 @@
   function eq(ra, dec, d, out) { var a = ra * D2R, b = dec * D2R; return out.set(Math.cos(b) * Math.cos(a) * d, Math.sin(b) * d, -Math.cos(b) * Math.sin(a) * d); }
 
   /* le rayonnement fossile : la vraie carte de Planck (ESA, CC BY 4.0), en coordonnées galactiques, posée sur la sphère
-     du bord dans le repère équatorial de la scène. Vue de l'extérieur, elle apparaît retournée, comme un globe céleste. */
+     du bord dans le repère équatorial de la scène. Seule la face intérieure est dessinée : depuis l'extérieur, on voit à travers
+     la sphère la paroi du fond, dans le bon sens, comme nous la voyons depuis le centre. */
   function cmbSphere(R) {
     new T.TextureLoader().load('assets/img/fond-diffus.webp', function (tex) {
       var mat = new T.ShaderMaterial({
-        uniforms: { map: { value: tex }, uOp: { value: .38 },
+        uniforms: { map: { value: tex }, uOp: { value: .5 },
           r0: { value: new T.Vector3(-0.0548755604, -0.8734370902, -0.4838350155) }, r1: { value: new T.Vector3(0.4941094279, -0.4448296300, 0.7469822445) }, r2: { value: new T.Vector3(-0.8676661490, -0.1980763734, 0.4559837762) } },
         vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
         fragmentShader: 'uniform sampler2D map; uniform float uOp; uniform vec3 r0, r1, r2; varying vec3 vP;' +
           'void main(){ vec3 e = normalize(vec3(vP.x, -vP.z, vP.y)); vec3 g = vec3(dot(r0, e), dot(r1, e), dot(r2, e));' +
           ' float l = atan(g.y, g.x), b = asin(clamp(g.z, -1.0, 1.0)); vec2 uv = vec2(0.5 - l / 6.2831853, 0.5 + b / 3.1415927);' +
           ' gl_FragColor = vec4(texture2D(map, uv).rgb * uOp, uOp); }',
-        transparent: true, side: T.DoubleSide, depthWrite: false });
+        transparent: true, side: T.BackSide, depthWrite: false });   // face intérieure seulement : on voit la paroi du fond, comme depuis le centre, et non un globe opaque
       var mesh = new T.Mesh(new T.SphereGeometry(R * .999, 96, 64), mat); marks.add(mesh); L.cmbMesh = mesh;
     });
   }

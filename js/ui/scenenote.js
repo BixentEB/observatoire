@@ -28,7 +28,7 @@
       ['#c9b8ff', 'Les nuages de points colorés marquent les frontières de Laniakea et de ses voisins : là où les écoulements partent dans des sens opposés.']]],
     univers: ['Lire l\'Univers observable', [
       ['#e8ecff', 'Les points sont de vraies galaxies (relevé SDSS), dans une tranche de 5 degrés. Les « filaments » qu\'ils dessinent sont réels : les galaxies s\'alignent en filaments et en murailles autour de grands vides. C\'est la toile cosmique.'],
-      ['#ff9f8a', 'Les sphères marquent des distances. Autour de celle des quasars, des milliers de vrais quasars du SDSS ; sur celle des premières galaxies, les objets confirmés par le télescope James Webb ; le bord porte la vraie carte du rayonnement fossile mesurée par le satellite Planck.']]],
+      ['#ff9f8a', 'Les sphères marquent des distances. Autour de celle des quasars, des milliers de vrais quasars du SDSS ; sur celle des premières galaxies, les objets confirmés par le télescope James Webb ; le bord porte la vraie carte du rayonnement fossile mesurée par le satellite Planck. Ce n\'est pas un globe vu de l\'extérieur : c\'est le ciel qui nous entoure de tous côtés, dont on ne dessine que la paroi du fond.']]],
     'au-dela': ['Lire l\'au-delà', [
       ['#ff9f8a', 'Ceci est un schéma, pas une carte. Seule notre sphère orangée correspond à ce que l\'on peut voir.'],
       ['#8fc2ff', 'Tout ce qui est en bleu relève des hypothèses de chercheurs, de la plus admise à la plus spéculative. Rien n\'y a été observé.']]]
