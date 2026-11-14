@@ -21,7 +21,7 @@
       '<span class="flag f-adapt" title="Adapté — la carte est une projection : ' + (side ? 'vue de côté, la profondeur est écrasée' : 'vue de dessus du plan supergalactique, la hauteur est écrasée') + '"><i>Vue</i>' + (side ? 'de côté' : 'de dessus') + '</span></div>';
   }
   var side = false;
-  function map(root, J) {
+  function map(root, J, B) {
     var S = 900, C = S / 2, R = 300, k = (S / 2 - 24) / R, PR = 2;          // ± 300 Mpc dans le cadre
     var cv = document.createElement('canvas'); cv.width = S * PR; cv.height = S * PR;
     var cx = cv.getContext('2d'); cx.scale(PR, PR);
@@ -32,6 +32,12 @@
     });
     var h = ['<image href="' + cv.toDataURL('image/png') + '" x="0" y="0" width="' + S + '" height="' + S + '"/>'];
     [[250, '250 M al'], [500, '500 M al'], [750, '750 M al']].forEach(function (r) { var rr = r[0] / MLY * k; h.push('<circle cx="' + C + '" cy="' + C + '" r="' + rr.toFixed(1) + '" class="vl-ring"/><text x="' + (C + rr * .71 + 4).toFixed(1) + '" y="' + (C - rr * .71 - 4).toFixed(1) + '" class="at-d">' + r[1] + '</text>'); });
+    if (B && B.coupe) {   // coupe du bassin de Laniakea dans le plan de la carte, puis lignes d'écoulement projetées
+      var cs = B.coupe.cellule / 10 * k, cells = side ? B.coupe.cote : B.coupe.dessus;
+      h.push('<g class="lk-basin">' + cells.map(function (q) { return '<rect x="' + (C + q[0] / 10 * k - cs / 2).toFixed(1) + '" y="' + (C - q[1] / 10 * k - cs / 2).toFixed(1) + '" width="' + cs.toFixed(1) + '" height="' + cs.toFixed(1) + '"/>'; }).join('') + '</g>');
+      h.push('<g class="lk-flux">' + (B.flux || []).map(function (L) { return '<polyline points="' + L.map(function (q) { return (C + q[0] / 10 * k).toFixed(1) + ',' + (C - (side ? q[2] : q[1]) / 10 * k).toFixed(1); }).join(' ') + '"/>'; }).join('') + '</g>');
+    }
+    if (B && B.attracteur) { var ax = C + B.attracteur[0] / 10 * k, ay = C - (side ? B.attracteur[2] : B.attracteur[1]) / 10 * k; h.push('<g class="lk-att"><circle cx="' + ax.toFixed(1) + '" cy="' + ay.toFixed(1) + '" r="7"/><text x="' + ax.toFixed(1) + '" y="' + (ay - 12).toFixed(1) + '" text-anchor="middle">✦ attracteur de Laniakea</text></g>'); }
     var rs = 50 * k; h.push('<circle cx="' + C + '" cy="' + C + '" r="' + rs.toFixed(1) + '" class="lk-sa"/><text x="' + C + '" y="' + (C + rs + 14).toFixed(1) + '" class="at-d lk-sa-t" text-anchor="middle">Superamas local</text>');
     if (!side) h.push('<text x="' + C + '" y="30" class="vl-dir" text-anchor="middle">Les zones vides en éventail depuis le centre : la région cachée par notre propre galaxie</text>');
     var boxes = [[C - 40, C + 6, C + 40, C + 22]];   // « vous êtes ici », sous le centre
@@ -44,9 +50,9 @@
     h.push('<circle cx="' + C + '" cy="' + C + '" r="4" class="vl-here"/><text x="' + C + '" y="' + (C + 18) + '" class="at-n at-sun" text-anchor="middle">vous êtes ici</text>');
     root.innerHTML = '<div class="atlas-head">' + flags(side) + '<div class="atlas-sizes"><span class="atlas-sizes-l">Vue :</span><span class="atlas-toggle"><button type="button" data-v="top" aria-pressed="' + !side + '">Dessus</button><button type="button" data-v="side" aria-pressed="' + side + '">Côté</button></span></div></div>' +
       '<div class="atlas-scroll" tabindex="0"><svg class="atlas-map vl-map sc-map lk-map" viewBox="0 0 ' + S + ' ' + S + '" width="' + S + '" height="' + S + '" role="img" aria-label="Carte de Laniakea et de ses voisins">' + h.join('') + '</svg></div>' +
-      '<p class="note vl-leg"><span class="at-key"><i style="background:' + col(20, 1) + '"></i>galaxies proches</span><span class="at-key"><i style="background:' + col(280, 1) + '"></i>galaxies lointaines</span><span class="at-key"><i style="background:#f4c77a"></i>amas nommés</span></p>' +
-      '<p class="note">' + nf(J.g.length) + ' galaxies du relevé 2MRS jusqu\'à près d\'un milliard d\'années-lumière. Laniakea, notre superamas, s\'étend sur environ 520 millions d\'années-lumière : il englobe le Superamas local, les amas du Centaure et de l\'Hydre et le Grand Attracteur, vers lequel s\'écoulent toutes ses galaxies. Plus loin, la concentration de Shapley et l\'amas de Coma appartiennent à d\'autres bassins. Les zones vides en éventail depuis le centre sont cachées par notre propre galaxie (zone d\'évitement). Au loin, les points s\'éclaircissent : seules les galaxies les plus brillantes y sont recensées, ce n\'est pas un vide. Le contour de Laniakea, déduit des mouvements des galaxies (Tully et al. 2014), n\'est pas encore dessiné.</p>';
-    root.querySelectorAll('[data-v]').forEach(function (b) { b.addEventListener('click', function () { side = b.getAttribute('data-v') === 'side'; map(root, J); OBS.armPinch(root); }); });
+      '<p class="note vl-leg">' + (B ? '<span class="at-key"><i class="lk-key-b"></i>Laniakea (coupe du bassin)</span><span class="at-key"><i class="lk-key-f"></i>lignes d\'écoulement</span>' : '') + '<span class="at-key"><i style="background:' + col(20, 1) + '"></i>galaxies proches</span><span class="at-key"><i style="background:' + col(280, 1) + '"></i>galaxies lointaines</span><span class="at-key"><i style="background:#f4c77a"></i>amas nommés</span></p>' +
+      '<p class="note">' + nf(J.g.length) + ' galaxies du relevé 2MRS jusqu\'à près d\'un milliard d\'années-lumière. Laniakea, notre superamas, s\'étend sur environ 520 millions d\'années-lumière selon sa première délimitation (2014), davantage selon celle de 2023 : il englobe le Superamas local, les amas du Centaure et de l\'Hydre et le Grand Attracteur, vers lequel s\'écoulent toutes ses galaxies. Plus loin, la concentration de Shapley et l\'amas de Coma appartiennent à d\'autres bassins. Les zones vides en éventail depuis le centre sont cachées par notre propre galaxie (zone d\'évitement). Au loin, les points s\'éclaircissent : seules les galaxies les plus brillantes y sont recensées, ce n\'est pas un vide. ' + (B ? 'En doré : la coupe de Laniakea dans le plan de la carte et les lignes d\'écoulement de ses galaxies vers son attracteur (✦, dans la direction du Grand Attracteur), reconstitués d\'après leurs mouvements mesurés (champ de vitesses CosmicFlows-4, Dupuy et Courtois 2023). Laniakea n\'est pas une sphère : c\'est un bassin aux contours irréguliers, comme celui d\'un fleuve.' : '') + '</p>';
+    root.querySelectorAll('[data-v]').forEach(function (b) { b.addEventListener('click', function () { side = b.getAttribute('data-v') === 'side'; map(root, J, B); OBS.armPinch(root); }); });
     OBS.armPinch(root);
   }
   function list(root, J) {
@@ -56,12 +62,14 @@
         return '<article class="row"><div class="row-h"><h3><span class="vl-sw" style="background:#f4c77a"></span><a href="#/laniakea/' + a.id + '">' + esc(a.n) + '</a></h3><p class="row-kind">' + dTxt(d) + ' · ' + nf(a.v) + ' km/s</p></div><div class="row-b"><p>' + esc(a.s) + '.</p></div></article>';
       }).join('') + '</div><p class="note">Source : ' + esc(J.meta.source) + '. Positions des amas : directions et vitesses publiées (NED).</p>';
   }
-  OBS.LK = { load: load, dTxt: dTxt, col: col, nf: nf };
+  var LB = null;
+  function loadBasin() { return LB || (LB = fetch('data/laniakea-bassin.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { LB = null; return null; })); }
+  OBS.LK = { load: load, loadBasin: loadBasin, dTxt: dTxt, col: col, nf: nf };
   OBS.atlasLaniakea = function (root, view) {
     root.innerHTML = '<p class="note">Chargement du relevé…</p>';
-    load().then(function (J) {
-      if (!J) { root.innerHTML = '<p class="note">Le relevé 2MRS n\'a pas pu être chargé.</p>'; return; }
-      (view === 'liste' ? list : map)(root, J);
+    Promise.all([load(), loadBasin()]).then(function (R) {
+      var J = R[0]; if (!J) { root.innerHTML = '<p class="note">Le relevé 2MRS n\'a pas pu être chargé.</p>'; return; }
+      (view === 'liste' ? list : map)(root, J, R[1]);
     });
   };
 })();

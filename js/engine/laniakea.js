@@ -13,7 +13,7 @@
   var scene = L.scene = new T.Scene();
   var camera = L.camera = new T.PerspectiveCamera(45, 1, 0.5, 20000);
   var controls, W = 800, H = 600, PR = 1;
-  var items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
+  var basin = null, basinOn = true, items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), v3 = new T.Vector3(), camSpace = new T.Vector3();
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR; varying vec3 vC;',
@@ -100,8 +100,38 @@
       if (++push >= 3) { push = 0; OBS.engine.go('superamas', { from: 'laniakea' }); }
     }, { passive: true });
     OBS.LK.load().then(function (J) { if (J) populate(J); });
+    OBS.LK.loadBasin().then(function (B) { if (B) addBasin(B); });
   };
 
+  /* contour de Laniakea (bord du bassin d'attraction, voxels de 11 Mpc) et lignes d'écoulement vers son attracteur :
+     reconstitution d'après le champ de vitesses CosmicFlows-4 (Dupuy et Courtois 2023), data/laniakea-bassin.json */
+  function addBasin(B) {
+    basin = new T.Group();
+    var n = B.bord.length, P = new Float32Array(n * 3), C = new Float32Array(n * 3), Z = new Float32Array(n);
+    B.bord.forEach(function (q, i) { sg(q[0] / 10, q[1] / 10, q[2] / 10, tmp); P[i * 3] = tmp.x; P[i * 3 + 1] = tmp.y; P[i * 3 + 2] = tmp.z; C[i * 3] = .32; C[i * 3 + 1] = .24; C[i * 3 + 2] = .11; Z[i] = 5; });
+    var geo = new T.BufferGeometry(); geo.setAttribute('position', new T.BufferAttribute(P, 3)); geo.setAttribute('aColor', new T.BufferAttribute(C, 3)); geo.setAttribute('aSize', new T.BufferAttribute(Z, 1));
+    var un = { uPR: { value: PR } }; uniforms.push(un);
+    var shell = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+    shell.frustumCulled = false; basin.add(shell);
+    (B.flux || []).forEach(function (L) {
+      var pts = L.map(function (q) { return sg(q[0] / 10, q[1] / 10, q[2] / 10, new T.Vector3()); }), cols = [];
+      pts.forEach(function (p, i) { var t = i / Math.max(1, pts.length - 1); cols.push(.25 + .65 * t, .2 + .5 * t, .08 + .2 * t); });   // pâle au départ, plus vive vers l'attracteur
+      var g = new T.BufferGeometry().setFromPoints(pts); g.setAttribute('color', new T.Float32BufferAttribute(cols, 3));
+      basin.add(new T.Line(g, new T.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .7, depthWrite: false, blending: T.AdditiveBlending })));
+    });
+    if (B.attracteur) {   // l'attracteur de Laniakea (Dupuy et Courtois 2023), là où convergent les lignes
+      var ap = sg(B.attracteur[0] / 10, B.attracteur[1] / 10, B.attracteur[2] / 10, new T.Vector3());
+      var ag = OBS.system.glowMesh([[0, .9], [.25, .35], [1, 0]], 0xffe2a0, .7); ag.scale.setScalar(14); ag.position.copy(ap); basin.add(ag);
+      var at = document.createElement('span'); at.className = 'ring-tag halo-tag'; at.style.color = '#ffe2a0'; at.textContent = '✦ attracteur de Laniakea';
+      L.labelsEl.appendChild(at); items.push({ tag: true, el: at, pos: ap, basin: true });
+    }
+    basin.visible = basinOn; scene.add(basin);
+    var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag'; tag.style.color = '#f4c77a'; tag.textContent = 'Laniakea : contour du bassin (reconstitution)';
+    L.labelsEl.appendChild(tag);
+    var far = null; B.bord.forEach(function (q) { if (!far || q[1] < far[1]) far = q; });          // un point du bord, pour y poser l'étiquette
+    items.push({ tag: true, el: tag, pos: sg(far[0] / 10, far[1] / 10, far[2] / 10, new T.Vector3()), basin: true });
+  }
+  L.setBasin = function (on) { basinOn = on; if (basin) basin.visible = on; items.forEach(function (it) { if (it.basin) it.el.style.display = on ? '' : 'none'; }); };
   function homeCam(out) { var el = 34 * D2R, d = 820 / Math.max(.45, Math.min(1.3, camera.aspect)); return out.set(Math.cos(el) * d * .5, Math.sin(el) * d, Math.cos(el) * d * .87); }
   function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
   function viewDist(it) { return it ? (it.home ? 160 : 70) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }

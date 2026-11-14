@@ -336,6 +336,9 @@
     sNames.value = get('obs.names') || 'all'; namesView();
     sNames.addEventListener('change', function () { set('obs.names', sNames.value); namesView(); });
     /* Volume local : halos des groupes de galaxies (reconstitution de leur étendue) */
+    var sBasin = $('s-basin');
+    sBasin.checked = get('obs.bassin') !== 'non'; OBS.laniakea.setBasin(sBasin.checked);
+    sBasin.addEventListener('change', function () { set('obs.bassin', sBasin.checked ? 'oui' : 'non'); OBS.laniakea.setBasin(sBasin.checked); });
     var sGroups = $('s-groups');
     sGroups.value = get('obs.groups') || 'halos'; if (OBS.volumelocal && OBS.volumelocal.setGroups) OBS.volumelocal.setGroups(sGroups.value);
     if (OBS.superamas && OBS.superamas.setGroups) OBS.superamas.setGroups(sGroups.value);

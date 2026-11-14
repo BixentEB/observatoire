@@ -46,7 +46,7 @@
     laniakea: [
       "Laniakea veut dire « horizon céleste immense » en hawaïen. Le nom a été choisi en 2014 par l'équipe de Brent Tully, qui a délimité ce superamas.",
       "Toutes les galaxies de Laniakea, dont la nôtre, s'écoulent vers une même région : le Grand Attracteur, à demi caché derrière le plan de la Voie lactée.",
-      "Laniakea compterait environ 100 000 galaxies sur quelque 520 millions d'années-lumière. Les points affichés ici ne sont que les plus brillantes.",
+      "Laniakea compterait environ 100 000 galaxies sur quelque 520 millions d'années-lumière selon sa délimitation de 2014. Les points affichés ici ne sont que les plus brillantes.",
       "Les zones presque vides en éventail depuis le centre ne sont pas des vides de l'espace : c'est la zone cachée par les étoiles et la poussière de notre propre galaxie.",
       "La lumière des galaxies les plus lointaines de cette carte est partie il y a près d'un milliard d'années, bien avant l'apparition des premiers animaux sur Terre."
     ],
