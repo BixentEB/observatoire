@@ -38,7 +38,7 @@
     if (pending) { var p = pending; pending = null; L.select(p); }
   }
   function label(id, name, pos, kind, extra) {
-    var it = { id: id, name: name, pos: pos, def: extra || {}, home: kind === 'home' };
+    var it = { id: id, name: name, pos: pos, def: extra || {}, home: kind === 'home', kind: kind };
     var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + (kind === 'home' ? 'is-sun' : 'is-moon');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(name) + (kind === 'home' ? ' <em>vous êtes ici</em>' : '') + '</span>';
     el.addEventListener('click', function (e) { e.stopPropagation(); if (id === 'laniakea' && selected === id && !flight) OBS.engine.go('laniakea', { from: 'univers' }); else L.select(id); });
@@ -62,7 +62,14 @@
       } else {
         var gl = OBS.system.glowMesh([[0, .7], [.4, .25], [1, 0]], 0xf4c77a, .6); gl.scale.setScalar(R * 2); web.add(gl);
       }
-      label(m.id, m.n, m.id === 'laniakea' ? new T.Vector3() : eq(25 + i * 40, 0, R, new T.Vector3()), m.id === 'laniakea' ? 'home' : 'mark', m);
+      // un repère qui a des objets réels se place sur le premier d'entre eux : on va voir une vraie galaxie, pas un point vide
+      var o0 = U.OBJS.filter(function (o) { return o.mk === m.id; })[0];
+      label(m.id, m.n, m.id === 'laniakea' ? new T.Vector3() : o0 ? eq(o0.ra, o0.dec, o0.d / 10, new T.Vector3()).add(new T.Vector3(0, 6, 0)) : eq(25 + i * 40, 0, R, new T.Vector3()), m.id === 'laniakea' ? 'home' : 'mark', m);
+    });
+    U.OBJS.forEach(function (o) {   // les objets réels : un point lumineux à leur direction et distance comobile
+      var p = eq(o.ra, o.dec, o.d / 10, new T.Vector3()), mk = U.MARKS.filter(function (m) { return m.id === o.mk; })[0];
+      var g = OBS.system.glowMesh([[0, 1], [.2, .45], [1, 0]], mk ? mk.c : '#ffffff', .9); g.scale.setScalar(14); g.position.copy(p); marks.add(g);
+      label(o.id, o.n, p, 'obj', o);
     });
     controls = L.controls = new T.OrbitControls(camera, OBS.engine.canvas);
     controls.enableDamping = true; controls.dampingFactor = .08; controls.screenSpacePanning = true; controls.zoomSpeed = .9; controls.rotateSpeed = .5;
@@ -118,7 +125,7 @@
   };
   function homeCam(out) { var el = 38 * D2R, d = 3600 / Math.max(.45, Math.min(1.3, camera.aspect)); return out.set(Math.cos(el) * d * .5, Math.sin(el) * d, Math.cos(el) * d * .87); }
   function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
-  function viewDist(it) { if (!it && timeView) return 320; return it ? (it.home ? 60 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
+  function viewDist(it) { if (!it && timeView) return 320; return it ? (it.home ? 60 : it.kind !== 'home' && it.kind !== 'mark' ? 140 : OBS.UN.OBJS.some(function (o) { return o.mk === it.id; }) ? 220 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
   function startFlight(id, dur) { flight = { t: 0, dur: dur || 2.4, id: id, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone() }; controls.enabled = false; }
   L.select = function (id) {
     if (id && !built) { pending = id; return; }

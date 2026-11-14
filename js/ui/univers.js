@@ -29,6 +29,14 @@
     { id: 'cmb', n: 'Rayonnement fossile', z: 1100, s: 'la plus ancienne lumière visible, émise 380 000 ans après le Big Bang : le bord de l\'Univers observable', c: '#ff9f8a' }
   ];
   MARKS.forEach(function (m) { m.d = dcom(m.z); });
+  // objets réels sur les sphères lointaines : direction et décalage vers le rouge publiés ; mk = repère auquel ils sont rattachés
+  var OBJS = [
+    { id: 'ulas-j1342', n: 'ULAS J1342+0928', mk: 'quasars', ra: 205.534, dec: 9.477, z: 7.54, k: 'Quasar', s: 'un trou noir de près d\'un milliard de masses solaires qui brillait 690 millions d\'années après le Big Bang (Bañados et al. 2018)' },
+    { id: 'j0313', n: 'J0313−1806', mk: 'quasars', ra: 48.433, dec: -18.110, z: 7.64, k: 'Quasar', s: 'l\'un des quasars les plus lointains connus, 670 millions d\'années après le Big Bang (Wang et al. 2021)' },
+    { id: 'jades-z14', n: 'JADES-GS-z14-0', mk: 'jwst', ra: 53.083, dec: -27.856, z: 14.32, k: 'Galaxie', s: 'l\'une des galaxies les plus lointaines confirmées par le télescope James Webb, environ 290 millions d\'années après le Big Bang (Carniani et al. 2024)' },
+    { id: 'gn-z11', n: 'GN-z11', mk: 'jwst', ra: 189.106, dec: 62.242, z: 10.6, k: 'Galaxie', s: 'repérée par Hubble, confirmée par le télescope James Webb : environ 400 millions d\'années après le Big Bang' }
+  ];
+  OBJS.forEach(function (o) { o.d = dcom(o.z); });
   function flags(over) {
     return '<div class="c-flags atlas-flags">' + (over ? '<span class="flag f-adapt" title="Adapté — échelle logarithmique : les distances sont multipliées, pas ajoutées, quand on s\'éloigne du centre"><i>Échelle</i>logarithmique</span><span class="flag f-adapt" title="Simulé — vue schématique : seuls les repères sont placés à leur distance calculée"><i>Vue</i>schématique</span>'
       : '<span class="flag f-real" title="Réel — directions et décalages vers le rouge mesurés (relevé SDSS)"><i>Galaxies</i>mesurées</span><span class="flag f-adapt" title="Adapté — distance comobile calculée à partir du décalage vers le rouge (univers plat, H0 = 70, Ωm = 0,3)"><i>Distances</i>calculées</span><span class="flag f-adapt" title="Adapté — une tranche de 5 degrés d\'épaisseur, aplatie"><i>Tranche</i>de 5°</span>') + '</div>';
@@ -73,7 +81,7 @@
     root.querySelectorAll('[data-v]').forEach(function (b) { b.addEventListener('click', function () { over = b.getAttribute('data-v') === 'over'; draw(root, J); }); });
     OBS.armPinch(root);
   }
-  OBS.UN = { load: load, dcom: dcom, dTxt: dTxt, MARKS: MARKS, nf: nf, zTxt: zTxt };
+  OBS.UN = { OBJS: OBJS, load: load, dcom: dcom, dTxt: dTxt, MARKS: MARKS, nf: nf, zTxt: zTxt };
   OBS.atlasUnivers = function (root, view) {
     root.innerHTML = '<p class="note">Chargement du relevé…</p>';
     load().then(function (J) { if (view === 'liste') over = true; draw(root, J); });

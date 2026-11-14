@@ -364,11 +364,24 @@
   function renderUN(id) {
     var it = OBS.univers.get(id); if (!it) return;
     var m = it.def, U = OBS.UN, h = [];
+    if (it.kind === 'obj') {   // un objet réel sur une sphère lointaine
+      current = { level: 'univers', id: id }; clearInterval(liveTimer);
+      h.push('<div class="c-head"><p class="c-kind">' + esc(m.k) + ' · objet réel</p><h2 class="c-name"><span class="c-swatch" style="background:#fff;color:#fff"></span>' + esc(m.n) + '</h2><button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+      h.push('<div class="c-flags">' + flag('real', 'Direction', 'publiée', 'coordonnées et décalage vers le rouge publiés') + flag('adapt', 'Distance', 'calculée', 'distance comobile tirée du décalage vers le rouge') + flag('adapt', 'Aspect', 'un point lumineux', 'à cette distance, on ne voit qu\'une tache de quelques pixels, même avec le télescope James Webb') + '</div>');
+      h.push('<p class="c-text">' + esc(m.s.charAt(0).toUpperCase() + m.s.slice(1)) + '.</p>');
+      h.push('<section class="c-sec"><div class="c-live"><div><span>Distance aujourd\'hui</span><b>' + U.dTxt(m.d) + '</b><small>distance comobile</small></div><div><span>Décalage vers le rouge</span><b>z = ' + U.nf(m.z, 2) + '</b><small>sa lumière a été étirée ' + U.nf(m.z + 1, 1) + ' fois</small></div></div></section>');
+      el.innerHTML = h.join('') + '</div>'; el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+      el.querySelector('.c-close').addEventListener('click', function () { OBS.univers.select(null); });
+      el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+      return;
+    }
+    var ex = U.OBJS.filter(function (o) { return o.mk === id; });
     current = { level: 'univers', id: id }; clearInterval(liveTimer);
     h.push('<div class="c-head"><p class="c-kind">' + (it.home ? 'Notre superamas' : 'Repère de distance') + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + m.c + ';color:' + m.c + '"></span>' + esc(it.name) + '</h2>' +
       '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
     h.push('<div class="c-flags">' + flag('adapt', 'Distance', 'calculée', 'distance comobile tirée du décalage vers le rouge (univers plat, H0 = 70, Ωm = 0,3)') + (id === 'sdss' ? flag('real', 'Galaxies', 'mesurées', 'relevé SDSS') : flag('adapt', 'Sphère', 'schématique', 'une sphère marque la distance ; les objets eux-mêmes ne sont pas dessinés')) + '<a class="flag-help" href="#/methode">?</a></div>');
     h.push('<p class="c-text">' + esc(m.s.charAt(0).toUpperCase() + m.s.slice(1)) + '.</p>');
+    if (ex.length) h.push('<p class="c-text c-point">La sphère marque seulement la distance. Les objets réels connus à cette distance sont posés dessus, à leur vraie direction dans le ciel : ' + ex.map(function (o) { return '<a href="#/univers/' + o.id + '">' + esc(o.n) + '</a> (z = ' + U.nf(o.z, 2) + ')'; }).join(', ') + '. Partout ailleurs sur la sphère, il y en a d\'autres, que personne n\'a encore observés.</p>');
     if (it.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans Laniakea →</button></div></section>');
     var age = { laniakea: 'quelque 370 millions d\'années', sdss: 'environ 2,9 milliards d\'années', quasars: 'environ 13 milliards d\'années', jwst: 'environ 13,5 milliards d\'années', cmb: '13,8 milliards d\'années, presque l\'âge de l\'Univers' }[id];
     h.push('<section class="c-sec"><div class="c-live"><div><span>Distance aujourd\'hui</span><b>' + U.dTxt(m.d) + '</b><small>distance comobile</small></div><div><span>Décalage vers le rouge</span><b>z ≈ ' + U.zTxt(m.z) + '</b><small>' + (age ? 'lumière partie il y a ' + age : '') + '</small></div></div></section>');

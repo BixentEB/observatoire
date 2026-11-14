@@ -209,6 +209,7 @@
   document.addEventListener('pointerdown', function (e) { if (!gotoEl.hidden && !gotoEl.contains(e.target) && !e.target.closest('.c-goto')) gotoEl.hidden = true; });
   function render(items) {
     var Lv = OBS.engine.level;
+    if (Lv && OBS.sceneNote && OBS.sceneNote.has(Lv.id) && !OBS.sceneNote.isOpen()) items = items.concat([{ label: 'ⓘ Lire la scène', time: true, act: function () { OBS.sceneNote.open(Lv.id); } }]);
     if (Lv && OBS.galtime && OBS.galtime.has(Lv.id)) items = items.concat([{ label: '⏱ ' + OBS.TIME_MODES[Lv.id].title, time: true, act: function () { OBS.galtime.open(Lv.id); } }]);
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });

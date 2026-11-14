@@ -35,7 +35,7 @@
         '<li><b>Chaque observateur a son horizon</b> : une galaxie lointaine a sa propre sphère observable, qui chevauche la nôtre en partie. Même Univers, autres horizons.</li></ul></div>' +
         sketch() +
         '<h2>Les hypothèses</h2><div class="rows">' + H.map(function (h) {
-          return '<article class="row"><div class="row-h"><h3><a href="#/hypotheses/chercheurs/' + encodeURIComponent(h.id) + '">' + esc(h.titre) + '</a></h3><p class="row-kind"><span class="h-status e-' + esc(h.etat) + '">' + esc(ETAT[h.etat] || h.etat) + '</span> ' + esc(h.auteurs) + ', ' + h.annee + '</p></div><div class="row-b"><p>' + esc(h.resume) + '</p><p><a href="#/hypotheses/chercheurs/' + encodeURIComponent(h.id) + '">Lire la fiche →</a></p></div></article>';
+          return '<article class="row"><div class="row-h"><h3>' + esc(h.titre) + '</h3><p class="row-kind"><span class="h-status e-' + esc(h.etat) + '">' + esc(ETAT[h.etat] || h.etat) + '</span> ' + esc(h.auteurs) + ', ' + h.annee + '</p></div><div class="row-b"><p>' + esc(h.resume) + '</p><p><a href="#/hypotheses/chercheurs/' + encodeURIComponent(h.id) + '">Lire la fiche →</a></p></div></article>';
         }).join('') + '</div>' +
         '<p class="note">Ces fiches sont aussi dans <a href="#/hypotheses/chercheurs">Hypothèses › de chercheurs</a>, en bleu. États : admise (largement acceptée), en débat, spéculative (cohérente mais non testée), écartée. <a href="#/atlas/questions/univers">Questions sur l\'Univers observable</a></p>';
       OBS.armPinch(root);

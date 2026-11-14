@@ -1300,3 +1300,19 @@ body.gt-on .console { bottom: 220px; }
 .gt-ev.t-c { background: #c9b8ff; color: #c9b8ff; }
 .gt-leg .t-c::before { background: #c9b8ff; }
 .crumbs button.c-time { margin-left: 8px; color: #c9b8ff; border-color: rgba(201, 184, 255, .35); }
+/* « Lire la scène » (js/ui/scenenote.js, lot 12) */
+.scene-note { position: fixed; z-index: 11; right: var(--gut); top: calc(var(--top) + env(safe-area-inset-top) + 56px); width: min(320px, calc(100% - 2 * var(--gut))); padding: 12px 14px 10px; border-radius: 12px;
+  background: rgba(6, 9, 20, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-left: 2px solid rgba(244, 199, 122, .6); font-size: 13px; line-height: 1.5; color: var(--soft); animation: cin .4s; }
+.scene-note[hidden], body.page-open .scene-note, body.photo .scene-note { display: none; }
+.scene-note .sn-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.scene-note .sn-h b { font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.scene-note .sn-x { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 13px; }
+.scene-note p { margin: 6px 0; display: flex; gap: 8px; }
+.scene-note p i { flex: none; width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; }
+.scene-note .sn-more { display: block; margin-top: 8px; font-size: 12px; }
+.scene-note .sn-more a { color: var(--accent); text-decoration: none; }
+/* liens des listes de l'Atlas : sans soulignement, soulignés au survol seulement */
+.rows .row h3 a, .rows .row-b a, .qa-go a, .ad-know a { color: var(--accent); text-decoration: none; }
+.rows .row h3 a { color: var(--fg); }
+.rows .row h3 a:hover, .rows .row-b a:hover, .qa-go a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.c-text a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(244, 199, 122, .6); }
