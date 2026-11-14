@@ -28,7 +28,7 @@
     var it = { id: id, name: name, pos: pos, home: kind === 'home', kind: kind };
     var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + (kind === 'home' ? 'is-sun' : 'is-moon') + (kind === 'hypo' ? ' is-hypo' : '');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(name) + (kind === 'home' ? ' <em>vous êtes ici</em>' : kind === 'hypo' ? ' <em>hypothèse</em>' : '') + '</span>';
-    el.addEventListener('click', function (e) { e.stopPropagation(); if (it.home && selected === id && !flight) OBS.engine.go('univers', { from: 'au-dela' }); else L.select(id); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); if (it.home && selected === id && !flight) OBS.engine.go('univers', { from: 'au-dela' }); else L.select(id); });
     el.addEventListener('pointerenter', function () { hover = id; });
     el.addEventListener('pointerleave', function () { if (hover === id) hover = null; });
     L.labelsEl.appendChild(el); it.el = el; items.push(it); byId[id] = it; return it;

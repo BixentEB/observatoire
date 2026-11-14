@@ -365,7 +365,7 @@
     el.className = 'lbl' + (d.moon ? ' is-moon' : '') + (d.dwarf ? ' is-dwarf' : '') + (P.region ? ' is-region' : '') + (d.comet ? ' is-comet' : '') + (d.minor ? ' is-minor' : '') + (d.theorique ? ' is-theo' : '') + (P.id === 'soleil' ? ' is-sun' : '');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + (d.short || d.name) + '</span>';
     el.setAttribute('aria-label', d.name + ' — ' + (d.kind || ''));
-    el.addEventListener('click', function (e) { e.stopPropagation(); clickBody(P.id); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); clickBody(P.id); });
     el.addEventListener('pointerenter', function () { hover = P.id; });
     el.addEventListener('pointerleave', function () { if (hover === P.id) hover = null; });
     labelsEl.appendChild(el); P.el = el;
@@ -400,7 +400,7 @@
     el.className = 'lbl is-site t-' + d.type + ' hid';
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(d.name) + '</span>';
     el.setAttribute('aria-label', d.name + ' — ' + (OBS.SITE_TYPES[d.type] || ''));
-    el.addEventListener('click', function (e) { e.stopPropagation(); L.site(P.id, d.id); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); L.site(P.id, d.id); });
     labelsEl.appendChild(el); S.el = el;
   }
 

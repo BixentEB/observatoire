@@ -148,6 +148,7 @@
       '<h3>Cartes de surface</h3><ul class="credits-list">',
       '<li><b>Solar System Scope</b> — cartes de la Terre, de Jupiter, de Saturne et de ses anneaux, d\'Uranus et de Neptune. Licence <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>, d\'après les données des missions de la NASA. <a href="https://www.solarsystemscope.com/textures/" rel="noopener" target="_blank">solarsystemscope.com/textures</a></li>',
       '<li><b>NASA Scientific Visualization Studio</b>, CGI Moon Kit — carte de la Lune (mosaïque de la caméra LROC, en 2k et 4k) et relief (altimètre laser LOLA de Lunar Reconnaissance Orbiter), domaine public. Le relief est converti ici en carte de pentes ; les conversions intermédiaires viennent du projet libre LUNAOPS.</li>',
+      '<li><b>Rayonnement fossile</b> — carte des anisotropies de température du satellite Planck, ESA et la collaboration Planck, licence CC BY 4.0 (fichier « Cosmic Microwave Background (CMB) » de Wikimedia Commons, via NSF NOIRLab), reprojetée par <code>tools/fond_diffus.py</code>.</li>',
       '<li><b>NASA Earth Observatory</b> — lumières nocturnes de la Terre (Black Marble, Suomi NPP VIIRS). Domaine public.</li>',
       '<li><b>Relief de Mercure, Cérès, Pluton et Charon</b> — altimétrie publiée par l\'USGS Astrogeology : MESSENGER, modèle global 665 m (Becker et al. 2016) ; Dawn, modèle DLR 60 px/° (Preusker et al. 2016) ; New Horizons, modèles 300 m (Schenk et al. 2018). Converties en cartes de pentes par le script <code>tools/relief.py</code>, sans exagération ; la forme générale (aplatissement) est retirée pour ne garder que le relief local.</li>' +
       '<li><b>Mars</b> — mosaïque couleur Viking MDIM 2.1 (NASA/USGS) et relief de l\'altimètre MOLA (NASA/GSFC, MOLA Science Team), domaine public, d\'après les conversions du projet libre « Rotating Mars » de François Gourdeau. La dominante bleue des régions sombres de la mosaïque a été atténuée.</li>',
@@ -240,7 +241,8 @@
     ['superamas.py', 'catalogues', 'Superamas local : groupes de Kourkchi et Tully 2017.'],
     ['laniakea.py', 'catalogues', 'Laniakea : relevé 2MRS et amas nommés.'],
     ['laniakea_bassin.py', 'catalogues', 'Contour de Laniakea, bassins voisins et lignes d\'écoulement (CosmicFlows-4), orientation vérifiée sur des amas et des attracteurs publiés.'],
-    ['univers.py', 'catalogues', 'Tranche du relevé SDSS et distances comobiles.'],
+    ['univers.py', 'catalogues', 'Tranche du relevé SDSS, quasars lointains et distances comobiles.'],
+    ['fond_diffus.py', 'catalogues', 'Carte du rayonnement fossile de Planck, reprojetée pour la sphère du bord.'],
     ['build_static.py', 'à chaque publication', 'Pages lisibles pour les moteurs de recherche.'],
     ['stamp.py', 'à chaque modification', 'Numéros de version des fichiers.']
   ];

@@ -1316,3 +1316,6 @@ body.gt-on .console { bottom: 220px; }
 .rows .row h3 a { color: var(--fg); }
 .rows .row h3 a:hover, .rows .row-b a:hover, .qa-go a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .c-text a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(244, 199, 122, .6); }
+/* étiquettes de la scène : pas de grand rectangle de focus (il restait accroché après un clic) ; le nom s'entoure seulement au clavier */
+.labels .lbl:focus, .labels .lbl:focus-visible { outline: none; }
+.labels .lbl:focus-visible .nm { box-shadow: 0 0 0 1.5px var(--accent); }

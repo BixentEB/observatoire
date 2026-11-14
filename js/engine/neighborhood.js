@@ -74,7 +74,7 @@
       var el = document.createElement('button'); el.type = 'button';
       el.className = 'lbl is-star' + (s.sun ? ' is-sun' : '') + (s.cls === 'BD' ? ' is-dwarf' : '');
       el.innerHTML = '<span class="dot"></span><span class="nm">' + s.name + (s.sun ? ' <em>vous êtes ici</em>' : '') + '</span>';
-      el.addEventListener('click', function (e) { e.stopPropagation(); clickStar(s.id); });
+      el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); clickStar(s.id); });
       el.addEventListener('dblclick', function (e) { e.stopPropagation(); enter(s.id); });
       el.addEventListener('pointerenter', function () { hover = s.id; });
       el.addEventListener('pointerleave', function () { if (hover === s.id) hover = null; });

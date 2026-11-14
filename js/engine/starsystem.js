@@ -69,7 +69,7 @@
     var el = document.createElement('button'); el.type = 'button';
     el.className = 'lbl' + (it.kind === 'star' ? ' is-sun' : it.kind === 'comp' ? ' is-sun' : ' is-moon');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(it.name) + '</span>';
-    el.addEventListener('click', function (e) { e.stopPropagation(); L.select(it.key); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); L.select(it.key); });
     L.labelsEl.appendChild(el); it.el = el;
   }
   function makeStar(def, rSun, cls, key, name, kind) {

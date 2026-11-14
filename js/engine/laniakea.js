@@ -13,7 +13,7 @@
   var scene = L.scene = new T.Scene();
   var camera = L.camera = new T.PerspectiveCamera(45, 1, 0.5, 20000);
   var controls, W = 800, H = 600, PR = 1;
-  var basin = null, basinOn = true, items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
+  var flow = null, basin = null, basinOn = true, items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), v3 = new T.Vector3(), camSpace = new T.Vector3();
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR; varying vec3 vC;',
@@ -40,7 +40,7 @@
       var it = { id: a.id, def: a, name: a.n, pos: sg(a.x, a.y, a.z, new T.Vector3()) };
       var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl is-moon';
       el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(a.n) + '</span>';
-      el.addEventListener('click', function (e) { e.stopPropagation(); L.select(a.id); });
+      el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); L.select(a.id); });
       el.addEventListener('pointerenter', function () { hover = a.id; });
       el.addEventListener('pointerleave', function () { if (hover === a.id) hover = null; });
       L.labelsEl.appendChild(el); it.el = el; items.push(it); byId[a.id] = it;
@@ -50,7 +50,7 @@
     var home = { id: 'superamas-local', def: { n: 'Superamas local', home: true, x: 0, y: 0, z: 0 }, name: 'Superamas local', home: true, pos: new T.Vector3() };
     var he = document.createElement('button'); he.type = 'button'; he.className = 'lbl is-sun';
     he.innerHTML = '<span class="dot"></span><span class="nm">Superamas local <em>vous êtes ici</em></span>';
-    he.addEventListener('click', function (e) { e.stopPropagation(); if (selected === 'superamas-local' && !flight) OBS.engine.go('superamas', { from: 'laniakea' }); else L.select('superamas-local'); });
+    he.addEventListener('click', function (e) { e.stopPropagation(); he.blur(); if (selected === 'superamas-local' && !flight) OBS.engine.go('superamas', { from: 'laniakea' }); else L.select('superamas-local'); });
     L.labelsEl.appendChild(he); home.el = he; items.push(home); byId[home.id] = home;
     built = true;
     if (pending) { var p = pending; pending = null; L.select(p); }
@@ -113,12 +113,25 @@
     var un = { uPR: { value: PR } }; uniforms.push(un);
     var shell = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
     shell.frustumCulled = false; basin.add(shell);
+    var lines = [];
     (B.flux || []).forEach(function (L) {
       var pts = L.map(function (q) { return sg(q[0] / 10, q[1] / 10, q[2] / 10, new T.Vector3()); }), cols = [];
+      var cum = [0]; for (var q = 1; q < pts.length; q++) cum.push(cum[q - 1] + pts[q].distanceTo(pts[q - 1])); lines.push({ p: pts, c: cum, len: cum[cum.length - 1] });
       pts.forEach(function (p, i) { var t = i / Math.max(1, pts.length - 1); cols.push(.25 + .65 * t, .2 + .5 * t, .08 + .2 * t); });   // pâle au départ, plus vive vers l'attracteur
       var g = new T.BufferGeometry().setFromPoints(pts); g.setAttribute('color', new T.Float32BufferAttribute(cols, 3));
       basin.add(new T.Line(g, new T.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .7, depthWrite: false, blending: T.AdditiveBlending })));
     });
+    /* écoulement animé : sur chaque ligne, deux petites lueurs avancent vers l'attracteur, avec une traînée.
+       Vitesse de lecture uniforme et très accélérée : elle montre le sens, pas la vitesse réelle (quelques centaines de km/s). */
+    if (lines.length) {
+      var NP = 2, TR = 4, np = lines.length * NP * TR, FP = new Float32Array(np * 3), FC = new Float32Array(np * 3), FZ = new Float32Array(np), heads = [];
+      lines.forEach(function (ln, li) { for (var k = 0; k < NP; k++) heads.push({ ln: ln, s: (k / NP + li * .137) % 1 }); });
+      heads.forEach(function (h, hi) { for (var t = 0; t < TR; t++) { var i = hi * TR + t, a = 1 - t / TR; FC[i * 3] = 1 * a; FC[i * 3 + 1] = .86 * a; FC[i * 3 + 2] = .55 * a; FZ[i] = 7 - t * 1.3; } });
+      var fg = new T.BufferGeometry(); fg.setAttribute('position', new T.BufferAttribute(FP, 3)); fg.setAttribute('aColor', new T.BufferAttribute(FC, 3)); fg.setAttribute('aSize', new T.BufferAttribute(FZ, 1));
+      var fu = { uPR: { value: PR } }; uniforms.push(fu);
+      var fpts = new T.Points(fg, new T.ShaderMaterial({ uniforms: fu, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending })); fpts.frustumCulled = false; basin.add(fpts);
+      flow = { heads: heads, geo: fg, P: FP, TR: TR };
+    }
     if (B.attracteur) {   // l'attracteur de Laniakea (Dupuy et Courtois 2023), là où convergent les lignes
       var ap = sg(B.attracteur[0] / 10, B.attracteur[1] / 10, B.attracteur[2] / 10, new T.Vector3());
       var ag = OBS.system.glowMesh([[0, .9], [.25, .35], [1, 0]], 0xffe2a0, .7); ag.scale.setScalar(14); ag.position.copy(ap); basin.add(ag);
@@ -175,7 +188,21 @@
   L.leave = function () { controls.enabled = false; };
   L.leaveAnim = function () { flight = null; controls.enabled = false; L._inward = 1; };
   L.resize = function (w, h, pr) { W = w; H = h; PR = pr; camera.aspect = W / H; camera.updateProjectionMatrix(); uniforms.forEach(function (u) { u.uPR.value = PR; }); };
+  function at(ln, s, out) {        // point à l'abscisse relative s (0 → 1) le long d'une ligne
+    var d = s * ln.len, i = 1; while (i < ln.c.length - 1 && ln.c[i] < d) i++;
+    var a = ln.c[i - 1], b = ln.c[i], k = b > a ? (d - a) / (b - a) : 0; return out.copy(ln.p[i - 1]).lerp(ln.p[i], k);
+  }
+  function stepFlow(dt) {
+    if (!flow || !basinOn) return;
+    var P = flow.P;
+    flow.heads.forEach(function (h, hi) {
+      h.s += dt * 60 / Math.max(60, h.ln.len); if (h.s > 1) h.s -= 1;          // ≈ 60 unités par seconde, chaque ligne repart du début
+      for (var t = 0; t < flow.TR; t++) { at(h.ln, Math.max(0, h.s - t * 6 / h.ln.len), tmp); var i = (hi * flow.TR + t) * 3; P[i] = tmp.x; P[i + 1] = tmp.y; P[i + 2] = tmp.z; }
+    });
+    flow.geo.attributes.position.needsUpdate = true;
+  }
   L.update = function (dt) {
+    stepFlow(dt);
     if (L._inward) { controls.target.multiplyScalar(Math.max(0, 1 - dt * 4)); camera.position.lerp(controls.target, Math.min(1, dt * 2.4)); }
     if (flight) {
       flight.t += dt;

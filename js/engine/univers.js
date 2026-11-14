@@ -22,6 +22,33 @@
   var FRAG = 'varying vec3 vC; void main(){ float d=length(gl_PointCoord-0.5); float a=1.0-smoothstep(0.12,0.5,d); gl_FragColor=vec4(vC*a,a); }';
   function eq(ra, dec, d, out) { var a = ra * D2R, b = dec * D2R; return out.set(Math.cos(b) * Math.cos(a) * d, Math.sin(b) * d, -Math.cos(b) * Math.sin(a) * d); }
 
+  /* le rayonnement fossile : la vraie carte de Planck (ESA, CC BY 4.0), en coordonnées galactiques, posée sur la sphère
+     du bord dans le repère équatorial de la scène. Vue de l'extérieur, elle apparaît retournée, comme un globe céleste. */
+  function cmbSphere(R) {
+    new T.TextureLoader().load('assets/img/fond-diffus.webp', function (tex) {
+      var mat = new T.ShaderMaterial({
+        uniforms: { map: { value: tex }, uOp: { value: .38 },
+          r0: { value: new T.Vector3(-0.0548755604, -0.8734370902, -0.4838350155) }, r1: { value: new T.Vector3(0.4941094279, -0.4448296300, 0.7469822445) }, r2: { value: new T.Vector3(-0.8676661490, -0.1980763734, 0.4559837762) } },
+        vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: 'uniform sampler2D map; uniform float uOp; uniform vec3 r0, r1, r2; varying vec3 vP;' +
+          'void main(){ vec3 e = normalize(vec3(vP.x, -vP.z, vP.y)); vec3 g = vec3(dot(r0, e), dot(r1, e), dot(r2, e));' +
+          ' float l = atan(g.y, g.x), b = asin(clamp(g.z, -1.0, 1.0)); vec2 uv = vec2(0.5 - l / 6.2831853, 0.5 + b / 3.1415927);' +
+          ' gl_FragColor = vec4(texture2D(map, uv).rgb * uOp, uOp); }',
+        transparent: true, side: T.DoubleSide, depthWrite: false });
+      var mesh = new T.Mesh(new T.SphereGeometry(R * .999, 96, 64), mat); marks.add(mesh); L.cmbMesh = mesh;
+    });
+  }
+  /* quasars lointains du SDSS (z de 3 à 7,6), à leur vraie direction et distance : ils peuplent la sphère des quasars */
+  function quasars() {
+    fetch('data/quasars.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (J) {
+      var Q = J.q, n = Q.length, P = new Float32Array(n * 3), C = new Float32Array(n * 3), Z = new Float32Array(n);
+      Q.forEach(function (q, i) { eq(q[0] / 100, q[1] / 100, q[2] / 100, tmp); P[i * 3] = tmp.x; P[i * 3 + 1] = tmp.y; P[i * 3 + 2] = tmp.z; C[i * 3] = .55; C[i * 3 + 1] = .48; C[i * 3 + 2] = .8; Z[i] = 2.2; });
+      var geo = new T.BufferGeometry(); geo.setAttribute('position', new T.BufferAttribute(P, 3)); geo.setAttribute('aColor', new T.BufferAttribute(C, 3)); geo.setAttribute('aSize', new T.BufferAttribute(Z, 1));
+      var un = { uPR: { value: PR } }; uniforms.push(un);
+      var pts = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending })); pts.frustumCulled = false; marks.add(pts);
+      L.nQuasars = n;
+    }).catch(function () {});
+  }
   function populate(J) {
     var G = J.g, n = G.length, P = new Float32Array(n * 3), C = new Float32Array(n * 3), Z = new Float32Array(n), dmax = J.meta.dmax;
     G.forEach(function (g, i) {
@@ -41,7 +68,7 @@
     var it = { id: id, name: name, pos: pos, def: extra || {}, home: kind === 'home', kind: kind };
     var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + (kind === 'home' ? 'is-sun' : 'is-moon');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(name) + (kind === 'home' ? ' <em>vous êtes ici</em>' : '') + '</span>';
-    el.addEventListener('click', function (e) { e.stopPropagation(); if (id === 'laniakea' && selected === id && !flight) OBS.engine.go('laniakea', { from: 'univers' }); else L.select(id); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); if (id === 'laniakea' && selected === id && !flight) OBS.engine.go('laniakea', { from: 'univers' }); else L.select(id); });
     el.addEventListener('pointerenter', function () { hover = id; });
     el.addEventListener('pointerleave', function () { if (hover === id) hover = null; });
     L.labelsEl.appendChild(el); it.el = el; items.push(it); byId[id] = it; return it;
@@ -59,6 +86,7 @@
         marks.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: col, transparent: true, opacity: m.id === 'cmb' ? .55 : .3, depthWrite: false })));
         var sph = new T.Mesh(new T.SphereGeometry(R, 48, 32), new T.MeshBasicMaterial({ color: col, transparent: true, opacity: m.id === 'cmb' ? .035 : .01, side: T.BackSide, depthWrite: false }));
         marks.add(sph);
+        if (m.id === 'cmb') cmbSphere(R);
       } else {
         var gl = OBS.system.glowMesh([[0, .7], [.4, .25], [1, 0]], 0xf4c77a, .6); gl.scale.setScalar(R * 2); web.add(gl);
       }
@@ -105,6 +133,7 @@
       if (++push >= 3) { push = 0; OBS.engine.go('laniakea', { from: 'univers' }); }
     }, { passive: true });
     U.load().then(function (J) { if (J) populate(J); else built = true; });
+    quasars();
   };
 
   /* temps cosmique (js/ui/galtime.js) : l'expansion seule. Facteur d'échelle d'un univers plat avec matière et énergie noire

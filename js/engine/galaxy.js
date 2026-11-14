@@ -230,7 +230,7 @@
     function add(id, def, pos, cls) {
       var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + cls;
       el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(def.name) + (def.sun ? ' <em>vous êtes ici</em>' : '') + '</span>';
-      el.addEventListener('click', function (e) { e.stopPropagation(); clickItem(id); });
+      el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); clickItem(id); });
       el.addEventListener('pointerenter', function () { hover = id; });
       el.addEventListener('pointerleave', function () { if (hover === id) hover = null; });
       labelsContainer.appendChild(el);
