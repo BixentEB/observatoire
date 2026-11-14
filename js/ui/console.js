@@ -156,6 +156,7 @@
     if (level === 'volume-local') return renderVL(id);
     if (level === 'superamas') return renderSC(id);
     if (level === 'laniakea') return renderLK(id);
+    if (level === 'univers') return renderUN(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -330,6 +331,25 @@
     el.querySelector('.c-close').addEventListener('click', function () { OBS.volumelocal.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); });
+  }
+
+  /* Univers observable : un repère de distance */
+  function renderUN(id) {
+    var it = OBS.univers.get(id); if (!it) return;
+    var m = it.def, U = OBS.UN, h = [];
+    current = { level: 'univers', id: id }; clearInterval(liveTimer);
+    h.push('<div class="c-head"><p class="c-kind">' + (it.home ? 'Notre superamas' : 'Repère de distance') + '</p><h2 class="c-name"><span class="c-swatch" style="background:' + m.c + ';color:' + m.c + '"></span>' + esc(it.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div class="c-flags">' + flag('adapt', 'Distance', 'calculée', 'distance comobile tirée du décalage vers le rouge (univers plat, H0 = 70, Ωm = 0,3)') + (id === 'sdss' ? flag('real', 'Galaxies', 'mesurées', 'relevé SDSS') : flag('adapt', 'Sphère', 'schématique', 'une sphère marque la distance ; les objets eux-mêmes ne sont pas dessinés')) + '<a class="flag-help" href="#/methode">?</a></div>');
+    h.push('<p class="c-text">' + esc(m.s.charAt(0).toUpperCase() + m.s.slice(1)) + '.</p>');
+    if (it.home) h.push('<section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans Laniakea →</button></div></section>');
+    var age = { laniakea: 'quelque 370 millions d\'années', sdss: 'environ 2,9 milliards d\'années', quasars: 'environ 13 milliards d\'années', jwst: 'environ 13,5 milliards d\'années', cmb: '13,8 milliards d\'années, presque l\'âge de l\'Univers' }[id];
+    h.push('<section class="c-sec"><div class="c-live"><div><span>Distance aujourd\'hui</span><b>' + U.dTxt(m.d) + '</b><small>distance comobile</small></div><div><span>Décalage vers le rouge</span><b>z ≈ ' + U.zTxt(m.z) + '</b><small>' + (age ? 'lumière partie il y a ' + age : '') + '</small></div></div></section>');
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">La tranche du relevé SDSS en points (une galaxie mesurée par point, bande de 5 degrés autour de l\'équateur céleste), puis des sphères à la distance comobile calculée des repères, jusqu\'au rayonnement fossile. Une unité vaut 10 Mpc, environ 32,6 millions d\'années-lumière. <a href="#/atlas/univers">Tranche et vue d\'ensemble dans l\'Atlas</a></p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.univers.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('laniakea', { from: 'univers' }); });
   }
 
   /* Laniakea : un amas nommé, ou le Superamas local */

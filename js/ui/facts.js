@@ -43,6 +43,13 @@
       "Le noir n'est pas le vide. La brume bleutée autour de la Voie lactée et d'Andromède figure leurs halos : du gaz chaud, trop ténu pour briller, et surtout de la matière noire, qui ne brille pas du tout mais pèse environ cinq fois plus que toute la matière ordinaire.",
       "Entre les galaxies, il ne reste que quelques atomes par mètre cube. Dans un seul centimètre cube d'air, il y en a environ 25 milliards de milliards."
     ],
+    univers: [
+      "L'Univers observable mesure environ 93 milliards d'années-lumière de diamètre, alors qu'il n'a que 13,8 milliards d'années : l'espace lui-même s'est étiré pendant que la lumière voyageait.",
+      "Le rayonnement fossile est la plus vieille lumière que l'on puisse voir : émise 380 000 ans après le Big Bang, quand l'Univers est devenu transparent.",
+      "À grande échelle, les galaxies dessinent une toile : des filaments et des murailles, autour de vides de centaines de millions d'années-lumière.",
+      "La Grande Muraille de Sloan, découverte en 2003 dans le relevé SDSS, s'étend sur plus d'un milliard d'années-lumière.",
+      "Au-delà de l'Univers observable, l'Univers continue très probablement : sa lumière n'a simplement pas encore eu le temps de nous atteindre."
+    ],
     laniakea: [
       "Laniakea veut dire « horizon céleste immense » en hawaïen. Le nom a été choisi en 2014 par l'équipe de Brent Tully, qui a délimité ce superamas.",
       "Toutes les galaxies de Laniakea, dont la nôtre, s'écoulent vers une même région : le Grand Attracteur, à demi caché derrière le plan de la Voie lactée.",
