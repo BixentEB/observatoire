@@ -27,6 +27,7 @@ def fetch(url, data=None, timeout=300):
     with urllib.request.urlopen(req, timeout=timeout) as r: return r.read().decode('utf-8', 'replace')
 
 rows = None
+T0 = time.time()
 # 1) TAP du GAVO
 try:
     head = fetch('https://dc.g-vo.org/tap/sync?' + urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'QUERY': 'SELECT TOP 1 * FROM sdssdr16.main'}), timeout=120)
@@ -37,13 +38,14 @@ try:
     if zc:
         rows = []
         for ra0 in range(0, 360, 20):          # par tranches de 20° d'ascension droite, pour ménager le serveur
+            if time.time() - T0 > 300: log.append('GAVO trop lent : arrêt après %d galaxies' % len(rows)); break
             q = "SELECT ra, %s AS zs FROM sdssdr16.main WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), BOX('ICRS', %g, 0, 20, %g)) AND %s BETWEEN 0.003 AND %g" % (zc, ra0 + 10, 2 * DEC, zc, ZMAX)   # la boîte utilise l'index spatial du serveur
             if cc == 'spec_class': q += " AND spec_class = 'GALAXY'"
             if 'spec_z_warning' in cols: q += ' AND spec_z_warning = 0'
             body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '200000', 'QUERY': q}).encode()
             for essai in range(2):
                 try:
-                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=150)
+                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=90)
                     rd = list(csv.DictReader(io.StringIO(txt)))
                     part = [(float(r['ra']), float(r['zs'])) for r in rd if r.get('ra') and r.get('zs')]
                     rows += part; log.append('GAVO ra %d–%d : %d galaxies' % (ra0, ra0 + 20, len(part))); break
@@ -53,13 +55,14 @@ try:
 except Exception as ex:
     log.append('échec GAVO : %r' % ex)
 
-# 2) secours : VizieR
-if not rows:
-    for m in ['https://vizier.cds.unistra.fr', 'https://vizier.cfa.harvard.edu']:
+# 2) secours : VizieR (SDSS DR12, V/147, colonnes zsp et spCl), si le GAVO n'a pas assez répondu
+if not rows or len(rows) < 5000:
+    for m in ['https://vizier.cfa.harvard.edu', 'https://vizier.cds.unistra.fr']:
         try:
-            q = urllib.parse.urlencode({'-source': 'V/154/sdss16', '-out.max': '400000', '-out': 'RA_ICRS,DE_ICRS,zsp,spCl', 'DE_ICRS': '%g..%g' % (-DEC, DEC), 'zsp': '0.003..%g' % ZMAX, 'spCl': 'GALAXY', '-oc.form': 'd'})
-            txt = fetch(m + '/viz-bin/asu-tsv?' + q, timeout=900)
+            q = urllib.parse.urlencode({'-source': 'V/147/sdss12', '-out.max': '400000', '-out': 'RA_ICRS,DE_ICRS,zsp,spCl', 'DE_ICRS': '%g..%g' % (-DEC, DEC), 'zsp': '0.003..%g' % ZMAX, 'spCl': 'GALAXY', '-oc.form': 'd'})
+            txt = fetch(m + '/viz-bin/asu-tsv?' + q, timeout=300)
             lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
+            if not lines: log.append('VizieR %s : réponse vide ; début : %r' % (m, txt[:300])); continue
             head = [h.strip() for h in lines[0].split('\t')]; log.append('VizieR %s, colonnes : %s' % (m, ', '.join(head)))
             ir, iz = head.index('RA_ICRS'), head.index('zsp')
             rows = []
