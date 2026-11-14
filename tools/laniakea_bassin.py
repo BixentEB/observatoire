@@ -11,7 +11,7 @@ Sources (projet CosmicFlows, https://projets.ip2i.in2p3.fr/cosmicflows/) :
 Unités : les grilles sont en Mpc/h. Une distance en Mpc/h vaut cz / 100 km/s ; l'Observatoire place les galaxies du
 relevé 2MRS à cz / 70 (H0 = 70). Pour que tout coïncide, on multiplie les positions des grilles par 100 / 70.
 
-Contrôles écrits dans le rapport : orientation des grilles choisie pour placer correctement 7 amas connus (dedans / dehors), puis, entre les orientations possibles, celle où les lignes d'écoulement parties de Laniakea y restent ; notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
+Contrôles écrits dans le rapport : orientation des grilles choisie pour placer correctement 7 amas connus (dedans / dehors), puis, entre les orientations possibles, celle qui met les attracteurs publiés des six bassins (table A.1) dans leur bassin ; notre position (centre de la grille) doit être dans le bassin 1 ; le volume de
 Laniakea doit valoir ≈ 2 × 10⁶ (Mpc/h)³ ; l'ordre des composantes de vitesse est choisi comme celui pour lequel les lignes
 d'écoulement partant de Laniakea y restent (un bassin d'attraction est, par définition, ce qui s'écoule vers son attracteur).
 
@@ -96,35 +96,20 @@ if lab is not None:
         for u in fits.open(io.BytesIO(RAWV)):
             if u.data is not None and u.data.ndim == 4: V0 = np.asarray(u.data, dtype=float) * 52.0; break
         if V0 is not None and V0.shape[0] != 3: V0 = np.moveaxis(V0, -1, 0)
-    if V0 is not None and len(CANDS) > 1:
-        M0 = V0.shape[1]; vc0 = 1000.0 / M0
-        zi, yi, xi = np.nonzero(lab == 1)
-        rng0 = np.random.default_rng(7); pick0 = rng0.choice(len(xi), size=min(50, len(xi)), replace=False)
-        def score_flow(perm, flip):
-            # positions supergalactiques des voxels de Laniakea pour cette orientation, puis 50 lignes d'écoulement
-            def sgpos(i3):
-                return [flip[k] * ((i3[perm[k]] + .5 - c) * cell) for k in range(3)]
-            def inb(p):
-                ii = [None] * 3
-                for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
-                return lab[ii[0], ii[1], ii[2]] == 1
-            def vel(p):
-                ii = [None] * 3
-                for k in range(3): ii[perm[k]] = int(min(M0 - 1, max(0, np.floor(flip[k] * p[k] / vc0 + M0 / 2.0))))
-                w = V0[:, ii[0], ii[1], ii[2]]; return np.array([flip[k] * w[perm[k]] for k in range(3)])
-            ok = 0
-            for s_ in pick0:
-                p = np.array(sgpos((zi[s_], yi[s_], xi[s_])), dtype=float)
-                for _ in range(60):
-                    v = vel(p); n_ = np.linalg.norm(v)
-                    if n_ < 1e-6: break
-                    p = p + v / n_ * 3.0
-                ok += int(inb(p))
-            return ok
-        sc2 = [(score_flow(pf[0], pf[1]), pf) for pf in CANDS]
-        for v_, pf in sc2: log.append('écoulement, axes %s signes %s : %d / %d lignes restent dans Laniakea' % (pf[0], pf[1], v_, len(pick0)))
-        v_, pf = max(sc2, key=lambda t: t[0]); ORIENT = (len(TEST), pf[0], pf[1])
-    log.append('**Orientation : SGX, SGY, SGZ sur les axes %s de la grille, signes %s : %d / %d amas bien placés**' % (best[1], best[2], best[0], len(TEST)))
+    # plusieurs orientations placent bien les 7 amas : on départage par la position publiée des attracteurs des six bassins
+    # (Dupuy & Courtois 2023, table A.1, Mpc/h) : le voxel de chaque attracteur doit porter le numéro de son bassin.
+    ATT = [(1, 'Laniakea', (-62, -8, 39)), (2, 'Apus', (-125, -23, -31)), (3, 'Hercules', (-39, 70, 78)), (4, 'Lepus', (-62, -39, -109)), (5, 'Persée-Poissons', (47, -23, -31)), (6, 'Shapley', (-141, 62, -16))]
+    def att_score(perm, flip):
+        sc = 0
+        for n_, nm, p in ATT:
+            ii = [None] * 3
+            for k in range(3): ii[perm[k]] = idx(flip[k] * p[k])
+            sc += int(lab[ii[0], ii[1], ii[2]] == n_)
+        return sc
+    sc2 = [(att_score(pf[0], pf[1]), pf) for pf in CANDS] or [(att_score(best[1], best[2]), (best[1], best[2]))]
+    for v_, pf in sc2: log.append('attracteurs, axes %s signes %s : %d / %d à leur place' % (pf[0], pf[1], v_, len(ATT)))
+    v_, pf = max(sc2, key=lambda t: t[0]); ORIENT = (len(TEST), pf[0], pf[1])
+    log.append('**Orientation retenue : axes %s, signes %s (%d / %d attracteurs à leur place)**' % (pf[0], pf[1], v_, len(ATT)))
 
 out = {}
 if lab is not None and ORIENT:
@@ -154,6 +139,7 @@ if lab is not None:
     out['coupe'] = {'dessus': [[round(pos(m, a, b_)[0] * 10), round(pos(m, a, b_)[1] * 10)] for a, b_ in zip(*np.nonzero(vox[m]))],
                     'cote': [[round(pos(a, m, b_)[0] * 10), round(pos(a, m, b_)[2] * 10)] for a, b_ in zip(*np.nonzero(vox[:, m, :]))],
                     'cellule': round(cell * K * 10)}
+    out['attracteur'] = [round(-62 * K * 10), round(-8 * K * 10), round(39 * K * 10)]   # Dupuy & Courtois 2023 : (-62, -8, 39) Mpc/h, direction du Grand Attracteur
     log.append('Bord : %d voxels ; coupes : %d (dessus), %d (côté)' % (len(out['bord']), len(out['coupe']['dessus']), len(out['coupe']['cote'])))
 
     # ---------- vitesses et lignes d'écoulement ----------
