@@ -38,6 +38,7 @@ mask = np.abs(A - corner).sum(axis=2) > 60
 ys, xs = np.nonzero(mask)
 x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
 cx, cy, rx, ry = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
+rx, ry = rx * .985, ry * .975          # léger retrait : le bord de l'ellipse est assombri sur l'image, on ne l'échantillonne pas
 log.append('image %d × %d, fond %s, ellipse x %d–%d, y %d–%d (rapport %.3f, attendu 2)' % (W, H, corner.round().tolist(), x0, x1, y0, y1, rx / ry))
 
 OW, OH = 2048, 1024
