@@ -36,6 +36,11 @@
 - Shapley : bassin 6 (attendu autre)
 - Notre voxel est dans le bassin 1 (attendu : 1) ; Laniakea = 4079 voxels, 1.95e+06 (Mpc/h)³ (attendu ≈ 2e6)
 - Centre de Laniakea (SGX, SGY, SGZ) : -41, -51, 135 Mpc
+- Bassin voisin Apus : 19972 voxels (9.5 × 10⁶ (Mpc/h)³), bord gardé 1500 points
+- Bassin voisin Hercule : 6595 voxels (3.1 × 10⁶ (Mpc/h)³), bord gardé 1500 points
+- Bassin voisin Lepus : 16959 voxels (8.1 × 10⁶ (Mpc/h)³), bord gardé 1500 points
+- Bassin voisin Persée-Poissons : 10067 voxels (4.8 × 10⁶ (Mpc/h)³), bord gardé 1500 points
+- Bassin voisin Shapley : 16589 voxels (7.9 × 10⁶ (Mpc/h)³), bord gardé 1500 points
 - Bord : 1456 voxels ; coupes : 79 (dessus), 263 (côté)
 - vitesses [0] forme (3, 64, 64, 64) ; NAXIS=4, NAXIS1=64, NAXIS2=64, NAXIS3=64, NAXIS4=3
 - **Composantes : (2, 1, 0), signes (1, 1, 1)**
