@@ -39,7 +39,7 @@
   };
 
   /* Méthode : un menu à onglets (Méthode, Crédits), d'autres pourront s'ajouter */
-  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences'], ['ressources', 'Ressources'], ['projet', 'Le projet']];
+  var INFO_TABS = [['methode', 'Méthode'], ['credits', 'Crédits et licences'], ['ressources', 'Ressources'], ['coulisses', 'Les coulisses'], ['projet', 'Le projet']];
   function infoTabs(cur) {
     return '<div class="tabs" role="tablist" aria-label="Informations">' + INFO_TABS.map(function (t) {
       return '<a role="tab" class="tab" href="#/' + t[0] + '" aria-selected="' + (t[0] === cur) + '">' + t[1] + '</a>';
@@ -161,6 +161,7 @@
       '<li>IAU, Gazetteer of Planetary Nomenclature, et NASA : noms et coordonnées des lieux remarquables (cratères, mers, volcans, sites d\'atterrissage).</li>',
       '<li>NASA Planetary Fact Sheets : données physiques.</li>',
       '<li>RECONS, SIMBAD, Gaia, Hipparcos : étoiles du voisinage.</li>',
+      '<li>Grandes structures : Karachentsev, Makarov et Kaisina (2013) pour le Volume local ; Kourkchi et Tully (2017) pour le Superamas local ; relevé 2MRS (Huchra et al. 2012) pour Laniakea, délimité par Tully et al. (2014) ; bassins et champ de vitesses CosmicFlows-4 (Dupuy et Courtois 2023 ; Courtois et al. 2023) ; Sloan Digital Sky Survey (DR17, SkyServer) pour l\'Univers observable. Détail dans l\'onglet <a href="#/coulisses">Les coulisses</a>.</li>',
       '</ul>',
       '<h3>Logiciel</h3><ul class="credits-list">',
       '<li><b>three.js</b> r128 — licence MIT.</li>',
@@ -183,6 +184,15 @@
       ['RECONS et SIMBAD', 'https://simbad.cds.unistra.fr/simbad/', 'Étoiles du voisinage solaire, base du CDS de Strasbourg.'],
       ['Reid et al. (2019)', 'https://doi.org/10.3847/1538-4357/ab4a11', 'Bras spiraux de la Voie lactée mesurés par interférométrie radio.'],
       ['McConnachie (2012)', 'https://doi.org/10.1088/0004-6256/144/1/4', 'Catalogue des galaxies du Groupe local.']]],
+    ['Grandes structures de l\'Univers', [
+      ['Karachentsev et al. (2013)', 'https://doi.org/10.1088/0004-6256/145/4/101', 'Catalogue des galaxies proches : les 869 galaxies du Volume local.'],
+      ['Kourkchi et Tully (2017)', 'https://doi.org/10.3847/1538-4357/aa76db', 'Groupes de galaxies jusqu\'à 3 500 km/s : le Superamas local.'],
+      ['Relevé 2MRS (Huchra et al. 2012)', 'https://doi.org/10.1088/0067-0049/199/2/26', 'Décalages vers le rouge de 44 600 galaxies sur tout le ciel : Laniakea.'],
+      ['Tully et al. (2014), Laniakea', 'https://doi.org/10.1038/nature13674', 'L\'article de Nature qui a délimité et nommé Laniakea.'],
+      ['Projet CosmicFlows', 'https://projets.ip2i.in2p3.fr/cosmicflows/', 'Champ de vitesses CosmicFlows-4 et bassins d\'attraction : contour et écoulements de Laniakea.'],
+      ['Dupuy et Courtois (2023)', 'https://arxiv.org/abs/2305.02339', 'Laniakea et cinq autres superamas délimités comme bassins d\'attraction.'],
+      ['SDSS SkyServer', 'https://skyserver.sdss.org/dr17/', 'Service officiel du Sloan Digital Sky Survey : la tranche de 119 823 galaxies de l\'Univers observable.'],
+      ['VizieR (CDS)', 'https://vizier.cds.unistra.fr/', 'Le catalogue des catalogues du CDS de Strasbourg, par où passent la plupart des tables.']]],
     ['Cartes et images', [
       ['USGS Astrogeology', 'https://astrogeology.usgs.gov/', 'Cartes et reliefs des planètes et des lunes.'],
       ['NASA Scientific Visualization Studio', 'https://svs.gsfc.nasa.gov/', 'Carte et relief de la Lune.'],
@@ -209,6 +219,33 @@
       }).join('') + '</div></section>';
     }).join('');
   }
+  /* Les coulisses : comment les données arrivent sur le site (tâches GitHub, calculs dans le navigateur) */
+  var TASKS = [
+    ['Trajectoires des engins spatiaux', 'chaque jour', 'JPL Horizons (NASA) ; MMGIS (NASA) pour les rovers', 'positions des 27 engins, des 20 grandes lunes, des rovers Perseverance et Curiosity', 'vecteurs relus et interpolés ; hors des dates couvertes, rien n\'est affiché'],
+    ['Bibliothèque', 'chaque mois', 'Wikidata et Wikimedia Commons (photothèque de la NASA en suggestion seulement, jamais retenue sans validation) ; JPL Small-Body Database', 'photos réduites avec auteur et licence ; orbites des petits corps', 'licence vérifiée pour chaque image ; rapport des images manquantes'],
+    ['Relief des petits mondes', 'quand le script change', 'USGS Astrogeology (MESSENGER, Dawn, New Horizons)', 'cartes de pentes de Mercure, Cérès, Pluton et Charon', 'aucune exagération ; zones jamais photographiées laissées neutres'],
+    ['Catalogues de galaxies', 'quand un script change', 'VizieR (CDS) ; relevé 2MRS ; projet CosmicFlows ; SDSS SkyServer', 'Volume local, Superamas local, Laniakea (galaxies, contour, écoulements), tranche de l\'Univers observable', 'colonnes reconnues et journalisées ; orientation des grilles de Laniakea vérifiée sur 7 amas et 6 attracteurs publiés ; serveurs de secours'],
+    ['Pages lisibles', 'à chaque publication', 'le contenu du site lui-même', 'versions texte des pages pour les moteurs de recherche et les lecteurs d\'écran', '—'],
+    ['Numéros de version', 'à chaque modification', 'les fichiers du site', 'une empreinte par fichier, pour que chacun reçoive la dernière version', '—']
+  ];
+  pages.coulisses = function (root) {
+    root.innerHTML = '<p class="p-kicker">Méthode</p><h1>Les coulisses : d\'où viennent les données</h1>' + infoTabs('coulisses') +
+      '<p class="lead">L\'Observatoire n\'interroge jamais la NASA ni les observatoires à chaque visite. Des tâches automatiques préparent les données à l\'avance ; votre navigateur fait le reste des calculs.</p>' +
+      '<h2>1. Les tâches automatiques</h2>' +
+      '<p>Le site est hébergé sur GitHub. Des petits programmes (des scripts Python, dans le dossier <code>tools/</code> du dépôt) y tournent à heure fixe ou quand on les modifie, grâce à GitHub Actions. Chacun interroge une source publique, convertit les données dans un format compact, vérifie ce qu\'il a reçu, puis publie un fichier dans le dossier <code>data/</code> avec un rapport qui dit ce qui a marché ou échoué. Si une source ne répond pas, l\'ancien fichier reste en place : le site ne casse jamais.</p>' +
+      '<div class="rows">' + TASKS.map(function (t) {
+        return '<article class="row"><div class="row-h"><h3>' + esc(t[0]) + '</h3><p class="row-kind">' + esc(t[1]) + '</p></div><div class="row-b"><p><b>Sources :</b> ' + esc(t[2]) + '.</p><p><b>Produit :</b> ' + esc(t[3]) + '.</p><p><b>Contrôles :</b> ' + esc(t[4]) + '.</p></div></article>';
+      }).join('') + '</div>' +
+      '<h2>2. Ce que calcule votre navigateur</h2><ul class="credits-list">' +
+      '<li>Positions des planètes à la date affichée : éléments orbitaux de Standish (NASA/JPL), résolus par l\'équation de Kepler.</li>' +
+      '<li>Position de la Lune : formule abrégée ; phases, périgées et apogées : algorithmes de Jean Meeus, contrôlés sur le calendrier de l\'IMCCE.</li>' +
+      '<li>Orientation et rotation des astres : modèles de l\'Union astronomique internationale.</li>' +
+      '<li>Orbites des petits corps et des orbiteurs rapides : propagation képlérienne à partir de leurs éléments.</li>' +
+      '<li>Distances des galaxies lointaines : tirées de leur décalage vers le rouge (loi de Hubble, H0 = 70 km/s/Mpc), puis distance comobile pour l\'Univers observable (univers plat, Ωm = 0,3).</li></ul>' +
+      '<h2>3. Ce qui reste fixe</h2>' +
+      '<p>Certaines données changent si peu qu\'elles sont écrites une fois pour toutes dans le code, avec leur source : caractéristiques physiques des astres (fiches de la NASA), étoiles du voisinage, repères de la Voie lactée, galaxies du Groupe local, lieux remarquables des surfaces (nomenclature de l\'IAU).</p>' +
+      '<p class="note">Toutes les sources, avec leurs liens, sont dans l\'onglet <a href="#/ressources">Ressources</a> ; les crédits des images et des logiciels dans <a href="#/credits">Crédits et licences</a>. Le code et les rapports des tâches sont publics, dans le dépôt GitHub de l\'Observatoire.</p>';
+  };
   pages.ressources = function (root) {
     root.innerHTML = '<p class="p-kicker">Méthode</p><h1>Ressources</h1>' + infoTabs('ressources') +
       '<p class="lead">Les sources des données de l\'Observatoire, puis des sites de référence pour aller plus loin. Chaque bouton ouvre le site dans un nouvel onglet.</p>' +

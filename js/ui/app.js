@@ -36,7 +36,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, projet: 1, lunaisons: 1, comparateur: 1 };
+  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, coulisses: 1, projet: 1, lunaisons: 1, comparateur: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -45,7 +45,7 @@
     return { name: name, param: h[1] || null, sub: h[2] || null };
   }
   var prevHash = '', returnTo = null;   // venu d'une page (Atlas…) : un bouton du fil d'Ariane permet d'y retourner
-  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', projet: 'Le projet', lunaisons: 'les Lunaisons', comparateur: 'le Comparateur' };
+  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', coulisses: 'Les coulisses', projet: 'Le projet', lunaisons: 'les Lunaisons', comparateur: 'le Comparateur' };
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();
@@ -56,7 +56,7 @@
     closeMenu();
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[data-route]'), function (a) {
       var rt = a.getAttribute('data-route');
-      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || ((r.name === 'credits' || r.name === 'ressources' || r.name === 'projet') && rt === 'methode') || ((r.name === 'simulateur' || r.name === 'lexique') && rt === 'outils');
+      var on = rt === r.name || (r.name === 'voisinage' && rt === 'explorer') || ((r.name === 'credits' || r.name === 'ressources' || r.name === 'coulisses' || r.name === 'projet') && rt === 'methode') || ((r.name === 'simulateur' || r.name === 'lexique') && rt === 'outils');
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     if (PAGES[r.name]) { openPage(r.name, r.param, r.sub); return; }
