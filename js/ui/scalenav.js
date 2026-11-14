@@ -59,14 +59,14 @@
       mode = narrowMQ.matches ? 'tel' : 'pc';
       host.className = 'sn sn-' + mode + (open ? ' open' : '');
       if (mode === 'tel') {
-        host.innerHTML = '<div class="sn-bar"><button type="button" class="sn-zoom" data-z="-1" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>−</button>' +
+        host.innerHTML = '<div class="sn-bar"><button type="button" class="sn-zoom" data-z="-1" aria-label="Échelle plus petite" title="Plus près, vers nous"' + (cur ? '' : ' disabled') + '>⊕</button>' +
           '<button type="button" class="sn-cur" data-tog aria-expanded="' + open + '"><canvas class="sn-th" data-mini="' + l.mini + '" width="56" height="56"></canvas><span class="sn-t"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / ' + LV.length + '</small><small>' + esc(l.r) + '</small></span><span class="sn-chev" aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
-          '<button type="button" class="sn-zoom" data-z="+1" aria-label="Échelle plus grande"' + (cur < LV.length - 1 ? '' : ' disabled') + '>+</button></div>' +
+          '<button type="button" class="sn-zoom" data-z="+1" aria-label="Échelle plus grande" title="Plus loin, vers l\'infiniment grand"' + (cur < LV.length - 1 ? '' : ' disabled') + '>∞</button></div>' +
           (open ? '<div class="sn-drop">' + search() + '<div class="sn-res" hidden></div>' + steps(true) + '</div>' : '');
       } else {
         host.innerHTML = '<div class="sn-top"><button type="button" class="sn-tog" data-tog aria-label="' + (open ? 'Replier' : 'Déplier') + ' le panneau des échelles" title="' + (open ? 'Replier' : 'Déplier') + '">' + (open ? '‹' : '›') + '</button>' + (open ? search() : '') + '</div>' +
-          '<button type="button" class="sn-zoom" data-z="+1" aria-label="Échelle plus grande" title="Plus loin"' + (cur < LV.length - 1 ? '' : ' disabled') + '>+</button>' + steps(open) +
-          '<button type="button" class="sn-zoom" data-z="-1" aria-label="Échelle plus petite" title="Plus près"' + (cur ? '' : ' disabled') + '>−</button>' + (open ? '<div class="sn-res" hidden></div>' : '');
+          '<button type="button" class="sn-zoom" data-z="+1" aria-label="Échelle plus grande" title="Plus loin, vers l\'infiniment grand"' + (cur < LV.length - 1 ? '' : ' disabled') + '>∞</button>' + steps(open) +
+          '<button type="button" class="sn-zoom" data-z="-1" aria-label="Échelle plus petite" title="Plus près, vers nous"' + (cur ? '' : ' disabled') + '>⊕</button>' + (open ? '<div class="sn-res" hidden></div>' : '');
       }
       var inp = host.querySelector('input'), res = host.querySelector('.sn-res');
       if (inp) inp.addEventListener('input', function () {

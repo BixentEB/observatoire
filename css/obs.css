@@ -1256,3 +1256,6 @@ body.gt-on .console { bottom: 220px; }
 .sc-map .sc-g.t3 { fill-opacity: .45; }
 .sc-map .sc-g.t2 { fill-opacity: .7; }
 .sc-map .vl-n.sc-named { fill: var(--fg); font-weight: 600; }
+/* boutons ∞ (plus loin) et ⊕ (plus près, vers nous) des deux règles */
+.sn-zoom, .crumbs .sr-pill button.sr-z { font-family: var(--body); font-size: 18px; line-height: 1; }
+.sn-zoom[data-z="-1"], .crumbs .sr-pill button.sr-z[data-z="-1"] { font-size: 14px; }

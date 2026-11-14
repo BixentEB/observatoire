@@ -2,8 +2,8 @@
    OBSERVATOIRE — règle des échelles de l'Explorer (lot 6, 14 novembre 2026)
    Version raccourcie de la règle de l'Atlas (OBS.SCALE_LEVELS) : seulement les niveaux
    qu'on peut visiter en 3D, du Système solaire au Volume local.
-   - Ordinateur : colonne fine à gauche de la scène, + (plus loin) en haut, − (plus près) en bas.
-   - Téléphone (≤ 760 px) : pastille « − niveau + » au début du fil d'Ariane ; un appui déplie la liste.
+   - Ordinateur : colonne fine à gauche de la scène, ∞ (plus loin, vers l'infiniment grand) en haut, ⊕ (plus près, vers nous) en bas.
+   - Téléphone (≤ 760 px) : pastille « ⊕ niveau ∞ » au début du fil d'Ariane ; un appui déplie la liste.
    Un clic sur le niveau affiché ramène à sa vue d'ensemble.
    Le menu « Aller vers » (app.js) ne montre que les destinations du niveau choisi ici.
    ====================================================================== */
@@ -37,7 +37,7 @@
     return '<ol class="sr-steps">' + IDS.slice().reverse().map(function (id) {
       var i = IDS.indexOf(id), l = lv(id);
       return '<li' + (i === cur ? ' class="on"' : '') + '><button type="button" data-i="' + i + '" title="' + esc(l.n + ' · ' + l.r) + (i === cur ? ' · vue d\'ensemble' : '') + '"' + (i === cur ? ' aria-current="location"' : '') + '>' +
-        '<span class="sn-dot"></span><span class="sr-n">' + esc(l.n) + (full ? '<small>' + esc(l.r) + '</small>' : '') + '</span>' + (i === 0 ? '<span class="sr-here" title="Vous êtes ici">⊕</span>' : '') + '</button></li>';
+        '<span class="sn-dot"></span><span class="sr-n">' + esc(l.n) + (full ? '<small>' + esc(l.r) + '</small>' : '') + '</span>' + '</button></li>';
     }).join('') + '</ol>';
   }
 
@@ -45,9 +45,9 @@
   function drawPc() {
     if (!host) { host = document.createElement('nav'); host.id = 'scene-rule'; host.className = 'sr'; host.setAttribute('aria-label', 'Échelles'); document.body.appendChild(host); host.addEventListener('click', onClick); }
     var cur = zone();
-    host.innerHTML = '<button type="button" class="sn-zoom" data-z="1" title="Plus loin" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '>+</button>' +
+    host.innerHTML = '<button type="button" class="sn-zoom" data-z="1" title="Plus loin, vers l\'infiniment grand" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '>∞</button>' +
       stepsHtml(cur, false) +
-      '<button type="button" class="sn-zoom" data-z="-1" title="Plus près" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>−</button>';
+      '<button type="button" class="sn-zoom" data-z="-1" title="Plus près, vers nous" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>⊕</button>';
   }
   function onClick(e) {
     var b = e.target.closest('button'); if (!b) return;
@@ -60,9 +60,9 @@
   OBS.sceneRulePill = function () {
     var cur = zone(), l = lv(IDS[cur]);
     var el = document.createElement('div'); el.className = 'sr-pill' + (open ? ' open' : '');
-    el.innerHTML = '<button type="button" class="sr-z" data-z="-1" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>−</button>' +
+    el.innerHTML = '<button type="button" class="sr-z" data-z="-1" title="Plus près, vers nous" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>⊕</button>' +
       '<button type="button" class="sr-cur" data-tog aria-expanded="' + open + '"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / ' + IDS.length + '</small><span aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
-      '<button type="button" class="sr-z" data-z="1" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '>+</button>' +
+      '<button type="button" class="sr-z" data-z="1" title="Plus loin, vers l\'infiniment grand" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '>∞</button>' +
       (open ? '<div class="sr-drop">' + stepsHtml(cur, true) + '</div>' : '');
     el.addEventListener('click', onClick);
     return el;
