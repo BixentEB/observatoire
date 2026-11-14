@@ -37,13 +37,13 @@ try:
     if zc:
         rows = []
         for ra0 in range(0, 360, 20):          # par tranches de 20° d'ascension droite, pour ménager le serveur
-            q = 'SELECT ra, %s AS zs FROM sdssdr16.main WHERE ra >= %d AND ra < %d AND dec BETWEEN %g AND %g AND %s BETWEEN 0.003 AND %g' % (zc, ra0, ra0 + 20, -DEC, DEC, zc, ZMAX)
+            q = "SELECT ra, %s AS zs FROM sdssdr16.main WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), BOX('ICRS', %g, 0, 20, %g)) AND %s BETWEEN 0.003 AND %g" % (zc, ra0 + 10, 2 * DEC, zc, ZMAX)   # la boîte utilise l'index spatial du serveur
             if cc == 'spec_class': q += " AND spec_class = 'GALAXY'"
             if 'spec_z_warning' in cols: q += ' AND spec_z_warning = 0'
             body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '200000', 'QUERY': q}).encode()
-            for essai in range(3):
+            for essai in range(2):
                 try:
-                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=600)
+                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=150)
                     rd = list(csv.DictReader(io.StringIO(txt)))
                     part = [(float(r['ra']), float(r['zs'])) for r in rd if r.get('ra') and r.get('zs')]
                     rows += part; log.append('GAVO ra %d–%d : %d galaxies' % (ra0, ra0 + 20, len(part))); break
