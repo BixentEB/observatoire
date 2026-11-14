@@ -31,17 +31,25 @@ rows = None
 try:
     head = fetch('https://dc.g-vo.org/tap/sync?' + urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'QUERY': 'SELECT TOP 1 * FROM sdssdr16.main'}), timeout=120)
     cols = next(csv.reader(io.StringIO(head))); log.append('GAVO, colonnes : ' + ', '.join(cols))
-    zc = next((c for c in ('z', 'spec_z', 'zsp', 'redshift') if c in cols), None)
+    zc = next((c for c in ('spec_z', 'zsp', 'redshift') if c in cols), None)   # pas « z » : c'est la magnitude dans le filtre z
     cc = next((c for c in ('spec_class', 'spcl', 'class') if c in cols), None)
     log.append('décalage : %s, classe : %s' % (zc, cc))
     if zc:
-        q = 'SELECT ra, dec, %s AS z FROM sdssdr16.main WHERE dec BETWEEN %g AND %g AND %s BETWEEN 0.003 AND %g' % (zc, -DEC, DEC, zc, ZMAX)
-        if cc == 'spec_class': q += " AND spec_class = 'GALAXY'"
-        body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '400000', 'QUERY': q}).encode()
-        txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=900)
-        rd = list(csv.DictReader(io.StringIO(txt)))
-        rows = [(float(r['ra']), float(r['z'])) for r in rd if r.get('ra') and r.get('z')]
-        log.append('GAVO : %d galaxies' % len(rows))
+        rows = []
+        for ra0 in range(0, 360, 20):          # par tranches de 20° d'ascension droite, pour ménager le serveur
+            q = 'SELECT ra, %s AS zs FROM sdssdr16.main WHERE ra >= %d AND ra < %d AND dec BETWEEN %g AND %g AND %s BETWEEN 0.003 AND %g' % (zc, ra0, ra0 + 20, -DEC, DEC, zc, ZMAX)
+            if cc == 'spec_class': q += " AND spec_class = 'GALAXY'"
+            if 'spec_z_warning' in cols: q += ' AND spec_z_warning = 0'
+            body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '200000', 'QUERY': q}).encode()
+            for essai in range(3):
+                try:
+                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=600)
+                    rd = list(csv.DictReader(io.StringIO(txt)))
+                    part = [(float(r['ra']), float(r['zs'])) for r in rd if r.get('ra') and r.get('zs')]
+                    rows += part; log.append('GAVO ra %d–%d : %d galaxies' % (ra0, ra0 + 20, len(part))); break
+                except Exception as ex:
+                    log.append('échec GAVO ra %d (essai %d) : %r' % (ra0, essai + 1, ex)); time.sleep(10)
+        log.append('GAVO : %d galaxies en tout' % len(rows))
 except Exception as ex:
     log.append('échec GAVO : %r' % ex)
 
