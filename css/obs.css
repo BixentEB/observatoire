@@ -1262,3 +1262,7 @@ body.gt-on .console { bottom: 220px; }
 .c-text.c-point { color: var(--fg); border-left: 2px solid var(--accent); padding-left: 10px; }
 #size-badge.badge-quiet { font-size: 10px; letter-spacing: .02em; padding: 3px 8px; border: 0; border-radius: 6px; background: rgba(5, 8, 18, .78); color: var(--muted); cursor: help; }
 #size-badge.badge-quiet:hover { color: var(--soft); }
+/* Atlas › Laniakea (js/ui/laniakea.js, lot 8) */
+.lk-map .lk-amas { fill: #f4c77a; stroke: rgba(5, 8, 18, .9); stroke-width: 1.5; }
+.lk-map .lk-sa { fill: rgba(244, 199, 122, .06); stroke: rgba(244, 199, 122, .45); stroke-dasharray: 3 4; }
+.lk-map .lk-sa-t { fill: #f4c77a; }

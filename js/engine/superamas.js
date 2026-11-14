@@ -149,6 +149,7 @@
   L.enter = function (opts) {
     L._inward = 0; controls.enabled = true; selected = null;
     if (opts.from === 'volume-local') { controls.target.set(0, 0, 0); camera.position.set(0, 60, 110); startFlight(null, 3); }
+    else if (opts.from === 'laniakea') { controls.target.set(0, 0, 0); homeCam(camera.position).multiplyScalar(2.4); startFlight(null, 2.6); }   // on plonge depuis Laniakea
     else { homeCam(camera.position); controls.target.set(0, 0, 0); }
     if (opts.focus) L.select(opts.focus);
     OBS.emit('select', { level: 'superamas', id: selected });

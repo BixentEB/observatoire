@@ -155,6 +155,7 @@
     if (level === 'groupe-local') return renderLG(id);
     if (level === 'volume-local') return renderVL(id);
     if (level === 'superamas') return renderSC(id);
+    if (level === 'laniakea') return renderLK(id);
     var def = level === 'voisinage' ? OBS.neighborhood.get(id).def : OBS.byId[id];
     var h = [];
     h.push('<div class="c-head"><p class="c-kind">' + esc(def.kind || (def.cls === 'BD' ? 'Naine brune · ' + def.spec : 'Étoile · ' + def.spec)) + '</p>');
@@ -329,6 +330,29 @@
     el.querySelector('.c-close').addEventListener('click', function () { OBS.volumelocal.select(null); });
     el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
     var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('groupe-local', { from: 'volume-local' }); });
+  }
+
+  /* Laniakea : un amas nommé, ou le Superamas local */
+  function renderLK(id) {
+    var it = OBS.laniakea.get(id); if (!it) return;
+    var a = it.def, K = OBS.LK, h = [], d = it.pos.length();
+    current = { level: 'laniakea', id: id }; clearInterval(liveTimer);
+    var inside = ['vierge', 'centaure', 'hydre', 'norma'].indexOf(id) >= 0;
+    h.push('<div class="c-head"><p class="c-kind">' + (it.home ? 'Notre superamas d\'origine' : id === 'shapley' ? 'Superamas' : 'Amas de galaxies') + '</p><h2 class="c-name"><span class="c-swatch" style="background:#f4c77a;color:#f4c77a"></span>' + esc(it.name) + '</h2>' +
+      '<button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+    h.push('<div class="c-flags">' + flag('real', 'Direction', 'mesurée', 'direction publiée (NED)') + flag('adapt', 'Distance', 'par la vitesse', 'tirée de la vitesse d\'éloignement (loi de Hubble, H0 = 70 km/s/Mpc)') + '<a class="flag-help" href="#/methode">?</a></div>');
+    if (it.home) h.push('<p class="c-text">L\'étage précédent : l\'amas de la Vierge et les quelque 8 800 groupes qui l\'entourent, dont notre Groupe local. Il n\'est qu\'une petite partie de Laniakea.</p><section class="c-sec"><div class="c-chips"><button class="chip chip-go" type="button" data-in>Entrer dans le Superamas local →</button></div></section>');
+    else {
+      h.push('<p class="c-text">' + esc(a.s) + '.</p>');
+      h.push('<p class="c-text c-point">' + (inside ? 'Il fait partie de Laniakea, comme nous : ses galaxies s\'écoulent vers le même Grand Attracteur.' : 'Il n\'appartient pas à Laniakea : ses galaxies s\'écoulent vers un autre centre.') + '</p>');
+      h.push('<section class="c-sec"><div class="c-live"><div><span>Distance</span><b>' + K.dTxt(d) + '</b><small>sa lumière est partie il y a ' + K.dTxt(d).replace(' M al', ' millions d\'années').replace(' d\'al', ' d\'années') + '</small></div>' +
+        '<div><span>Vitesse d\'éloignement</span><b>' + K.nf(a.v) + ' km/s</b><small>mesurée par le décalage de sa lumière vers le rouge</small></div></div></section>');
+    }
+    h.push('<section class="c-sec"><h3>Ce qui est représenté</h3><p class="c-note">Les 42 405 galaxies du relevé 2MRS (Huchra et al. 2012) jusqu\'à près d\'un milliard d\'années-lumière, distances tirées de leur vitesse. Plus loin, seules les galaxies les plus brillantes sont recensées ; les zones vides en éventail sont cachées par la Voie lactée. Une unité vaut environ 3,26 millions d\'années-lumière. <a href="#/atlas/laniakea">Carte et liste dans l\'Atlas</a></p></section></div>');
+    el.innerHTML = h.join(''); el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+    el.querySelector('.c-close').addEventListener('click', function () { OBS.laniakea.select(null); });
+    el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+    var bi = el.querySelector('[data-in]'); if (bi) bi.addEventListener('click', function () { OBS.engine.go('superamas', { from: 'laniakea' }); });
   }
 
   /* Superamas local : un groupe du catalogue de Kourkchi et Tully */

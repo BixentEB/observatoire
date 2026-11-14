@@ -17,6 +17,7 @@
     { id: 'groupe-local', label: 'Groupe local' },
     { id: 'volume-local', label: 'Volume local' },
     { id: 'superamas', label: 'Superamas local' },
+    { id: 'laniakea', label: 'Laniakea' },
     { id: 'visiteurs', label: 'Visiteurs', theme: true, title: 'Les visiteurs du système solaire' },
     { id: 'types', label: 'Types d\'objets', theme: true, title: 'Les types d\'objets' },
     { id: 'echelles', label: 'Échelles', theme: true, title: 'De l\'atome à l\'Univers' },
@@ -78,6 +79,7 @@
     else if (scope === 'groupe-local') view === 'liste' ? groupeLocal(body) : carteGroupeLocal(body);
     else if (scope === 'volume-local') OBS.atlasVolume(body, view);
     else if (scope === 'superamas') OBS.atlasSuperamas(body, view);
+    else if (scope === 'laniakea') OBS.atlasLaniakea(body, view);
     else if (view === 'liste') scope === 'voisinage' ? listeVoisinage(body) : listeSysteme(body);
     else scope === 'voisinage' ? carteVoisinage(body) : carteSysteme(body);
     OBS.armPinch(root);
