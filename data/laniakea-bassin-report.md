@@ -7,16 +7,30 @@
 - CF4gp_new_128-z008_BoA.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
 - CF4gp_new_128-z008_BoR.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
 - **Grille retenue : CF4_new_128-z008_BoA.fits**
+- **Orientation : SGX, SGY, SGZ sur les axes (0, 1, 2) de la grille, signes (-1, 1, 1) : 7 / 7 amas bien placés**
+- Vierge : bassin 1 (attendu Laniakea)
+- Centaure : bassin 1 (attendu Laniakea)
+- Hydre : bassin 1 (attendu Laniakea)
+- Règle : bassin 1 (attendu Laniakea)
+- Persée : bassin 4 (attendu autre)
+- Coma : bassin 6 (attendu autre)
+- Shapley : bassin 3 (attendu autre)
 - Notre voxel est dans le bassin 1 (attendu : 1) ; Laniakea = 4079 voxels, 1.95e+06 (Mpc/h)³ (attendu ≈ 2e6)
-- Centre de Laniakea (SGX, SGY, SGZ) : -41, -51, 135 Mpc
-- Bord : 1456 voxels ; coupes : 79 (dessus), 263 (côté)
+- Centre de Laniakea (SGX, SGY, SGZ) : -135, -51, -41 Mpc
+- Bord : 1456 voxels ; coupes : 249 (dessus), 263 (côté)
 - CF4_new_64-z008_velocity.fits : 3150720 octets
 - vitesses [0] forme (3, 64, 64, 64) ; NAXIS=4, NAXIS1=64, NAXIS2=64, NAXIS3=64, NAXIS4=3
-- composantes (0, 1, 2) : 14 / 60 lignes restent dans Laniakea
-- composantes (0, 2, 1) : 9 / 60 lignes restent dans Laniakea
-- composantes (1, 0, 2) : 3 / 60 lignes restent dans Laniakea
+- composantes (0, 1, 2) : 23 / 60 lignes restent dans Laniakea
+- composantes (0, 1, 2) : 24 / 60 lignes restent dans Laniakea
+- composantes (0, 2, 1) : 6 / 60 lignes restent dans Laniakea
+- composantes (0, 2, 1) : 0 / 60 lignes restent dans Laniakea
+- composantes (1, 0, 2) : 7 / 60 lignes restent dans Laniakea
+- composantes (1, 0, 2) : 15 / 60 lignes restent dans Laniakea
 - composantes (1, 2, 0) : 0 / 60 lignes restent dans Laniakea
-- composantes (2, 0, 1) : 5 / 60 lignes restent dans Laniakea
-- composantes (2, 1, 0) : 35 / 60 lignes restent dans Laniakea
-- **Ordre retenu : (2, 1, 0) (35 / 60)**
-- 93 lignes d'écoulement gardées
+- composantes (1, 2, 0) : 10 / 60 lignes restent dans Laniakea
+- composantes (2, 0, 1) : 10 / 60 lignes restent dans Laniakea
+- composantes (2, 0, 1) : 6 / 60 lignes restent dans Laniakea
+- composantes (2, 1, 0) : 7 / 60 lignes restent dans Laniakea
+- composantes (2, 1, 0) : 18 / 60 lignes restent dans Laniakea
+- **Ordre retenu : (0, 1, 2) (24 / 60)**
+- 89 lignes d'écoulement gardées
