@@ -17,26 +17,26 @@
 - orientation possible : axes (2, 1, 0), signes (1, -1, 1)
 - orientation possible : axes (2, 1, 0), signes (1, -1, -1)
 - CF4_new_64-z008_velocity.fits : 3150720 octets
-- écoulement, axes (0, 1, 2) signes (-1, 1, 1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (0, 1, 2) signes (-1, 1, -1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (0, 2, 1) signes (-1, 1, -1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 0, 1) signes (1, -1, 1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 0, 1) signes (1, -1, -1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 1, 0) signes (1, 1, 1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 1, 0) signes (1, 1, -1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 1, 0) signes (1, -1, 1) : 32 / 50 lignes restent dans Laniakea
-- écoulement, axes (2, 1, 0) signes (1, -1, -1) : 32 / 50 lignes restent dans Laniakea
-- **Orientation : SGX, SGY, SGZ sur les axes (0, 1, 2) de la grille, signes (-1, 1, 1) : 7 / 7 amas bien placés**
+- attracteurs, axes (0, 1, 2) signes (-1, 1, 1) : 1 / 6 à leur place
+- attracteurs, axes (0, 1, 2) signes (-1, 1, -1) : 2 / 6 à leur place
+- attracteurs, axes (0, 2, 1) signes (-1, 1, -1) : 1 / 6 à leur place
+- attracteurs, axes (2, 0, 1) signes (1, -1, 1) : 2 / 6 à leur place
+- attracteurs, axes (2, 0, 1) signes (1, -1, -1) : 3 / 6 à leur place
+- attracteurs, axes (2, 1, 0) signes (1, 1, 1) : 6 / 6 à leur place
+- attracteurs, axes (2, 1, 0) signes (1, 1, -1) : 2 / 6 à leur place
+- attracteurs, axes (2, 1, 0) signes (1, -1, 1) : 3 / 6 à leur place
+- attracteurs, axes (2, 1, 0) signes (1, -1, -1) : 1 / 6 à leur place
+- **Orientation retenue : axes (2, 1, 0), signes (1, 1, 1) (6 / 6 attracteurs à leur place)**
 - Vierge : bassin 1 (attendu Laniakea)
 - Centaure : bassin 1 (attendu Laniakea)
 - Hydre : bassin 1 (attendu Laniakea)
 - Règle : bassin 1 (attendu Laniakea)
-- Persée : bassin 4 (attendu autre)
+- Persée : bassin 5 (attendu autre)
 - Coma : bassin 6 (attendu autre)
-- Shapley : bassin 3 (attendu autre)
+- Shapley : bassin 6 (attendu autre)
 - Notre voxel est dans le bassin 1 (attendu : 1) ; Laniakea = 4079 voxels, 1.95e+06 (Mpc/h)³ (attendu ≈ 2e6)
-- Centre de Laniakea (SGX, SGY, SGZ) : -135, -51, -41 Mpc
-- Bord : 1456 voxels ; coupes : 249 (dessus), 263 (côté)
+- Centre de Laniakea (SGX, SGY, SGZ) : -41, -51, 135 Mpc
+- Bord : 1456 voxels ; coupes : 79 (dessus), 263 (côté)
 - vitesses [0] forme (3, 64, 64, 64) ; NAXIS=4, NAXIS1=64, NAXIS2=64, NAXIS3=64, NAXIS4=3
-- **Composantes : (0, 1, 2), signes (-1, 1, 1)**
-- 114 lignes d'écoulement gardées
+- **Composantes : (2, 1, 0), signes (1, 1, 1)**
+- 117 lignes d'écoulement gardées
