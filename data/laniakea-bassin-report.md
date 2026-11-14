@@ -16,6 +16,16 @@
 - orientation possible : axes (2, 1, 0), signes (1, 1, -1)
 - orientation possible : axes (2, 1, 0), signes (1, -1, 1)
 - orientation possible : axes (2, 1, 0), signes (1, -1, -1)
+- CF4_new_64-z008_velocity.fits : 3150720 octets
+- écoulement, axes (0, 1, 2) signes (-1, 1, 1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (0, 1, 2) signes (-1, 1, -1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (0, 2, 1) signes (-1, 1, -1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 0, 1) signes (1, -1, 1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 0, 1) signes (1, -1, -1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 1, 0) signes (1, 1, 1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 1, 0) signes (1, 1, -1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 1, 0) signes (1, -1, 1) : 32 / 50 lignes restent dans Laniakea
+- écoulement, axes (2, 1, 0) signes (1, -1, -1) : 32 / 50 lignes restent dans Laniakea
 - **Orientation : SGX, SGY, SGZ sur les axes (0, 1, 2) de la grille, signes (-1, 1, 1) : 7 / 7 amas bien placés**
 - Vierge : bassin 1 (attendu Laniakea)
 - Centaure : bassin 1 (attendu Laniakea)
@@ -27,19 +37,6 @@
 - Notre voxel est dans le bassin 1 (attendu : 1) ; Laniakea = 4079 voxels, 1.95e+06 (Mpc/h)³ (attendu ≈ 2e6)
 - Centre de Laniakea (SGX, SGY, SGZ) : -135, -51, -41 Mpc
 - Bord : 1456 voxels ; coupes : 249 (dessus), 263 (côté)
-- CF4_new_64-z008_velocity.fits : 3150720 octets
 - vitesses [0] forme (3, 64, 64, 64) ; NAXIS=4, NAXIS1=64, NAXIS2=64, NAXIS3=64, NAXIS4=3
-- composantes (0, 1, 2), signes (1, 1, 1) : 11 / 60 lignes restent dans Laniakea
-- composantes (0, 1, 2), signes (-1, 1, 1) : 44 / 60 lignes restent dans Laniakea
-- composantes (0, 2, 1), signes (1, 1, 1) : 7 / 60 lignes restent dans Laniakea
-- composantes (0, 2, 1), signes (-1, 1, 1) : 0 / 60 lignes restent dans Laniakea
-- composantes (1, 0, 2), signes (1, 1, 1) : 5 / 60 lignes restent dans Laniakea
-- composantes (1, 0, 2), signes (-1, 1, 1) : 8 / 60 lignes restent dans Laniakea
-- composantes (1, 2, 0), signes (1, 1, 1) : 0 / 60 lignes restent dans Laniakea
-- composantes (1, 2, 0), signes (-1, 1, 1) : 3 / 60 lignes restent dans Laniakea
-- composantes (2, 0, 1), signes (1, 1, 1) : 6 / 60 lignes restent dans Laniakea
-- composantes (2, 0, 1), signes (-1, 1, 1) : 6 / 60 lignes restent dans Laniakea
-- composantes (2, 1, 0), signes (1, 1, 1) : 4 / 60 lignes restent dans Laniakea
-- composantes (2, 1, 0), signes (-1, 1, 1) : 9 / 60 lignes restent dans Laniakea
-- **Ordre retenu : (0, 1, 2) (44 / 60)**
+- **Composantes : (0, 1, 2), signes (-1, 1, 1)**
 - 114 lignes d'écoulement gardées
