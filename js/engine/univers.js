@@ -13,7 +13,7 @@
   var scene = L.scene = new T.Scene();
   var camera = L.camera = new T.PerspectiveCamera(45, 1, 0.5, 40000);
   var controls, W = 800, H = 600, PR = 1;
-  var items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
+  var web = new T.Group(), marks = new T.Group(), items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), v3 = new T.Vector3(), camSpace = new T.Vector3();
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR; varying vec3 vC;',
@@ -33,7 +33,7 @@
     geo.setAttribute('position', new T.BufferAttribute(P, 3)); geo.setAttribute('aColor', new T.BufferAttribute(C, 3)); geo.setAttribute('aSize', new T.BufferAttribute(Z, 1));
     var un = { uPR: { value: PR } }; uniforms.push(un);
     var pts = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
-    pts.frustumCulled = false; scene.add(pts);
+    pts.frustumCulled = false; web.add(pts);
     built = true;
     if (pending) { var p = pending; pending = null; L.select(p); }
   }
@@ -49,17 +49,18 @@
 
   L.build = function (renderer, labelsContainer) {
     L.labelsEl = labelsContainer;
+    scene.add(web); scene.add(marks);
     var U = OBS.UN;
     // sphères repères à leur distance comobile : cercle dans le plan de la tranche + sphère très légère
     U.MARKS.forEach(function (m, i) {
       var R = m.d / 10, col = new T.Color(m.c);
       if (m.id !== 'laniakea') {
         var pts = []; for (var j = 0; j <= 256; j++) { var t = j / 256 * TAU; pts.push(new T.Vector3(Math.cos(t) * R, 0, Math.sin(t) * R)); }
-        scene.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: col, transparent: true, opacity: m.id === 'cmb' ? .55 : .3, depthWrite: false })));
+        marks.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: col, transparent: true, opacity: m.id === 'cmb' ? .55 : .3, depthWrite: false })));
         var sph = new T.Mesh(new T.SphereGeometry(R, 48, 32), new T.MeshBasicMaterial({ color: col, transparent: true, opacity: m.id === 'cmb' ? .035 : .01, side: T.BackSide, depthWrite: false }));
-        scene.add(sph);
+        marks.add(sph);
       } else {
-        var gl = OBS.system.glowMesh([[0, .7], [.4, .25], [1, 0]], 0xf4c77a, .6); gl.scale.setScalar(R * 2); scene.add(gl);
+        var gl = OBS.system.glowMesh([[0, .7], [.4, .25], [1, 0]], 0xf4c77a, .6); gl.scale.setScalar(R * 2); web.add(gl);
       }
       label(m.id, m.n, m.id === 'laniakea' ? new T.Vector3() : eq(25 + i * 40, 0, R, new T.Vector3()), m.id === 'laniakea' ? 'home' : 'mark', m);
     });
@@ -99,9 +100,25 @@
     U.load().then(function (J) { if (J) populate(J); else built = true; });
   };
 
+  /* temps cosmique (js/ui/galtime.js) : l'expansion seule. Facteur d'échelle d'un univers plat avec matière et énergie noire
+     (H0 = 67,4 km/s/Mpc, Ωm = 0,315, valeurs Planck : âge 13,8 milliards d'années) ; les galaxies dessinées aujourd'hui sont
+     rapprochées ou éloignées d'autant. Leur formation et leurs mouvements propres ne sont pas représentés (signalé). */
+  var timeView = false, H0g = 67.4 / 977.8, OMm = .315, OML = .685;
+  function aOf(t) { return Math.pow(OMm / OML, 1 / 3) * Math.pow(Math.sinh(1.5 * Math.sqrt(OML) * H0g * t), 2 / 3); }
+  var T0 = Math.asinh(Math.sqrt(OML / OMm)) / (1.5 * Math.sqrt(OML) * H0g);   // âge aujourd'hui (≈ 13,8 milliards d'années)
+  L.age = T0;
+  L.tSet = function (tGyr) {
+    var a = Math.max(1e-4, aOf(Math.max(1e-4, tGyr)) / aOf(T0));
+    web.scale.setScalar(a);
+    return { a: a, temp: 2.7255 / a };
+  };
+  L.timeMode = function (on) {
+    marks.visible = !on; items.forEach(function (it) { if (!it.home) it.el.style.display = on ? 'none' : ''; });
+    timeView = on; if (on) L.select(null); else { web.scale.setScalar(1); L.select(null); }
+  };
   function homeCam(out) { var el = 38 * D2R, d = 3600 / Math.max(.45, Math.min(1.3, camera.aspect)); return out.set(Math.cos(el) * d * .5, Math.sin(el) * d, Math.cos(el) * d * .87); }
   function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
-  function viewDist(it) { return it ? (it.home ? 60 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
+  function viewDist(it) { if (!it && timeView) return 320; return it ? (it.home ? 60 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
   function startFlight(id, dur) { flight = { t: 0, dur: dur || 2.4, id: id, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone() }; controls.enabled = false; }
   L.select = function (id) {
     if (id && !built) { pending = id; return; }

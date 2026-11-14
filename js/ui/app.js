@@ -208,17 +208,20 @@
   }
   document.addEventListener('pointerdown', function (e) { if (!gotoEl.hidden && !gotoEl.contains(e.target) && !e.target.closest('.c-goto')) gotoEl.hidden = true; });
   function render(items) {
+    var Lv = OBS.engine.level;
+    if (Lv && OBS.galtime && OBS.galtime.has(Lv.id)) items = items.concat([{ label: '⏱ ' + OBS.TIME_MODES[Lv.id].title, time: true, act: function () { OBS.galtime.open(Lv.id); } }]);
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });
     crumbs.innerHTML = '';
     if (OBS.sceneRuleNarrow && OBS.sceneRuleNarrow()) crumbs.appendChild(OBS.sceneRulePill());
     items.forEach(function (c, i) {
-      if (i && !c.down && !c.goto && !items[i - 1].back) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
+      if (i && !c.down && !c.goto && !c.time && !items[i - 1].back) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
       var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
       if (c.soon) { b.className = 'c-soon'; b.title = 'Niveau en préparation'; }
       else if (c.current) b.setAttribute('aria-current', 'location');
       else if (c.act) b.addEventListener('click', c.act);
       if (c.down) b.className = 'c-down';
+      if (c.time) b.className = 'c-time';
       if (c.back) { b.className = 'c-back'; b.addEventListener('click', function () { var h = returnTo.hash; returnTo = null; location.hash = h; }); }
       if (c.goto) { b.className = 'c-goto'; b.addEventListener('click', function () { openGoto(b); }); }
       crumbs.appendChild(b);

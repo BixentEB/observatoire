@@ -64,6 +64,7 @@
     var un = { uPR: { value: PR }, uScaleH: { value: 500 } }; uniforms.push(un);
     var pts = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
     pts.frustumCulled = false; scene.add(pts);
+    return pts;
   }
 
   L.build = function (renderer, labelsContainer) {
@@ -90,7 +91,7 @@
         } else { u.set(1, 0, 0); v.set(0, 0, 1); n.set(0, 1, 0); }
       }
       var count = Math.round((o.form === 'spirale' ? (o.home || o.big ? 26000 : 12000) : Math.max(500, Math.min(3000, o.d / 4))) * scaleN);
-      galaxyCloud(o, center, u, v, n, count);
+      var cloud = galaxyCloud(o, center, u, v, n, count);
       // halo lumineux discret : la galaxie reste repérable de loin
       var gl = OBS.system.glowMesh([[0, .9], [.25, .25], [1, 0]], o.form === 'spirale' ? 0xd8dcff : 0xc8c8e0, o.form === 'spirale' ? .55 : .4);
       gl.scale.setScalar(o.d / U * 1.3); gl.position.copy(center); scene.add(gl);
@@ -101,7 +102,7 @@
       el.addEventListener('pointerenter', function () { hover = o.id; });
       el.addEventListener('pointerleave', function () { if (hover === o.id) hover = null; });
       labelsContainer.appendChild(el);
-      var it = { id: o.id, def: o, pos: center, el: el, R: o.d / 2 / U, hit: hit }; items.push(it); byId[o.id] = it;
+      var it = { id: o.id, def: o, pos: center, el: el, R: o.d / 2 / U, hit: hit, parts: [cloud, gl, hit], base: center.clone() }; items.push(it); byId[o.id] = it;
     });
     /* le noir n'est pas vide : les halos de gaz chaud et de matière noire des deux grandes galaxies.
        Rayons : Andromède ≈ 1,3 million d'al (Lehner et al. 2020, projet AMIGA) ; Voie lactée ≈ 900 000 al (rayon du viriel, ≈ 280 kpc).
@@ -110,9 +111,10 @@
     [['voielactee', 9e5], ['m31', 1.3e6]].forEach(function (h) {
       var it = byId[h[0]]; if (!it) return;
       var sp = OBS.system.glowMesh([[0, .55], [.45, .22], [.8, .07], [1, 0]], 0x8aa6ff, .2);
-      sp.scale.setScalar(h[1] * 2 / U); sp.position.copy(it.pos); sp.renderOrder = -1; scene.add(sp);
+      sp.scale.setScalar(h[1] * 2 / U); sp.position.copy(it.pos); sp.renderOrder = -1; scene.add(sp); it.parts.push(sp);
       var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag'; tag.textContent = 'halo de gaz et de matière noire';
-      labelsContainer.appendChild(tag); items.push({ tag: true, el: tag, pos: it.pos.clone().add(new T.Vector3(0, -h[1] * .72 / U, 0)) });
+      var ti = { tag: true, el: tag, pos: it.pos.clone().add(new T.Vector3(0, -h[1] * .72 / U, 0)) }; ti.base = ti.pos.clone(); it.tagItem = ti;
+      labelsContainer.appendChild(tag); items.push(ti);
     });
     // repères de distance : 1, 2 et 3 millions d'années-lumière autour de la Voie lactée, dans son plan
     [1e6, 2e6, 3e6].forEach(function (r) {
@@ -198,6 +200,39 @@
     uniforms.forEach(function (u) { u.uPR.value = PR; u.uScaleH.value = H / (2 * tanHalf); });
   };
 
+  /* temps du Groupe local (js/ui/galtime.js) : trajectoire illustrative d'Andromède vers la Voie lactée.
+     Deux corps ponctuels, masse totale 4 × 10^12 Soleils (adoucissement 40 kpc), vitesse radiale mesurée −110 km/s,
+     vitesse transverse ≈ 57 km/s (van der Marel et al. 2019, Gaia), direction transverse inconnue (choisie arbitrairement),
+     freinage par les halos sous 250 kpc pour figurer la fusion. Simulé, et signalé comme tel. Voie lactée fixe au centre. */
+  var traj = null, KPC = 3.0857e16 * 1e3 / 9.4607e15 / 1e4;   // 1 kpc en unités de la scène (10 000 al)
+  function buildTraj() {
+    var G = 4.498e-6, M = 4e12, kv = 1.0227, eps = 40, dt = .002, r = [765, 0], v = [-110 * kv, 57 * kv], t = 0, out = [[0, 765, 0]], ev = { passes: [] }, prev = 765, dprev = -1;
+    while (t < 10) {
+      var d = Math.hypot(r[0], r[1]), s = Math.pow(d * d + eps * eps, 1.5), a = [-G * M * r[0] / s, -G * M * r[1] / s];
+      if (d < 250) { a[0] -= .6 * v[0]; a[1] -= .6 * v[1]; }
+      v[0] += a[0] * dt; v[1] += a[1] * dt; r[0] += v[0] * dt; r[1] += v[1] * dt; t += dt;
+      var dd = Math.hypot(r[0], r[1]);
+      if (dprev < 0 && dd - prev > 0 && prev < 200 && ev.passes.length < 3) ev.passes.push([Math.round((t - dt) * 1000), Math.round(prev)]);
+      if (!ev.merge && t > 1 && dd < 20) ev.merge = Math.round(t * 1000);
+      dprev = dd - prev; prev = dd;
+      if (Math.round(t * 1000) % 10 === 0) out.push([Math.round(t * 1000), r[0], r[1]]);
+    }
+    traj = { pts: out, ev: ev };
+  }
+  L.timeTraj = function () { if (!traj) buildTraj(); return traj.ev; };
+  L.tSet = function (tMyr) {
+    var it = byId.m31; if (!it) return null; if (!traj) buildTraj();
+    var i = Math.max(0, Math.min(traj.pts.length - 1, Math.round(tMyr / 10))), p = traj.pts[i];
+    var u = it.base.clone().normalize(), w = new T.Vector3().crossVectors(u, new T.Vector3(0, 1, 0)).normalize();
+    var np = u.multiplyScalar(p[1] * KPC).addScaledVector(w, p[2] * KPC), off = np.clone().sub(it.base);
+    it.parts.forEach(function (o, k) { if (k === 0) o.position.copy(off); else o.position.copy(np); });
+    it.pos.copy(np); if (it.tagItem) it.tagItem.pos.copy(it.tagItem.base).add(off);
+    return { d: Math.hypot(p[1], p[2]) * 3261.6 };   // distance en années-lumière
+  };
+  L.timeMode = function (on) {
+    if (!on) { var it = byId.m31; if (it) { it.parts.forEach(function (o, k) { if (k === 0) o.position.set(0, 0, 0); else o.position.copy(it.base); }); it.pos.copy(it.base); if (it.tagItem) it.tagItem.pos.copy(it.tagItem.base); } return; }
+    L.select(null);
+  };
   L.update = function (dt) {
     if (L._inward) { controls.target.multiplyScalar(Math.max(0, 1 - dt * 4)); camera.position.lerp(controls.target, Math.min(1, dt * 2.4)); }
     if (flight) {

@@ -1297,3 +1297,6 @@ body.gt-on .console { bottom: 220px; }
 .ad-map .ad-bubble { fill: rgba(143, 194, 255, .05); stroke: #8fc2ff; stroke-dasharray: 3 5; }
 .ad-map .ad-t { font: 11.5px var(--mono); fill: var(--muted); }
 .ad-map .ad-sci { fill: #8fc2ff; }
+.gt-ev.t-c { background: #c9b8ff; color: #c9b8ff; }
+.gt-leg .t-c::before { background: #c9b8ff; }
+.crumbs button.c-time { margin-left: 8px; color: #c9b8ff; border-color: rgba(201, 184, 255, .35); }
