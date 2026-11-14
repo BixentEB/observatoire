@@ -29,13 +29,29 @@ def fetch(url, data=None, timeout=300):
 rows = None
 T0 = time.time()
 
+# 0) le service SQL officiel du SDSS (SkyServer, DR17), table SpecObj : la source la plus directe
+for rel in ('dr17', 'dr16'):
+    try:
+        sql = ("SELECT ra, z FROM SpecObj WHERE class = 'GALAXY' AND zWarning = 0 AND dec BETWEEN %g AND %g AND z BETWEEN 0.003 AND %g" % (-DEC, DEC, ZMAX))
+        txt = fetch('https://skyserver.sdss.org/%s/SkyServerWS/SearchTools/SqlSearch?' % rel + urllib.parse.urlencode({'cmd': sql, 'format': 'csv'}), timeout=400)
+        lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
+        log.append('SkyServer %s : en-tête %r, %d lignes' % (rel, lines[0][:60] if lines else txt[:200], len(lines)))
+        got = []
+        for l in lines[1:]:
+            p_ = l.split(',')
+            try: got.append((float(p_[0]), float(p_[1])))
+            except Exception: pass
+        if len(got) > 5000: rows = got; log.append('SkyServer %s : %d galaxies' % (rel, len(got))); break
+    except Exception as ex:
+        log.append('échec SkyServer %s : %r' % (rel, ex))
+
 # 1) VizieR (SDSS DR12, V/147 : colonnes RA_ICRS, DE_ICRS, zsp, spCl) : une seule requête sur la bande équatoriale
-for m in ['https://vizier.cfa.harvard.edu', 'https://vizier.cds.unistra.fr']:
+for m in ([] if rows else ['https://vizier.cfa.harvard.edu', 'https://vizier.cds.unistra.fr']):
     try:
         q = urllib.parse.urlencode({'-source': 'V/147/sdss12', '-out.max': '400000', '-out': 'RA_ICRS,DE_ICRS,zsp,spCl', 'DE_ICRS': '%g..%g' % (-DEC, DEC), 'zsp': '0.003..%g' % ZMAX, 'spCl': 'GALAXY', '-oc.form': 'd'})
         txt = fetch(m + '/viz-bin/asu-tsv?' + q, timeout=300)
         lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
-        if not lines: log.append('VizieR %s : réponse vide ; début : %r' % (m, txt[:300])); continue
+        if not lines: log.append('VizieR %s : réponse vide ; messages : %r' % (m, [l for l in txt.splitlines() if 'INFO' in l or 'Error' in l or 'ERROR' in l][:5])); continue
         head = [h.strip() for h in lines[0].split('\t')]; log.append('VizieR %s, colonnes : %s' % (m, ', '.join(head)))
         ir, iz = head.index('RA_ICRS'), head.index('zsp')
         got = []
@@ -80,7 +96,7 @@ def dist(z):
     i = min(499, int(z / ZMAX * 500)); t = (z - ZT[i]) / (ZT[i + 1] - ZT[i]); return DT[i] + (DT[i + 1] - DT[i]) * t
 
 out = [[round(ra * 100), round(dist(z) * 10)] for ra, z in (rows or []) if 0.003 <= z <= ZMAX]
-meta = {'source': 'Sloan Digital Sky Survey DR16 (Ahumada et al. 2020), galaxies à spectre, déclinaison −2,5° à +2,5°, z ≤ 0,25',
+meta = {'source': 'Sloan Digital Sky Survey (SkyServer DR17, ou DR16 / DR12 en secours), galaxies à spectre, déclinaison −2,5° à +2,5°, z ≤ 0,25',
         'genere': time.strftime('%Y-%m-%d', time.gmtime()), 'n': len(out), 'H0': H0, 'Om': OM, 'zmax': ZMAX, 'dmax': round(dcom(ZMAX), 1),
         'unites': 'g = [ascension droite × 100 (degrés), distance comobile × 10 (Mpc)], univers plat H0 = 70, Ωm = 0,3'}
 if len(out) > 5000:
