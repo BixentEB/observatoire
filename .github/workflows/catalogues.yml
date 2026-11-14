@@ -10,6 +10,7 @@ on:
       - 'tools/superamas.py'
       - 'tools/laniakea.py'
       - 'tools/laniakea_bassin.py'
+      - 'tools/univers.py'
       - '.github/workflows/catalogues.yml'
   workflow_dispatch: {}
 
@@ -43,10 +44,13 @@ jobs:
         run: |
           pip install --quiet numpy astropy
           python3 tools/laniakea_bassin.py
+      - name: Univers observable (tranche du relevé SDSS)
+        continue-on-error: true
+        run: python3 tools/univers.py
       - name: Publier
         if: always()
         run: |
-          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md data/laniakea.json data/laniakea-report.md data/laniakea-bassin.json data/laniakea-bassin-report.md; do [ -f "$f" ] && git add "$f"; done; true
+          for f in data/volume-local.json data/volume-local-report.md data/superamas.json data/superamas-report.md data/laniakea.json data/laniakea-report.md data/laniakea-bassin.json data/laniakea-bassin-report.md data/univers.json data/univers-report.md; do [ -f "$f" ] && git add "$f"; done; true
           if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
           git config user.name "observatoire-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
