@@ -237,7 +237,7 @@
   function sizeBadgeView(L) {
     var b = $('size-badge'), gal = L && L.id === 'galaxie';
     b.classList.toggle('badge-quiet', !gal); b.classList.toggle('on', gal && !!OBS.galaxy.unc);
-    b.textContent = !L ? '' : L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : L.id === 'volume-local' ? '1 point = 1 galaxie · des millions à des centaines de milliards d\'étoiles' : L.id === 'superamas' ? '1 point = 1 groupe de galaxies · jusqu\'à 714 dans l\'amas de la Vierge' : 'Tailles agrandies';
+    b.textContent = !L ? '' : L.id === 'voisinage' ? '1 point = 1 étoile ou un système d\'étoiles · tailles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? '1 forme = 1 galaxie · positions mesurées, aspect reconstitué' : L.id === 'volume-local' ? '1 point = 1 galaxie · des millions à des centaines de milliards d\'étoiles' : L.id === 'superamas' ? '1 point = 1 groupe de galaxies · jusqu\'à 714 dans l\'amas de la Vierge' : 'Tailles agrandies';
     b.title = gal ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur. Cliquer pour distinguer les portions de bras mesurées (masers) de celles qui sont prolongées.' : '';
   }
   $('size-badge').addEventListener('click', function () { if (OBS.engine.level === OBS.galaxy) OBS.galaxy.setUnc(!OBS.galaxy.unc); });
@@ -245,7 +245,7 @@
   /* légende du niveau : reste lisible sous le fil d'Ariane après le titre d'arrivée */
   var cap = $('level-cap');
   function capView(L) {
-    var t = { voisinage: 'Les étoiles à moins de 12 années-lumière · positions réelles', galaxie: 'Reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre', 'groupe-local': (OBS.LOCALGROUP || []).length + ' galaxies sur plus de 80 connues · positions mesurées', 'volume-local': 'Catalogue de Karachentsev et al. 2013 · plan de la Feuille locale à l\'horizontale', superamas: 'Catalogue de Kourkchi et Tully 2017 · plan supergalactique à l\'horizontale' }[L.id];
+    var t = { voisinage: 'Les étoiles à moins de 12 années-lumière · positions réelles', galaxie: 'Reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre · chaque grain de lumière figure des millions d\'étoiles', 'groupe-local': (OBS.LOCALGROUP || []).length + ' galaxies sur plus de 80 connues · positions mesurées', 'volume-local': 'Catalogue de Karachentsev et al. 2013 · plan de la Feuille locale à l\'horizontale', superamas: 'Catalogue de Kourkchi et Tully 2017 · plan supergalactique à l\'horizontale' }[L.id];
     cap.textContent = t || ''; cap.hidden = !t;
   }
 
