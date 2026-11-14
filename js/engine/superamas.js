@@ -17,7 +17,7 @@
   var scene = L.scene = new T.Scene();
   var camera = L.camera = new T.PerspectiveCamera(45, 1, 0.5, 20000);
   var controls, W = 800, H = 600, PR = 1;
-  var items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
+  var GH = [], groupMode = 'halos', items = [], byId = {}, selected = null, hover = null, flight = null, uniforms = [], built = false, pending = null;
   var tmp = new T.Vector3(), tmp2 = new T.Vector3(), v3 = new T.Vector3(), camSpace = new T.Vector3();
   var VERT = [
     'attribute float aSize; attribute vec3 aColor; uniform float uPR; varying vec3 vC;',
@@ -57,10 +57,21 @@
       }
       items.push(it); byId[id] = it;
     });
+    /* halos des groupes riches (10 galaxies ou plus) : reconstitution de leur étendue, pas un nuage visible.
+       Rayon = rayon de « second retournement » déduit de la masse, R2t = 0,215 × (M / 10^12 Soleils)^(1/3) Mpc
+       (Tully 2015, relation utilisée par Kourkchi et Tully 2017) : la région où les galaxies sont retenues par le groupe. */
+    G.forEach(function (g) {
+      if (g.k < 10 || g.n === HOME) return;
+      var it = byId['pgc' + g.n]; if (!it) return;
+      var r = .215 * Math.pow(Math.pow(10, g.m - 12), 1 / 3) * K, col = S.TIERS[S.tier(g.k)][0];
+      var mesh = OBS.system.glowMesh([[0, .55], [.4, .28], [.8, .08], [1, 0]], col, 0); mesh.scale.setScalar(r * 2); mesh.position.copy(it.pos); mesh.renderOrder = -1; scene.add(mesh);
+      GH.push({ id: it.id, mesh: mesh, op: 0, base: g.k >= 50 ? .55 : .35 });
+    });
     built = true;
     if (pending) { var p = pending; pending = null; L.select(p); }
   }
 
+  L.setGroups = function (m) { groupMode = m; };
   L.build = function (renderer, labelsContainer) {
     L.labelsEl = labelsContainer;
     // repères : 25, 50, 100 et 150 millions d'années-lumière dans le plan supergalactique
@@ -160,6 +171,12 @@
     }
     controls.update(); camera.updateMatrixWorld();
     var occ = [], sel = selected && byId[selected], hov = hover && byId[hover];
+    // halos : tous (réglage « Halos »), seulement celui du groupe survolé ou choisi (« Au survol »), ou aucun (« Couleurs seules »)
+    GH.forEach(function (h) {
+      var act = h.id === hover || h.id === selected;
+      var on = groupMode === 'halos' ? (act ? h.base + .2 : h.base) : groupMode === 'survol' ? (act ? .6 : 0) : 0;
+      h.op += (on - h.op) * Math.min(1, dt * 5); h.mesh.material.uniforms.uOpacity.value = h.op; h.mesh.visible = h.op > .005;
+    });
     [sel, hov].forEach(function (it) {
       if (it && !it.el) { var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl is-moon'; el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(it.name) + '</span>'; L.labelsEl.appendChild(el); it.el = el; it.tmp = true; }
     });

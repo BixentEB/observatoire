@@ -226,7 +226,7 @@
     if (false) $('size-badge').textContent = L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : L.id === 'galaxie' ? 'Reconstitution' : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : 'Tailles agrandies';
     $('size-badge').title = L.id === 'galaxie' ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur : forme reconstituée d\'après les mesures (voir Méthode). Les objets repères sont à leurs positions mesurées.' : '';
     toggleSettings(false);
-    Array.prototype.forEach.call($('settings').querySelectorAll('[data-lv]'), function (r) { var lv = r.getAttribute('data-lv'); r.hidden = lv === 'systeme' ? L.id !== 'systeme' : lv === 'autres' ? L.id === 'systeme' : L.id !== lv; });
+    Array.prototype.forEach.call($('settings').querySelectorAll('[data-lv]'), function (r) { var lv = r.getAttribute('data-lv'); r.hidden = lv === 'systeme' ? L.id !== 'systeme' : lv === 'autres' ? L.id === 'systeme' : lv.split(' ').indexOf(L.id) < 0; });
     if (firstLevel) { firstLevel = false; return; }
     if (L.id === 'etoile') { var st = OBS.starsystem.star(); title.innerHTML = '<b>' + OBS.esc(st ? st.name : '') + '</b><span>' + (st && st.sys ? st.sys.length + (st.sys.length > 1 ? ' planètes confirmées' : ' planète confirmée') : 'Aucune planète confirmée') + ' · à ' + (st ? st.ly.toLocaleString('fr-FR') : '') + ' années-lumière</span>'; title.classList.add('on'); clearTimeout(titleT); titleT = setTimeout(function () { title.classList.remove('on'); }, 2400); return; }
     var sub = L.id === 'voisinage' ? 'Les étoiles à moins de 12 années-lumière' : L.id === 'galaxie' ? 'Une reconstitution fondée sur les mesures · 100 000 années-lumière de diamètre' : L.id === 'groupe-local' ? 'Andromède, le Triangle et les principales galaxies naines · plus de 80 galaxies connues' : L.id === 'volume-local' ? '869 galaxies à leurs positions mesurées · 36 millions d\'années-lumière autour de nous' : L.id === 'superamas' ? '8 779 groupes et galaxies à leurs positions mesurées · près de 200 millions d\'années-lumière autour de nous' : 'Positions réelles du ' + OBS.astro.dateFromJd(OBS.time.jd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -237,7 +237,7 @@
   function sizeBadgeView(L) {
     var b = $('size-badge'), gal = L && L.id === 'galaxie';
     b.classList.toggle('badge-quiet', !gal); b.classList.toggle('on', gal && !!OBS.galaxy.unc);
-    b.textContent = !L ? '' : L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : L.id === 'volume-local' ? 'Positions mesurées · galaxies en points' : L.id === 'superamas' ? 'Positions mesurées · un point par groupe' : 'Tailles agrandies';
+    b.textContent = !L ? '' : L.id === 'voisinage' ? 'Tailles des étoiles symboliques' : gal ? (OBS.galaxy.unc ? 'Bras : mesuré en clair · extrapolé en gris' : 'Reconstitution · voir ce qui est mesuré') : L.id === 'groupe-local' ? 'Positions mesurées · aspect reconstitué' : L.id === 'volume-local' ? '1 point = 1 galaxie · des millions à des centaines de milliards d\'étoiles' : L.id === 'superamas' ? '1 point = 1 groupe de galaxies · jusqu\'à 714 dans l\'amas de la Vierge' : 'Tailles agrandies';
     b.title = gal ? 'Personne n\'a jamais vu la Voie lactée de l\'extérieur. Cliquer pour distinguer les portions de bras mesurées (masers) de celles qui sont prolongées.' : '';
   }
   $('size-badge').addEventListener('click', function () { if (OBS.engine.level === OBS.galaxy) OBS.galaxy.setUnc(!OBS.galaxy.unc); });
@@ -327,7 +327,8 @@
     /* Volume local : halos des groupes de galaxies (reconstitution de leur étendue) */
     var sGroups = $('s-groups');
     sGroups.value = get('obs.groups') || 'halos'; if (OBS.volumelocal && OBS.volumelocal.setGroups) OBS.volumelocal.setGroups(sGroups.value);
-    sGroups.addEventListener('change', function () { set('obs.groups', sGroups.value); OBS.volumelocal.setGroups(sGroups.value); });
+    if (OBS.superamas && OBS.superamas.setGroups) OBS.superamas.setGroups(sGroups.value);
+    sGroups.addEventListener('change', function () { set('obs.groups', sGroups.value); OBS.volumelocal.setGroups(sGroups.value); OBS.superamas.setGroups(sGroups.value); });
 
     /* plan de l'écliptique, inclinaison des orbites */
     var sEcl = $('s-ecl'), sIncl = $('s-incl');
