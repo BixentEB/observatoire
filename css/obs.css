@@ -1229,7 +1229,7 @@ body.gt-on .console { bottom: 220px; }
 .ring-tag.gh-tag { font-style: normal; font-size: 10.5px; letter-spacing: .04em; transition: opacity .3s; }
 
 /* règle des échelles de l'Explorer (js/ui/scenerule.js, lot 6) */
-.sr { position: fixed; z-index: 12; left: var(--gut); border: 0; box-shadow: none; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 8px; border-radius: 16px; background: linear-gradient(180deg, rgba(6, 9, 20, .55), rgba(6, 9, 20, .3)); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.sr { position: fixed; z-index: 12; left: var(--gut); border: 0; box-shadow: none; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 8px; border-radius: 16px; background: radial-gradient(closest-side, rgba(6, 9, 20, .55), rgba(6, 9, 20, 0)); }
 .sr[hidden], body.page-open .sr, body.photo .sr, .demo .sr { display: none; }
 .sr > .sn-zoom { margin-left: 2px; width: 30px; height: 26px; font-size: 15px; }
 .sr-steps { list-style: none; margin: 2px 0; padding: 0; display: flex; flex-direction: column; gap: 1px; position: relative; }
