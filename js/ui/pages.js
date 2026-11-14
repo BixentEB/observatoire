@@ -228,6 +228,35 @@
     ['Pages lisibles', 'à chaque publication', 'le contenu du site lui-même', 'versions texte des pages pour les moteurs de recherche et les lecteurs d\'écran', '—'],
     ['Numéros de version', 'à chaque modification', 'les fichiers du site', 'une empreinte par fichier, pour que chacun reçoive la dernière version', '—']
   ];
+  var SCRIPTS = [
+    ['missions.py', 'tâche quotidienne', 'Positions des engins spatiaux, interrogées auprès de JPL Horizons.'],
+    ['moons.py', 'tâche quotidienne', 'Éléments orbitaux des 20 grandes lunes (JPL Horizons), du mois passé aux six mois à venir.'],
+    ['rovers.py', 'tâche quotidienne', 'Dernière position publiée de Perseverance et de Curiosity (cartes MMGIS de la NASA).'],
+    ['images.py', 'tâche mensuelle', 'Photos des fiches : Wikidata et Wikimedia Commons, licence et auteur relevés pour chacune.'],
+    ['smallbodies.py', 'tâche mensuelle', 'Orbites des astéroïdes, comètes et objets transneptuniens (JPL Small-Body Database).'],
+    ['relief.py', 'à la demande', 'Cartes de pentes des petits mondes à partir des altimétries de l\'USGS.'],
+    ['triton-carte.py', 'une fois', 'Retouche de la carte de Triton : quadrillage effacé, zones jamais photographiées neutres.'],
+    ['volume.py', 'catalogues', 'Volume local : catalogue de Karachentsev et al. 2013.'],
+    ['superamas.py', 'catalogues', 'Superamas local : groupes de Kourkchi et Tully 2017.'],
+    ['laniakea.py', 'catalogues', 'Laniakea : relevé 2MRS et amas nommés.'],
+    ['laniakea_bassin.py', 'catalogues', 'Contour de Laniakea, bassins voisins et lignes d\'écoulement (CosmicFlows-4), orientation vérifiée sur des amas et des attracteurs publiés.'],
+    ['univers.py', 'catalogues', 'Tranche du relevé SDSS et distances comobiles.'],
+    ['build_static.py', 'à chaque publication', 'Pages lisibles pour les moteurs de recherche.'],
+    ['stamp.py', 'à chaque modification', 'Numéros de version des fichiers.']
+  ];
+  var THANKS = [
+    ['NASA / JPL', 'Horizons, la Small-Body Database et les fiches planétaires, la base de tout le système solaire.'],
+    ['USGS Astrogeology et NASA SVS', 'les cartes et les reliefs des planètes, de la Lune et des petits mondes.'],
+    ['CDS de Strasbourg', 'VizieR et SIMBAD, par où passent la plupart des catalogues.'],
+    ['ESA, missions Gaia et Hipparcos', 'les distances des étoiles.'],
+    ['Igor Karachentsev, Dmitry Makarov et Elena Kaisina', 'le catalogue des galaxies proches.'],
+    ['Ehsan Kourkchi et R. Brent Tully', 'les groupes de galaxies du Superamas local.'],
+    ['L\'équipe du relevé 2MRS (John Huchra et ses collègues)', 'la carte de tout le ciel de Laniakea.'],
+    ['R. Brent Tully, Hélène Courtois, Alexandra Dupuy et l\'équipe CosmicFlows', 'Laniakea, ses frontières et ses écoulements, données libres.'],
+    ['La collaboration SDSS', 'des centaines de milliers de spectres de galaxies, ouverts à tous.'],
+    ['Les contributeurs de Wikimedia Commons', 'les photographies libres des fiches.'],
+    ['three.js (Ricardo Cabello et ses contributeurs)', 'le moteur 3D libre sur lequel tout repose.']
+  ];
   pages.coulisses = function (root) {
     root.innerHTML = '<p class="p-kicker">Méthode</p><h1>Les coulisses : d\'où viennent les données</h1>' + infoTabs('coulisses') +
       '<p class="lead">L\'Observatoire n\'interroge jamais la NASA ni les observatoires à chaque visite. Des tâches automatiques préparent les données à l\'avance ; votre navigateur fait le reste des calculs.</p>' +
@@ -244,6 +273,12 @@
       '<li>Distances des galaxies lointaines : tirées de leur décalage vers le rouge (loi de Hubble, H0 = 70 km/s/Mpc), puis distance comobile pour l\'Univers observable (univers plat, Ωm = 0,3).</li></ul>' +
       '<h2>3. Ce qui reste fixe</h2>' +
       '<p>Certaines données changent si peu qu\'elles sont écrites une fois pour toutes dans le code, avec leur source : caractéristiques physiques des astres (fiches de la NASA), étoiles du voisinage, repères de la Voie lactée, galaxies du Groupe local, lieux remarquables des surfaces (nomenclature de l\'IAU).</p>' +
+      '<h2>4. Les scripts et qui les a écrits</h2>' +
+      '<p>Tous les scripts sont publics. Ils ont été écrits par <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude</a>, l\'assistant d\'intelligence artificielle d\'Anthropic, à la demande de Vincent, qui en a fixé les règles (des données réelles, jamais inventées, toujours signalées) et validé chaque résultat. Les contrôles écrits dans les rapports servent justement à ne pas croire une machine sur parole.</p>' +
+      '<div class="rows">' + SCRIPTS.map(function (x) {
+        return '<article class="row"><div class="row-h"><h3><a href="https://github.com/BixentEB/observatoire/blob/main/tools/' + x[0] + '" target="_blank" rel="noopener"><code>' + esc(x[0]) + '</code></a></h3><p class="row-kind">' + esc(x[1]) + '</p></div><div class="row-b"><p>' + esc(x[2]) + '</p></div></article>';
+      }).join('') + '</div>' +
+      '<h2>5. Merci</h2><p>Rien de tout cela n\'existerait sans les équipes qui mesurent le ciel et partagent librement leurs données :</p><ul class="credits-list">' + THANKS.map(function (t) { return '<li><b>' + esc(t[0]) + '</b> — ' + esc(t[1]) + '</li>'; }).join('') + '</ul>' +
       '<p class="note">Toutes les sources, avec leurs liens, sont dans l\'onglet <a href="#/ressources">Ressources</a> ; les crédits des images et des logiciels dans <a href="#/credits">Crédits et licences</a>. Le code et les rapports des tâches sont publics, dans le dépôt GitHub de l\'Observatoire.</p>';
   };
   pages.ressources = function (root) {

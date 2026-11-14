@@ -125,6 +125,17 @@
       var at = document.createElement('span'); at.className = 'ring-tag halo-tag'; at.style.color = '#ffe2a0'; at.textContent = '✦ attracteur de Laniakea';
       L.labelsEl.appendChild(at); items.push({ tag: true, el: at, pos: ap, basin: true });
     }
+    (B.voisins || []).forEach(function (v) {   // superamas voisins (Dupuy et Courtois 2023) : bord en points de couleur, attracteur et nom
+      var c = new T.Color(OBS.LK.NCOL[v.id] || '#8fc2ff'), m = v.bord.length, P2 = new Float32Array(m * 3), C2 = new Float32Array(m * 3), Z2 = new Float32Array(m);
+      v.bord.forEach(function (q, i) { sg(q[0] / 10, q[1] / 10, q[2] / 10, tmp); P2[i * 3] = tmp.x; P2[i * 3 + 1] = tmp.y; P2[i * 3 + 2] = tmp.z; C2[i * 3] = c.r * .22; C2[i * 3 + 1] = c.g * .22; C2[i * 3 + 2] = c.b * .22; Z2[i] = 4; });
+      var g2 = new T.BufferGeometry(); g2.setAttribute('position', new T.BufferAttribute(P2, 3)); g2.setAttribute('aColor', new T.BufferAttribute(C2, 3)); g2.setAttribute('aSize', new T.BufferAttribute(Z2, 1));
+      var u2 = { uPR: { value: PR } }; uniforms.push(u2);
+      var p2 = new T.Points(g2, new T.ShaderMaterial({ uniforms: u2, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending })); p2.frustumCulled = false; basin.add(p2);
+      var apv = sg(v.attracteur[0] / 10, v.attracteur[1] / 10, v.attracteur[2] / 10, new T.Vector3());
+      var gv = OBS.system.glowMesh([[0, .8], [.3, .3], [1, 0]], OBS.LK.NCOL[v.id], .55); gv.scale.setScalar(12); gv.position.copy(apv); basin.add(gv);
+      var tv = document.createElement('span'); tv.className = 'ring-tag halo-tag'; tv.style.color = OBS.LK.NCOL[v.id]; tv.textContent = '✦ ' + v.n + ' (superamas voisin)';
+      L.labelsEl.appendChild(tv); items.push({ tag: true, el: tv, pos: apv, basin: true });
+    });
     basin.visible = basinOn; scene.add(basin);
     var tag = document.createElement('span'); tag.className = 'ring-tag halo-tag'; tag.style.color = '#f4c77a'; tag.textContent = 'Laniakea : contour du bassin (reconstitution)';
     L.labelsEl.appendChild(tag);

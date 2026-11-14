@@ -19,7 +19,8 @@
     { href: '#/hypotheses/seuls', date: '2026-11-09', menu: 'hypotheses' },
     { href: '#/atlas/artefacts', date: '2026-11-09', menu: 'atlas' },
     { href: '#/ressources', date: '2026-11-14', menu: 'methode' },
-    { href: '#/coulisses', date: '2026-11-14', menu: 'methode' }
+    { href: '#/coulisses', date: '2026-11-14', menu: 'methode' },
+    { href: '#/atlas/questions', date: '2026-11-14', menu: 'atlas' }
   ];
   var DAYS = 14;
   OBS.NEWS = NEWS;

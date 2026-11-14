@@ -194,3 +194,9 @@
 ## Méthode : sources et coulisses (14 novembre 2026)
 - Ressources : nouveau groupe « Grandes structures de l'Univers » (Karachentsev et al. 2013, Kourkchi et Tully 2017, 2MRS, Tully et al. 2014, projet CosmicFlows, Dupuy et Courtois 2023, SDSS SkyServer, VizieR) ; Crédits : ligne des grandes structures.
 - Nouvel onglet « Les coulisses » (`#/coulisses`) : les tâches automatiques GitHub (quand, sources, ce qu'elles produisent, contrôles), ce que calcule le navigateur, ce qui reste fixe dans le code. Pastille « Nouveau » sur Ressources et Les coulisses.
+
+## Lot 10 (14 novembre 2026)
+- Correctif : dans l'Univers observable, un clic sur un repère éloigné (premières galaxies, quasars, rayonnement fossile) emmène bien vers ce repère, vu d'un peu au-dessus de sa sphère, au lieu de recentrer sur nous.
+- Les coulisses : liste des 14 scripts (liens vers le dépôt), écrits par Claude (Anthropic) à la demande de Vincent qui en a fixé les règles et validé les résultats ; section « Merci » pour les équipes et les projets dont viennent les données et le moteur 3D.
+- Atlas › Questions (`#/atlas/questions[/<niveau>]`, `js/ui/questions.js`) : dix grandes questions (au-dessus de Laniakea, d'où viennent les écoulements, où va notre coin d'Univers et le Dipole Repeller, ce qu'est un superamas, les zones vides, les distances par la vitesse et la tension de Hubble, les 93 milliards d'al, l'au-delà, l'avenir du Groupe local, ce que représente un point), chacune en deux temps : « En bref », puis « Pour aller plus loin » dépliable ; filtre par niveau, liens vers la scène.
+- Laniakea : les cinq superamas voisins délimités par Dupuy et Courtois 2023 (Apus, Hercule, Lepus, Persée-Poissons, Shapley ; volumes identiques à ceux de l'article, 9,5 / 3,1 / 8,1 / 4,8 / 7,9 × 10⁶ (Mpc/h)³), bord en points de couleur et attracteur ✦ nommé en 3D, coupes colorées et attracteurs dans l'Atlas ; même réglage « Contour et écoulements ».

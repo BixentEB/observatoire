@@ -101,7 +101,7 @@
 
   function homeCam(out) { var el = 38 * D2R, d = 3600 / Math.max(.45, Math.min(1.3, camera.aspect)); return out.set(Math.cos(el) * d * .5, Math.sin(el) * d, Math.cos(el) * d * .87); }
   function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
-  function viewDist(it) { return it ? (it.home ? 60 : Math.max(80, it.pos.length() * .9)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
+  function viewDist(it) { return it ? (it.home ? 60 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
   function startFlight(id, dur) { flight = { t: 0, dur: dur || 2.4, id: id, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone() }; controls.enabled = false; }
   L.select = function (id) {
     if (id && !built) { pending = id; return; }
@@ -135,9 +135,10 @@
     if (flight) {
       flight.t += dt;
       var k = Math.min(1, flight.t / flight.dur), e = ease(k), it = flight.id ? byId[flight.id] : null;
-      var tgt = it && it.home ? it.pos : tmp2.set(0, 0, 0), dTo = viewDist(it), dFrom = Math.max(flight.fromOff.length(), .01);
+      var tgt = it ? it.pos : tmp2.set(0, 0, 0), dTo = viewDist(it), dFrom = Math.max(flight.fromOff.length(), .01);
       var dir = tmp.copy(flight.fromOff).normalize();
       if (!it) dir.lerp(homeCam(v3).normalize(), e).normalize();
+      else if (!it.home) dir.lerp(v3.copy(it.pos).normalize().add(tmp2.set(0, .8, 0)).normalize(), e).normalize();   // un repère : on s'y rend en le regardant depuis un peu au-dessus de sa sphère
       controls.target.lerpVectors(flight.fromTgt, tgt, e);
       camera.position.copy(controls.target).addScaledVector(dir, Math.exp(Math.log(dFrom) * (1 - e) + Math.log(dTo) * e));
       if (k >= 1) { flight = null; controls.enabled = true; }
