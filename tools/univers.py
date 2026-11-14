@@ -28,51 +28,51 @@ def fetch(url, data=None, timeout=300):
 
 rows = None
 T0 = time.time()
-# 1) TAP du GAVO
-try:
-    head = fetch('https://dc.g-vo.org/tap/sync?' + urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'QUERY': 'SELECT TOP 1 * FROM sdssdr16.main'}), timeout=120)
-    cols = next(csv.reader(io.StringIO(head))); log.append('GAVO, colonnes : ' + ', '.join(cols))
-    zc = next((c for c in ('spec_z', 'zsp', 'redshift') if c in cols), None)   # pas « z » : c'est la magnitude dans le filtre z
-    cc = next((c for c in ('spec_class', 'spcl', 'class') if c in cols), None)
-    log.append('décalage : %s, classe : %s' % (zc, cc))
-    if zc:
-        rows = []
-        for ra0 in range(0, 360, 20):          # par tranches de 20° d'ascension droite, pour ménager le serveur
-            if time.time() - T0 > 300: log.append('GAVO trop lent : arrêt après %d galaxies' % len(rows)); break
-            q = "SELECT ra, %s AS zs FROM sdssdr16.main WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), BOX('ICRS', %g, 0, 20, %g)) AND %s BETWEEN 0.003 AND %g" % (zc, ra0 + 10, 2 * DEC, zc, ZMAX)   # la boîte utilise l'index spatial du serveur
-            if cc == 'spec_class': q += " AND spec_class = 'GALAXY'"
-            if 'spec_z_warning' in cols: q += ' AND spec_z_warning = 0'
-            body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '200000', 'QUERY': q}).encode()
-            for essai in range(2):
-                try:
-                    txt = fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=90)
-                    rd = list(csv.DictReader(io.StringIO(txt)))
-                    part = [(float(r['ra']), float(r['zs'])) for r in rd if r.get('ra') and r.get('zs')]
-                    rows += part; log.append('GAVO ra %d–%d : %d galaxies' % (ra0, ra0 + 20, len(part))); break
-                except Exception as ex:
-                    log.append('échec GAVO ra %d (essai %d) : %r' % (ra0, essai + 1, ex)); time.sleep(10)
-        log.append('GAVO : %d galaxies en tout' % len(rows))
-except Exception as ex:
-    log.append('échec GAVO : %r' % ex)
 
-# 2) secours : VizieR (SDSS DR12, V/147, colonnes zsp et spCl), si le GAVO n'a pas assez répondu
-if not rows or len(rows) < 5000:
-    for m in ['https://vizier.cfa.harvard.edu', 'https://vizier.cds.unistra.fr']:
+# 1) VizieR (SDSS DR12, V/147 : colonnes RA_ICRS, DE_ICRS, zsp, spCl) : une seule requête sur la bande équatoriale
+for m in ['https://vizier.cfa.harvard.edu', 'https://vizier.cds.unistra.fr']:
+    try:
+        q = urllib.parse.urlencode({'-source': 'V/147/sdss12', '-out.max': '400000', '-out': 'RA_ICRS,DE_ICRS,zsp,spCl', 'DE_ICRS': '%g..%g' % (-DEC, DEC), 'zsp': '0.003..%g' % ZMAX, 'spCl': 'GALAXY', '-oc.form': 'd'})
+        txt = fetch(m + '/viz-bin/asu-tsv?' + q, timeout=300)
+        lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
+        if not lines: log.append('VizieR %s : réponse vide ; début : %r' % (m, txt[:300])); continue
+        head = [h.strip() for h in lines[0].split('\t')]; log.append('VizieR %s, colonnes : %s' % (m, ', '.join(head)))
+        ir, iz = head.index('RA_ICRS'), head.index('zsp')
+        got = []
+        for l in lines[3:]:
+            p_ = l.split('\t')
+            try: got.append((float(p_[ir]), float(p_[iz])))
+            except Exception: pass
+        log.append('VizieR : %d galaxies' % len(got))
+        if got: rows = got; break
+    except Exception as ex:
+        log.append('échec VizieR %s : %r' % (m, ex))
+
+# 2) secours : TAP du GAVO (DR16), par boîtes de 5° pour ménager le serveur, temps limité
+def gavo():
+    out = []
+    head = fetch('https://dc.g-vo.org/tap/sync?' + urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'QUERY': 'SELECT TOP 1 * FROM sdssdr16.main'}), timeout=120)
+    cols = next(csv.reader(io.StringIO(head)))
+    zc = next((c for c in ('spec_z', 'zsp', 'redshift') if c in cols), None)   # pas « z » : c'est la magnitude dans le filtre z
+    log.append('GAVO : décalage %s' % zc)
+    if not zc: return out
+    for ra0 in range(0, 360, 5):
+        if time.time() - T0 > 540: log.append('GAVO trop lent : arrêt à ra = %d' % ra0); break
+        q = "SELECT ra, %s AS zs FROM sdssdr16.main WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), BOX('ICRS', %g, 0, 5, %g)) AND %s BETWEEN 0.003 AND %g AND spec_class = 'GALAXY'" % (zc, ra0 + 2.5, 2 * DEC, zc, ZMAX)
+        body = urllib.parse.urlencode({'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'MAXREC': '100000', 'QUERY': q}).encode()
         try:
-            q = urllib.parse.urlencode({'-source': 'V/147/sdss12', '-out.max': '400000', '-out': 'RA_ICRS,DE_ICRS,zsp,spCl', 'DE_ICRS': '%g..%g' % (-DEC, DEC), 'zsp': '0.003..%g' % ZMAX, 'spCl': 'GALAXY', '-oc.form': 'd'})
-            txt = fetch(m + '/viz-bin/asu-tsv?' + q, timeout=300)
-            lines = [l for l in txt.splitlines() if l and not l.startswith('#')]
-            if not lines: log.append('VizieR %s : réponse vide ; début : %r' % (m, txt[:300])); continue
-            head = [h.strip() for h in lines[0].split('\t')]; log.append('VizieR %s, colonnes : %s' % (m, ', '.join(head)))
-            ir, iz = head.index('RA_ICRS'), head.index('zsp')
-            rows = []
-            for l in lines[3:]:
-                p = l.split('\t')
-                try: rows.append((float(p[ir]), float(p[iz])))
-                except Exception: pass
-            log.append('VizieR : %d galaxies' % len(rows)); break
+            rd = list(csv.DictReader(io.StringIO(fetch('https://dc.g-vo.org/tap/sync', data=body, timeout=90))))
+            out += [(float(r['ra']), float(r['zs'])) for r in rd if r.get('ra') and r.get('zs')]
         except Exception as ex:
-            log.append('échec VizieR %s : %r' % (m, ex))
+            log.append('échec GAVO ra %d : %r' % (ra0, ex))
+    log.append('GAVO : %d galaxies' % len(out))
+    return out
+if not rows or len(rows) < 20000:
+    try:
+        g_ = gavo()
+        if len(g_) > len(rows or []): rows = g_
+    except Exception as ex:
+        log.append('échec GAVO : %r' % ex)
 
 # table de distances comobiles (interpolation)
 ZT = [i * ZMAX / 500 for i in range(501)]; DT = [dcom(z) for z in ZT]
