@@ -108,9 +108,16 @@
   };
 
   /* ---------- calcul des événements d'une année ---------- */
-  var cache = {};
+  var cache = {}, acache = {};   // acache : phénomènes calculés (le plus long, ne dépend que du lieu) ; cache : avec rendez-vous et lancements
   function yearEvents(Y) {
     if (cache[Y]) return cache[Y];
+    var ev = astroEvents(Y).slice();
+    dataEvents(Y, ev);
+    ev.sort(function (a, b) { return a.jd - b.jd; });
+    return (cache[Y] = ev);
+  }
+  function astroEvents(Y) {
+    if (acache[Y]) return acache[Y];
     var E = OBS.ephem, L = OBS.LUNE, ev = [];
     var j0 = E.jdOf(new Date(Y, 0, 1)) - 1, j1 = E.jdOf(new Date(Y + 1, 0, 1)) + 1;
     function push(o) { if (o.jd >= j0 && o.jd < j1) { var d = E.dateOf(o.jd); if (d.getFullYear() === Y) { o.date = d; o.key = key(d); ev.push(o); } } }
@@ -278,6 +285,11 @@
       });
     });
 
+    ev.sort(function (a, b) { return a.jd - b.jd; });
+    return (acache[Y] = ev);
+  }
+  function dataEvents(Y, ev) {
+    var E = OBS.ephem;
     /* --- rendez-vous : salons, festivals, nuits d'observation --- */
     function dOf(s) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s); return m ? new Date(+m[1], +m[2] - 1, +m[3], 12, 0) : null; }
     function allDay(o) { o.jd = E.jdOf(o.date); o.key = key(o.date); o.allDay = true; ev.push(o); }
@@ -326,10 +338,6 @@
           body: [x.type ? 'Type : ' + x.type.toLowerCase() + (x.loc ? ', ' + x.loc : '') + '.' : '', x.desc ? 'En anglais (Launch Library 2) : ' + x.desc : ''], ext: x.url ? ['En savoir plus', x.url] : null });
       });
     }
-
-    ev.sort(function (a, b) { return a.jd - b.jd; });
-    cache[Y] = ev;
-    return ev;
   }
 
   var ORB = { 'Low Earth Orbit': 'orbite basse', 'Very Low Earth Orbit': 'orbite très basse', 'Sun-Synchronous Orbit': 'orbite héliosynchrone', 'Geostationary Transfer Orbit': 'orbite de transfert géostationnaire', 'Geostationary Orbit': 'orbite géostationnaire', 'Geosynchronous Orbit': 'orbite géosynchrone',
@@ -357,7 +365,10 @@
   }
 
   /* ---------- page ---------- */
-  OBS.pages.agenda = function (root, param, sub) {
+  OBS.pages.agenda = function (page, param, sub) {
+    /* le conteneur des pages sert à toutes les pages : écouteurs et contenu vivent dans un bloc propre à cette ouverture,
+       qui disparaît avec elle (sinon les écouteurs s'empilent à chaque visite et agissent sur les autres pages) */
+    page.innerHTML = '<div class="ag-page"></div>'; var root = page.firstChild;
     var now = new Date(), mm = /^(\d{4})-(\d\d)$/.exec(param || '');
     var cur = mm ? new Date(+mm[1], +mm[2] - 1, 1) : new Date(now.getFullYear(), now.getMonth(), 1);
     if (cur.getFullYear() < Y0 || cur.getFullYear() > Y1) cur = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -526,7 +537,7 @@
     });
     $('.ag-year input').addEventListener('change', function (e) { var y = Math.max(Y0, Math.min(Y1, Math.round(+e.target.value) || now.getFullYear())); cur = new Date(y, view === 'annee' ? 0 : cur.getMonth(), 1); render(); });
     sP.addEventListener('change', function () {
-      function apply(v) { store('obs.agenda.lieu', v); cache = {}; render(); next(); tonight(); }
+      function apply(v) { store('obs.agenda.lieu', v); cache = {}; acache = {}; render(); next(); tonight(); }
       if (sP.value !== 'geo') { apply(sP.value); return; }
       if (!navigator.geolocation) { sP.value = place().id; return; }
       navigator.geolocation.getCurrentPosition(function (pos) {   // arrondi au dixième de degré (≈ 10 km), gardé dans ce navigateur seulement
@@ -534,6 +545,13 @@
         apply('geo:' + pos.coords.latitude.toFixed(1) + ',' + pos.coords.longitude.toFixed(1));
       }, function () { var p = place(); sP.value = /^geo:/.test(p.id) ? 'geo' : p.id; }, { maximumAge: 864e5, timeout: 15000 });
     });
+    /* pendant le défilement, les petites animations des cases se figent : sinon elles forcent à repeindre la page à chaque image */
+    var scroller = page.closest('.page-scroll'), stillT = 0;
+    function onScroll() {
+      if (!root.isConnected) { scroller.removeEventListener('scroll', onScroll); return; }
+      root.classList.add('ag-scrolling'); clearTimeout(stillT); stillT = setTimeout(function () { root.classList.remove('ag-scrolling'); }, 250);
+    }
+    if (scroller) scroller.addEventListener('scroll', onScroll, { passive: true });
     tonight(); render(); next();
     if (!OBS.AGENDA_LAUNCH && window.fetch) {   // lancements : fichier mis à jour par une tâche GitHub (toutes les six heures)
       fetch('data/lancements.json?h=' + Math.floor(Date.now() / 36e5)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
