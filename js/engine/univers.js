@@ -146,16 +146,25 @@
   L.age = T0;
   L.tSet = function (tGyr) {
     var a = Math.max(1e-4, aOf(Math.max(1e-4, tGyr)) / aOf(T0));
-    web.scale.setScalar(a);
+    web.scale.setScalar(a); marks.scale.setScalar(a);
+    /* la caméra suit l'expansion à moitié (racine du facteur d'échelle) : on voit l'Univers grandir ou rapetisser, sans jamais le perdre du cadre */
+    var cs = camS(a), r = cs / camScale; camScale = cs;
+    if (r !== 1) {
+      if (flight) { flight.fromOff.multiplyScalar(r); flight.fromTgt.multiplyScalar(r); }
+      else { controls.target.multiplyScalar(r); camera.position.sub(controls.target.clone().divideScalar(r)).multiplyScalar(r).add(controls.target); }
+    }
     return { a: a, temp: 2.7255 / a };
   };
+  var camScale = 1;
+  function camS(a) { return Math.max(.03, Math.sqrt(a)); }
   L.timeMode = function (on) {
-    marks.visible = !on; items.forEach(function (it) { if (!it.home) it.el.style.display = on ? 'none' : ''; });
-    timeView = on; if (on) L.select(null); else { web.scale.setScalar(1); L.select(null); }
+    items.forEach(function (it) { if (!it.home) it.el.style.display = on ? 'none' : ''; });   // tout reste dessiné (sphères, quasars, fond diffus), seules les étiquettes se retirent
+    timeView = on; camScale = camS(web.scale.x); if (!on) { web.scale.setScalar(1); marks.scale.setScalar(1); camScale = 1; }
+    L.select(null);
   };
   function homeCam(out) { var el = 38 * D2R, d = 3600 / Math.max(.45, Math.min(1.3, camera.aspect)); return out.set(Math.cos(el) * d * .5, Math.sin(el) * d, Math.cos(el) * d * .87); }
   function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
-  function viewDist(it) { if (!it && timeView) return 320; return it ? (it.home ? 60 : it.kind !== 'home' && it.kind !== 'mark' ? 140 : OBS.UN.OBJS.some(function (o) { return o.mk === it.id; }) ? 220 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
+  function viewDist(it) { if (!it && timeView) return homeCam(tmp).length() * camScale; return it ? (it.home ? 60 : it.kind !== 'home' && it.kind !== 'mark' ? 140 : OBS.UN.OBJS.some(function (o) { return o.mk === it.id; }) ? 220 : Math.max(60, it.pos.length() * .45)) * Math.max(1, .95 / camera.aspect) : homeCam(tmp).length(); }
   function startFlight(id, dur) { flight = { t: 0, dur: dur || 2.4, id: id, fromOff: camera.position.clone().sub(controls.target), fromTgt: controls.target.clone() }; controls.enabled = false; }
   L.select = function (id) {
     if (id && !built) { pending = id; return; }
