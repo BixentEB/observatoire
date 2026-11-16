@@ -1450,6 +1450,9 @@ body.gt-on .console { bottom: 220px; }
 @keyframes ag-tail { 0%, 100% { opacity: .25; } 50% { opacity: .7; } }
 @media (prefers-reduced-motion: reduce) { .ag-d *, .ag-d::after { animation: none !important; } }
 .ag-scrolling .ag-d *, .ag-scrolling .ag-d::after { animation-play-state: paused !important; }
+/* les animations des cases jouent deux fois à l'affichage du mois, puis seulement au survol : en continu, elles obligent à recomposer
+   la page au-dessus de la scène 3D à chaque image (le double de travail, mesuré) */
+.ag-d:not(:hover):not(:focus-visible) *, .ag-d:not(:hover):not(:focus-visible)::after { animation-iteration-count: 2 !important; }
 
 @media (max-width: 900px) {
   .ag-main, .ag-wide .ag-main { grid-template-columns: 1fr; }
@@ -1491,3 +1494,5 @@ body.gt-on .console { bottom: 220px; }
 .ag-monthonly .ag-ev { max-width: 640px; }
 .ag-ev > p:not(.ag-acts) { padding-left: 36px; }
 @media (max-width: 640px) { .ag-ev > p:not(.ag-acts) { padding-left: 0; } .ag-evs { grid-template-columns: 1fr; } }
+
+@media (min-width: 901px) { .ag-page { transition: padding-right .28s cubic-bezier(.2, .8, .2, 1); } }

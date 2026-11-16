@@ -408,7 +408,7 @@
     function evsOf(y) { return yearEvents(y).filter(visible); }
     function byDay(list) { var m = {}; list.forEach(function (e) { (m[e.key] = m[e.key] || []).push(e); }); return m; }
     function setHash() {
-      var h = '#/agenda/' + cur.getFullYear() + '-' + pad(cur.getMonth() + 1) + (sel && sel.getMonth() === cur.getMonth() && sel.getFullYear() === cur.getFullYear() ? '/' + sel.getDate() : '');
+      var h = '#/agenda/' + cur.getFullYear() + '-' + pad(cur.getMonth() + 1) + (root.classList.contains('ag-open') && sel && sel.getMonth() === cur.getMonth() && sel.getFullYear() === cur.getFullYear() ? '/' + sel.getDate() : '');   // le jour n'entre dans l'adresse que si son panneau est ouvert
       if (location.hash !== h) history.replaceState(null, '', h);
     }
     function chipsState() {
@@ -577,8 +577,15 @@
     });
     /* panneau du jour : glisse depuis la droite (depuis le bas sur téléphone) quand on choisit un jour ; Échap le referme */
     var drawer = $('.ag-drawer');
-    function openDrawer() { root.classList.add('ag-open'); drawer.setAttribute('aria-hidden', 'false'); drawer.scrollTop = 0; }
-    function closeDrawer() { root.classList.remove('ag-open'); drawer.setAttribute('aria-hidden', 'true'); }
+    function openDrawer() {
+      root.classList.add('ag-open'); drawer.setAttribute('aria-hidden', 'false'); drawer.scrollTop = 0;
+      if (window.innerWidth > 900) {   // grand écran : le calendrier se resserre pour que le panneau ne cache rien
+        var over = root.getBoundingClientRect().right - (window.innerWidth - drawer.offsetWidth) + 16;
+        root.style.paddingRight = Math.max(0, over) + 'px';
+      }
+      setHash();
+    }
+    function closeDrawer() { root.classList.remove('ag-open'); drawer.setAttribute('aria-hidden', 'true'); root.style.paddingRight = ''; setHash(); }
     function onKey(e) {
       if (!root.isConnected) { document.removeEventListener('keydown', onKey, true); return; }
       if (e.key === 'Escape' && root.classList.contains('ag-open')) { e.stopPropagation(); e.preventDefault(); closeDrawer(); }
