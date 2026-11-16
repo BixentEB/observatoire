@@ -389,7 +389,7 @@
       '<section class="ag-tonight" aria-label="Ce soir"></section>' +
       '<div class="ag-bar">' +
         '<div class="ag-nav"><button type="button" data-m="-1" aria-label="Précédent">‹</button><h2 class="ag-title"></h2><button type="button" data-m="1" aria-label="Suivant">›</button>' +
-        '<button type="button" class="chip" data-today>Aujourd\'hui</button><label class="ag-year"><span class="sr">Année</span><input type="number" min="' + Y0 + '" max="' + Y1 + '" step="1" aria-label="Année"></label></div>' +
+        '<button type="button" class="chip" data-today>Aujourd\'hui</button><label class="ag-year"><span class="sr-only">Année</span><input type="number" min="' + Y0 + '" max="' + Y1 + '" step="1" aria-label="Année"></label></div>' +
         '<div class="ag-views" role="group" aria-label="Vue">' + [['mois', 'Mois'], ['trimestre', '3 mois'], ['annee', 'Année'], ['liste', 'Liste']].map(function (v) { return '<button type="button" data-view="' + v[0] + '">' + v[1] + '</button>'; }).join('') + '</div>' +
       '</div>' +
       '<div class="ag-filters" role="group" aria-label="Catégories"><button type="button" class="chip" data-all>Tout</button>' + CATS.map(function (c) { return '<button type="button" class="chip ag-cat" data-cat="' + c.id + '" style="--c:' + c.c + '"><i></i>' + c.label + '</button>'; }).join('') +

@@ -1322,7 +1322,6 @@ body.gt-on .console { bottom: 220px; }
 
 /* ---------- Agenda du ciel (#/agenda) ---------- */
 .page-inner:has(.ag-main) { max-width: 1240px; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .ag-tonight { display: flex; gap: 14px; align-items: center; margin: 18px 0 8px; padding: 12px 16px; border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(244, 199, 122, .07), transparent 70%); }
 .ag-tn-moon svg { display: block; filter: drop-shadow(0 0 10px rgba(233, 228, 214, .25)); }
 .ag-tn-txt p { margin: 2px 0; }
