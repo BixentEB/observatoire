@@ -395,7 +395,8 @@
       '<div class="ag-filters" role="group" aria-label="Catégories"><button type="button" class="chip" data-all>Tout</button>' + CATS.map(function (c) { return '<button type="button" class="chip ag-cat" data-cat="' + c.id + '" style="--c:' + c.c + '"><i></i>' + c.label + '</button>'; }).join('') +
       '<button type="button" class="chip ag-swarm" title="Lots de satellites des grandes constellations (Starlink, Kuiper, Qianfan…) : plusieurs par semaine">+ constellations</button>' +
       '<label class="ag-place"><span>Lieu</span><select>' + PLACES.map(function (p) { return '<option value="' + p[0] + '">' + esc(p[1]) + '</option>'; }).join('') + '<option value="geo">Ma position…</option></select></label></div>' +
-      '<div class="ag-main"><div class="ag-cal"></div><section class="ag-day" aria-live="polite"></section></div>' +
+      '<div class="ag-main"><div class="ag-cal"></div></div>' +
+      '<aside class="ag-drawer" role="dialog" aria-label="Détail du jour" aria-hidden="true"><div class="ag-dw-bar"><button type="button" class="ag-ib" data-dstep="-1" title="Jour précédent" aria-label="Jour précédent">‹</button><button type="button" class="ag-ib" data-dstep="1" title="Jour suivant" aria-label="Jour suivant">›</button><button type="button" class="ag-ib ag-dw-x" title="Fermer (Échap)" aria-label="Fermer">×</button></div><div class="ag-day" aria-live="polite"></div></aside>' +
       '<h2 class="ag-h">À venir</h2><div class="ag-next"></div>' +
       '<p class="note">Heures données dans le fuseau de votre appareil. Calculs : Jean Meeus, <i>Astronomical Algorithms</i> (Lune, Soleil, saisons, éclipses), éléments des planètes de E. M. Standish (JPL), ΔT d\'Espenak et Meeus (NASA), pics des étoiles filantes d\'après l\'International Meteor Organization. Précision : la minute pour les phases et les saisons, quelques minutes pour les éclipses, l\'heure pour les rapprochements ; moindre avant 1900 et après 2050. Rendez-vous (salons, festivals, nuits d\'observation) vérifiés sur le site des organisateurs.<span class="ag-src"></span></p>';
     var $ = function (s) { return root.querySelector(s); };
@@ -531,6 +532,7 @@
     }
 
     root.addEventListener('click', function (e) {
+      if (root.classList.contains('ag-open') && !e.target.closest('.ag-drawer') && window.matchMedia('(max-width: 640px)').matches) { closeDrawer(); return; }   // téléphone : toucher hors du panneau le referme
       var b = e.target.closest('button'); if (!b || !root.contains(b)) return;
       if (b.hasAttribute('data-m')) {
         var n = +b.getAttribute('data-m'), stepM = view === 'mois' ? 1 : view === 'trimestre' ? 3 : 12;
@@ -551,8 +553,14 @@
         if (view === 'mois' && (sel.getMonth() !== cur.getMonth() || sel.getFullYear() !== cur.getFullYear())) cur = new Date(sel.getFullYear(), sel.getMonth(), 1);
         if (view !== 'mois' && !b.closest('.ag-grid')) { cur = new Date(sel.getFullYear(), sel.getMonth(), 1); view = 'mois'; store('obs.agenda.vue', view); }
         render();
-        var dr = $('.ag-day').getBoundingClientRect();   // le détail est sous le calendrier : on ne le fait venir que s'il est hors de vue
-        if (b.closest('.ag-grid') && dr.top > window.innerHeight - 120) $('.ag-day').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        openDrawer();
+      }
+      else if (b.classList.contains('ag-dw-x')) closeDrawer();
+      else if (b.hasAttribute('data-dstep')) {
+        sel = new Date(sel.getFullYear(), sel.getMonth(), sel.getDate() + +b.getAttribute('data-dstep'));
+        if (sel.getFullYear() < Y0 || sel.getFullYear() > Y1) { sel = new Date(sel.getFullYear(), sel.getMonth(), sel.getDate() - +b.getAttribute('data-dstep')); return; }
+        if (view === 'mois' && (sel.getMonth() !== cur.getMonth() || sel.getFullYear() !== cur.getFullYear())) cur = new Date(sel.getFullYear(), sel.getMonth(), 1);
+        render();
       }
       else if (b.hasAttribute('data-ics')) { var ev = find(b.getAttribute('data-ics')); if (ev) ics([ev]); }
       else if (b.hasAttribute('data-share')) { var es = find(b.getAttribute('data-share')); if (es) share(es, b); }
@@ -567,6 +575,15 @@
         apply('geo:' + pos.coords.latitude.toFixed(1) + ',' + pos.coords.longitude.toFixed(1));
       }, function () { var p = place(); sP.value = /^geo:/.test(p.id) ? 'geo' : p.id; }, { maximumAge: 864e5, timeout: 15000 });
     });
+    /* panneau du jour : glisse depuis la droite (depuis le bas sur téléphone) quand on choisit un jour ; Échap le referme */
+    var drawer = $('.ag-drawer');
+    function openDrawer() { root.classList.add('ag-open'); drawer.setAttribute('aria-hidden', 'false'); drawer.scrollTop = 0; }
+    function closeDrawer() { root.classList.remove('ag-open'); drawer.setAttribute('aria-hidden', 'true'); }
+    function onKey(e) {
+      if (!root.isConnected) { document.removeEventListener('keydown', onKey, true); return; }
+      if (e.key === 'Escape' && root.classList.contains('ag-open')) { e.stopPropagation(); e.preventDefault(); closeDrawer(); }
+    }
+    document.addEventListener('keydown', onKey, true);
     /* pendant le défilement, les petites animations des cases se figent : sinon elles forcent à repeindre la page à chaque image */
     var scroller = page.closest('.page-scroll'), stillT = 0;
     function onScroll() {
@@ -575,6 +592,7 @@
     }
     if (scroller) scroller.addEventListener('scroll', onScroll, { passive: true });
     tonight(); render(); next();
+    if (mm && sub && sel) openDrawer();   // lien partagé vers un jour : on l'ouvre directement
     if (!OBS.AGENDA_LAUNCH && window.fetch) {   // lancements : fichier mis à jour par une tâche GitHub (toutes les six heures)
       fetch('data/lancements.json?h=' + Math.floor(Date.now() / 36e5)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
         if (!d || !root.isConnected) return;
