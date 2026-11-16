@@ -1464,3 +1464,6 @@ body.gt-on .console { bottom: 220px; }
 @keyframes ag-lift { 0%, 60%, 100% { transform: translateY(0); } 80% { transform: translateY(-2px); } }
 @keyframes ag-flame { from { transform: scaleY(.7); opacity: .7; } to { transform: scaleY(1.15); opacity: 1; } }
 @media (max-width: 640px) { .ag-grid.full .ag-span b { display: none; } .ag-grid.full .ag-span { margin: 2px -3px 0; } }
+.ag-monthonly { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 8px; }
+.ag-monthonly summary { cursor: pointer; font: 12px var(--mono); color: #7fd7ff; }
+.ag-monthonly .ag-ev { max-width: 640px; }

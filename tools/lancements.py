@@ -23,7 +23,7 @@ API = 'https://ll.thespacedevs.com/2.3.0/'
 OUT = os.path.join(os.path.dirname(__file__), '..', 'data', 'lancements.json')
 AGENCIES = ('NASA', 'National Aeronautics', 'European Space Agency', 'ESA', 'CNES', 'Centre National', 'JAXA', 'Japan Aerospace',
             'Indian Space Research', 'ISRO', 'China National Space', 'CNSA', 'Roscosmos', 'Russian Federal Space', 'Canadian Space', 'DLR', 'ASI', 'UAE Space', 'MBRSC')
-SWARM = re.compile(r'starlink|kuiper|qianfan|guowang|oneweb|transporter|bandwagon|yaogan|satnet|internet satellite', re.I)
+SWARM = re.compile(r'starlink|kuiper|amazon leo|qianfan|guowang|oneweb|transporter|bandwagon|yaogan|satnet|internet satellite', re.I)
 SCIENCE = ('Planetary Science', 'Astrophysics', 'Heliophysics', 'Human Exploration', 'Space Science', 'Lunar', 'Earth Science', 'Resupply', 'Tourism', 'Test Flight')
 
 

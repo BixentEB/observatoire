@@ -306,20 +306,22 @@
       (LD.launches || []).forEach(function (l) {
         if (l.imp === 3 && !swarm) return;
         var d = new Date(l.net); if (isNaN(d) || d.getFullYear() !== Y) return;
-        var vague = /^(M|Q\d?|H\d?|Y|FY|W)$/.test(l.prec || ''), st = STATUS[l.status] || l.statusName || '';
+        if (/^(Q\d?|H\d?|Y|FY)$/.test(l.prec || '')) return;   // prévu « au 4e trimestre », « en 2027 » : pas de jour à montrer
+        var month = l.prec === 'M', vague = month || /^(DAY|W)$/.test(l.prec || ''), st = STATUS[l.status] || l.statusName || '';
         var mis = l.mission || l.name.split('|').pop().trim();
         var o = { jd: E.jdOf(d), date: d, key: key(d), cat: 'espace', prio: l.imp, allDay: vague, t: (l.crew ? 'Vol habité : ' : 'Lancement : ') + mis, short: mis, ico: ICO.fusee, anim: l.imp === 1 ? 'rocket' : '',
           body: [l.rocket + (l.prov ? ' (' + l.prov + ')' : '') + (l.loc ? ', depuis ' + l.loc : '') + '.',
-            [l.type ? 'Mission : ' + l.type.toLowerCase() : '', l.orbit ? 'orbite : ' + l.orbit : '', l.agencies && l.agencies.length ? 'pour ' + l.agencies.join(', ') : ''].filter(Boolean).join(' · '),
-            st ? 'Statut : ' + st + (vague ? ' (date connue au mois près)' : '') + '.' : '',
+            [l.type ? 'Mission : ' + (MTYPE[l.type] || l.type.toLowerCase()) : '', l.orbit ? (ORB[l.orbit] || 'orbite : ' + l.orbit) : '', l.agencies && l.agencies.length ? 'pour ' + l.agencies.join(', ') : ''].filter(Boolean).join(' · '),
+            st ? 'Statut : ' + st + (l.prec === 'DAY' ? ' (jour connu, heure à préciser)' : l.prec === 'W' ? ' (semaine connue, jour à préciser)' : '') + '.' : '',
             l.desc ? 'Présentation de la mission (en anglais, Launch Library 2) : ' + l.desc : ''],
-          warn: d > new Date() ? 'Les dates de lancement bougent souvent (météo, technique) : à vérifier la veille.' : '', dur: 30 };
+          warn: d > new Date() ? 'Les dates de lancement bougent souvent (météo, technique) : à vérifier la veille.' : '', dur: 30, month: month };
+        if (month) { o.date = new Date(d.getFullYear(), d.getMonth(), 1, 12); o.key = key(o.date); o.jd = E.jdOf(o.date); o.body[2] = st ? 'Statut : ' + st + ', prévu en ' + fMs.format(d) + ' sans jour fixé.' : ''; }
         ev.push(o);
       });
       (LD.events || []).forEach(function (x) {
-        if (/celestial|astronomical/i.test(x.type)) return;   // déjà calculés ici
+        if (/celestial|astronomical/i.test(x.type) || /^(M|Q\d?|H\d?|Y|FY)$/.test(x.prec || '')) return;   // phénomènes déjà calculés ici ; dates trop floues
         var d = new Date(x.date); if (isNaN(d) || d.getFullYear() !== Y) return;
-        var vague = /^(M|Q\d?|H\d?|Y|FY|W|D)$/.test(x.prec || '');
+        var vague = /^(DAY|W)$/.test(x.prec || '');
         ev.push({ jd: E.jdOf(d), date: d, key: key(d), cat: 'espace', prio: /landing|docking|spacewalk|eva|flyby|arrival|insertion/i.test(x.type + ' ' + x.name) ? 2 : 3, allDay: vague, t: x.name, ico: ICO.fusee,
           body: [x.type ? 'Type : ' + x.type.toLowerCase() + (x.loc ? ', ' + x.loc : '') + '.' : '', x.desc ? 'En anglais (Launch Library 2) : ' + x.desc : ''], ext: x.url ? ['En savoir plus', x.url] : null });
       });
@@ -330,6 +332,10 @@
     return ev;
   }
 
+  var ORB = { 'Low Earth Orbit': 'orbite basse', 'Very Low Earth Orbit': 'orbite très basse', 'Sun-Synchronous Orbit': 'orbite héliosynchrone', 'Geostationary Transfer Orbit': 'orbite de transfert géostationnaire', 'Geostationary Orbit': 'orbite géostationnaire', 'Geosynchronous Orbit': 'orbite géosynchrone',
+    'Medium Earth Orbit': 'orbite moyenne', 'Polar Orbit': 'orbite polaire', 'Lunar Orbit': 'orbite lunaire', 'Heliocentric N/A': 'autour du Soleil', 'Suborbital': 'vol suborbital', 'Elliptical Orbit': 'orbite elliptique', 'Highly Elliptical Orbit': 'orbite très elliptique', 'Mars Orbit': 'orbite martienne', 'Lunar flyby': 'survol de la Lune', 'Translunar Injection': 'vers la Lune' };
+  var MTYPE = { 'Communications': 'télécommunications', 'Earth Science': 'observation de la Terre', 'Government/Top Secret': 'gouvernementale ou secrète', 'Resupply': 'ravitaillement', 'Human Exploration': 'vol habité', 'Navigation': 'navigation par satellite',
+    'Test Flight': 'vol d\'essai', 'Planetary Science': 'exploration planétaire', 'Astrophysics': 'astrophysique', 'Heliophysics': 'étude du Soleil', 'Technology': 'technologie', 'Dedicated Rideshare': 'lancement partagé', 'Tourism': 'tourisme spatial', 'Space Science': 'science spatiale', 'Lunar': 'mission lunaire', 'Robotic Exploration': 'exploration robotique' };
   var STATUS = { Go: 'feu vert', TBD: 'date à confirmer', TBC: 'date probable, à confirmer', Success: 'réussi', Failure: 'échec', 'Partial Failure': 'échec partiel', Hold: 'en attente', 'In Flight': 'en vol' };
 
   /* ---------- export .ics (agenda du téléphone ou de l'ordinateur) ---------- */
@@ -380,7 +386,8 @@
     var sP = $('.ag-place select'), P0 = place(); sP.value = /^geo:/.test(P0.id) ? 'geo' : P0.id;
     if (/^geo:/.test(P0.id)) sP.querySelector('[value=geo]').textContent = 'Ma position';
 
-    function visible(e) { return !off[e.cat]; }
+    function visible(e) { return !off[e.cat] && !e.month; }
+    function monthOnly(y, mo) { return off.espace ? [] : yearEvents(y).filter(function (e) { return e.month && e.date.getMonth() === mo; }); }
     function evsOf(y) { return yearEvents(y).filter(visible); }
     function byDay(list) { var m = {}; list.forEach(function (e) { (m[e.key] = m[e.key] || []).push(e); }); return m; }
     function setHash() {
@@ -450,7 +457,10 @@
       var y = cur.getFullYear(), mo = cur.getMonth(), cal = $('.ag-cal');
       $('.ag-year input').value = y;
       root.classList.toggle('ag-wide', view !== 'mois');
-      if (view === 'mois') { $('.ag-title').textContent = cap(fM.format(cur)); cal.innerHTML = grid(y, mo, true); }
+      if (view === 'mois') {
+        $('.ag-title').textContent = cap(fM.format(cur)); var mOnly = monthOnly(y, mo);
+        cal.innerHTML = grid(y, mo, true) + (mOnly.length ? '<details class="ag-monthonly"><summary>' + mOnly.length + ' lancement' + (mOnly.length > 1 ? 's' : '') + ' prévu' + (mOnly.length > 1 ? 's' : '') + ' en ' + esc(fMs.format(cur)) + ', sans jour fixé</summary>' + mOnly.map(function (e) { return item(e, false); }).join('') + '</details>' : '');
+      }
       else if (view === 'trimestre') {
         var a = new Date(y, mo, 1), b = new Date(y, mo + 2, 1);
         $('.ag-title').textContent = cap(fMs.format(a)) + ' – ' + fM.format(b);
