@@ -37,7 +37,7 @@
   }
 
   /* ---------- navigation ---------- */
-  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, coulisses: 1, projet: 1, lunaisons: 1, comparateur: 1 };
+  var PAGES = { atlas: 1, outils: 1, lexique: 1, hypotheses: 1, simulateur: 1, methode: 1, credits: 1, ressources: 1, coulisses: 1, projet: 1, lunaisons: 1, comparateur: 1, agenda: 1 };
   var silent = false;
   function parse() {
     var h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -46,7 +46,7 @@
     return { name: name, param: h[1] || null, sub: h[2] || null };
   }
   var prevHash = '', returnTo = null;   // venu d'une page (Atlas…) : un bouton du fil d'Ariane permet d'y retourner
-  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', coulisses: 'Les coulisses', projet: 'Le projet', lunaisons: 'les Lunaisons', comparateur: 'le Comparateur' };
+  var PAGE_NAMES = { atlas: 'l\'Atlas', lexique: 'le Lexique', hypotheses: 'Hypothèses', simulateur: 'Simulateur', outils: 'Outils', methode: 'Méthode', credits: 'Méthode', ressources: 'Ressources', coulisses: 'Les coulisses', projet: 'Le projet', lunaisons: 'les Lunaisons', comparateur: 'le Comparateur', agenda: 'l\'Agenda' };
   function route() {
     if (silent) { silent = false; return; }
     var r = parse();

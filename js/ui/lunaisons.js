@@ -115,7 +115,7 @@
   function nf(v, d) { return v.toLocaleString('fr-FR', { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
-  OBS.pages.lunaisons = function (root) {
+  OBS.pages.lunaisons = function (root, param) {
     var now = new Date(), cur = new Date(now), south = store('obs.lune.sud') === '1';
     root.innerHTML = '<p><a href="#/outils" class="chip">← Outils</a></p><p class="p-kicker">Outil</p><h1>Les lunaisons</h1>' +
       '<p class="lead">La Lune telle qu\'on la voit depuis la Terre, à n\'importe quelle date, et ses prochaines phases. Une lunaison, d\'une nouvelle lune à la suivante, dure en moyenne 29,53 jours.</p>' +
@@ -131,6 +131,8 @@
       '<h2 class="lu-h">Prochaines phases</h2><div class="lu-next"></div>' +
       '<h2 class="lu-h lu-cal-h"><button type="button" data-m="-1" aria-label="Mois précédent">‹</button><span></span><button type="button" data-m="1" aria-label="Mois suivant">›</button></h2><div class="lu-cal"></div>' +
       '<p class="note">Super-lune : pleine lune à moins d\'environ 362 000 km de la Terre (convention de l\'astrologue Richard Nolle, 1979, reprise par les médias) : ce n\'est pas une définition astronomique officielle ; la Lune paraît alors environ 7 % plus grande et 15 % plus lumineuse qu\'en moyenne. Les heures sont données dans le fuseau de votre appareil.</p>';
+    var pm = /^(\d{4})-(\d\d)-(\d\d)$/.exec(param || '');   // #/lunaisons/AAAA-MM-JJ : la Lune à cette date (lien de l'Agenda)
+    if (pm) cur = new Date(+pm[1], +pm[2] - 1, +pm[3], 21, 0);
     var cv = root.querySelector('.lu-moon'), view = moonView(cv);
     var $ = function (s) { return root.querySelector(s); }, calMonth = new Date(cur.getFullYear(), cur.getMonth(), 1);
 
@@ -186,4 +188,5 @@
     next(); cal(); upd();
   };
   OBS.lunePhaseJD = phaseJD;   // pour vérification
+  OBS.LUNE = { phaseJD: phaseJD, moonAt: moonAt, icon: icon, phaseName: phaseName, NAMES: NAMES, SUPER: SUPER, SYN: SYN };   // repris par l'Agenda du ciel
 })();

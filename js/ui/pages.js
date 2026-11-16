@@ -270,6 +270,7 @@
       '<h2>2. Ce que calcule votre navigateur</h2><ul class="credits-list">' +
       '<li>Positions des planètes à la date affichée : éléments orbitaux de Standish (NASA/JPL), résolus par l\'équation de Kepler.</li>' +
       '<li>Position de la Lune : formule abrégée ; phases, périgées et apogées : algorithmes de Jean Meeus, contrôlés sur le calendrier de l\'IMCCE.</li>' +
+      '<li>Agenda du ciel : Jean Meeus, <i>Astronomical Algorithms</i> (1998) pour la Lune (60 termes), le Soleil, les saisons, le périhélie et les éclipses ; ΔT d\'Espenak et Meeus (NASA) ; pics des étoiles filantes d\'après l\'International Meteor Organization ; bandes de centralité des éclipses de Soleil d\'après F. Espenak (NASA). Contrôles : éclipses 2025-2027, saisons 2026, éclipse du 11 août 1999 et du 20 mars 2015 vues de Paris.</li>' +
       '<li>Orientation et rotation des astres : modèles de l\'Union astronomique internationale.</li>' +
       '<li>Orbites des petits corps et des orbiteurs rapides : propagation képlérienne à partir de leurs éléments.</li>' +
       '<li>Distances des galaxies lointaines : tirées de leur décalage vers le rouge (loi de Hubble, H0 = 70 km/s/Mpc), puis distance comobile pour l\'Univers observable (univers plat, Ωm = 0,3).</li></ul>' +

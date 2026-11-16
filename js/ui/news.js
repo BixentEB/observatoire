@@ -20,7 +20,8 @@
     { href: '#/atlas/artefacts', date: '2026-11-09', menu: 'atlas' },
     { href: '#/ressources', date: '2026-11-14', menu: 'methode' },
     { href: '#/coulisses', date: '2026-11-14', menu: 'methode' },
-    { href: '#/atlas/questions', date: '2026-11-14', menu: 'atlas' }
+    { href: '#/atlas/questions', date: '2026-11-14', menu: 'atlas' },
+    { href: '#/agenda', date: '2026-11-16', menu: 'agenda' }
   ];
   var DAYS = 14;
   OBS.NEWS = NEWS;
