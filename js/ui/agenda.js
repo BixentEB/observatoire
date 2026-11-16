@@ -19,7 +19,10 @@
     { id: 'planetes', label: 'Planètes', c: '#8fb4ff' },
     { id: 'filantes', label: 'Étoiles filantes', c: '#9fe3b0' },
     { id: 'saisons', label: 'Saisons', c: '#f4c77a' },
-    { id: 'visiteurs', label: 'Visiteurs', c: '#b49cff' }
+    { id: 'visiteurs', label: 'Visiteurs', c: '#b49cff' },
+    { id: 'espace', label: 'Lancements', c: '#7fd7ff' },
+    { id: 'rdv', label: 'Rendez-vous', c: '#ff8ec7' },
+    { id: 'histoire', label: 'Histoire', c: '#c9b28a' }
   ];
   var CAT = {}; CATS.forEach(function (c) { CAT[c.id] = c; });
 
@@ -82,6 +85,7 @@
   var fDs = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' });
   var fM = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
   var fMs = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
+  function range(a, b) { return a.getMonth() === b.getMonth() ? 'Du ' + a.getDate() + (a.getDate() === 1 ? 'er' : '') + ' au ' + fDs.format(b) + ' ' + b.getFullYear() : 'Du ' + fDs.format(a) + ' au ' + fDs.format(b) + ' ' + b.getFullYear(); }
   function hm(jd) { return fT.format(OBS.ephem.dateOf(jd)).replace(':', ' h '); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -97,6 +101,9 @@
     orbite: '<svg class="ag-ico" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="6" fill="none" stroke="#f4c77a" stroke-width="1" opacity=".7"/><circle cx="12" cy="12" r="2.6" fill="#ffcf7a"/><circle class="ag-orb" cx="22" cy="12" r="1.8" fill="#8fb4ff"/></svg>',
     conj: '<svg class="ag-ico ag-conj" viewBox="0 0 24 24" aria-hidden="true"><circle class="ag-c1" cx="9" cy="12" r="3.4" fill="#e9e4d6"/><circle class="ag-c2" cx="16" cy="11" r="2" fill="#8fb4ff"/></svg>',
     planete: '<svg class="ag-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="#8fb4ff"/><ellipse cx="12" cy="12" rx="10" ry="3" fill="none" stroke="#8fb4ff" stroke-width="1" opacity=".55"/></svg>',
+    fusee: '<svg class="ag-ico ag-rocket" viewBox="0 0 24 24" aria-hidden="true"><g class="ag-rk"><path d="M12 2c3 2.5 4 6 4 10l-1.6 3.2H9.6L8 12c0-4 1-7.5 4-10z" fill="#cfeeff"/><circle cx="12" cy="9" r="1.6" fill="#0a0d1c"/><path d="M8.4 12.5L5.5 16l3.2-.4M15.6 12.5l2.9 3.5-3.2-.4" fill="#7fd7ff"/></g><path class="ag-flame" d="M10.4 16h3.2L12 21.5z" fill="#ffb36b"/></svg>',
+    rdv: '<svg class="ag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l5.5-9 3 4.5 2-3L20 20z" fill="#ff8ec7" opacity=".85"/><path d="M15.5 3.5l.8 1.7 1.8.3-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.3z" fill="#ffe3f1"/><circle cx="7" cy="6" r=".9" fill="#ffe3f1"/></svg>',
+    histoire: '<svg class="ag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v3l-4 6 4 6v3H6v-3l4-6-4-6z" fill="none" stroke="#c9b28a" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.5 19h7l-3.5-4.5z" fill="#c9b28a"/></svg>',
     visiteur: '<svg class="ag-ico ag-comet" viewBox="0 0 24 24" aria-hidden="true"><path class="ag-tail" d="M3 21 L15 9" stroke="#b49cff" stroke-width="3" stroke-linecap="round" opacity=".45"/><circle cx="16" cy="8" r="3" fill="#e4dcff"/></svg>'
   };
 
@@ -271,10 +278,59 @@
       });
     });
 
+    /* --- rendez-vous : salons, festivals, nuits d'observation --- */
+    function dOf(s) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s); return m ? new Date(+m[1], +m[2] - 1, +m[3], 12, 0) : null; }
+    function allDay(o) { o.jd = E.jdOf(o.date); o.key = key(o.date); o.allDay = true; ev.push(o); }
+    (OBS.AGENDA_RDV || []).forEach(function (r) {
+      var a = dOf(r.start), b = r.end ? dOf(r.end) : null; if (!a || a.getFullYear() !== Y) return;
+      allDay({ date: a, end: b, cat: 'rdv', prio: r.imp, t: r.name, ico: ICO.rdv, anim: r.imp === 1 ? 'rdv' : '', approx: r.approx,
+        body: [r.d, r.where + '.', r.approx ? 'Dates à confirmer auprès des organisateurs.' : ''], ext: r.url ? ['Site de l\'événement', r.url] : null });
+    });
+    (OBS.AGENDA_JOURS || []).forEach(function (j) {
+      if (Y < j.from) return;
+      var a = new Date(Y, j.m - 1, j.d, 12), b = j.len ? new Date(Y, j.m - 1, j.d + j.len - 1, 12) : null;
+      allDay({ date: a, end: b, cat: 'rdv', prio: 3, t: j.name, ico: ICO.rdv, body: [j.t] });
+    });
+    /* --- histoire : le jour même, puis chaque année en anniversaire --- */
+    (OBS.AGENDA_HIST || []).forEach(function (h) {
+      var m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(h[0]), y0 = +m[1]; if (Y < y0) return;
+      var n = Y - y0, a = new Date(Y, +m[2] - 1, +m[3], 12), round = n > 0 && (n % 25 === 0 || n % 10 === 0);
+      allDay({ date: a, cat: 'histoire', ico: ICO.histoire, prio: n === 0 ? 1 : round ? 2 : 3, t: n === 0 ? h[1] : h[1] + ' (il y a ' + n + ' an' + (n > 1 ? 's' : '') + ')', short: h[1],
+        body: [h[2], n > 0 ? 'C\'était le ' + fD.format(new Date(y0, +m[2] - 1, +m[3])) + '.' : ''],
+        link: h[3] ? ['Voir dans l\'Explorer', h[3]] : null, anim: n === 0 || round ? 'hist' : '' });
+    });
+    /* --- lancements et événements spatiaux (Launch Library 2, mis à jour par une tâche GitHub) --- */
+    var LD = OBS.AGENDA_LAUNCH;
+    if (LD) {
+      var swarm = store('obs.agenda.constellations') === '1';
+      (LD.launches || []).forEach(function (l) {
+        if (l.imp === 3 && !swarm) return;
+        var d = new Date(l.net); if (isNaN(d) || d.getFullYear() !== Y) return;
+        var vague = /^(M|Q\d?|H\d?|Y|FY|W)$/.test(l.prec || ''), st = STATUS[l.status] || l.statusName || '';
+        var mis = l.mission || l.name.split('|').pop().trim();
+        var o = { jd: E.jdOf(d), date: d, key: key(d), cat: 'espace', prio: l.imp, allDay: vague, t: (l.crew ? 'Vol habité : ' : 'Lancement : ') + mis, short: mis, ico: ICO.fusee, anim: l.imp === 1 ? 'rocket' : '',
+          body: [l.rocket + (l.prov ? ' (' + l.prov + ')' : '') + (l.loc ? ', depuis ' + l.loc : '') + '.',
+            [l.type ? 'Mission : ' + l.type.toLowerCase() : '', l.orbit ? 'orbite : ' + l.orbit : '', l.agencies && l.agencies.length ? 'pour ' + l.agencies.join(', ') : ''].filter(Boolean).join(' · '),
+            st ? 'Statut : ' + st + (vague ? ' (date connue au mois près)' : '') + '.' : '',
+            l.desc ? 'Présentation de la mission (en anglais, Launch Library 2) : ' + l.desc : ''],
+          warn: d > new Date() ? 'Les dates de lancement bougent souvent (météo, technique) : à vérifier la veille.' : '', dur: 30 };
+        ev.push(o);
+      });
+      (LD.events || []).forEach(function (x) {
+        if (/celestial|astronomical/i.test(x.type)) return;   // déjà calculés ici
+        var d = new Date(x.date); if (isNaN(d) || d.getFullYear() !== Y) return;
+        var vague = /^(M|Q\d?|H\d?|Y|FY|W|D)$/.test(x.prec || '');
+        ev.push({ jd: E.jdOf(d), date: d, key: key(d), cat: 'espace', prio: /landing|docking|spacewalk|eva|flyby|arrival|insertion/i.test(x.type + ' ' + x.name) ? 2 : 3, allDay: vague, t: x.name, ico: ICO.fusee,
+          body: [x.type ? 'Type : ' + x.type.toLowerCase() + (x.loc ? ', ' + x.loc : '') + '.' : '', x.desc ? 'En anglais (Launch Library 2) : ' + x.desc : ''], ext: x.url ? ['En savoir plus', x.url] : null });
+      });
+    }
+
     ev.sort(function (a, b) { return a.jd - b.jd; });
     cache[Y] = ev;
     return ev;
   }
+
+  var STATUS = { Go: 'feu vert', TBD: 'date à confirmer', TBC: 'date probable, à confirmer', Success: 'réussi', Failure: 'échec', 'Partial Failure': 'échec partiel', Hold: 'en attente', 'In Flight': 'en vol' };
 
   /* ---------- export .ics (agenda du téléphone ou de l'ordinateur) ---------- */
   function icsDate(d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
@@ -284,7 +340,7 @@
     list.forEach(function (e, i) {
       var st = OBS.ephem.dateOf(e.jdStart || e.jd), en = new Date(st.getTime() + (e.dur || 60) * 60000);
       out.push('BEGIN:VEVENT', 'UID:obs-' + e.cat + '-' + Math.round(e.jd * 1440) + '-' + i + '@obs.codexmental.com', 'DTSTAMP:' + icsDate(new Date()));
-      if (e.allDay) { var k = e.key.replace(/-/g, ''); out.push('DTSTART;VALUE=DATE:' + k); }
+      if (e.allDay) { var k = e.key.replace(/-/g, ''), nx = new Date((e.end || e.date).getTime() + 864e5); out.push('DTSTART;VALUE=DATE:' + k, 'DTEND;VALUE=DATE:' + key(nx).replace(/-/g, '')); }
       else out.push('DTSTART:' + icsDate(st), 'DTEND:' + icsDate(en));
       out.push('SUMMARY:' + icsText(e.t), 'DESCRIPTION:' + icsText(e.body.filter(Boolean).join('\n') + (e.vis ? '\n' + e.vis : '')), 'URL:https://obs.codexmental.com/#/agenda/' + e.key.slice(0, 7) + '/' + (+e.key.slice(8)), 'END:VEVENT');
     });
@@ -315,10 +371,11 @@
         '<div class="ag-views" role="group" aria-label="Vue">' + [['mois', 'Mois'], ['trimestre', '3 mois'], ['annee', 'Année'], ['liste', 'Liste']].map(function (v) { return '<button type="button" data-view="' + v[0] + '">' + v[1] + '</button>'; }).join('') + '</div>' +
       '</div>' +
       '<div class="ag-filters" role="group" aria-label="Catégories"><button type="button" class="chip" data-all>Tout</button>' + CATS.map(function (c) { return '<button type="button" class="chip ag-cat" data-cat="' + c.id + '" style="--c:' + c.c + '"><i></i>' + c.label + '</button>'; }).join('') +
+      '<button type="button" class="chip ag-swarm" title="Lots de satellites des grandes constellations (Starlink, Kuiper, Qianfan…) : plusieurs par semaine">+ constellations</button>' +
       '<label class="ag-place"><span>Lieu</span><select>' + PLACES.map(function (p) { return '<option value="' + p[0] + '">' + esc(p[1]) + '</option>'; }).join('') + '<option value="geo">Ma position…</option></select></label></div>' +
       '<div class="ag-main"><div class="ag-cal"></div><aside class="ag-day" aria-live="polite"></aside></div>' +
       '<h2 class="ag-h">À venir</h2><div class="ag-next"></div>' +
-      '<p class="note">Heures données dans le fuseau de votre appareil. Calculs : Jean Meeus, <i>Astronomical Algorithms</i> (Lune, Soleil, saisons, éclipses), éléments des planètes de E. M. Standish (JPL), ΔT d\'Espenak et Meeus (NASA), pics des étoiles filantes d\'après l\'International Meteor Organization. Précision : la minute pour les phases et les saisons, quelques minutes pour les éclipses, l\'heure pour les rapprochements ; moindre avant 1900 et après 2050. Les lancements de fusées et les événements (nuits des étoiles, salons) arrivent bientôt.</p>';
+      '<p class="note">Heures données dans le fuseau de votre appareil. Calculs : Jean Meeus, <i>Astronomical Algorithms</i> (Lune, Soleil, saisons, éclipses), éléments des planètes de E. M. Standish (JPL), ΔT d\'Espenak et Meeus (NASA), pics des étoiles filantes d\'après l\'International Meteor Organization. Précision : la minute pour les phases et les saisons, quelques minutes pour les éclipses, l\'heure pour les rapprochements ; moindre avant 1900 et après 2050. Rendez-vous (salons, festivals, nuits d\'observation) vérifiés sur le site des organisateurs.<span class="ag-src"></span></p>';
     var $ = function (s) { return root.querySelector(s); };
     var sP = $('.ag-place select'), P0 = place(); sP.value = /^geo:/.test(P0.id) ? 'geo' : P0.id;
     if (/^geo:/.test(P0.id)) sP.querySelector('[value=geo]').textContent = 'Ma position';
@@ -333,6 +390,7 @@
     function chipsState() {
       root.querySelectorAll('.ag-cat').forEach(function (b) { b.setAttribute('aria-pressed', String(!off[b.getAttribute('data-cat')])); });
       $('[data-all]').setAttribute('aria-pressed', String(!Object.keys(off).length));
+      var sw = $('.ag-swarm'); sw.setAttribute('aria-pressed', String(store('obs.agenda.constellations') === '1')); sw.hidden = !!off.espace || !OBS.AGENDA_LAUNCH;
       root.querySelectorAll('[data-view]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view)); });
     }
     function moonIco(d) { return OBS.LUNE.icon(OBS.LUNE.moonAt(OBS.ephem.jdOf(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 21))), 16); }
@@ -343,8 +401,10 @@
       var h = '<div class="ag-grid' + (full ? ' full' : ' mini') + '">' + (full ? '' : '<button type="button" class="ag-mh" data-goto="' + y + '-' + mo + '">' + cap(fMs.format(new Date(y, mo, 1))) + '</button>') +
         ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'].map(function (d) { return '<span class="ag-dh">' + (full ? d : d.charAt(0)) + '</span>'; }).join('');
       for (var i = 0; i < first; i++) h += '<span class="ag-pad"></span>';
+      var spans = evsOf(y).filter(function (e) { return e.end && e.end - e.date <= 21 * 864e5; });   // rendez-vous de plusieurs jours : un trait sur les jours suivants
       for (var d = 1; d <= nd; d++) {
         var dt = new Date(y, mo, d), k = key(dt), L = (map[k] || []).sort(function (a, b) { return a.prio - b.prio || a.jd - b.jd; });
+        var noon = new Date(y, mo, d, 12), sp = spans.filter(function (e) { return e.date < noon && e.end >= noon; }), spH = sp.map(function (e) { return '<span class="ag-span" style="--c:' + CAT[e.cat].c + '" title="' + esc(e.t) + '">' + (full && (dt.getDay() === 1 || d === 1) ? '<b>' + esc(e.short || e.t) + '</b>' : '') + '</span>'; }).join('');
         var today = k === key(now), on = sel && k === key(sel), anims = {};
         L.forEach(function (e) { if (e.anim) anims[e.anim] = 1; });
         var cls = 'ag-d' + (today ? ' today' : '') + (on ? ' on' : '') + (L.length ? ' has' : '') + (L.some(function (e) { return e.prio === 1; }) ? ' major' : '') + Object.keys(anims).map(function (a) { return ' an-' + a; }).join('');
@@ -355,9 +415,9 @@
             (ph ? '<span class="ag-e e-lune' + (ph.sup ? ' sup' : '') + '">' + esc(ph.t) + '</span>' : '') +
             show.slice(0, ph ? 2 : 3).map(function (e) { return '<span class="ag-e e-' + e.cat + '" style="--c:' + CAT[e.cat].c + '">' + e.ico + '<b>' + esc(e.short || e.t) + '</b></span>'; }).join('') +
             (show.length > (ph ? 2 : 3) ? '<span class="ag-more">+ ' + (show.length - (ph ? 2 : 3)) + '</span>' : '') +
-            '<span class="ag-dots">' + L.slice(0, 4).map(function (e) { return '<i style="--c:' + CAT[e.cat].c + '"></i>'; }).join('') + '</span></button>';
+            '<span class="ag-dots">' + L.slice(0, 4).map(function (e) { return '<i style="--c:' + CAT[e.cat].c + '"></i>'; }).join('') + '</span>' + spH + '</button>';
         } else {
-          h += '<button type="button" class="' + cls + '" data-day="' + k + '" title="' + esc(L.map(function (e) { return e.t; }).join(' · ')) + '"><span class="ag-dn">' + d + '</span><span class="ag-dots">' + L.slice(0, 3).map(function (e) { return '<i style="--c:' + CAT[e.cat].c + '"></i>'; }).join('') + '</span></button>';
+          h += '<button type="button" class="' + cls + '" data-day="' + k + '" title="' + esc(L.map(function (e) { return e.t; }).join(' · ')) + '"><span class="ag-dn">' + d + '</span><span class="ag-dots">' + L.slice(0, 3).map(function (e) { return '<i style="--c:' + CAT[e.cat].c + '"></i>'; }).join('') + '</span>' + spH + '</button>';
         }
       }
       return h + '</div>';
@@ -365,14 +425,15 @@
     function item(e, withDate) {
       var past = e.date < now;
       return '<article class="ag-ev' + (past ? ' past' : '') + '" style="--c:' + CAT[e.cat].c + '"><div class="ag-ev-h">' + e.ico + '<div><h3>' + esc(e.t) + '</h3><p class="ag-when">' +
-        (withDate ? esc(cap(fD.format(e.date))) + (e.allDay ? '' : ' · ') : '') + (e.allDay ? '' : hm(e.jd)) + ' <span class="ag-tag">' + CAT[e.cat].label + '</span></p></div></div>' +
+        (e.end ? esc(range(e.date, e.end)) + ' · ' : withDate ? esc(cap(fD.format(e.date))) + (e.allDay ? '' : ' · ') : '') + (e.allDay ? '' : hm(e.jd)) + ' <span class="ag-tag">' + CAT[e.cat].label + '</span></p></div></div>' +
         e.body.filter(Boolean).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + (e.vis ? '<p class="ag-vis">' + esc(e.vis) + '</p>' : '') + (e.warn ? '<p class="ag-warn">' + esc(e.warn) + '</p>' : '') +
-        '<p class="ag-acts">' + (e.link ? '<a class="chip" href="' + e.link[1] + '">' + esc(e.link[0]) + ' ›</a>' : '') + '<button type="button" class="chip" data-ics="' + e.cat + '|' + e.jd + '">Ajouter à mon agenda</button></p></article>';
+        '<p class="ag-acts">' + (e.link ? '<a class="chip" href="' + e.link[1] + '">' + esc(e.link[0]) + ' ›</a>' : '') + (e.ext ? '<a class="chip" href="' + esc(e.ext[1]) + '" target="_blank" rel="noopener">' + esc(e.ext[0]) + ' ↗</a>' : '') + '<button type="button" class="chip" data-ics="' + e.cat + '|' + e.jd + '">Ajouter à mon agenda</button></p></article>';
     }
     function dayPanel() {
       var box = $('.ag-day');
       if (!sel) { box.innerHTML = '<p class="ag-hint">Choisissez un jour pour voir le détail.</p>'; return; }
-      var k = key(sel), L = evsOf(sel.getFullYear()).filter(function (e) { return e.key === k; }).sort(function (a, b) { return a.prio - b.prio || a.jd - b.jd; });
+      var k = key(sel), noon = new Date(sel.getFullYear(), sel.getMonth(), sel.getDate(), 12);
+      var L = evsOf(sel.getFullYear()).filter(function (e) { return e.key === k || (e.end && e.date < noon && e.end >= noon); }).sort(function (a, b) { return (a.key === k ? 0 : 1) - (b.key === k ? 0 : 1) || a.prio - b.prio || a.jd - b.jd; });
       var m = OBS.LUNE.moonAt(OBS.ephem.jdOf(new Date(sel.getFullYear(), sel.getMonth(), sel.getDate(), 21)));
       box.innerHTML = '<h2>' + esc(cap(fD.format(sel))) + '</h2><p class="ag-dmoon">' + OBS.LUNE.icon(m, 26) + '<span>' + esc(OBS.LUNE.phaseName(m)) + ', éclairée à ' + Math.round(m.frac * 100) + ' % (21 h)</span></p>' +
         (L.length ? L.map(function (e) { return item(e, false); }).join('') : '<p class="ag-hint">Rien de particulier ce jour-là' + (Object.keys(off).length ? ' dans les catégories choisies' : '') + '.</p>');
@@ -439,6 +500,7 @@
         if (Object.keys(off).length === CATS.length) delete off[c];   // au moins une catégorie reste affichée
         store('obs.agenda.off', JSON.stringify(Object.keys(off))); render(); next();
       }
+      else if (b.classList.contains('ag-swarm')) { store('obs.agenda.constellations', store('obs.agenda.constellations') === '1' ? '0' : '1'); cache = {}; render(); next(); }
       else if (b.hasAttribute('data-goto')) { var g = b.getAttribute('data-goto').split('-'); cur = new Date(+g[0], +g[1], 1); view = 'mois'; store('obs.agenda.vue', view); render(); }
       else if (b.hasAttribute('data-day')) {
         var p = b.getAttribute('data-day').split('-'); sel = new Date(+p[0], +p[1] - 1, +p[2]);
@@ -463,6 +525,13 @@
       }, function () { var p = place(); sP.value = /^geo:/.test(p.id) ? 'geo' : p.id; }, { maximumAge: 864e5, timeout: 15000 });
     });
     tonight(); render(); next();
+    if (!OBS.AGENDA_LAUNCH && window.fetch) {   // lancements : fichier mis à jour par une tâche GitHub (toutes les six heures)
+      fetch('data/lancements.json?h=' + Math.floor(Date.now() / 36e5)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (!d || !root.isConnected) return;
+        OBS.AGENDA_LAUNCH = d; cache = {}; render(); next(); tonight();
+        var n = root.querySelector('.ag-src'); if (n) n.textContent = ' Lancements : Launch Library 2 (The Space Devs), mis à jour le ' + fDs.format(new Date(d.updated)) + '.';
+      }).catch(function () {});
+    }
   };
   OBS.agendaEvents = yearEvents;   // pour vérification
 })();

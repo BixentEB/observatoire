@@ -1448,3 +1448,19 @@ body.gt-on .console { bottom: 220px; }
   .ag-li { grid-template-columns: 6.2em 22px 1fr; gap: 8px; }
   .ag-months { gap: 14px; }
 }
+/* Agenda, lot B : rendez-vous sur plusieurs jours, lancements, histoire */
+.ag-span { display: block; height: 4px; margin: 2px -6px 0; background: var(--c); opacity: .55; border-radius: 0; overflow: visible; white-space: nowrap; }
+.ag-span b { position: relative; top: -14px; left: 6px; font: 500 10px var(--body); color: var(--c); opacity: 1; }
+.ag-grid.full .ag-span { margin-top: auto; height: 3px; }
+.ag-grid.full .ag-span + .ag-span { margin-top: 3px; }
+.ag-grid.full .ag-span b { top: -15px; }
+.ag-grid.mini .ag-span { margin: 1px -2px 0; height: 2px; }
+.ag-swarm[hidden] { display: none; }
+.ag-swarm[aria-pressed="true"] { color: #7fd7ff; border-color: rgba(127, 215, 255, .5); }
+.an-rocket .ag-rk { animation: ag-lift 3.4s ease-in-out infinite; }
+.an-rocket .ag-flame { transform-origin: 12px 16px; animation: ag-flame .25s ease-in-out infinite alternate; }
+.an-rdv .ag-e.e-rdv .ag-ico { animation: ag-glow 3s ease-in-out infinite; }
+.an-hist .ag-e.e-histoire .ag-ico { animation: ag-glow 5s ease-in-out infinite; }
+@keyframes ag-lift { 0%, 60%, 100% { transform: translateY(0); } 80% { transform: translateY(-2px); } }
+@keyframes ag-flame { from { transform: scaleY(.7); opacity: .7; } to { transform: scaleY(1.15); opacity: 1; } }
+@media (max-width: 640px) { .ag-grid.full .ag-span b { display: none; } .ag-grid.full .ag-span { margin: 2px -3px 0; } }

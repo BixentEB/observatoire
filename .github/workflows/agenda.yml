@@ -1,0 +1,40 @@
+# Agenda du ciel : lancements de fusées et événements spatiaux (Launch Library 2) → data/lancements.json
+name: Agenda, lancements
+
+on:
+  schedule:
+    - cron: '41 */6 * * *'    # toutes les six heures (la source accepte 15 requêtes par heure, le script en fait 4)
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - 'tools/lancements.py'
+      - '.github/workflows/agenda.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agenda
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Lancements et événements spatiaux
+        run: python3 tools/lancements.py
+      - name: Publier si quelque chose a changé
+        run: |
+          git add data/lancements.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de neuf."; exit 0; fi
+          git config user.name "observatoire-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Agenda : lancements du $(date -u +%F)"
+          git pull --rebase --quiet || true
+          git push
