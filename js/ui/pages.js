@@ -194,6 +194,15 @@
       ['Dupuy et Courtois (2023)', 'https://arxiv.org/abs/2305.02339', 'Laniakea et cinq autres superamas délimités comme bassins d\'attraction.'],
       ['SDSS SkyServer', 'https://skyserver.sdss.org/dr17/', 'Service officiel du Sloan Digital Sky Survey : la tranche de 119 823 galaxies de l\'Univers observable.'],
       ['VizieR (CDS)', 'https://vizier.cds.unistra.fr/', 'Le catalogue des catalogues du CDS de Strasbourg, par où passent la plupart des tables.']]],
+    ['Agenda du ciel', [
+      ['Jean Meeus, Astronomical Algorithms (1998)', 'https://fr.wikipedia.org/wiki/Jean_Meeus', 'Les formules de la Lune, du Soleil, des saisons, du périhélie et des éclipses, calculées dans votre navigateur.'],
+      ['NASA, éclipses (F. Espenak)', 'https://eclipse.gsfc.nasa.gov/', 'Bandes de centralité des éclipses de Soleil et polynômes de ΔT (Espenak et Meeus).'],
+      ['International Meteor Organization', 'https://www.imo.net/resources/calendar/', 'Calendrier des pluies d\'étoiles filantes : position du Soleil au pic, taux, corps parents.'],
+      ['Launch Library 2 (The Space Devs)', 'https://thespacedevs.com/llapi', 'Lancements et événements spatiaux du monde entier, base libre tenue par des bénévoles.'],
+      ['Association française d\'astronomie', 'https://www.afastronomie.fr/', 'Nuits des étoiles, Rencontres du Ciel et de l\'Espace, Jour de la Nuit, agenda des clubs.'],
+      ['Société astronomique de France', 'https://saf-astronomie.fr/agenda', 'Rencontres AstroCiel et agenda de la SAF.'],
+      ['Stelvision, festivals d\'astronomie', 'https://www.stelvision.com/astro/les-festivals-astro-printemps-ete-2026-en-france/', 'Sélection annuelle des festivals et star parties en France.'],
+      ['ONU, journées internationales', 'https://www.un.org/fr/observances/list-days-weeks', 'Vol spatial habité, astéroïdes, Lune, Semaine mondiale de l\'espace.']]],
     ['Cartes et images', [
       ['USGS Astrogeology', 'https://astrogeology.usgs.gov/', 'Cartes et reliefs des planètes et des lunes.'],
       ['NASA Scientific Visualization Studio', 'https://svs.gsfc.nasa.gov/', 'Carte et relief de la Lune.'],
@@ -227,6 +236,7 @@
     ['Relief des petits mondes', 'quand le script change', 'USGS Astrogeology (MESSENGER, Dawn, New Horizons)', 'cartes de pentes de Mercure, Cérès, Pluton et Charon', 'aucune exagération ; zones jamais photographiées laissées neutres'],
     ['Catalogues de galaxies', 'quand un script change', 'VizieR (CDS) ; relevé 2MRS ; projet CosmicFlows ; SDSS SkyServer', 'Volume local, Superamas local, Laniakea (galaxies, contour, écoulements), tranche de l\'Univers observable', 'colonnes reconnues et journalisées ; orientation des grilles de Laniakea vérifiée sur 7 amas et 6 attracteurs publiés ; serveurs de secours'],
     ['Pages lisibles', 'à chaque publication', 'le contenu du site lui-même', 'versions texte des pages pour les moteurs de recherche et les lecteurs d\'écran', '—'],
+    ['Agenda, lancements', 'toutes les six heures', 'Launch Library 2 (The Space Devs)', 'lancements de fusées et événements spatiaux (sorties dans l\'espace, arrimages, atterrissages, survols)', 'importance de 1 à 3, lots de satellites des constellations masqués par défaut, dates floues mises à part ; si la source ne répond pas, le fichier précédent est gardé ; lancements passés gardés trois ans'],
     ['Numéros de version', 'à chaque modification', 'les fichiers du site', 'une empreinte par fichier, pour que chacun reçoive la dernière version', '—']
   ];
   var SCRIPTS = [
@@ -243,6 +253,7 @@
     ['laniakea_bassin.py', 'catalogues', 'Contour de Laniakea, bassins voisins et lignes d\'écoulement (CosmicFlows-4), orientation vérifiée sur des amas et des attracteurs publiés.'],
     ['univers.py', 'catalogues', 'Tranche du relevé SDSS, quasars lointains et distances comobiles.'],
     ['fond_diffus.py', 'catalogues', 'Carte du rayonnement fossile de Planck, reprojetée pour la sphère du bord.'],
+    ['lancements.py', 'toutes les six heures', 'Agenda du ciel : lancements et événements spatiaux (Launch Library 2), avec leur importance.'],
     ['build_static.py', 'à chaque publication', 'Pages lisibles pour les moteurs de recherche.'],
     ['stamp.py', 'à chaque modification', 'Numéros de version des fichiers.']
   ];
@@ -257,6 +268,10 @@
     ['R. Brent Tully, Hélène Courtois, Alexandra Dupuy et l\'équipe CosmicFlows', 'Laniakea, ses frontières et ses écoulements, données libres.'],
     ['La collaboration SDSS', 'des centaines de milliers de spectres de galaxies, ouverts à tous.'],
     ['Les contributeurs de Wikimedia Commons', 'les photographies libres des fiches.'],
+    ['Jean Meeus', 'Astronomical Algorithms, d\'où viennent tous les calculs de l\'Agenda du ciel.'],
+    ['The Space Devs et leurs bénévoles', 'Launch Library 2, l\'agenda libre des lancements du monde entier.'],
+    ['L\'International Meteor Organization', 'le calendrier des étoiles filantes.'],
+    ['L\'AFA, la SAF et les clubs d\'astronomie', 'les nuits des étoiles, festivals et rencontres, animés par des bénévoles.'],
     ['three.js (Ricardo Cabello et ses contributeurs)', 'le moteur 3D libre sur lequel tout repose.']
   ];
   pages.coulisses = function (root) {
@@ -270,7 +285,8 @@
       '<h2>2. Ce que calcule votre navigateur</h2><ul class="credits-list">' +
       '<li>Positions des planètes à la date affichée : éléments orbitaux de Standish (NASA/JPL), résolus par l\'équation de Kepler.</li>' +
       '<li>Position de la Lune : formule abrégée ; phases, périgées et apogées : algorithmes de Jean Meeus, contrôlés sur le calendrier de l\'IMCCE.</li>' +
-      '<li>Agenda du ciel : Jean Meeus, <i>Astronomical Algorithms</i> (1998) pour la Lune (60 termes), le Soleil, les saisons, le périhélie et les éclipses ; ΔT d\'Espenak et Meeus (NASA) ; pics des étoiles filantes d\'après l\'International Meteor Organization ; bandes de centralité des éclipses de Soleil d\'après F. Espenak (NASA). Contrôles : éclipses 2025-2027, saisons 2026, éclipse du 11 août 1999 et du 20 mars 2015 vues de Paris.</li>' +
+      '<li>Agenda du ciel, ce qui vient d\'ailleurs : lancements et événements spatiaux de Launch Library 2 (tâche GitHub toutes les six heures) ; salons, festivals et nuits d\'observation relevés à la main sur le site des organisateurs (AFA, SAF, NASA, Starmus…), « à confirmer » quand la date n\'est pas encore publiée ; journées internationales de l\'ONU ; grandes dates de l\'histoire de l\'astronomie et de l\'espace (encyclopédies, sites des agences).</li>' +
+      '<li>Agenda du ciel, ce qui est calculé : Jean Meeus, <i>Astronomical Algorithms</i> (1998) pour la Lune (60 termes), le Soleil, les saisons, le périhélie et les éclipses ; ΔT d\'Espenak et Meeus (NASA) ; pics des étoiles filantes d\'après l\'International Meteor Organization ; bandes de centralité des éclipses de Soleil d\'après F. Espenak (NASA). Contrôles : éclipses 2025-2027, saisons 2026, éclipse du 11 août 1999 et du 20 mars 2015 vues de Paris.</li>' +
       '<li>Orientation et rotation des astres : modèles de l\'Union astronomique internationale.</li>' +
       '<li>Orbites des petits corps et des orbiteurs rapides : propagation képlérienne à partir de leurs éléments.</li>' +
       '<li>Distances des galaxies lointaines : tirées de leur décalage vers le rouge (loi de Hubble, H0 = 70 km/s/Mpc), puis distance comobile pour l\'Univers observable (univers plat, Ωm = 0,3).</li></ul>' +

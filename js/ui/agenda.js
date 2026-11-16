@@ -95,6 +95,11 @@
     var cover = solar ? '<circle class="ag-cov" cx="12" cy="12" r="' + (type === 'annulaire' ? 6.6 : 8.4) + '" fill="#0a0d1c"/>' : '<circle class="ag-cov ag-umb" cx="12" cy="12" r="10" fill="rgba(160,40,20,.75)"/>';
     return '<svg class="ag-ico ag-ecl" viewBox="0 0 24 24" aria-hidden="true">' + (solar ? '<circle cx="12" cy="12" r="11" fill="rgba(255,207,122,.18)"/>' : '') + body + cover + '</svg>';
   }
+  var IB = {   // petites icônes d'action
+    cal: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    share: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="18.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1" stroke="currentColor" stroke-width="1.6"/></svg>',
+    src: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 4.5h6v6M19.5 4.5L11 13M17 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 4 18.5v-10A1.5 1.5 0 0 1 5.5 7H10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
   var ICO = {
     filantes: '<svg class="ag-ico ag-star" viewBox="0 0 24 24" aria-hidden="true"><path class="ag-trail" d="M3 4 L17 15" stroke="#9fe3b0" stroke-width="1.6" stroke-linecap="round"/><circle cx="18" cy="16" r="2.4" fill="#e9fff1"/></svg>',
     saison: '<svg class="ag-ico ag-sun" viewBox="0 0 24 24" aria-hidden="true"><g class="ag-rays" stroke="#f4c77a" stroke-width="1.4" stroke-linecap="round"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></g><circle cx="12" cy="12" r="5.2" fill="#ffcf7a"/></svg>',
@@ -390,7 +395,7 @@
       '<div class="ag-filters" role="group" aria-label="Catégories"><button type="button" class="chip" data-all>Tout</button>' + CATS.map(function (c) { return '<button type="button" class="chip ag-cat" data-cat="' + c.id + '" style="--c:' + c.c + '"><i></i>' + c.label + '</button>'; }).join('') +
       '<button type="button" class="chip ag-swarm" title="Lots de satellites des grandes constellations (Starlink, Kuiper, Qianfan…) : plusieurs par semaine">+ constellations</button>' +
       '<label class="ag-place"><span>Lieu</span><select>' + PLACES.map(function (p) { return '<option value="' + p[0] + '">' + esc(p[1]) + '</option>'; }).join('') + '<option value="geo">Ma position…</option></select></label></div>' +
-      '<div class="ag-main"><div class="ag-cal"></div><aside class="ag-day" aria-live="polite"></aside></div>' +
+      '<div class="ag-main"><div class="ag-cal"></div><section class="ag-day" aria-live="polite"></section></div>' +
       '<h2 class="ag-h">À venir</h2><div class="ag-next"></div>' +
       '<p class="note">Heures données dans le fuseau de votre appareil. Calculs : Jean Meeus, <i>Astronomical Algorithms</i> (Lune, Soleil, saisons, éclipses), éléments des planètes de E. M. Standish (JPL), ΔT d\'Espenak et Meeus (NASA), pics des étoiles filantes d\'après l\'International Meteor Organization. Précision : la minute pour les phases et les saisons, quelques minutes pour les éclipses, l\'heure pour les rapprochements ; moindre avant 1900 et après 2050. Rendez-vous (salons, festivals, nuits d\'observation) vérifiés sur le site des organisateurs.<span class="ag-src"></span></p>';
     var $ = function (s) { return root.querySelector(s); };
@@ -445,7 +450,25 @@
       return '<article class="ag-ev' + (past ? ' past' : '') + '" style="--c:' + CAT[e.cat].c + '"><div class="ag-ev-h">' + e.ico + '<div><h3>' + esc(e.t) + '</h3><p class="ag-when">' +
         (e.end ? esc(range(e.date, e.end)) + ' · ' : withDate ? esc(cap(fD.format(e.date))) + (e.allDay ? '' : ' · ') : '') + (e.allDay ? '' : hm(e.jd)) + ' <span class="ag-tag">' + CAT[e.cat].label + '</span></p></div></div>' +
         e.body.filter(Boolean).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + (e.vis ? '<p class="ag-vis">' + esc(e.vis) + '</p>' : '') + (e.warn ? '<p class="ag-warn">' + esc(e.warn) + '</p>' : '') +
-        '<p class="ag-acts">' + (e.link ? '<a class="chip" href="' + e.link[1] + '">' + esc(e.link[0]) + ' ›</a>' : '') + (e.ext ? '<a class="chip" href="' + esc(e.ext[1]) + '" target="_blank" rel="noopener">' + esc(e.ext[0]) + ' ↗</a>' : '') + '<button type="button" class="chip" data-ics="' + e.cat + '|' + e.jd + '">Ajouter à mon agenda</button></p></article>';
+        '<p class="ag-acts">' + srcLink(e) + '<button type="button" class="ag-ib" data-share="' + e.cat + '|' + e.jd + '" title="Partager" aria-label="Partager">' + IB.share + '</button>' +
+        '<button type="button" class="ag-ib" data-ics="' + e.cat + '|' + e.jd + '" title="Ajouter à mon agenda (fichier .ics)" aria-label="Ajouter à mon agenda">' + IB.cal + '</button></p></article>';
+    }
+    /* source de chaque événement : site de l'organisateur, base des lancements, encyclopédie, ou la page Méthode pour ce qui est calculé ici */
+    function srcLink(e) {
+      var s = e.ext ? [e.ext[1], 'Source : ' + e.ext[0], true] :
+        e.cat === 'espace' ? ['https://thespacedevs.com/llapi', 'Source : Launch Library 2 (The Space Devs)', true] :
+        e.cat === 'histoire' ? ['https://fr.wikipedia.org/w/index.php?search=' + encodeURIComponent(e.short || e.t), 'En savoir plus (Wikipédia)', true] :
+        e.cat === 'visiteurs' && e.link ? [e.link[1], e.link[0], false] :
+        e.cat === 'rdv' ? ['https://www.un.org/fr/observances/list-days-weeks', 'Source : journées internationales de l\'ONU', true] :
+        ['#/methode', 'Comment c\'est calculé (Méthode)', false];
+      return '<a class="ag-ib" href="' + esc(s[0]) + '"' + (s[2] ? ' target="_blank" rel="noopener"' : '') + ' title="' + esc(s[1]) + '" aria-label="' + esc(s[1]) + '">' + IB.src + '</a>';
+    }
+    function find(v) { var p = v.split('|'), jd = +p[1]; return yearEvents(OBS.ephem.dateOf(jd).getFullYear()).filter(function (x) { return x.cat === p[0] && Math.abs(x.jd - jd) < 1e-6; })[0]; }
+    function share(e, btn) {
+      var url = 'https://obs.codexmental.com/#/agenda/' + e.key.slice(0, 7) + '/' + (+e.key.slice(8)), text = e.t + ' — ' + cap(fD.format(e.date)) + (e.allDay ? '' : ', ' + hm(e.jd));
+      if (navigator.share) { navigator.share({ title: e.t, text: text, url: url }).catch(function () {}); return; }
+      var done = function () { btn.classList.add('ok'); btn.title = 'Lien copié'; setTimeout(function () { btn.classList.remove('ok'); btn.title = 'Partager'; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text + '\n' + url).then(done, function () {}); 
     }
     function dayPanel() {
       var box = $('.ag-day');
@@ -453,8 +476,8 @@
       var k = key(sel), noon = new Date(sel.getFullYear(), sel.getMonth(), sel.getDate(), 12);
       var L = evsOf(sel.getFullYear()).filter(function (e) { return e.key === k || (e.end && e.date < noon && e.end >= noon); }).sort(function (a, b) { return (a.key === k ? 0 : 1) - (b.key === k ? 0 : 1) || a.prio - b.prio || a.jd - b.jd; });
       var m = OBS.LUNE.moonAt(OBS.ephem.jdOf(new Date(sel.getFullYear(), sel.getMonth(), sel.getDate(), 21)));
-      box.innerHTML = '<h2>' + esc(cap(fD.format(sel))) + '</h2><p class="ag-dmoon">' + OBS.LUNE.icon(m, 26) + '<span>' + esc(OBS.LUNE.phaseName(m)) + ', éclairée à ' + Math.round(m.frac * 100) + ' % (21 h)</span></p>' +
-        (L.length ? L.map(function (e) { return item(e, false); }).join('') : '<p class="ag-hint">Rien de particulier ce jour-là' + (Object.keys(off).length ? ' dans les catégories choisies' : '') + '.</p>');
+      box.innerHTML = '<div class="ag-day-h"><h2>' + esc(cap(fD.format(sel))) + '</h2><p class="ag-dmoon">' + OBS.LUNE.icon(m, 22) + '<span>' + esc(OBS.LUNE.phaseName(m)) + ', éclairée à ' + Math.round(m.frac * 100) + ' % (21 h)</span></p></div>' +
+        (L.length ? '<div class="ag-evs">' + L.map(function (e) { return item(e, false); }).join('') + '</div>' : '<p class="ag-hint">Rien de particulier ce jour-là' + (Object.keys(off).length ? ' dans les catégories choisies' : '') + '.</p>');
     }
     function list(evs, withMonths) {
       var last = '', h = '';
@@ -528,12 +551,11 @@
         if (view === 'mois' && (sel.getMonth() !== cur.getMonth() || sel.getFullYear() !== cur.getFullYear())) cur = new Date(sel.getFullYear(), sel.getMonth(), 1);
         if (view !== 'mois' && !b.closest('.ag-grid')) { cur = new Date(sel.getFullYear(), sel.getMonth(), 1); view = 'mois'; store('obs.agenda.vue', view); }
         render();
-        if (window.matchMedia('(max-width: 900px)').matches) $('.ag-day').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var dr = $('.ag-day').getBoundingClientRect();   // le détail est sous le calendrier : on ne le fait venir que s'il est hors de vue
+        if (b.closest('.ag-grid') && dr.top > window.innerHeight - 120) $('.ag-day').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-      else if (b.hasAttribute('data-ics')) {
-        var v = b.getAttribute('data-ics').split('|'), jd = +v[1], y = OBS.ephem.dateOf(jd).getFullYear();
-        var ev = yearEvents(y).filter(function (x) { return x.cat === v[0] && Math.abs(x.jd - jd) < 1e-6; })[0]; if (ev) ics([ev]);
-      }
+      else if (b.hasAttribute('data-ics')) { var ev = find(b.getAttribute('data-ics')); if (ev) ics([ev]); }
+      else if (b.hasAttribute('data-share')) { var es = find(b.getAttribute('data-share')); if (es) share(es, b); }
     });
     $('.ag-year input').addEventListener('change', function (e) { var y = Math.max(Y0, Math.min(Y1, Math.round(+e.target.value) || now.getFullYear())); cur = new Date(y, view === 'annee' ? 0 : cur.getMonth(), 1); render(); });
     sP.addEventListener('change', function () {

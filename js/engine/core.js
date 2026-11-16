@@ -159,7 +159,7 @@
     requestAnimationFrame(frame);
     // page de lecture ouverte par-dessus la scène : on la fait tourner au ralenti pour ménager l'appareil
     var dimmed = document.body.classList.contains('page-open');
-    if (dimmed && now - lastDraw < 66) return;
+    if (dimmed && (now - lastDraw < 66 || now - (OBS.pageScrollAt || 0) < 250)) return;   // et rien du tout pendant qu'on fait défiler la page
     var dt = Math.min(.1, last ? (now - last) / 1000 : .016); last = now; lastDraw = now;
     if (watch) watch(now);
 

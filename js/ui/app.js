@@ -120,6 +120,7 @@
     page.hidden = true; document.body.classList.remove('page-open'); pageInner.innerHTML = '';
     document.title = 'Observatoire · Codex Mental';
   }
+  page.querySelector('.page-scroll').addEventListener('scroll', function () { OBS.pageScrollAt = performance.now(); }, { passive: true });   // la scène s'arrête pendant le défilement (core.js)
   window.addEventListener('hashchange', route);
   document.querySelector('.page-close').addEventListener('click', function (e) { e.preventDefault(); backToScene(); });
   document.addEventListener('keydown', function (e) {
