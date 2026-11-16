@@ -448,7 +448,7 @@
     }
     function item(e, withDate) {
       var past = e.date < now;
-      return '<article class="ag-ev' + (past ? ' past' : '') + '" style="--c:' + CAT[e.cat].c + '"><div class="ag-ev-h">' + e.ico + '<div><h3>' + esc(e.t) + '</h3><p class="ag-when">' +
+      return '<article class="ag-ev' + (past ? ' past' : '') + (e.anim ? ' an-' + e.anim : '') + '" style="--c:' + CAT[e.cat].c + '"><div class="ag-ev-h">' + e.ico + '<div><h3>' + esc(e.t) + '</h3><p class="ag-when">' +
         (e.end ? esc(range(e.date, e.end)) + ' · ' : withDate ? esc(cap(fD.format(e.date))) + (e.allDay ? '' : ' · ') : '') + (e.allDay ? '' : hm(e.jd)) + ' <span class="ag-tag">' + CAT[e.cat].label + '</span></p></div></div>' +
         e.body.filter(Boolean).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + (e.vis ? '<p class="ag-vis">' + esc(e.vis) + '</p>' : '') + (e.warn ? '<p class="ag-warn">' + esc(e.warn) + '</p>' : '') +
         '<p class="ag-acts">' + srcLink(e) + '<button type="button" class="ag-ib" data-share="' + e.cat + '|' + e.jd + '" title="Partager" aria-label="Partager">' + IB.share + '</button>' +

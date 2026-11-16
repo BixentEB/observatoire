@@ -1450,9 +1450,19 @@ body.gt-on .console { bottom: 220px; }
 @keyframes ag-tail { 0%, 100% { opacity: .25; } 50% { opacity: .7; } }
 @media (prefers-reduced-motion: reduce) { .ag-d *, .ag-d::after { animation: none !important; } }
 .ag-scrolling .ag-d *, .ag-scrolling .ag-d::after { animation-play-state: paused !important; }
-/* les animations des cases jouent deux fois à l'affichage du mois, puis seulement au survol : en continu, elles obligent à recomposer
-   la page au-dessus de la scène 3D à chaque image (le double de travail, mesuré) */
-.ag-d:not(:hover):not(:focus-visible) *, .ag-d:not(:hover):not(:focus-visible)::after { animation-iteration-count: 2 !important; }
+/* animations : seulement la case du jour (mise en lumière), la case survolée et le panneau du jour ; partout en continu,
+   elles obligeaient à recomposer toute la page au-dessus de la scène 3D à chaque image (le double de travail, mesuré) */
+.ag-d:not(.today):not(:hover):not(:focus-visible) *, .ag-d:not(.today):not(:hover):not(:focus-visible)::after { animation: none !important; }
+.ag-d.today { box-shadow: 0 0 0 1px rgba(244, 199, 122, .35), 0 0 18px rgba(244, 199, 122, .12); }
+.ag-ev { position: relative; overflow: hidden; }
+.ag-ev.an-filante::after { content: ''; position: absolute; top: -6px; left: 40%; width: 60px; height: 1.5px; background: linear-gradient(90deg, transparent, rgba(159, 227, 176, .9)); transform: rotate(28deg); animation: ag-fall 6s ease-in infinite; opacity: 0; pointer-events: none; }
+.ag-ev.an-super .ag-ev-h > svg, .ag-ev.an-rdv .ag-ev-h > .ag-ico, .ag-ev.an-hist .ag-ev-h > .ag-ico { animation: ag-glow 3s ease-in-out infinite; }
+.ag-ev.an-super .ag-ev-h > svg { filter: drop-shadow(0 0 4px rgba(244, 199, 122, .7)); }
+.ag-open .ag-evs .ag-ev { animation: ag-in .38s cubic-bezier(.2, .8, .2, 1) both; }
+.ag-open .ag-evs .ag-ev:nth-child(2) { animation-delay: .06s; } .ag-open .ag-evs .ag-ev:nth-child(3) { animation-delay: .12s; } .ag-open .ag-evs .ag-ev:nth-child(n+4) { animation-delay: .18s; }
+@keyframes ag-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+.ag-scrolling .ag-ev *, .ag-scrolling .ag-ev::after { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { .ag-ev, .ag-ev *, .ag-ev::after { animation: none !important; } }
 
 @media (max-width: 900px) {
   .ag-main, .ag-wide .ag-main { grid-template-columns: 1fr; }
