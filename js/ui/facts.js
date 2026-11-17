@@ -97,6 +97,7 @@
   function start() {
     box = document.getElementById('facts'); if (!box) return;
     txt = box.querySelector('.facts-t');
+    var nx = box.querySelector('.facts-next'); nx.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'; nx.title = 'Suivant'; nx.setAttribute('aria-label', 'Fait suivant');
     box.querySelector('.facts-next').addEventListener('click', function () { show(true); });
     box.querySelector('.facts-x').addEventListener('click', function () { closed[level] = true; hide(); clearTimeout(tShow); });
     var s = document.getElementById('s-facts');

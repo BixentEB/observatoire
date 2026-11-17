@@ -210,7 +210,8 @@
   document.addEventListener('pointerdown', function (e) { if (!gotoEl.hidden && !gotoEl.contains(e.target) && !e.target.closest('.c-goto')) gotoEl.hidden = true; });
   function render(items) {
     var Lv = OBS.engine.level;
-    if (Lv && OBS.sceneNote && OBS.sceneNote.has(Lv.id) && !OBS.sceneNote.isOpen()) items = items.concat([{ label: 'ⓘ Lire la scène', time: true, act: function () { OBS.sceneNote.open(Lv.id); } }]);
+    var narrow = OBS.sceneRuleNarrow && OBS.sceneRuleNarrow();
+    if (Lv && OBS.sceneNote && OBS.sceneNote.has(Lv.id) && !OBS.sceneNote.isOpen()) items = items.concat([{ label: narrow ? 'ⓘ' : 'ⓘ Lire la scène', tip: 'Lire la scène', time: true, act: function () { OBS.sceneNote.open(Lv.id); } }]);
     if (Lv && OBS.galtime && OBS.galtime.has(Lv.id)) items = items.concat([{ label: '⏱ ' + OBS.TIME_MODES[Lv.id].title, time: true, act: function () { OBS.galtime.open(Lv.id); } }]);
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });
@@ -218,7 +219,7 @@
     if (OBS.sceneRuleNarrow && OBS.sceneRuleNarrow()) crumbs.appendChild(OBS.sceneRulePill());
     items.forEach(function (c, i) {
       if (i && !c.down && !c.goto && !c.time && !items[i - 1].back) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '›'; crumbs.appendChild(s); }
-      var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = c.label; if (c.tip) { b.title = c.tip; b.setAttribute('aria-label', c.tip); }
       if (c.soon) { b.className = 'c-soon'; b.title = 'Niveau en préparation'; }
       else if (c.current) b.setAttribute('aria-current', 'location');
       else if (c.act) b.addEventListener('click', c.act);
@@ -228,7 +229,7 @@
       if (c.goto) { b.className = 'c-goto'; b.addEventListener('click', function () { openGoto(b); }); }
       crumbs.appendChild(b);
     });
-    if (GEAR) crumbs.appendChild(GEAR);   // ⚙ toujours au même endroit : au bout de la rangée des niveaux
+    if (GEAR) { if (narrow) { GEAR.classList.add('gear-corner'); document.body.appendChild(GEAR); } else { GEAR.classList.remove('gear-corner'); crumbs.appendChild(GEAR); } }   // ⚙ : au bout de la rangée sur ordinateur, dans le coin en bas à droite sur téléphone
     placeCap();
   }
   /* la légende du niveau se place sous le fil d'Ariane, même quand il passe sur deux lignes (téléphone) */

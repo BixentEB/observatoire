@@ -67,4 +67,5 @@
   };
   OBS.on('level', function (L) { if (L && NOTES[L.id] && get(key(L.id)) !== 'lu') setTimeout(function () { if (OBS.engine.level === L) draw(L.id); }, 2600); else hide(); });
   OBS.on('page', function (name) { if (name) hide(); });
+  OBS.on('level:leaving', hide);   // la note du niveau qu'on quitte part avec lui
 })();

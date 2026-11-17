@@ -56,22 +56,33 @@
     if (b.hasAttribute('data-tog')) { open = !open; OBS.emit('crumbs'); }
   }
 
-  /* téléphone : pastille au début du fil d'Ariane (rendue par app.js à chaque mise à jour du fil) */
+  /* téléphone : le nom du niveau en orange au début du fil d'Ariane (un appui déplie la liste des niveaux),
+     et une fine colonne de points à gauche de l'écran : chevrons pour monter ou descendre d'un niveau, ∞ et ⊕ en petit aux deux bouts */
   OBS.sceneRulePill = function () {
     var cur = zone(), l = lv(IDS[cur]);
     var el = document.createElement('div'); el.className = 'sr-pill' + (open ? ' open' : '');
-    el.innerHTML = '<button type="button" class="sr-z" data-z="-1" title="Plus près, vers nous" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '>⊕</button>' +
-      '<button type="button" class="sr-cur" data-tog aria-expanded="' + open + '"><b>' + esc(l.n) + '</b><small>' + (cur + 1) + ' / ' + IDS.length + '</small><span aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
-      '<button type="button" class="sr-z" data-z="1" title="Plus loin, vers l\'infiniment grand" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '>∞</button>' +
+    el.innerHTML = '<button type="button" class="sr-cur" data-tog aria-expanded="' + open + '"><b>' + esc(l.n) + '</b><span aria-hidden="true">' + (open ? '▴' : '▾') + '</span></button>' +
       (open ? '<div class="sr-drop">' + stepsHtml(cur, true) + '</div>' : '');
     el.addEventListener('click', onClick);
     return el;
   };
+  var rail = null;
+  function drawRail() {
+    if (!rail) { rail = document.createElement('nav'); rail.id = 'scene-rail'; rail.className = 'srail'; rail.setAttribute('aria-label', 'Échelles'); document.body.appendChild(rail); rail.addEventListener('click', onClick); }
+    var cur = zone();
+    rail.innerHTML = '<span class="srail-end" aria-hidden="true">∞</span>' +
+      '<button type="button" class="srail-chev" data-z="1" title="Plus loin, vers l\'infiniment grand" aria-label="Échelle plus grande"' + (cur < IDS.length - 1 ? '' : ' disabled') + '><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 10.5L8 6l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<ol>' + IDS.slice().reverse().map(function (id) { var i = IDS.indexOf(id), l = lv(id);
+        return '<li><button type="button" data-i="' + i + '" class="' + (i === cur ? 'on' : '') + (l.hypo ? ' hypo' : '') + '" title="' + esc(l.n) + '" aria-label="' + esc(l.n) + '"' + (i === cur ? ' aria-current="location"' : '') + '><i></i></button></li>'; }).join('') + '</ol>' +
+      '<button type="button" class="srail-chev" data-z="-1" title="Plus près, vers nous" aria-label="Échelle plus petite"' + (cur ? '' : ' disabled') + '><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 5.5L8 10l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<span class="srail-end" aria-hidden="true">⊕</span>';
+  }
   OBS.sceneRuleNarrow = function () { return narrowMQ.matches; };
   document.addEventListener('pointerdown', function (e) { if (open && !e.target.closest('.sr-pill')) { open = false; OBS.emit('crumbs'); } });
 
   function draw() {
     var page = document.body.classList.contains('page-open');
+    if (narrowMQ.matches && !page && OBS.engine && OBS.engine.level) { drawRail(); rail.hidden = false; } else if (rail) rail.hidden = true;
     if (narrowMQ.matches || page || !OBS.engine || !OBS.engine.level) { if (host) host.hidden = true; return; }
     drawPc(); host.hidden = false;
   }
