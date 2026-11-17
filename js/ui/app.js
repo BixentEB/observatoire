@@ -286,10 +286,14 @@
       var sel = typeof L.selected === 'function' ? L.selected() : null;
       show = !sel && L.camera.position.distanceTo(L.controls.target) >= L.controls.maxDistance * .96;
     }
-    if (show) edge.textContent = n[1] + ' ›';
-    edge.hidden = !show;
+    /* plus de gros bouton : en butée, le bouton ∞ de la règle des échelles s'illumine et annonce le niveau suivant */
+    if (show !== document.body.classList.contains('at-edge')) {
+      document.body.classList.toggle('at-edge', show);
+      document.querySelectorAll('[data-z="1"]').forEach(function (b) { b.title = show ? n[1] : 'Plus loin, vers l\'infiniment grand'; if (show) b.setAttribute('aria-label', n[1]); });
+    }
+    edge.hidden = true;
   }, 300);
-  OBS.on('level:leaving', function () { edge.hidden = true; });
+  OBS.on('level:leaving', function () { edge.hidden = true; document.body.classList.remove('at-edge'); });
 
   /* ---------- temps ---------- */
   var tDate = $('t-date'), tSpeed = $('t-speed'), tPlay = $('t-play');

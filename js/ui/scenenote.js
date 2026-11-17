@@ -40,14 +40,26 @@
   function draw(lv) {
     var n = NOTES[lv]; if (!n) { hide(); return; }
     if (!box) { box = document.createElement('aside'); box.className = 'scene-note'; box.setAttribute('aria-label', 'Lire la scène'); document.body.appendChild(box); }
-    cur = lv;
+    cur = lv; place();
+    box.classList.remove('sn-full');
     box.innerHTML = '<div class="sn-h"><b>' + esc(n[0]) + '</b><button type="button" class="sn-x" aria-label="Fermer la note">✕</button></div>' +
-      n[1].map(function (l) { return '<p><i style="background:' + l[0] + '"></i>' + esc(l[1]) + '</p>'; }).join('') +
+      n[1].map(function (l) { return '<p class="sn-l"><i style="background:' + l[0] + '"></i><span>' + esc(l[1]) + '</span></p>'; }).join('') +
+      (n[1].length > 1 || n[1][0][1].length > 140 ? '<button type="button" class="sn-toggle">Lire la suite</button>' : '') +
       '<p class="sn-more"><a href="#/atlas/questions">Toutes les questions →</a></p>';
     box.querySelector('.sn-x').addEventListener('click', function () { set(key(cur), 'lu'); hide(); OBS.emit('crumbs'); });
+    var tg = box.querySelector('.sn-toggle'); if (tg) tg.addEventListener('click', function () { box.classList.add('sn-full'); });
     box.hidden = false; OBS.emit('crumbs');
   }
   function hide() { if (box) box.hidden = true; }
+  /* téléphone : la note se range en bas, à la place du « Le saviez-vous ? » (qui attend qu'elle soit fermée), en version courte :
+     la première ligne, puis « Lire la suite » ; sur ordinateur, en haut à droite comme avant */
+  var MOBILE = window.matchMedia('(max-width: 760px)');
+  function place() {
+    if (!box) return;
+    var corner = document.querySelector('.corner'), host = MOBILE.matches && corner ? corner : document.body;
+    if (box.parentNode !== host) host.insertBefore(box, host === corner ? corner.firstChild : null);
+  }
+  if (MOBILE.addEventListener) MOBILE.addEventListener('change', place);
   OBS.sceneNote = {
     has: function (lv) { return !!NOTES[lv]; },
     open: function (lv) { draw(lv || (OBS.engine.level && OBS.engine.level.id)); },
