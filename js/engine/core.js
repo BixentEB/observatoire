@@ -183,8 +183,11 @@
     var L = engine.level;
     if (L) {
       applyShift(L.camera, dt);
+      var tA = performance.now();
       L.update(dt, now);
+      var tB = performance.now();
       composer.render();
+      if (OBS.diag) OBS.diag.frame(now, tB - tA, performance.now() - tB);   // diagnostic (?diag dans l'adresse)
     }
     if (!engine.ready) { engine.ready = true; OBS.emit('ready'); }
   }
