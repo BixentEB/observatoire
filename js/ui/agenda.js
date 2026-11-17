@@ -85,6 +85,7 @@
   var fDs = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' });
   var fM = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
   var fMs = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
+  var fMshort = new Intl.DateTimeFormat('fr-FR', { month: 'short', year: 'numeric' });   // téléphone : « Nov. 2026 »
   function range(a, b) { return a.getMonth() === b.getMonth() ? 'Du ' + a.getDate() + (a.getDate() === 1 ? 'er' : '') + ' au ' + fDs.format(b) + ' ' + b.getFullYear() : 'Du ' + fDs.format(a) + ' au ' + fDs.format(b) + ' ' + b.getFullYear(); }
   function hm(jd) { return fT.format(OBS.ephem.dateOf(jd)).replace(':', ' h '); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -390,6 +391,7 @@
       '<div class="ag-bar">' +
         '<div class="ag-nav"><button type="button" data-m="-1" aria-label="Précédent">‹</button><h2 class="ag-title"></h2><button type="button" data-m="1" aria-label="Suivant">›</button>' +
         '<button type="button" class="chip" data-today>Aujourd\'hui</button><label class="ag-year"><span class="sr-only">Année</span><input type="number" min="' + Y0 + '" max="' + Y1 + '" step="1" aria-label="Année"></label></div>' +
+        '<button type="button" class="chip ag-ftog" aria-expanded="false">Filtres<span class="ag-fn"></span></button>' +
         '<div class="ag-views" role="group" aria-label="Vue">' + [['mois', 'Mois'], ['trimestre', '3 mois'], ['annee', 'Année'], ['liste', 'Liste']].map(function (v) { return '<button type="button" data-view="' + v[0] + '">' + v[1] + '</button>'; }).join('') + '</div>' +
       '</div>' +
       '<div class="ag-filters" role="group" aria-label="Catégories"><button type="button" class="chip" data-all>Tout</button>' + CATS.map(function (c) { return '<button type="button" class="chip ag-cat" data-cat="' + c.id + '" style="--c:' + c.c + '"><i></i>' + c.label + '</button>'; }).join('') +
@@ -414,6 +416,7 @@
     function chipsState() {
       root.querySelectorAll('.ag-cat').forEach(function (b) { b.setAttribute('aria-pressed', String(!off[b.getAttribute('data-cat')])); });
       $('[data-all]').setAttribute('aria-pressed', String(!Object.keys(off).length));
+      var nOff = Object.keys(off).length; $('.ag-fn').textContent = nOff ? ' · ' + (CATS.length - nOff) + '/' + CATS.length : '';
       var sw = $('.ag-swarm'); sw.setAttribute('aria-pressed', String(store('obs.agenda.constellations') === '1')); sw.hidden = !!off.espace || !OBS.AGENDA_LAUNCH;
       root.querySelectorAll('[data-view]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view)); });
     }
@@ -493,7 +496,7 @@
       $('.ag-year input').value = y;
       root.classList.toggle('ag-wide', view !== 'mois');
       if (view === 'mois') {
-        $('.ag-title').textContent = cap(fM.format(cur)); var mOnly = monthOnly(y, mo);
+        $('.ag-title').textContent = cap((window.matchMedia('(max-width: 640px)').matches ? fMshort : fM).format(cur)); var mOnly = monthOnly(y, mo);
         cal.innerHTML = grid(y, mo, true) + (mOnly.length ? '<details class="ag-monthonly"><summary>' + mOnly.length + ' lancement' + (mOnly.length > 1 ? 's' : '') + ' prévu' + (mOnly.length > 1 ? 's' : '') + ' en ' + esc(fMs.format(cur)) + ', sans jour fixé</summary>' + mOnly.map(function (e) { return item(e, false); }).join('') + '</details>' : '');
       }
       else if (view === 'trimestre') {
@@ -546,6 +549,7 @@
         if (Object.keys(off).length === CATS.length) delete off[c];   // au moins une catégorie reste affichée
         store('obs.agenda.off', JSON.stringify(Object.keys(off))); render(); next();
       }
+      else if (b.classList.contains('ag-ftog')) { var o = root.classList.toggle('ag-fopen'); b.setAttribute('aria-expanded', String(o)); }
       else if (b.classList.contains('ag-swarm')) { store('obs.agenda.constellations', store('obs.agenda.constellations') === '1' ? '0' : '1'); cache = {}; render(); next(); }
       else if (b.hasAttribute('data-goto')) { var g = b.getAttribute('data-goto').split('-'); cur = new Date(+g[0], +g[1], 1); view = 'mois'; store('obs.agenda.vue', view); render(); }
       else if (b.hasAttribute('data-day')) {

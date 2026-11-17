@@ -1562,3 +1562,37 @@ body.at-edge [data-z="1"]:not([disabled]) { color: #ffd690; border-color: rgba(2
 .facts-next svg { width: 15px; height: 15px; }
 .facts-next:hover { background: rgba(244, 199, 122, .12); }
 @media (max-width: 760px) { .facts-a { position: absolute; right: 4px; bottom: 4px; margin: 0; } }
+
+/* ---------- Agenda sur téléphone : le calendrier d'abord, le texte ensuite ---------- */
+.ag-ftog { display: none; }
+@media (max-width: 640px) {
+  .ag-page { display: flex; flex-direction: column; }
+  .ag-page > .p-kicker { display: none; }
+  .ag-page > h1 { order: 0; font-size: 22px; margin: 0 0 4px; }
+  .ag-page > .ag-bar { order: 1; margin: 6px 0 8px; gap: 8px; }
+  .ag-page > .ag-filters { order: 2; display: none; }
+  .ag-page.ag-fopen > .ag-filters { display: flex; padding: 8px 0 4px; }
+  .ag-page > .ag-main { order: 3; }
+  .ag-page > .ag-tonight { order: 4; margin: 16px 0 0; padding: 8px 10px; gap: 10px; font-size: 13px; }
+  .ag-page > .ag-h { order: 5; margin-top: 22px; font-size: 16px; }
+  .ag-page > .ag-next { order: 6; }
+  .ag-page > .lead { order: 7; font-size: 13px; color: var(--muted); margin-top: 22px; }
+  .ag-page > .c-flags { order: 8; }
+  .ag-page > .note { order: 9; font-size: 11.5px; }
+  .ag-nav { width: 100%; justify-content: space-between; }
+  .ag-nav > button[data-m] { width: 32px; height: 32px; flex: none; }
+  .ag-page .ag-nav .ag-title { font-size: 17px; line-height: 1.2; margin: 0; min-width: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ag-nav { gap: 6px; }
+  .ag-year { display: none; }
+  .ag-nav .chip[data-today] { order: 3; padding: 5px 10px; font-size: 12px; }
+  .ag-ftog { display: inline-flex; padding: 5px 10px; font-size: 12px; }
+  .ag-ftog[aria-expanded="true"] { color: var(--accent); border-color: rgba(244, 199, 122, .5); }
+  .ag-views button { padding: 6px 9px; font-size: 11px; }
+  .ag-bar { justify-content: flex-start; }
+  .ag-views { margin-left: auto; }
+  .ag-filters .chip { padding: 4px 9px; font-size: 12px; }
+  .ag-tn-moon svg { width: 30px; height: 30px; }
+  .ag-tn-txt p { margin: 1px 0; line-height: 1.4; }
+  .ag-tn-k { font-size: 9.5px; }
+  .ag-grid.full .ag-d { min-height: 50px; }
+}
