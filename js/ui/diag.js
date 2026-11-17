@@ -11,14 +11,18 @@
   if (!/[?&]diag\b/.test(location.search)) return;
   var box, last = 0, frames = [], freezes = [], lt = [], upd = 0, rnd = 0, worst = 0, t0 = performance.now();
   try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { lt.push({ t: e.startTime, d: e.duration }); if (lt.length > 30) lt.shift(); }); }).observe({ type: 'longtask', buffered: true }); } catch (e) {}
+  var hiddenAt = 0, wasHidden = false;   // onglet caché ou fenêtre réduite : le navigateur suspend l'animation, ce n'est pas un blocage
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { hiddenAt = performance.now(); wasHidden = true; } });
+  var blurred = false; window.addEventListener('blur', function () { blurred = true; });
   OBS.diag = {
     frame: function (now, u, r) {
       var gap = last ? now - last : 16; last = now; upd = u; rnd = r;
       var R = OBS.engine && OBS.engine.renderer; if (R) { if (R.info.autoReset) R.info.autoReset = false; OBS.diag.info = { c: R.info.render.calls, t: R.info.render.triangles, p: R.info.render.points }; R.info.reset(); }   // toutes les passes de l'image (scène, halo, image finale)
       frames.push([now, gap, u, r]); while (frames.length && now - frames[0][0] > 5000) frames.shift();
+      var away = wasHidden || blurred; wasHidden = false; if (!document.hasFocus || document.hasFocus()) blurred = false;
       if (gap > 200) {
         var L = OBS.engine && OBS.engine.level, cam = L && L.camera, lts = lt.filter(function (x) { return x.t > now - gap - 50; });
-        freezes.unshift({ at: Math.round((now - t0) / 1000), gap: Math.round(gap), js: Math.round(lts.reduce(function (a, x) { return a + x.d; }, 0)), lv: L ? L.id : '?', d: cam ? Math.round(cam.position.length()) : 0 });
+        freezes.unshift({ away: away, at: Math.round((now - t0) / 1000), gap: Math.round(gap), js: Math.round(lts.reduce(function (a, x) { return a + x.d; }, 0)), lv: L ? L.id : '?', d: cam ? Math.round(cam.position.length()) : 0 });
         if (freezes.length > 8) freezes.pop();
       }
     }
@@ -37,7 +41,7 @@
       (info && OBS.diag.info ? 'appels de dessin ' + OBS.diag.info.c + ' · triangles ' + OBS.diag.info.t + ' · points ' + OBS.diag.info.p + '\ntextures ' + info.memory.textures + ' · géométries ' + info.memory.geometries + '\n' : '') +
       'mémoire JS ' + mem + ' · pixels ' + (R ? R.getPixelRatio().toFixed(2) : '?') + ' × ' + window.innerWidth + '×' + window.innerHeight + '\n' +
       '\nBLOCAGES (> 200 ms) : durée · dont JS · niveau · caméra · à t s\n' +
-      (freezes.length ? freezes.map(function (f) { return f.gap + ' ms · JS ' + f.js + ' ms · ' + f.lv + ' · ' + f.d + ' · ' + f.at + ' s'; }).join('\n') : 'aucun');
+      (freezes.length ? freezes.map(function (f) { return f.gap + ' ms · ' + (f.away ? 'onglet quitté' : 'JS ' + f.js + ' ms') + ' · ' + f.lv + ' · ' + f.d + ' · ' + f.at + ' s'; }).join('\n') : 'aucun');
   }
   setInterval(draw, 500);
 })();
