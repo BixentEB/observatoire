@@ -252,6 +252,7 @@
     ['laniakea.py', 'catalogues', 'Laniakea : relevé 2MRS et amas nommés.'],
     ['laniakea_bassin.py', 'catalogues', 'Contour de Laniakea, bassins voisins et lignes d\'écoulement (CosmicFlows-4), orientation vérifiée sur des amas et des attracteurs publiés.'],
     ['univers.py', 'catalogues', 'Tranche du relevé SDSS, quasars lointains et distances comobiles.'],
+    ['univers_volume.py', 'catalogues', 'Volume 3D du relevé SDSS : toutes les galaxies mesurées, une sur six (157 785).'],
     ['fond_diffus.py', 'catalogues', 'Carte du rayonnement fossile de Planck, reprojetée pour la sphère du bord.'],
     ['lancements.py', 'toutes les six heures', 'Agenda du ciel : lancements et événements spatiaux (Launch Library 2), avec leur importance.'],
     ['build_static.py', 'à chaque publication', 'Pages lisibles pour les moteurs de recherche.'],

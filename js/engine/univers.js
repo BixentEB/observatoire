@@ -50,6 +50,40 @@
       L.nQuasars = n;
     }).catch(function () {});
   }
+  /* option « Volume » : tout ce que le SDSS a mesuré en 3D (une galaxie sur six), chargé à la demande */
+  var slicePts = null, volPts = null, volOn = false, volLoading = false, gapObjs = [];
+  function buildVolume(J) {
+    var G = J.g, n = G.length / 3, P = new Float32Array(n * 3), C = new Float32Array(n * 3), Z = new Float32Array(n), dmax = J.meta.dmax;
+    for (var i = 0; i < n; i++) {
+      var ra = G[i * 3] / 10, dec = G[i * 3 + 1] / 10, d = G[i * 3 + 2] / 10, t = Math.min(1, d * 10 / dmax);
+      eq(ra, dec, d, tmp); P[i * 3] = tmp.x; P[i * 3 + 1] = tmp.y; P[i * 3 + 2] = tmp.z;
+      var a = .16 + .12 * t; C[i * 3] = (255 - 90 * t) / 255 * a; C[i * 3 + 1] = (232 - 40 * t) / 255 * a; C[i * 3 + 2] = (190 + 65 * t) / 255 * a; Z[i] = 1.5;   // plus discret près de nous, où les galaxies s'entassent
+    }
+    var geo = new T.BufferGeometry();
+    geo.setAttribute('position', new T.BufferAttribute(P, 3)); geo.setAttribute('aColor', new T.BufferAttribute(C, 3)); geo.setAttribute('aSize', new T.BufferAttribute(Z, 1));
+    var un = { uPR: { value: PR } }; uniforms.push(un);
+    volPts = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+    volPts.frustumCulled = false; volPts.visible = volOn; web.add(volPts);
+  }
+  L.volume = function () { return volOn; };
+  L.setVolume = function (on) {
+    volOn = !!on;
+    if (slicePts) slicePts.visible = !volOn;
+    gapObjs.forEach(function (o) { if (o.el) o.el.style.display = volOn ? 'none' : ''; else o.visible = !volOn; });
+    if (volPts) volPts.visible = volOn;
+    else if (volOn && !volLoading) {
+      volLoading = true;
+      fetch('data/univers-volume.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (J) {
+        volLoading = false; if (J) buildVolume(J); else { volOn = false; if (slicePts) slicePts.visible = true; OBS.emit('crumbs'); }
+      }).catch(function () { volLoading = false; volOn = false; if (slicePts) slicePts.visible = true; OBS.emit('crumbs'); });
+    }
+    if (volOn && !timeView) {   // vue en surplomb, pour voir les deux cônes du relevé en relief
+      var from = camera.position.clone(), to = new T.Vector3(150, 170, 250), t0 = performance.now(), tg0 = controls.target.clone();
+      (function step() { var k = Math.min(1, (performance.now() - t0) / 1400), e = k * k * (3 - 2 * k);
+        camera.position.lerpVectors(from, to, e); controls.target.lerpVectors(tg0, new T.Vector3(), e); controls.update(); if (k < 1) requestAnimationFrame(step); })();
+    }
+    OBS.emit('crumbs');
+  };
   function populate(J) {
     var G = J.g, n = G.length, P = new Float32Array(n * 3), C = new Float32Array(n * 3), Z = new Float32Array(n), dmax = J.meta.dmax;
     G.forEach(function (g, i) {
@@ -61,7 +95,7 @@
     geo.setAttribute('position', new T.BufferAttribute(P, 3)); geo.setAttribute('aColor', new T.BufferAttribute(C, 3)); geo.setAttribute('aSize', new T.BufferAttribute(Z, 1));
     var un = { uPR: { value: PR } }; uniforms.push(un);
     var pts = new T.Points(geo, new T.ShaderMaterial({ uniforms: un, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
-    pts.frustumCulled = false; web.add(pts);
+    pts.frustumCulled = false; web.add(pts); slicePts = pts; if (volOn) pts.visible = false;
     built = true;
     if (pending) { var p = pending; pending = null; L.select(p); }
   }
@@ -101,8 +135,8 @@
       var a = g[0] * D2R, R0 = 6, R1 = 95, pts = [];
       [g[0] - 26, g[0] + 26].forEach(function (ra) { var b = ra * D2R; pts.push(new T.Vector3(Math.cos(b) * R0, 0, -Math.sin(b) * R0), new T.Vector3(Math.cos(b) * R1, 0, -Math.sin(b) * R1)); });
       var ln = new T.LineSegments(new T.BufferGeometry().setFromPoints(pts), new T.LineDashedMaterial({ color: 0x8fa3c8, dashSize: 1.6, gapSize: 1.6, transparent: true, opacity: .35, depthWrite: false }));
-      ln.computeLineDistances(); web.add(ln);
-      label(g[1], 'Non observé', new T.Vector3(Math.cos(a) * 55, 0, -Math.sin(a) * 55), 'gap', { n: 'Secteur non observé' });
+      ln.computeLineDistances(); web.add(ln); gapObjs.push(ln);
+      gapObjs.push(label(g[1], 'Non observé', new T.Vector3(Math.cos(a) * 55, 0, -Math.sin(a) * 55), 'gap', { n: 'Secteur non observé' }));
     });
     U.OBJS.forEach(function (o) {   // les objets réels : un point lumineux à leur direction et distance comobile
       var p = eq(o.ra, o.dec, o.d / 10, new T.Vector3()), mk = U.MARKS.filter(function (m) { return m.id === o.mk; })[0];

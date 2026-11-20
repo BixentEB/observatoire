@@ -212,6 +212,7 @@
     var Lv = OBS.engine.level;
     var narrow = OBS.sceneRuleNarrow && OBS.sceneRuleNarrow();
     if (Lv && OBS.sceneNote && OBS.sceneNote.has(Lv.id) && !OBS.sceneNote.isOpen()) items = items.concat([{ label: narrow ? 'ⓘ' : 'ⓘ Lire la scène', tip: 'Lire la scène', time: true, act: function () { OBS.sceneNote.open(Lv.id); } }]);
+    if (Lv === OBS.univers && OBS.univers.setVolume) items = items.concat([{ label: OBS.univers.volume() ? '▭ Tranche' : '◍ Volume 3D', tip: OBS.univers.volume() ? 'Revenir à la tranche de 5 degrés' : 'Tout ce que le relevé SDSS a mesuré en 3D', time: true, act: function () { OBS.univers.setVolume(!OBS.univers.volume()); } }]);
     if (Lv && OBS.galtime && OBS.galtime.has(Lv.id)) items = items.concat([{ label: '⏱ ' + OBS.TIME_MODES[Lv.id].title, time: true, act: function () { OBS.galtime.open(Lv.id); } }]);
     items = items.concat([{ label: 'Aller vers… ▾', goto: true }]);
     if (returnTo) items.unshift({ label: '← Retour à ' + returnTo.name, back: true });
