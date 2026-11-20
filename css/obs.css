@@ -1596,3 +1596,5 @@ body.at-edge [data-z="1"]:not([disabled]) { color: #ffd690; border-color: rgba(2
   .ag-tn-k { font-size: 9.5px; }
   .ag-grid.full .ag-d { min-height: 50px; }
 }
+.lbl.is-gap .nm { font-style: italic; color: rgba(170, 186, 220, .75); border: 1px dashed rgba(143, 163, 200, .45); background: rgba(6, 9, 20, .35); }
+.lbl.is-gap .dot { display: none; }

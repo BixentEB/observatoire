@@ -67,7 +67,7 @@
   }
   function label(id, name, pos, kind, extra) {
     var it = { id: id, name: name, pos: pos, def: extra || {}, home: kind === 'home', kind: kind };
-    var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + (kind === 'home' ? 'is-sun' : 'is-moon');
+    var el = document.createElement('button'); el.type = 'button'; el.className = 'lbl ' + (kind === 'home' ? 'is-sun' : kind === 'gap' ? 'is-moon is-gap' : 'is-moon');
     el.innerHTML = '<span class="dot"></span><span class="nm">' + OBS.esc(name) + (kind === 'home' ? ' <em>vous êtes ici</em>' : '') + '</span>';
     el.addEventListener('click', function (e) { e.stopPropagation(); el.blur(); if (id === 'laniakea' && selected === id && !flight) OBS.engine.go('laniakea', { from: 'univers' }); else L.select(id); });
     el.addEventListener('pointerenter', function () { hover = id; });
@@ -94,6 +94,15 @@
       // un repère qui a des objets réels se place sur le premier d'entre eux : on va voir une vraie galaxie, pas un point vide
       var o0 = U.OBJS.filter(function (o) { return o.mk === m.id; })[0];
       label(m.id, m.n, m.id === 'laniakea' ? new T.Vector3() : o0 ? eq(o0.ra, o0.dec, o0.d / 10, new T.Vector3()).add(new T.Vector3(0, 6, 0)) : eq(25 + i * 40, 0, R, new T.Vector3()), m.id === 'laniakea' ? 'home' : 'mark', m);
+    });
+    /* les deux secteurs vides de la tranche ne sont pas des vides de l'Univers : le relevé SDSS ne les a pas observés,
+       la Voie lactée (son disque de poussières) barre ces directions ; on le dit sur place, en pointillé */
+    [[88, 'gap-est'], [280, 'gap-ouest']].forEach(function (g) {
+      var a = g[0] * D2R, R0 = 6, R1 = 95, pts = [];
+      [g[0] - 26, g[0] + 26].forEach(function (ra) { var b = ra * D2R; pts.push(new T.Vector3(Math.cos(b) * R0, 0, -Math.sin(b) * R0), new T.Vector3(Math.cos(b) * R1, 0, -Math.sin(b) * R1)); });
+      var ln = new T.LineSegments(new T.BufferGeometry().setFromPoints(pts), new T.LineDashedMaterial({ color: 0x8fa3c8, dashSize: 1.6, gapSize: 1.6, transparent: true, opacity: .35, depthWrite: false }));
+      ln.computeLineDistances(); web.add(ln);
+      label(g[1], 'Non observé', new T.Vector3(Math.cos(a) * 55, 0, -Math.sin(a) * 55), 'gap', { n: 'Secteur non observé' });
     });
     U.OBJS.forEach(function (o) {   // les objets réels : un point lumineux à leur direction et distance comobile
       var p = eq(o.ra, o.dec, o.d / 10, new T.Vector3()), mk = U.MARKS.filter(function (m) { return m.id === o.mk; })[0];

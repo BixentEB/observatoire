@@ -364,6 +364,17 @@
   function renderUN(id) {
     var it = OBS.univers.get(id); if (!it) return;
     var m = it.def, U = OBS.UN, h = [];
+    if (it.kind === 'gap') {   // secteur vide de la tranche : données manquantes, pas un vide de l'Univers
+      current = { level: 'univers', id: id }; clearInterval(liveTimer);
+      h.push('<div class="c-head"><p class="c-kind">Données manquantes</p><h2 class="c-name"><span class="c-swatch" style="background:#8fa3c8;color:#8fa3c8"></span>Secteur non observé</h2><button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
+      h.push('<div class="c-flags">' + flag('real', 'Lacune', 'du relevé', 'le relevé SDSS ne couvre pas ces directions du ciel') + '</div>');
+      h.push('<p class="c-text">Ce secteur est vide parce que personne n\'y a mesuré de galaxies pour cette carte, pas parce qu\'il n\'y en a pas. Dans ces directions, le disque de notre propre galaxie, la Voie lactée, et ses poussières bouchent la vue ; le télescope du relevé SDSS, installé au Nouveau-Mexique, a donc observé surtout loin de ce disque.</p>');
+      h.push('<p class="c-text">Les vrais vides de l\'Univers sont ailleurs : ce sont les trous plus petits, bordés de galaxies, à l\'intérieur des deux éventails. Le plus célèbre, le Vide du Bouvier, se trouve hors de cette tranche : environ 330 millions d\'années-lumière de large.</p>');
+      el.innerHTML = h.join('') + '</div>'; el.hidden = false; el.classList.remove('min'); requestAnimationFrame(reshift);
+      el.querySelector('.c-close').addEventListener('click', function () { OBS.univers.select(null); });
+      el.querySelector('.c-min').addEventListener('click', function () { el.classList.toggle('min'); this.textContent = el.classList.contains('min') ? '▴' : '▾'; reshift(); });
+      return;
+    }
     if (it.kind === 'obj') {   // un objet réel sur une sphère lointaine
       current = { level: 'univers', id: id }; clearInterval(liveTimer);
       h.push('<div class="c-head"><p class="c-kind">' + esc(m.k) + ' · objet réel</p><h2 class="c-name"><span class="c-swatch" style="background:#fff;color:#fff"></span>' + esc(m.n) + '</h2><button class="c-min" type="button" aria-label="Réduire la console">▾</button><button class="c-close" type="button" aria-label="Fermer">✕</button></div><div class="c-body">');
