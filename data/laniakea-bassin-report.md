@@ -1,47 +1,4 @@
 # Laniakea : contour et écoulements
 
-- CF4_new_128-z008_watersheds-fits.zip : 67127665 octets
-- archive : CF4_new_128-z008_BoA.fits, CF4_new_128-z008_BoR.fits, CF4gp_new_128-z008_BoA.fits, CF4gp_new_128-z008_BoR.fits
-- CF4_new_128-z008_BoA.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
-- CF4_new_128-z008_BoR.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
-- CF4gp_new_128-z008_BoA.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
-- CF4gp_new_128-z008_BoR.fits [0] forme (128, 128, 128), type >f8 ; NAXIS=3, NAXIS1=128, NAXIS2=128, NAXIS3=128
-- **Grille retenue : CF4_new_128-z008_BoA.fits**
-- orientation possible : axes (0, 1, 2), signes (-1, 1, 1)
-- orientation possible : axes (0, 1, 2), signes (-1, 1, -1)
-- orientation possible : axes (0, 2, 1), signes (-1, 1, -1)
-- orientation possible : axes (2, 0, 1), signes (1, -1, 1)
-- orientation possible : axes (2, 0, 1), signes (1, -1, -1)
-- orientation possible : axes (2, 1, 0), signes (1, 1, 1)
-- orientation possible : axes (2, 1, 0), signes (1, 1, -1)
-- orientation possible : axes (2, 1, 0), signes (1, -1, 1)
-- orientation possible : axes (2, 1, 0), signes (1, -1, -1)
-- CF4_new_64-z008_velocity.fits : 3150720 octets
-- attracteurs, axes (0, 1, 2) signes (-1, 1, 1) : 1 / 6 à leur place
-- attracteurs, axes (0, 1, 2) signes (-1, 1, -1) : 2 / 6 à leur place
-- attracteurs, axes (0, 2, 1) signes (-1, 1, -1) : 1 / 6 à leur place
-- attracteurs, axes (2, 0, 1) signes (1, -1, 1) : 2 / 6 à leur place
-- attracteurs, axes (2, 0, 1) signes (1, -1, -1) : 3 / 6 à leur place
-- attracteurs, axes (2, 1, 0) signes (1, 1, 1) : 6 / 6 à leur place
-- attracteurs, axes (2, 1, 0) signes (1, 1, -1) : 2 / 6 à leur place
-- attracteurs, axes (2, 1, 0) signes (1, -1, 1) : 3 / 6 à leur place
-- attracteurs, axes (2, 1, 0) signes (1, -1, -1) : 1 / 6 à leur place
-- **Orientation retenue : axes (2, 1, 0), signes (1, 1, 1) (6 / 6 attracteurs à leur place)**
-- Vierge : bassin 1 (attendu Laniakea)
-- Centaure : bassin 1 (attendu Laniakea)
-- Hydre : bassin 1 (attendu Laniakea)
-- Règle : bassin 1 (attendu Laniakea)
-- Persée : bassin 5 (attendu autre)
-- Coma : bassin 6 (attendu autre)
-- Shapley : bassin 6 (attendu autre)
-- Notre voxel est dans le bassin 1 (attendu : 1) ; Laniakea = 4079 voxels, 1.95e+06 (Mpc/h)³ (attendu ≈ 2e6)
-- Centre de Laniakea (SGX, SGY, SGZ) : -41, -51, 135 Mpc
-- Bassin voisin Apus : 19972 voxels (9.5 × 10⁶ (Mpc/h)³), bord gardé 1500 points
-- Bassin voisin Hercule : 6595 voxels (3.1 × 10⁶ (Mpc/h)³), bord gardé 1500 points
-- Bassin voisin Lepus : 16959 voxels (8.1 × 10⁶ (Mpc/h)³), bord gardé 1500 points
-- Bassin voisin Persée-Poissons : 10067 voxels (4.8 × 10⁶ (Mpc/h)³), bord gardé 1500 points
-- Bassin voisin Shapley : 16589 voxels (7.9 × 10⁶ (Mpc/h)³), bord gardé 1500 points
-- Bord : 1456 voxels ; coupes : 79 (dessus), 263 (côté)
-- vitesses [0] forme (3, 64, 64, 64) ; NAXIS=4, NAXIS1=64, NAXIS2=64, NAXIS3=64, NAXIS4=3
-- **Composantes : (2, 1, 0), signes (1, 1, 1)**
-- 117 lignes d'écoulement gardées
+- échec https://projets.ip2i.in2p3.fr/cosmicflows/CF4_new_128-z008_watersheds-fits.zip : URLError(TimeoutError(110, 'Connection timed out'))
+- échec https://projets.ip2i.in2p3.fr//cosmicflows/CF4_new_128-z008_watersheds-fits.zip : URLError(TimeoutError(110, 'Connection timed out'))
